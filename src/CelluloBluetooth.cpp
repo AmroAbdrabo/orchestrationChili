@@ -550,9 +550,9 @@ void CelluloBluetooth::setLocomotionInteractivityMode(CelluloBluetoothEnums::Loc
     sendCommand();
 }
 
-void CelluloBluetooth::setRawTouchEnabled(bool enabled){
+void CelluloBluetooth::setGestureEnabled(bool enabled){
     sendPacket.clear();
-    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeRawTouchEnable);
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeGestureEnable);
     sendPacket.load((quint8)enabled);
     sendCommand();
 }

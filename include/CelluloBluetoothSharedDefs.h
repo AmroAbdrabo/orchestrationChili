@@ -90,7 +90,7 @@
         CmdPacketTypeBatteryStateRequest,            /** Request battery state */ \
         CmdPacketTypeSetLEDResponseMode,             /** Set LED response mode */ \
         CmdPacketTypeSetLocomotionInteractivityMode, /** Set the locomotion interactivity mode */ \
-        CmdPacketTypeRawTouchEnable,                 /** Enable/disable querying and broadcasting raw touch signals */ \
+        CmdPacketTypeGestureEnable,                  /** Enable/disable querying and processing raw touch signals */ \
         CmdPacketTypeSetVisualEffect,                /** Set visual effect */ \
         CmdPacketTypeSetMotorOutput,                 /** Set output of one motor */ \
         CmdPacketTypeSetAllMotorOutputs,             /** Set output of all motors */ \
@@ -114,7 +114,7 @@
         "B", /** CmdPacketTypeBatteryStateRequest */ \
         "L", /** CmdPacketTypeSetLEDResponseMode */ \
         "I", /** CmdPacketTypeSetLocomotionInteractivityMode */ \
-        "H", /** CmdPacketTypeRawTouchEnable */ \
+        "U", /** CmdPacketTypeGestureEnable */ \
         "E", /** CmdPacketTypeSetVisualEffect */ \
         "M", /** CmdPacketTypeSetMotorOutput */ \
         "A", /** CmdPacketTypeSetAllMotorOutputs */ \
@@ -137,7 +137,7 @@
         0,                 /** CmdPacketTypeBatteryStateRequest */ \
         1,                 /** CmdPacketTypeSetLEDResponseMode: uint8 mode */ \
         1,                 /** CmdPacketTypeSetLocomotionInteractivityMode: uint8 mode */ \
-        1,                 /** CmdPacketTypeRawTouchEnable: uint8 bool */ \
+        1,                 /** CmdPacketTypeGestureEnable: uint8 bool */ \
         1 + 1 + 1 + 1 + 1, /** CmdPacketTypeSetVisualEffect: uint8 effect, uint8 red, uint8 green, uint8 blue, uint8 value */ \
         1 + 2,             /** CmdPacketTypeSetMotorOutput: uint8 motorIndex, int16 output (-0xFFF to 0xFFF) */ \
         2 + 2 + 2,         /** CmdPacketTypeSetAllMotorOutputs: int16 m1Output, int16 m2Output, int16 m3Output (-0xFFF to 0xFFF) */ \

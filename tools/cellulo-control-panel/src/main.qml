@@ -170,8 +170,8 @@ ApplicationWindow {
 
                     CheckBox{
                         checked: false
-                        text: "Raw touch enabled"
-                        onCheckedChanged: robotComm.setRawTouchEnabled(checked)
+                        text: "Gesture enabled"
+                        onCheckedChanged: robotComm.setGestureEnabled(checked)
                     }
                 }
             }
