@@ -48,8 +48,9 @@
  * @brief LED response modes
  */
 #define LED_RESPONSE_MODE_ENUM_SHARED enum LEDResponseMode { \
-        LEDResponseModeResponsive = 0, /** LEDs respond to touches by slightly increasing brightness */ \
-        LEDResponseModeAbsolute = 1,   /** LEDs don't respond to touches */ \
+        LEDResponseModeResponsiveIndividual = 0, /** LEDs respond to touches by slightly increasing brightness */ \
+        LEDResponseModeAbsolute = 1,             /** LEDs don't respond to touches */ \
+        LEDResponseModeResponsiveHold = 2,       /** LEDs respond to hold by all changing color */ \
         LEDResponseModeNumElements \
 }
 
