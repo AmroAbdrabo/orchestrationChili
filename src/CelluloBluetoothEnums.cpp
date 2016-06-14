@@ -19,7 +19,6 @@
  * @file CelluloBluetoothEnums.cpp
  * @brief Source for CelluloBluetooth enums
  * @author Ayberk Özgür
- * @version 1.0
  * @date 2016-06-07
  */
 

@@ -19,7 +19,6 @@
  * @file CameraFrameImageProvider.h
  * @brief Header for converting the camera image in QByteBuffer to QImage
  * @author Ayberk Özgür
- * @version 1.0
  * @date 2015-05-21
  */
 

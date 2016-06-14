@@ -19,7 +19,6 @@
  * @file CelluloBluetoothSharedDefs.h
  * @brief c (exclusive) header for definitions shared with the robot
  * @author Ayberk Özgür
- * @version 1.0
  * @date 2016-06-07
  */
 

@@ -19,7 +19,6 @@
  * @file CelluloBluetoothPlugin.cpp
  * @brief Source for exposing Cellulo Bluetooth communication as a QML object
  * @author Ayberk Özgür
- * @version 1.0
  * @date 2015-05-20
  */
 

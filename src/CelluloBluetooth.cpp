@@ -19,7 +19,6 @@
  * @file CelluloBluetooth.cpp
  * @brief Source for Bluetooth communication with Cellulo robots
  * @author Ayberk Özgür
- * @version 1.0
  * @date 2015-05-20
  */
 

@@ -19,7 +19,6 @@
  * @file CelluloBluetoothEnums.h
  * @brief Header for CelluloBluetooth enums
  * @author Ayberk Özgür
- * @version 1.0
  * @date 2016-06-07
  */
 

@@ -26,7 +26,6 @@
  *      QVariantList EStrings(): Returns list of all names of enum
  *
  * @author Ayberk Özgür
- * @version 1.0
  * @date 2016-06-07
  */
 
