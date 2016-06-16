@@ -618,3 +618,66 @@ void CelluloBluetooth::shutdown(){
     sendPacket.setSendPacketType(SEND_PACKET_TYPE::SHUTDOWN);
     sendCommand();
 }
+
+void CelluloBluetooth::actOnZoneCalculateChanged(const QString& key, float value){
+
+    zonesChangesHandler.clear();
+    if(key == macAddr){
+        CelluloZone* obj = static_cast<CelluloZone *>(sender());
+        switch (obj->getType()) {
+        case CelluloZoneTypes::CIRCLEINNER:
+            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZoneCircleInner *>(obj)));
+            break;
+        case CelluloZoneTypes::CIRCLEBORDER:
+            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZoneCircleBorder *>(obj)));
+            break;
+        case CelluloZoneTypes::CIRCLEDISTANCE:
+            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZoneCircleDistance *>(obj)));
+            break;
+        case CelluloZoneTypes::RECTANGLEINNER:
+            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZoneRectangleInner *>(obj)));
+            break;
+        case CelluloZoneTypes::RECTANGLEBORDER:
+            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZoneRectangleBorder *>(obj)));
+            break;
+        case CelluloZoneTypes::RECTANGLEDISTANCE:
+            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZoneRectangleDistance *>(obj)));
+            break;
+        case CelluloZoneTypes::LINEINNER:
+            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZoneLineInner *>(obj)));
+            break;
+        case CelluloZoneTypes::LINEDISTANCE:
+            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZoneLineDistance *>(obj)));
+            break;
+        case CelluloZoneTypes::POINTINNER:
+            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZonePointInner *>(obj)));
+            break;
+        case CelluloZoneTypes::POINTDISTANCE:
+            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZonePointDistance *>(obj)));
+            break;
+        case CelluloZoneTypes::RPOLYGONINNER:
+            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZoneRegularPolygonInner *>(obj)));
+            break;
+        case CelluloZoneTypes::RPOLYGONBORDER:
+            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZoneRegularPolygonBorder *>(obj)));
+            break;
+        case CelluloZoneTypes::RPOLYGONDISTANCE:
+            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZoneRegularPolygonDistance*>(obj)));
+            break;
+        case CelluloZoneTypes::IRPOLYGONINNER:
+            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZoneIrregularPolygonInner *>(obj)));
+            break;
+        case CelluloZoneTypes::IRPOLYGONBORDER:
+            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZoneIrregularPolygonBorder *>(obj)));
+            break;
+        case CelluloZoneTypes::IRPOLYGONDISTANCE:
+            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZoneIrregularPolygonDistance *>(obj)));
+            break;
+        default:
+            qDebug() << "Forgot to handle an enum case";
+            break;
+        }
+        zonesChangesHandler.append(value);
+        emit zonesChangesHandlerChanged();
+    }
+}

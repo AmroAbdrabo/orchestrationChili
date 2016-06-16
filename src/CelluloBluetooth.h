@@ -33,6 +33,12 @@
 #include <QColor>
 
 #include "CelluloBluetoothPacket.h"
+#include "zones/CelluloZone.h"
+#include "zones/CelluloZoneCircle.h"
+#include "zones/CelluloZoneRectangle.h"
+#include "zones/CelluloZoneLine.h"
+#include "zones/CelluloZonePoint.h"
+#include "zones/CelluloZonePolygon.h"
 
 /**
  * @brief Bluetooth communicator for a Cellulo robot
@@ -53,6 +59,7 @@ Q_OBJECT
     Q_PROPERTY(float framerate READ getFramerate NOTIFY timestampChanged)
     Q_PROPERTY(bool kidnapped READ getKidnapped NOTIFY kidnappedChanged)
     Q_PROPERTY(float cameraImageProgress READ getCameraImageProgress NOTIFY cameraImageProgressChanged)
+    Q_PROPERTY(QVariantList zonesChangesHandler READ getZonesChangesHandler NOTIFY zonesChangesHandlerChanged)
 
 public:
 
@@ -204,6 +211,13 @@ public:
     float getCameraImageProgress(){
         return cameraImageProgress;
     }
+
+    /**
+     * @brief Gets handler of the zones calculate's results
+     *
+     * @return zone at index 0, current calculate's result of this zone at index 1
+     */
+    QVariantList getZonesChangesHandler(){ return zonesChangesHandler; }
 
 private slots:
 
@@ -375,6 +389,13 @@ public slots:
      */
     void shutdown();
 
+    /**
+     * @brief Act on calculate result's change
+     * @param key MAC address of the concerned robot
+     * @param value new calculate result for the zone (which is the sender of the signal)
+     */
+    void actOnZoneCalculateChanged(const QString& key, float value);
+
 signals:
 
     /**
@@ -458,6 +479,10 @@ signals:
      */
     void frameReady();
 
+    /**
+     * @brief Emitted when the handler of the zones calculate's results changes
+     */
+    void zonesChangesHandlerChanged();
 private:
 
     using SEND_PACKET_TYPE = CelluloBluetoothPacket::SEND_PACKET_TYPE;
@@ -482,6 +507,8 @@ private:
     float y;                           ///< Current y position in grid coordinates
     float theta;                       ///< Current orientation in degrees
     bool kidnapped;                    ///< Whether currently kidnapped
+
+    QVariantList zonesChangesHandler;  ///< List containing zone concerned with change of quantity (index 0) and respective current calculate result (index 1)
 
     /**
      * @brief Resets properties of the robot to default
