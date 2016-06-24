@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 EPFL
+ * Copyright (C) 2016 EPFL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,8 +19,7 @@
  * @file CelluloZone.h
  * @brief Header for base class zone architecture
  * @author Joanna Salathé
- * @version 1.0
- * @date 2015-03-04
+ * @date 2016-03-04
  */
 
 #ifndef CELLULOZONE_H
@@ -36,7 +35,9 @@
  * @brief CelluloZone Base Class for zones
  */
 class CelluloZone : public QQuickItem{
+    /* *INDENT-OFF* */
     Q_OBJECT
+    /* *INDENT-ON* */
     Q_PROPERTY(bool active WRITE setActive READ isActive NOTIFY activeChanged)
     Q_PROPERTY(QString name WRITE setName READ getName NOTIFY nameChanged)
     Q_PROPERTY(float marginThickeness WRITE setMarginThickeness READ getMarginTickeness NOTIFY marginThickenessChanged)
@@ -49,6 +50,7 @@ public:
      * @brief Creates a new Cellulo zone
      */
     explicit CelluloZone(QQuickItem* parent = 0);
+
     /**
      * @brief Get the type of the zone
      * @return Type of the zone
@@ -131,7 +133,6 @@ public:
      */
     virtual QVariantMap getRatioProperties(float realPlaygroundWidth, float realPlaygroundHeight) = 0;
 
-
     /**
      * @brief Calculate the zone quantity of this zone according to the robot's pose
      *
@@ -143,13 +144,11 @@ public:
      */
     Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) = 0;
 
-
     /**
      * @brief Write the zone infos to the given json Object
      * @param QJsonObject json object to be written
      */
     virtual void write(QJsonObject &json) = 0;
-
 
     /**
      * @brief Read the zone infos from the given json Object
@@ -157,16 +156,15 @@ public:
      */
     virtual void read(const QJsonObject &json) = 0;
 
-
 public slots:
+
     /**
      * @brief slot associated to the CelluloBluetooth signal onPoseChanged, change zone quantity for this robot if robot exists and zone is active
      */
     void calculateOnPoseChanged();
 
-
-
 protected:
+
     QString name;                               ///< name of the zone
     CelluloZoneTypes::ZoneType type;            ///< type of the zone
     int stackingOrder;                          ///< stacking order of the zone

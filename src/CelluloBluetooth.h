@@ -46,9 +46,9 @@
  * @brief Bluetooth communicator for a Cellulo robot
  */
 class CelluloBluetooth : public QQuickItem {
-/* *INDENT-OFF* */
-Q_OBJECT
-/* *INDENT-ON* */
+    /* *INDENT-OFF* */
+    Q_OBJECT
+    /* *INDENT-ON* */
 
     Q_PROPERTY(QString macAddr WRITE setMacAddr READ getMacAddr)
     Q_PROPERTY(CelluloBluetoothEnums::ConnectionStatus connectionStatus READ getConnectionStatus NOTIFY connectionStatusChanged)

@@ -34,9 +34,9 @@
  * @brief Wrapper containing all the enums of CelluloBluetooth
  */
 class CelluloBluetoothEnums : public QObject {
-/* *INDENT-OFF* */
-Q_OBJECT
-/* *INDENT-ON* */
+    /* *INDENT-OFF* */
+    Q_OBJECT
+    /* *INDENT-ON* */
 
 public:
 

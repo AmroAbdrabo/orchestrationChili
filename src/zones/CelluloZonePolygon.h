@@ -1,3 +1,27 @@
+/*
+ * Copyright (C) 2016 EPFL
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see http://www.gnu.org/licenses/.
+ */
+
+/**
+ * @file CelluloZonePolygon.h
+ * @brief Header for the polygon zone
+ * @author Joanna Salathé
+ * @date 2016-03-04
+ */
+
 #ifndef CELLULOZONEPOLYGON_H
 #define CELLULOZONEPOLYGON_H
 
@@ -9,9 +33,12 @@
  * @brief CelluloZone Base Class for polygonal zones
  */
 class CelluloZonePolygon : public CelluloZone {
+    /* *INDENT-OFF* */
     Q_OBJECT
+    /* *INDENT-ON* */
 
 public:
+
     /**
      * @brief Creates a new Cellulo polygonal zone
      */
@@ -36,15 +63,14 @@ public:
      */
     virtual void write(QJsonObject &json) = 0;
 
-
     /**
      * @brief Read the zone infos from the given json Object
      * @param json json object to be read
      */
     virtual void read(const QJsonObject &json) = 0;
 
-
 protected:
+
     QList<QPointF> pointsQt;                ///< points of the polygon
     float minX;                             ///< minimal x position from all polygon's point
     float maxX;                             ///< maximal x position from all polygon's point
@@ -55,7 +81,9 @@ protected:
      * @brief Gets the polygon's points
      * @return List of polygon's points
      */
-    QList<QPointF> getPointsQt() const{ return pointsQt; }
+    QList<QPointF> getPointsQt() const {
+        return pointsQt;
+    }
     void setPointsQt(const QList<QPointF> &newPointsQt);
 
     /**
@@ -91,15 +119,20 @@ protected:
  * @brief CelluloZone Base Class for irregular polygonal zones
  */
 class CelluloZoneIrregularPolygon : public CelluloZonePolygon {
-   Q_OBJECT
-   Q_PROPERTY (QList<QVariant> vertices READ getVertices WRITE setVertices NOTIFY verticesChanged)
+    /* *INDENT-OFF* */
+    Q_OBJECT
+    /* *INDENT-ON* */
+    Q_PROPERTY (QList<QVariant> vertices READ getVertices WRITE setVertices NOTIFY verticesChanged)
 
 public:
+
     /**
      * @brief Gets the vertices (set via QML) of the irregular polygon
      * @return List of vertices (set via QML) of the irregular polygon
      */
-    QList<QVariant> getVertices() { return vertices; }
+    QList<QVariant> getVertices() {
+        return vertices;
+    }
     Q_INVOKABLE void setVertices(QList<QVariant> newPoints) {
         if(newPoints!=vertices){
             vertices = newPoints;
@@ -133,29 +166,28 @@ public:
      */
     void write(QJsonObject &json);
 
-
     /**
      * @brief Read the zone infos from the given json Object
      * @param json json object to be read
      */
     void read(const QJsonObject &json);
 
-
 protected:
+
     QList<QVariant> vertices;                ///< vertices of the polygon set via QML
 
     /**
-    * @brief convertQVariantToQPointF convert vertices set via QML into points visible by the backend
-    * @return List of points visible by the backend
-    */
+     * @brief convertQVariantToQPointF convert vertices set via QML into points visible by the backend
+     * @return List of points visible by the backend
+     */
     QList<QPointF> convertQVariantToQPointF();
 
 signals:
-    /**
-    * @brief Emitted when vertices of the irregular polygonal zone changes
-    */
-    void verticesChanged();
 
+    /**
+     * @brief Emitted when vertices of the irregular polygonal zone changes
+     */
+    void verticesChanged();
 
 };
 
@@ -164,9 +196,12 @@ signals:
  * @brief CelluloZone Specific Class for irregular polygonal zones inner determination
  */
 class CelluloZoneIrregularPolygonInner : public CelluloZoneIrregularPolygon {
+    /* *INDENT-OFF* */
     Q_OBJECT
+    /* *INDENT-ON* */
 
 public:
+
     CelluloZoneIrregularPolygonInner();
 
     /**
@@ -185,9 +220,12 @@ public:
  * @brief CelluloZone Specific Class for irregular polygonal zones border determination
  */
 class CelluloZoneIrregularPolygonBorder : public CelluloZoneIrregularPolygon {
+    /* *INDENT-OFF* */
     Q_OBJECT
+    /* *INDENT-ON* */
 
 public:
+
     CelluloZoneIrregularPolygonBorder();
 
     /**
@@ -207,9 +245,12 @@ public:
  * @brief CelluloZone Specific Class for irregular polygonal zones distance determination
  */
 class CelluloZoneIrregularPolygonDistance : public CelluloZoneIrregularPolygon {
+    /* *INDENT-OFF* */
     Q_OBJECT
+    /* *INDENT-ON* */
 
 public:
+
     CelluloZoneIrregularPolygonDistance();
 
     /**
@@ -225,10 +266,10 @@ public:
 
 };
 
-
-
 class CelluloZoneRegularPolygon : public CelluloZonePolygon {
+    /* *INDENT-OFF* */
     Q_OBJECT
+    /* *INDENT-ON* */
     Q_PROPERTY(float numEdges WRITE setNumEdges READ getNumEdges NOTIFY numEdgesChanged)
     Q_PROPERTY(float x WRITE setX READ getX NOTIFY xChanged)
     Q_PROPERTY(float y WRITE setY READ getY NOTIFY yChanged)
@@ -237,6 +278,7 @@ class CelluloZoneRegularPolygon : public CelluloZonePolygon {
     Q_PROPERTY (QList<QVariant> vertices READ getVertices NOTIFY verticesChanged)
 
 public:
+
     /**
      * @brief Creates a new Cellulo regular polygonal zone
      */
@@ -254,7 +296,9 @@ public:
      * @brief Gets the number of edges of the regular polygon
      * @return The number of edges of the regular polygon
      */
-    float getNumEdges() { return numEdges; }
+    float getNumEdges() {
+        return numEdges;
+    }
     void setNumEdges(float newNumEdge) {
         if(newNumEdge!=numEdges){
             numEdges = newNumEdge;
@@ -271,18 +315,19 @@ public:
      */
     QList<QVariant> getVertices() {
         QList<QVariant> newVertices;
-        for (int i = 0; i < pointsQt.size(); ++i) {
+        for(int i = 0; i < pointsQt.size(); ++i){
             newVertices.append(QVariant::fromValue(pointsQt.at(i)));
         }
         return newVertices;
     }
 
-
     /**
      * @brief Gets the x position of regular polygon definer circle's center
      * @return X position of regular polygon definer circle's center
      */
-    float getX() { return x; }
+    float getX() {
+        return x;
+    }
     void setX(float newX) {
         if(newX!=x){
             x = newX;
@@ -297,7 +342,9 @@ public:
      * @brief Gets the y position of regular polygon definer circle's center
      * @return Y position of regular polygon definer circle's center
      */
-    float getY() { return y; }
+    float getY() {
+        return y;
+    }
     void setY(float newY) {
         if(newY!=y){
             y = newY;
@@ -312,7 +359,9 @@ public:
      * @brief Gets the radius of the regular polygon definer circle
      * @return R the radius of the regular polygon definer circle
      */
-    float getR() { return r; }
+    float getR() {
+        return r;
+    }
     void setR( float newR) {
         if(newR!=r){
             r = newR;
@@ -327,7 +376,9 @@ public:
      * @brief Gets the rotational angle of the regular polygon
      * @return The rotational angle of the regular polygon
      */
-    float getRotAngle() { return rotAngle; }
+    float getRotAngle() {
+        return rotAngle;
+    }
     void setRotAngle( float newRotAngle) {
         if(newRotAngle!=rotAngle){
             rotAngle = newRotAngle;
@@ -362,15 +413,17 @@ public:
      */
     void read(const QJsonObject &json);
 
-
 protected:
+
     float numEdges;                         ///< number of edges of the regular polygon
     float x;                                ///< x position of regular polygon defined circle's center
     float y;                                ///< y position of regular polygon defined circle's center
     float r;                                ///< radius of the regular polygon defined circle
     float rotAngle;                         ///< rotational angle of the regular polygon
     QList<QVariant> vertices;               ///< vertices of the polygon set via the shape properties)
+
 private:
+
     /**
      * @brief Define regular polygon's point following the polygon defined circle, the number of edges and the rotational angle
      * @return points of the regular polygon
@@ -378,31 +431,36 @@ private:
     QList<QPointF> createPolygonPointsFromOuterCircle();
 
 signals:
+
     /**
      * @brief Emitted when the number of edges of the regular polygonal zone changes
      */
     void numEdgesChanged();
+
     /**
      * @brief Emitted when the x position of regular polygon defined circle's center of the regular polygonal zone changes
      */
     void xChanged();
+
     /**
      * @brief Emitted when the y position of regular polygon defined circle's center of the regular polygonal zone changes
      */
     void yChanged();
+
     /**
      * @brief Emitted when the radius of the regular polygon defined circle of the regular polygonal zone changes
      */
     void rChanged();
+
     /**
      * @brief Emitted when the rotational angle of the regular polygonal zone changes
      */
     void rotAngleChanged();
-    /**
-    * @brief Emitted when vertices of the regular polygonal zone changes
-    */
-    void verticesChanged();
 
+    /**
+     * @brief Emitted when vertices of the regular polygonal zone changes
+     */
+    void verticesChanged();
 
 };
 
@@ -410,9 +468,12 @@ signals:
  * @brief CelluloZone Specific Class for regular polygonal zones inner determination
  */
 class CelluloZoneRegularPolygonInner : public CelluloZoneRegularPolygon {
+    /* *INDENT-OFF* */
     Q_OBJECT
+    /* *INDENT-ON* */
 
 public:
+
     CelluloZoneRegularPolygonInner();
 
     /**
@@ -433,9 +494,12 @@ public:
  * @brief CelluloZone Specific Class for regular polygonal zones border determination
  */
 class CelluloZoneRegularPolygonBorder : public CelluloZoneRegularPolygon {
+    /* *INDENT-OFF* */
     Q_OBJECT
+    /* *INDENT-ON* */
 
 public:
+
     CelluloZoneRegularPolygonBorder();
 
     /**
@@ -455,9 +519,12 @@ public:
  * @brief CelluloZone Specific Class for regular polygonal zones distance determination
  */
 class CelluloZoneRegularPolygonDistance : public CelluloZoneRegularPolygon {
+    /* *INDENT-OFF* */
     Q_OBJECT
+    /* *INDENT-ON* */
 
 public:
+
     CelluloZoneRegularPolygonDistance();
 
     /**

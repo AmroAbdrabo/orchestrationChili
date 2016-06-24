@@ -35,9 +35,9 @@
  * @brief Bluetooth communicator for a Cellulo robot
  */
 class CelluloBluetoothPacket : public QObject {
-/* *INDENT-OFF* */
-Q_OBJECT
-/* *INDENT-ON* */
+    /* *INDENT-OFF* */
+    Q_OBJECT
+    /* *INDENT-ON* */
 
 public:
     COMMAND_PACKET_TYPE_ENUM_SHARED;

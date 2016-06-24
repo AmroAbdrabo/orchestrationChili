@@ -1,3 +1,27 @@
+/*
+ * Copyright (C) 2016 EPFL
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see http://www.gnu.org/licenses/.
+ */
+
+/**
+ * @file CelluloZoneLine.h
+ * @brief Header for the line zone
+ * @author Joanna Salathé
+ * @date 2016-03-04
+ */
+
 #ifndef CELLULOZONELINE_H
 #define CELLULOZONELINE_H
 
@@ -7,7 +31,9 @@
  * @brief CelluloZone Base Class for line zones
  */
 class CelluloZoneLine : public CelluloZone {
+    /* *INDENT-OFF* */
     Q_OBJECT
+    /* *INDENT-ON* */
     Q_PROPERTY(float x1 WRITE setX1 READ getX1 NOTIFY x1Changed)
     Q_PROPERTY(float y1 WRITE setY1 READ getY1 NOTIFY y1Changed)
     Q_PROPERTY(float x2 WRITE setX2 READ getX2 NOTIFY x2Changed)
@@ -23,7 +49,9 @@ public:
      * @brief Gets the x position of the first line's point
      * @return X position of the first line's point
      */
-    float getX1() { return x1; }
+    float getX1() {
+        return x1;
+    }
     void setX1(float newx1) {
         if(newx1!=x1){
             x1 = newx1;
@@ -35,7 +63,9 @@ public:
      * @brief Gets the y position of the first line's point
      * @return Y position of the first line's point
      */
-    float getY1() { return y1; }
+    float getY1() {
+        return y1;
+    }
     void setY1(float newY1) {
         if(newY1!=y1){
             y1 = newY1;
@@ -47,7 +77,9 @@ public:
      * @brief Gets the x position of the second line's point
      * @return X position of the second line's point
      */
-    float getX2() { return x2; }
+    float getX2() {
+        return x2;
+    }
     void setX2(float newx2) {
         if(newx2!=x2){
             x2 = newx2;
@@ -59,7 +91,9 @@ public:
      * @brief Gets the y position of the second line's point
      * @return Y position of the second line's point
      */
-    float getY2() { return y2; }
+    float getY2() {
+        return y2;
+    }
     void setY2(float newY2) {
         if(newY2!=y2){
             y2 = newY2;
@@ -100,6 +134,7 @@ public:
     void read(const QJsonObject &json);
 
 protected:
+
     float x1;                               ///< X position of the first line's point
     float y1;                               ///< Y position of the first line's point
     float x2;                               ///< X position of the second line's point
@@ -111,14 +146,17 @@ signals:
      * @brief Emitted when the X position of the first line's point changes
      */
     void x1Changed();
+
     /**
      * @brief Emitted when the Y position of the first line's point changes
      */
     void y1Changed();
+
     /**
      * @brief Emitted when the X position of the second line's point changes
      */
     void x2Changed();
+
     /**
      * @brief Emitted when the Y position of the second line's point changes
      */
@@ -130,9 +168,12 @@ signals:
  * @brief CelluloZone Specific Class for line zones inner determination
  */
 class CelluloZoneLineInner : public CelluloZoneLine {
+    /* *INDENT-OFF* */
     Q_OBJECT
+    /* *INDENT-ON* */
 
 public:
+
     CelluloZoneLineInner();
 
     /**
@@ -152,9 +193,12 @@ public:
  * @brief CelluloZone Specific Class for line zones distance determination
  */
 class CelluloZoneLineDistance : public CelluloZoneLine {
+    /* *INDENT-OFF* */
     Q_OBJECT
+    /* *INDENT-ON* */
 
 public:
+
     CelluloZoneLineDistance();
 
     /**

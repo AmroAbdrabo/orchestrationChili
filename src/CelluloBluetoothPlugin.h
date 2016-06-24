@@ -44,7 +44,9 @@
  */
 class CelluloBluetoothPlugin : public QQmlExtensionPlugin
 {
-Q_OBJECT
+    /* *INDENT-OFF* */
+    Q_OBJECT
+    /* *INDENT-ON* */
     Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface")
 
 public:

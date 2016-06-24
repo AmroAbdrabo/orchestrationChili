@@ -1,3 +1,27 @@
+/*
+ * Copyright (C) 2016 EPFL
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see http://www.gnu.org/licenses/.
+ */
+
+/**
+ * @file CelluloZoneEngine.h
+ * @brief Header for the zone engine
+ * @author Joanna Salathé
+ * @date 2016-03-04
+ */
+
 #ifndef CELLULOZONEENGINE_H
 #define CELLULOZONEENGINE_H
 
@@ -5,6 +29,7 @@
 #include <QQmlComponent>
 #include <QQmlEngine>
 #include <QQmlContext>
+
 #include "CelluloZoneEngine.h"
 #include "CelluloZoneCircle.h"
 #include "CelluloZoneRectangle.h"
@@ -15,14 +40,14 @@
 
 #include "src/CelluloBluetooth.h"
 
-
-class CelluloZoneEngine : public QQuickItem{
+class CelluloZoneEngine : public QQuickItem {
+    /* *INDENT-OFF* */
     Q_OBJECT
+    /* *INDENT-ON* */
     Q_PROPERTY(float vRplaygroundWidth WRITE setVRPlaygroundWidth READ getVRPlaygroundWidth NOTIFY VRplaygroundWidthChanged)
     Q_PROPERTY(float vRplaygroundHeight WRITE setVRPlaygroundHeight READ getVRPlaygroundHeight NOTIFY VRplaygroundHeightChanged)
-    Q_PROPERTY(float realPlaygroundWidth WRITE setRealPlaygroundWidth READ getRealPlaygroundWidth  NOTIFY realPlaygroundWidthChanged)
-    Q_PROPERTY(float realPlaygroundHeight WRITE setRealPlaygroundHeight READ getRealPlaygroundHeight  NOTIFY realPlaygroundHeightChanged)
-
+    Q_PROPERTY(float realPlaygroundWidth WRITE setRealPlaygroundWidth READ getRealPlaygroundWidth NOTIFY realPlaygroundWidthChanged)
+    Q_PROPERTY(float realPlaygroundHeight WRITE setRealPlaygroundHeight READ getRealPlaygroundHeight NOTIFY realPlaygroundHeightChanged)
 
 public:
 
@@ -43,7 +68,10 @@ public:
      *
      * @return Width size of the virtual playground
      */
-    float getVRPlaygroundWidth() { return vRplaygroundWidth; }
+    float getVRPlaygroundWidth() {
+        return vRplaygroundWidth;
+    }
+
     /**
      * @brief Set the width size of the virtual playground
      *
@@ -61,7 +89,10 @@ public:
      *
      * @return Heigth size of the virtual playground
      */
-    float getVRPlaygroundHeight() { return vRplaygroundHeight; }
+    float getVRPlaygroundHeight() {
+        return vRplaygroundHeight;
+    }
+
     /**
      * @brief Set the height size of the virtual playground
      *
@@ -73,12 +104,16 @@ public:
             emit(VRplaygroundHeightChanged());
         }
     }
+
     /**
      * @brief Get the width size of the real playground
      *
      * @return Width size of the real playground
      */
-    float getRealPlaygroundWidth() { return realPlaygroundWidth; }
+    float getRealPlaygroundWidth() {
+        return realPlaygroundWidth;
+    }
+
     /**
      * @brief Set the width size of the real playground
      *
@@ -90,12 +125,16 @@ public:
             emit(realPlaygroundWidthChanged());
         }
     }
+
     /**
      * @brief Get the height size of the real playground
      *
      * @return Heigth size of the real playground
      */
-    float getRealPlaygroundHeight() { return realPlaygroundHeight; }
+    float getRealPlaygroundHeight() {
+        return realPlaygroundHeight;
+    }
+
     /**
      * @brief Set the height size of the real playground
      *
@@ -163,31 +202,35 @@ public:
      */
     Q_INVOKABLE QVariant getZoneFromName(QString name);
 
-
-
 private slots:
+
     /**
      * @brief Called when the engine is set up in order to find initial static robots and zone and bind them together
      */
     void traverseTreeForCelluloRobotFinding();
 
 signals:
+
     /**
      * @brief Emitted when new Zone has been created
      */
     void newZoneCreatedReadyForVisualization(int type, QVariantMap properties, int childNumber, float vRplaygroundWidth, float vRplaygroundHeight);
+
     /**
      * @brief Emitted when the width size of the virtual playground changes
      */
     void VRplaygroundWidthChanged();
+
     /**
      * @brief Emitted when the height size of the virtual playground changes
      */
     void VRplaygroundHeightChanged();
+
     /**
      * @brief Emitted when the width size of the real playground changes
      */
     void realPlaygroundWidthChanged();
+
     /**
      * @brief Emitted when the height size of the real playground changes
      */
@@ -196,6 +239,7 @@ signals:
     void initializationDone();
 
 private:
+
     float vRplaygroundWidth;                            ///< Width size of the virtual playground
     float vRplaygroundHeight;                           ///< Height size of the virtual playground
     float realPlaygroundWidth;                          ///< Width size of the real playground
@@ -208,6 +252,7 @@ private:
      * @param zone Zone to be binded
      */
     void bindRobotsAndZone(CelluloZone* zone);
+
     /**
      * @brief Set engine as parent of the zone and bind it with existing robots
      *
@@ -216,7 +261,5 @@ private:
     void setParentToZone(CelluloZone* zone);
 
 };
-
-
 
 #endif // CELLULOZONEENGINE_H

@@ -1,3 +1,27 @@
+/*
+ * Copyright (C) 2016 EPFL
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see http://www.gnu.org/licenses/.
+ */
+
+/**
+ * @file CelluloZoneRectangle.h
+ * @brief Header for the rectangular zone
+ * @author Joanna Salathé
+ * @date 2016-03-04
+ */
+
 #ifndef CELLULOZONERECTANGLE_H
 #define CELLULOZONERECTANGLE_H
 
@@ -7,13 +31,16 @@
  * @brief CelluloZone Base Class for rectangular zones
  */
 class CelluloZoneRectangle : public CelluloZone {
+    /* *INDENT-OFF* */
     Q_OBJECT
+    /* *INDENT-ON* */
     Q_PROPERTY(float x WRITE setX READ getX NOTIFY xChanged)
     Q_PROPERTY(float y WRITE setY READ getY NOTIFY yChanged)
     Q_PROPERTY(float height WRITE setHeight READ getHeight NOTIFY heightChanged)
     Q_PROPERTY(float width WRITE setWidth READ getWidth NOTIFY widthChanged)
 
 public:
+
     /**
      * @brief Creates a new Cellulo rectangular zone
      */
@@ -31,7 +58,9 @@ public:
      * @brief Gets the x position of upper left corner of the rectangle
      * @return X position of upper left corner of the rectangle
      */
-    float getX() { return x; }
+    float getX() {
+        return x;
+    }
     void setX(float newX) {
         if(newX!=x){
             x = newX;
@@ -43,7 +72,9 @@ public:
      * @brief Gets the y position of upper left corner of the rectangle
      * @return Y position of upper left corner of the rectangle
      */
-    float getY() { return y; }
+    float getY() {
+        return y;
+    }
     void setY(float newY) {
         if(newY!=y){
             y = newY;
@@ -55,7 +86,9 @@ public:
      * @brief Gets the height of the rectangle
      * @return Height of the rectangle
      */
-    float getHeight() { return height; }
+    float getHeight() {
+        return height;
+    }
     void setHeight(float newHeight) {
         if(newHeight!=height){
             height = newHeight;
@@ -67,7 +100,9 @@ public:
      * @brief Gets the width of the rectangle
      * @return Width of the rectangle
      */
-    float getWidth() { return width; }
+    float getWidth() {
+        return width;
+    }
     void setWidth(float newWidth) {
         if(newWidth!=width){
             width = newWidth;
@@ -100,6 +135,7 @@ public:
     void read(const QJsonObject &json);
 
 protected:
+
     float x;                                ///< x position of the upper left corner of the rectangle
     float y;                                ///< y position of the upper left corner of the rectangle
     float height;                           ///< height of the rectangle
@@ -111,10 +147,12 @@ signals:
      * @brief Emitted when the x position of the upper left corner of the rectangular zone's center changes
      */
     void xChanged();
+
     /**
      * @brief Emitted when the y postion of the upper left corner of the rectangular zone's center changes
      */
     void yChanged();
+
     /**
      * @brief Emitted when the height of the rectangular zone changes
      */
@@ -125,16 +163,18 @@ signals:
      */
     void widthChanged();
 
-
 };
 
 /**
  * @brief CelluloZone Specific Class for rectangular zones inner determination
  */
 class CelluloZoneRectangleInner : public CelluloZoneRectangle {
+    /* *INDENT-OFF* */
     Q_OBJECT
+    /* *INDENT-ON* */
 
 public:
+
     CelluloZoneRectangleInner();
 
     /**
@@ -154,9 +194,12 @@ public:
  * @brief CelluloZone Specific Class for rectangular zones border determination
  */
 class CelluloZoneRectangleBorder : public CelluloZoneRectangle {
+    /* *INDENT-OFF* */
     Q_OBJECT
+    /* *INDENT-ON* */
 
 public:
+
     CelluloZoneRectangleBorder();
 
     /**
@@ -176,9 +219,12 @@ public:
  * @brief CelluloZone Specific Class for rectangular zones distance determination
  */
 class CelluloZoneRectangleDistance : public CelluloZoneRectangle {
+    /* *INDENT-OFF* */
     Q_OBJECT
+    /* *INDENT-ON* */
 
 public:
+
     CelluloZoneRectangleDistance();
 
     /**

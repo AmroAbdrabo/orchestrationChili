@@ -1,3 +1,27 @@
+/*
+ * Copyright (C) 2016 EPFL
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see http://www.gnu.org/licenses/.
+ */
+
+/**
+ * @file CelluloZonePolygon.cpp
+ * @brief Source for the polygon zone
+ * @author Joanna Salathé
+ * @date 2016-03-04
+ */
+
 #include "CelluloZonePolygon.h"
 
 CelluloZonePolygon::CelluloZonePolygon() :
@@ -10,7 +34,7 @@ CelluloZonePolygon::CelluloZonePolygon() :
 }
 
 void CelluloZonePolygon::setMaxMinOuterRectangle(const QList<QPointF> &pointsQt, float *minX, float *maxX, float *minY, float *maxY){
-    for (int i = 0; i < pointsQt.size(); ++i) {
+    for(int i = 0; i < pointsQt.size(); ++i){
         if(pointsQt.at(i).x() < *minX){
             *minX = pointsQt.at(i).x();
         }
@@ -36,34 +60,32 @@ void CelluloZonePolygon::setPointsQt(const QList<QPointF> &newPointsQt){
 float CelluloZonePolygon::isPointOnPolygonBorder(float xPoint, float yPoint){
     if(!(xPoint>maxX || xPoint<minX || yPoint>maxY || yPoint<minY)){
         float result = 0;
-        for (int i = 0; i < pointsQt.length(); ++i) {
+        for(int i = 0; i < pointsQt.length(); ++i){
             result = pointInPoly(xPoint, yPoint, minX, maxX, minY, maxY, getRectangleFromLine(pointsQt.at(i%pointsQt.length()).x(),pointsQt.at(i%pointsQt.length()).y(),pointsQt.at((i+1)%pointsQt.length()).x(),pointsQt.at((i+1)%pointsQt.length()).y(),marginThickeness/2));
             if(result == 1){
                 return 1;
             }
         }
         return 0;
-    } else {
+    }
+    else{
         return 0;
     }
 }
 
 float CelluloZonePolygon::getPointToPolygonDistance(float xPoint, float yPoint){
     float distances [pointsQt.length()];
-    for (int i = 0; i < pointsQt.length(); ++i) {
+    for(int i = 0; i < pointsQt.length(); ++i){
         distances[i] = pointToSegmentDistance(xPoint, yPoint, pointsQt.at(i%pointsQt.length()).x(),pointsQt.at(i%pointsQt.length()).y(),pointsQt.at((i+1)%pointsQt.length()).x(),pointsQt.at((i+1)%pointsQt.length()).y());
     }
     float min = std::numeric_limits<float>::max();
-    for ( int i = 0; i < pointsQt.length(); i++ ){
-        if ( distances[i] < min ){
+    for(int i = 0; i < pointsQt.length(); i++){
+        if( distances[i] < min ){
             min = distances[i];
         }
     }
     return min;
 }
-
-
-
 
 QVariantMap CelluloZoneIrregularPolygon::getRatioProperties(float realPlaygroundWidth, float realPlaygroundHeight){
     QVariantMap properties;
@@ -115,7 +137,7 @@ void CelluloZoneIrregularPolygon::read(const QJsonObject &json){
 
 QList<QPointF> CelluloZoneIrregularPolygon::convertQVariantToQPointF(){
     QList<QPointF> newPointsQt;
-    for (int i = 0; i < vertices.size(); ++i) {
+    for(int i = 0; i < vertices.size(); ++i){
         if(vertices.at(i).canConvert(QVariant::PointF)){
             if(QVariant(vertices.at(i)).convert(QVariant::PointF)){
                 QPointF newPoint = vertices.at(i).toPointF();
@@ -129,7 +151,6 @@ QList<QPointF> CelluloZoneIrregularPolygon::convertQVariantToQPointF(){
     }
     return newPointsQt;
 }
-
 
 CelluloZoneRegularPolygon::CelluloZoneRegularPolygon() :
     CelluloZonePolygon()
@@ -189,7 +210,7 @@ QList<QPointF> CelluloZoneRegularPolygon::createPolygonPointsFromOuterCircle(){
     QList<QPointF> newPointsQt;
     float rotAngleRadian = rotAngle * (M_PI/180);
     if(numEdges>2){
-        for (int i = 0; i < numEdges; i++) {
+        for(int i = 0; i < numEdges; i++){
             //taken from: http://stackoverflow.com/questions/3436453/calculate-coordinates-of-a-regular-polygons-vertices
             QPointF newPoint = QPointF(x + r * cos(2 * M_PI * i / numEdges + rotAngleRadian), y + r * sin(2 * M_PI * i / numEdges + rotAngleRadian));
             newPointsQt.append(newPoint);
@@ -217,7 +238,7 @@ CelluloZoneIrregularPolygonBorder::CelluloZoneIrregularPolygonBorder() :
 }
 
 float CelluloZoneIrregularPolygonBorder::calculate(float xRobot, float yRobot, float thetaRobot){
-   return isPointOnPolygonBorder(xRobot, yRobot);
+    return isPointOnPolygonBorder(xRobot, yRobot);
 }
 
 CelluloZoneIrregularPolygonDistance::CelluloZoneIrregularPolygonDistance() :
@@ -238,7 +259,6 @@ CelluloZoneRegularPolygonInner::CelluloZoneRegularPolygonInner() :
 
 float CelluloZoneRegularPolygonInner::calculate(float xRobot, float yRobot, float thetaRobot){
     return pointInPoly(xRobot, yRobot, x-r, x+r, y-r, y+r, pointsQt);
-
 }
 
 CelluloZoneRegularPolygonBorder::CelluloZoneRegularPolygonBorder() :
@@ -256,7 +276,6 @@ CelluloZoneRegularPolygonDistance::CelluloZoneRegularPolygonDistance() :
 {
     type = CelluloZoneTypes::RPOLYGONDISTANCE;
 }
-
 
 float CelluloZoneRegularPolygonDistance::calculate(float xRobot, float yRobot, float thetaRobot){
     return getPointToPolygonDistance(xRobot, yRobot);

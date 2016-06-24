@@ -1,3 +1,27 @@
+/*
+ * Copyright (C) 2016 EPFL
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see http://www.gnu.org/licenses/.
+ */
+
+/**
+ * @file CelluloZone.cpp
+ * @brief Source for base class zone architecture
+ * @author Joanna Salathé
+ * @date 2016-03-04
+ */
+
 #include "CelluloZone.h"
 #include "src/CelluloBluetooth.h"
 
@@ -10,15 +34,12 @@ CelluloZone::CelluloZone(QQuickItem* parent) :
     name = "anonymousZone";
 }
 
-
 void CelluloZone::calculateOnPoseChanged(){
     CelluloBluetooth *cellulo = qobject_cast<CelluloBluetooth *>(QObject::sender());
-    if(cellulo && active)
-    {
+    if(cellulo && active){
         changeInCellulosCalculate(cellulo->getMacAddr(),this->calculate(cellulo->getX()*0.508, cellulo->getY()*0.508, cellulo->getTheta()));
     }
 }
-
 
 void CelluloZone::changeInCellulosCalculate(const QString& key, float value){
     // only emit value changed if the value has actually changed
@@ -28,7 +49,8 @@ void CelluloZone::changeInCellulosCalculate(const QString& key, float value){
             cellulosCalculate[key] = value;
             emit calculateCelluloChanged(key, value);
         }
-    } else {
+    }
+    else{
         cellulosCalculate.insert(key, value);
         emit calculateCelluloChanged(key, value);
     }
@@ -44,17 +66,17 @@ float CelluloZone::pointToSegmentDistance(float x,float y, float x1, float y1, f
     float dot = A * C + B * D;
     float len_sq = C * C + D * D;
     float param = -1;
-    if (len_sq != 0) {//in case of 0 length line
+    if(len_sq != 0){  //in case of 0 length line
         param = dot / len_sq;
     }
 
     float xx, yy;
 
-    if (param < 0) {
+    if(param < 0){
         xx = x1;
         yy = y1;
     }
-    else if (param > 1) {
+    else if(param > 1){
         xx = x2;
         yy = y2;
     }
@@ -72,13 +94,14 @@ float CelluloZone::pointToSegmentDistance(float x,float y, float x1, float y1, f
 float CelluloZone::pointInPoly(float xRobot, float yRobot,float minX,float maxX, float minY, float maxY, QList<QPointF> pointsQt){
     if(!(xRobot>maxX || xRobot<minX || yRobot>maxY || yRobot<minY)){
         int i, j, c = 0;
-        for (i = 0, j = pointsQt.size()-1; i < pointsQt.size(); j = i++) {
-            if ( ((pointsQt.at(i).y()>yRobot) != (pointsQt.at(j).y()>yRobot)) &&
-                 (xRobot < (pointsQt.at(j).x()-pointsQt.at(i).x()) * (yRobot-pointsQt.at(i).y()) / (pointsQt.at(j).y()-pointsQt.at(i).y()) + pointsQt.at(i).x()))
+        for(i = 0, j = pointsQt.size()-1; i < pointsQt.size(); j = i++){
+            if( ((pointsQt.at(i).y()>yRobot) != (pointsQt.at(j).y()>yRobot)) &&
+                (xRobot < (pointsQt.at(j).x()-pointsQt.at(i).x()) * (yRobot-pointsQt.at(i).y()) / (pointsQt.at(j).y()-pointsQt.at(i).y()) + pointsQt.at(i).x()))
                 c = !c;
         }
-        return c? 1:0;
-    } else {
+        return c ? 1 : 0;
+    }
+    else{
         return 0;
     }
 }

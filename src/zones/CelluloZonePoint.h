@@ -1,3 +1,27 @@
+/*
+ * Copyright (C) 2016 EPFL
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see http://www.gnu.org/licenses/.
+ */
+
+/**
+ * @file CelluloZonePoint.h
+ * @brief Header for the point zone
+ * @author Joanna Salathé
+ * @date 2016-03-04
+ */
+
 #ifndef CELLULOZONEPOINT_H
 #define CELLULOZONEPOINT_H
 
@@ -6,22 +30,27 @@
 /**
  * @brief CelluloZone Base Class for point zones
  */
-class CelluloZonePoint : public CelluloZone{
+class CelluloZonePoint : public CelluloZone {
+    /* *INDENT-OFF* */
     Q_OBJECT
+    /* *INDENT-ON* */
     Q_PROPERTY(float x WRITE setX READ getX NOTIFY xChanged)
     Q_PROPERTY(float y WRITE setY READ getY NOTIFY yChanged)
 
 public:
+
     /**
      * @brief Creates a new Cellulo point zone
      */
-   CelluloZonePoint();
+    CelluloZonePoint();
 
     /**
      * @brief Gets the x position of the point
      * @return X position of the point
      */
-    float getX() { return x; }
+    float getX() {
+        return x;
+    }
     void setX(float newX) {
         if(newX!=x){
             x = newX;
@@ -33,7 +62,9 @@ public:
      * @brief Gets the y position of the point
      * @return Y position of the point
      */
-    float getY() { return y; }
+    float getY() {
+        return y;
+    }
     void setY(float newY) {
         if(newY!=y){
             y = newY;
@@ -66,7 +97,6 @@ public:
      */
     void write(QJsonObject &json);
 
-
     /**
      * @brief Read the zone infos from the given json Object
      * @param json json object to be read
@@ -74,6 +104,7 @@ public:
     void read(const QJsonObject &json);
 
 protected:
+
     float x;                               ///< X position of the point
     float y;                               ///< Y position of the point
 
@@ -83,6 +114,7 @@ signals:
      * @brief Emitted when the X position of the point changes
      */
     void xChanged();
+
     /**
      * @brief Emitted when the Y position of the point changes
      */
@@ -94,9 +126,12 @@ signals:
  * @brief CelluloZone Specific Class for point zones inner determination
  */
 class CelluloZonePointInner : public CelluloZonePoint {
+    /* *INDENT-OFF* */
     Q_OBJECT
+    /* *INDENT-ON* */
 
 public:
+
     CelluloZonePointInner();
 
     /**
@@ -112,14 +147,16 @@ public:
 
 };
 
-
 /**
  * @brief CelluloZone Specific Class for point zones distance determination
  */
 class CelluloZonePointDistance : public CelluloZonePoint {
+    /* *INDENT-OFF* */
     Q_OBJECT
+    /* *INDENT-ON* */
 
 public:
+
     CelluloZonePointDistance();
 
     /**
