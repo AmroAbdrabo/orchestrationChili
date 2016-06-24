@@ -95,10 +95,10 @@ QMap<QString, QVariant> CelluloZoneJsonHandler::read(const QJsonObject &json){
     QJsonObject mmPlaygroundSize = json["playgoundSizeInmm"].toObject();
     double mmPlaygroundWidth = mmPlaygroundSize["width"].toDouble();
     double mmPlaygroundHeight= mmPlaygroundSize["height"].toDouble();
-    if(!isnan(mmPlaygroundWidth)){
+    if(!std::isnan(mmPlaygroundWidth)){
         readResult.insert("realPlaygroundWidth",mmPlaygroundWidth);
     }
-    if(!isnan(mmPlaygroundHeight)){
+    if(!std::isnan(mmPlaygroundHeight)){
         readResult.insert("realPlaygroundHeight",mmPlaygroundHeight);
     }
     QJsonArray zoneArray = json["zones"].toArray();
