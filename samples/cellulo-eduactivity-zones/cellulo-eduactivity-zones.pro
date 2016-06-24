@@ -8,5 +8,3 @@ RESOURCES += qml.qrc
 
 DISTFILES += \
     cellulo-zonesdrawer-educational-activity.js
-
-
