@@ -19,17 +19,16 @@
  * @file CelluloBluetoothPlugin.cpp
  * @brief Source for exposing Cellulo Bluetooth communication as a QML object
  * @author Ayberk Özgür
- * @version 1.0
  * @date 2015-05-20
  */
 
 #include "CelluloBluetoothPlugin.h"
 
+#include <QQmlEngine>
 
-
-#include<QQmlEngine>
-
-#include"CameraFrameImageProvider.h"
+#include "CelluloBluetooth.h"
+#include "CelluloBluetoothEnums.h"
+#include "CameraFrameImageProvider.h"
 
 void CelluloBluetoothPlugin::registerTypes(const char *uri){
     qmlRegisterType<CelluloBluetooth>(uri, 1, 0, "CelluloBluetooth");
@@ -61,8 +60,15 @@ void CelluloBluetoothPlugin::registerTypes(const char *uri){
     qmlRegisterType<CelluloZoneJsonHandler>(uri, 1, 0, "CelluloZoneJsonHandler");
     qmlRegisterType<CelluloZoneTypes>(uri, 1, 0, "CelluloZoneTypes");
 
+    qmlRegisterSingletonType<CelluloBluetoothEnums>(uri, 1, 0, "CelluloBluetoothEnums",
+                                                    [](QQmlEngine* qmlEngine, QJSEngine* jsEngine)->QObject* {
+                                                        Q_UNUSED(qmlEngine)
+                                                        Q_UNUSED(jsEngine)
+                                                        return new CelluloBluetoothEnums();
+                                                    });
 }
 
-void CelluloBluetoothPlugin::initializeEngine(QQmlEngine *engine, const char *uri __attribute__((unused))){
+void CelluloBluetoothPlugin::initializeEngine(QQmlEngine *engine, const char *uri){
+    Q_UNUSED(uri)
     engine->addImageProvider("cameraFrame", new CameraFrameImageProvider());
 }

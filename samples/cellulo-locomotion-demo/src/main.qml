@@ -39,8 +39,7 @@ ApplicationWindow {
                 ]
                 onConnectRequested: robotComm.macAddr = selectedAddress
                 onDisconnectRequested: robotComm.disconnectFromServer()
-                connected: robotComm.connected
-                connecting: robotComm.connecting
+                connectionStatus: robotComm.connectionStatus
             }
             Button {
                 text: "Reset"
@@ -132,10 +131,10 @@ ApplicationWindow {
 
     CelluloBluetooth{
         id: robotComm
-        onConnectedChanged: {
-            if(connected)
-                setVisualEffect(0, "#0F0F0F", 0);
+        onConnectionStatusChanged: {
+            if(connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected)
+                setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "#0F0F0F", 0);
         }
-        onBootCompleted: setVisualEffect(0, "#0F0F0F", 0);
+        onBootCompleted: setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "#0F0F0F", 0);
     }
 }

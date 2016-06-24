@@ -14,8 +14,7 @@ Row {
 
     property variant addresses: []
     property string selectedAddress: selectionBox.currentText
-    property bool connected: false
-    property bool connecting: false
+    property var connectionStatus: CelluloBluetooth.ConnectionStatusDisconnected
 
     signal connectRequested()
     signal disconnectRequested()
@@ -53,7 +52,16 @@ Row {
     }
 
     Label{
-        text: connected ? "Conected" : (connecting ? "Connecting" : "Disconnected")
-        color: connected ? "green" : (connecting ? "yellow" : "red")
+        text: CelluloBluetoothEnums.ConnectionStatusString(connectionStatus)
+        color: {
+            switch(connectionStatus){
+            case CelluloBluetoothEnums.ConnectionStatusDisconnected:
+                return "red";
+            case CelluloBluetoothEnums.ConnectionStatusConnecting:
+                return "yellow";
+            case CelluloBluetoothEnums.ConnectionStatusConnected:
+                return "green";
+            }
+        }
     }
 }

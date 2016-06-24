@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 EPFL
+ * Copyright (C) 2016 EPFL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,35 +16,16 @@
  */
 
 /**
- * @file CameraFrameImageProvider.h
- * @brief Header for converting the camera image in QByteBuffer to QImage
+ * @file CelluloBluetoothEnums.cpp
+ * @brief Source for CelluloBluetooth enums
  * @author Ayberk Özgür
- * @date 2015-05-21
+ * @date 2016-06-07
  */
 
-#ifndef CAMERAFRAMEIMAGEPROVIDER_H
-#define CAMERAFRAMEIMAGEPROVIDER_H
+#include "CelluloBluetoothEnums.h"
 
-#include"CelluloBluetoothSharedDefs.h"
-#include"CelluloBluetooth.h"
+CelluloBluetoothEnums::CelluloBluetoothEnums(QObject* parent) : QObject(parent){
+}
 
-#include<QQuickImageProvider>
-
-/**
- * @brief QImage provider from QByteArray
- */
-class CameraFrameImageProvider : public QQuickImageProvider {
-
-public:
-
-    CameraFrameImageProvider();
-
-    QImage requestImage(QString const& id, QSize* size, QSize const& requestedSize);
-
-private:
-
-    unsigned char frameCharBuffer[IMG_WIDTH_SHARED*IMG_HEIGHT_SHARED*4];
-
-};
-
-#endif // CAMERAFRAMEIMAGEPROVIDER_H
+CelluloBluetoothEnums::~CelluloBluetoothEnums(){
+}

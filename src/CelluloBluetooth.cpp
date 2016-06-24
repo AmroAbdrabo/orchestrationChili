@@ -19,7 +19,6 @@
  * @file CelluloBluetooth.cpp
  * @brief Source for Bluetooth communication with Cellulo robots
  * @author Ayberk Özgür
- * @version 1.0
  * @date 2015-05-20
  */
 
@@ -40,19 +39,22 @@ CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) :
 
     //TODO: CALL RESET PROPERTIES INSTEAD OF THE BELOW
 
-    frameBuffer.reserve(IMG_WIDTH*IMG_HEIGHT);
+    frameBuffer.reserve(IMG_WIDTH_SHARED*IMG_HEIGHT_SHARED);
 
-    connected = false;
-    connecting = false;
+    connectionStatus = CelluloBluetoothEnums::ConnectionStatusDisconnected;
 
     timestampingEnabled = false;
-    batteryState = 4; //Beginning with shutdown is a good idea
+    batteryState = CelluloBluetoothEnums::BatteryStateShutdown; //Beginning with shutdown is a good idea
     x = 0;
     y = 0;
     theta = 0;
     lastTimestamp = 0;
     framerate = 0.0;
     kidnapped = true;
+
+    touchRawValues.reserve(6);
+    for(int i=0;i<6;i++)
+        touchRawValues.append(0);
 }
 
 CelluloBluetooth::~CelluloBluetooth(){
@@ -64,7 +66,7 @@ void CelluloBluetooth::resetProperties(){
     recvPacket.clear();
 
     timestampingEnabled = false;
-    batteryState = 4; //Beginning with shutdown is a good idea
+    batteryState = CelluloBluetoothEnums::BatteryStateShutdown; //Beginning with shutdown is a good idea
     emit batteryStateChanged();
     x = 0;
     y = 0;
@@ -83,12 +85,10 @@ QVariantList CelluloBluetooth::getFrame() const {
     QVariantList frame;
     for(int i=0; i<frameBuffer.length(); i++)
         frame.append((int)frameBuffer[i]);
-    while(frame.length() < IMG_WIDTH*IMG_HEIGHT)
+    while(frame.length() < IMG_WIDTH_SHARED*IMG_HEIGHT_SHARED)
         frame.append((int)0);
     return frame;
 }
-
-
 
 void CelluloBluetooth::setMacAddr(QString macAddr){
     disconnectFromServer();
@@ -97,7 +97,7 @@ void CelluloBluetooth::setMacAddr(QString macAddr){
 }
 
 void CelluloBluetooth::refreshConnection(){
-    if(!connected){
+    if(connectionStatus != CelluloBluetoothEnums::ConnectionStatusConnected){
         qDebug() << "CelluloBluetooth::refreshConnection(): Connection attempt timed out, will retry";
         disconnectFromServer();
         connectToServer();
@@ -117,9 +117,9 @@ void CelluloBluetooth::openSocket(){
                 #endif
             );
         btConnectTimeoutTimer.start();
-        if(!connecting){
-            connecting = true;
-            emit connectingChanged();
+        if(connectionStatus != CelluloBluetoothEnums::ConnectionStatusConnecting){
+            connectionStatus = CelluloBluetoothEnums::ConnectionStatusConnecting;
+            emit connectionStatusChanged();
         }
     }
 }
@@ -146,13 +146,9 @@ void CelluloBluetooth::disconnectFromServer(){
         disconnect(socket, SIGNAL(disconnected()), this, SLOT(socketDisconnected()));
         socket->abort();
         socket->close();
-        if(connected){
-            connected = false;
-            emit connectedChanged();
-        }
-        if(connecting){
-            connecting = false;
-            emit connectingChanged();
+        if(connectionStatus != CelluloBluetoothEnums::ConnectionStatusDisconnected){
+            connectionStatus = CelluloBluetoothEnums::ConnectionStatusDisconnected;
+            emit connectionStatusChanged();
         }
         socket->deleteLater();
         socket = NULL;
@@ -163,25 +159,20 @@ void CelluloBluetooth::disconnectFromServer(){
 
 void CelluloBluetooth::socketConnected(){
     qDebug() << "CelluloBluetooth::socketConnected(): " << macAddr;
-    if(!connected){
-        connected = true;
-        emit connectedChanged();
+    if(connectionStatus != CelluloBluetoothEnums::ConnectionStatusConnected){
+        connectionStatus = CelluloBluetoothEnums::ConnectionStatusConnected;
+        emit connectionStatusChanged();
     }
-    if(connecting){
-        connecting = false;
-        emit connectingChanged();
-    }
+
+    //Update residual states that normally update by events
+    queryBatteryState();
 }
 
 void CelluloBluetooth::socketDisconnected(){
     qDebug() << "CelluloBluetooth::socketDisconnected(): " << macAddr << ", will try to reconnect.";
-    if(connected){
-        connected = false;
-        emit connectedChanged();
-    }
-    if(connecting){
-        connecting = false;
-        emit connectingChanged();
+    if(connectionStatus != CelluloBluetoothEnums::ConnectionStatusDisconnected){
+        connectionStatus = CelluloBluetoothEnums::ConnectionStatusDisconnected;
+        emit connectionStatusChanged();
     }
     openSocket();
 }
@@ -196,61 +187,61 @@ void CelluloBluetooth::socketDataArrived(){
             processResponse();
 }
 
-
-
 void CelluloBluetooth::processResponse(){
     switch(recvPacket.getReceivePacketType()){
-        case RECEIVE_PACKET_TYPE::BOOT_COMPLETE:
+        case CelluloBluetoothPacket::EventPacketTypeBootComplete:
             emit bootCompleted();
             break;
 
-        case RECEIVE_PACKET_TYPE::WAKE_UP:
-            emit wokeUp();
-            break;
-
-        case RECEIVE_PACKET_TYPE::SHUTTING_DOWN:
+        case CelluloBluetoothPacket::EventPacketTypeShuttingDown:
             emit shuttingDown();
             break;
 
-        case RECEIVE_PACKET_TYPE::LOW_BATTERY:
+        case CelluloBluetoothPacket::EventPacketTypeLowBattery:
             emit lowBattery();
             break;
 
-        case RECEIVE_PACKET_TYPE::BATTERY_STATE_CHANGED: {
-            int newState = recvPacket.unloadUInt8();
-            if(newState >= 0 && newState <= 4)
-                if(batteryState != newState){
-                    batteryState = newState;
-                    emit batteryStateChanged();
-                }
+        case CelluloBluetoothPacket::EventPacketTypeBatteryStateChanged: {
+            CelluloBluetoothEnums::BatteryState newState = (CelluloBluetoothEnums::BatteryState)recvPacket.unloadUInt8();
+            if(batteryState != newState){
+                batteryState = newState;
+                emit batteryStateChanged();
+            }
             break;
         }
 
-        case RECEIVE_PACKET_TYPE::TOUCH_BEGIN: {
+        case CelluloBluetoothPacket::EventPacketTypeTouchBegan: {
             int key = recvPacket.unloadUInt8();
             if(key >= 0 && key <= 5)
                 emit touchBegan(key);
             break;
         }
 
-        case RECEIVE_PACKET_TYPE::TOUCH_LONG_PRESSED: {
+        case CelluloBluetoothPacket::EventPacketTypeTouchLongPressed: {
             int key = recvPacket.unloadUInt8();
             if(key >= 0 && key <= 5)
                 emit longTouch(key);
             break;
         }
 
-        case RECEIVE_PACKET_TYPE::TOUCH_RELEASED: {
+        case CelluloBluetoothPacket::EventPacketTypeTouchReleased: {
             int key = recvPacket.unloadUInt8();
             if(key >= 0 && key <= 5)
                 emit touchReleased(key);
             break;
         }
 
-        case RECEIVE_PACKET_TYPE::POSE_CHANGED: {
-            x = recvPacket.unloadUInt32()/GOAL_POSE_FACTOR;
-            y = recvPacket.unloadUInt32()/GOAL_POSE_FACTOR;
-            theta = recvPacket.unloadUInt16()/GOAL_POSE_FACTOR;
+        case CelluloBluetoothPacket::EventPacketTypeTouchRaw: {
+            for(int i=0;i<6;i++)
+                touchRawValues[i] = recvPacket.unloadInt16();
+            emit touchRawValuesUpdated();
+            break;
+        }
+
+        case CelluloBluetoothPacket::EventPacketTypePoseChanged: {
+            x = recvPacket.unloadUInt32()/(float)GOAL_POSE_FACTOR_SHARED;
+            y = recvPacket.unloadUInt32()/(float)GOAL_POSE_FACTOR_SHARED;
+            theta = recvPacket.unloadUInt16()/(float)GOAL_POSE_FACTOR_SHARED;
             emit poseChanged();
 
             if(kidnapped){
@@ -261,10 +252,10 @@ void CelluloBluetooth::processResponse(){
             break;
         }
 
-        case RECEIVE_PACKET_TYPE::POSE_CHANGED_TIMESTAMPED: {
-            x = recvPacket.unloadUInt32()/GOAL_POSE_FACTOR;
-            y = recvPacket.unloadUInt32()/GOAL_POSE_FACTOR;
-            theta = recvPacket.unloadUInt16()/GOAL_POSE_FACTOR;
+        case CelluloBluetoothPacket::EventPacketTypePoseChangedTimestamped: {
+            x = recvPacket.unloadUInt32()/(float)GOAL_POSE_FACTOR_SHARED;
+            y = recvPacket.unloadUInt32()/(float)GOAL_POSE_FACTOR_SHARED;
+            theta = recvPacket.unloadUInt16()/(float)GOAL_POSE_FACTOR_SHARED;
             emit poseChanged();
 
             unsigned int newTimestamp = recvPacket.unloadUInt32();
@@ -282,7 +273,7 @@ void CelluloBluetooth::processResponse(){
             break;
         }
 
-        case RECEIVE_PACKET_TYPE::KIDNAP: {
+        case CelluloBluetoothPacket::EventPacketTypeKidnapChanged: {
             int newKidnapped = recvPacket.unloadUInt8();
             if(newKidnapped == 0 || newKidnapped == 1)
                 if((bool)newKidnapped != kidnapped){
@@ -292,42 +283,43 @@ void CelluloBluetooth::processResponse(){
             break;
         }
 
-        case RECEIVE_PACKET_TYPE::ACKNOWLEDGED:
+        case CelluloBluetoothPacket::EventPacketTypeAcknowledged:
             qDebug() << "CelluloBluetooth::processResponse(): Robot acknowledged";
             break;
 
-        case RECEIVE_PACKET_TYPE::CAMERA_IMAGE_LINE: {
+        case CelluloBluetoothPacket::EventPacketTypeFrameLine: {
             quint16 line = recvPacket.unloadUInt16();
 
             //Drop previous incomplete frame
-            if(frameBuffer.length() > line*IMG_WIDTH){
+            if(frameBuffer.length() > line*IMG_WIDTH_SHARED){
                 qDebug() << "CelluloBluetooth::processResponse(): Dropping previously incomplete frame";
                 frameBuffer.clear();
             }
 
             //Append possibly empty lines
-            while(frameBuffer.length() < line*IMG_WIDTH){
+            while(frameBuffer.length() < line*IMG_WIDTH_SHARED){
                 qDebug() << "CelluloBluetooth::processResponse(): Camera image line dropped";
-                for(int i=0; i<IMG_WIDTH; i++)
+                for(int i=0; i<IMG_WIDTH_SHARED; i++)
                     frameBuffer.append('\0');
             }
 
             //Append line just received
-            for(int i=0; i<IMG_WIDTH; i++)
+            for(int i=0; i<IMG_WIDTH_SHARED; i++)
                 frameBuffer.append(recvPacket.unloadUInt8());
 
             //Update progress
-            cameraImageProgress = (float)(line + 1)/IMG_HEIGHT;
+            cameraImageProgress = (float)(line + 1)/IMG_HEIGHT_SHARED;
             emit cameraImageProgressChanged();
 
-            if(line >= IMG_HEIGHT - 1)
+            if(line >= IMG_HEIGHT_SHARED - 1)
                 emit frameReady();
 
             break;
         }
 
-        case RECEIVE_PACKET_TYPE::DEBUG:
-            qDebug() << "CelluloBluetooth::processResponse(): Debug message";
+        case CelluloBluetoothPacket::EventPacketTypeDebug:
+            qDebug() << "CelluloBluetoothPacket::processResponse(): Debug event received";
+            //DO SOMETHING
             break;
 
         default:
@@ -337,8 +329,6 @@ void CelluloBluetooth::processResponse(){
     recvPacket.clear();
 }
 
-
-
 void CelluloBluetooth::sendCommand(){
     if(socket != NULL)
         socket->write(sendPacket.getSendData());
@@ -346,7 +336,7 @@ void CelluloBluetooth::sendCommand(){
 
 void CelluloBluetooth::ping(){
     sendPacket.clear();
-    sendPacket.setSendPacketType(SEND_PACKET_TYPE::PING);
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypePing);
     sendCommand();
 }
 
@@ -355,7 +345,7 @@ void CelluloBluetooth::setPoseBcastPeriod(unsigned int period){
         period = 0xFFFF;
 
     sendPacket.clear();
-    sendPacket.setSendPacketType(SEND_PACKET_TYPE::SET_BCAST_PERIOD);
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeSetBcastPeriod);
     sendPacket.load((quint16)period);
     sendCommand();
 }
@@ -365,7 +355,7 @@ void CelluloBluetooth::setTimestampingEnabled(bool enabled){
         timestampingEnabled = enabled;
 
         sendPacket.clear();
-        sendPacket.setSendPacketType(SEND_PACKET_TYPE::TIMESTAMP_ENABLE);
+        sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeTimestampEnable);
         sendPacket.load((quint8)enabled);
 
         sendCommand();
@@ -380,13 +370,13 @@ void CelluloBluetooth::requestFrame(){
     }
 
     sendPacket.clear();
-    sendPacket.setSendPacketType(SEND_PACKET_TYPE::FRAME_REQUEST);
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeFrameRequest);
     sendCommand();
 }
 
 void CelluloBluetooth::queryBatteryState(){
     sendPacket.clear();
-    sendPacket.setSendPacketType(SEND_PACKET_TYPE::BATTERY_STATE_REQUEST);
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeBatteryStateRequest);
     sendCommand();
 }
 
@@ -412,7 +402,7 @@ void CelluloBluetooth::setMotorOutput(int motor, int output){
         output = 0xFFF;
 
     sendPacket.clear();
-    sendPacket.setSendPacketType(SEND_PACKET_TYPE::SET_MOTOR_OUTPUT);
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeSetMotorOutput);
     sendPacket.load((quint8)motor);
     sendPacket.load((qint16)output);
     sendCommand();
@@ -435,7 +425,7 @@ void CelluloBluetooth::setAllMotorOutputs(int m1output, int m2output, int m3outp
         m3output = 0xFFF;
 
     sendPacket.clear();
-    sendPacket.setSendPacketType(SEND_PACKET_TYPE::SET_ALL_MOTOR_OUTPUTS);
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeSetAllMotorOutputs);
     sendPacket.load((qint16)m1output);
     sendPacket.load((qint16)m2output);
     sendPacket.load((qint16)m3output);
@@ -443,9 +433,9 @@ void CelluloBluetooth::setAllMotorOutputs(int m1output, int m2output, int m3outp
 }
 
 void CelluloBluetooth::setGoalVelocity(float vx, float vy, float w){
-    int vx_ = (int)(vx*GOAL_VELOCITY_FACTOR);
-    int vy_ = (int)(vy*GOAL_VELOCITY_FACTOR);
-    int w_ = (int)(w*GOAL_VELOCITY_FACTOR);
+    int vx_ = (int)(vx*GOAL_VEL_FACTOR_SHARED);
+    int vy_ = (int)(vy*GOAL_VEL_FACTOR_SHARED);
+    int w_ = (int)(w*GOAL_VEL_FACTOR_SHARED);
 
     if(vx_ < -0x7FFF)
         vx_ = -0x7FFF;
@@ -463,57 +453,19 @@ void CelluloBluetooth::setGoalVelocity(float vx, float vy, float w){
         w_ = 0x7FFF;
 
     sendPacket.clear();
-    sendPacket.setSendPacketType(SEND_PACKET_TYPE::SET_GOAL_VELOCITY);
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeSetGoalVelocity);
     sendPacket.load((qint16)vx_);
     sendPacket.load((qint16)vy_);
     sendPacket.load((qint16)w_);
     sendCommand();
 }
 
-/*void CelluloBluetooth::setGoalVelocityCompact(int vx, int vy){
-    int vx_ = vx/GOAL_VELOCITY_COMPACT_DIVISOR;
-       int vy_ = vy/GOAL_VELOCITY_COMPACT_DIVISOR;
-
-       if(vx_ < -0x80)
-        vx_ = -0x80;
-       else if(vx_ > 0x7F)
-        vx_ = 0x7F;
-
-       if(vy_ < -0x80)
-        vy_ = -0x80;
-       else if(vy_ > 0x7F)
-        vy_ = 0x7F;
-
-       QByteArray message;
-       message = commandStrings[COMMAND_TYPE::SET_GOAL_VELOCITY_COMPACT];
-
-       if(vx_ < 0){
-        vx_ += 0x100;
-       }
-       message.append(getHexChar(vx_/0x10));
-       message.append(getHexChar(vx_%0x10));
-
-       if(vy_ < 0){
-        vy_ += 0x100;
-       }
-       message.append(getHexChar(vy_/0x10));
-       message.append(getHexChar(vy_%0x10));
-
-       char checksum = getHexChar((getNumberOfOnes(vx_) + getNumberOfOnes(vy_)) % 16);
-       message.append(checksum);
-
-       message.append('\n');
-
-       sendCommand(COMMAND_TYPE::SET_GOAL_VELOCITY_COMPACT, message);
-   }
- */
-
 void CelluloBluetooth::setGoalPose(float x, float y, float theta, float v, float w){
-    x *= GOAL_POSE_FACTOR;
-    y *= GOAL_POSE_FACTOR;
-    theta *= GOAL_POSE_FACTOR;
-    v *= GOAL_VELOCITY_FACTOR;
-    w *= GOAL_VELOCITY_FACTOR;
+    x *= GOAL_POSE_FACTOR_SHARED;
+    y *= GOAL_POSE_FACTOR_SHARED;
+    theta *= GOAL_POSE_FACTOR_SHARED;
+    v *= GOAL_VEL_FACTOR_SHARED;
+    w *= GOAL_VEL_FACTOR_SHARED;
 
     quint32 xi, yi;
     quint16 thetai, vi, wi;
@@ -544,7 +496,7 @@ void CelluloBluetooth::setGoalPose(float x, float y, float theta, float v, float
         wi = (quint16)w;
 
     sendPacket.clear();
-    sendPacket.setSendPacketType(SEND_PACKET_TYPE::SET_GOAL_POSE);
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeSetGoalPose);
     sendPacket.load((quint32)xi);
     sendPacket.load((quint32)yi);
     sendPacket.load((quint16)thetai);
@@ -554,9 +506,9 @@ void CelluloBluetooth::setGoalPose(float x, float y, float theta, float v, float
 }
 
 void CelluloBluetooth::setGoalPosition(float x, float y, float v){
-    x *= GOAL_POSE_FACTOR;
-    y *= GOAL_POSE_FACTOR;
-    v *= GOAL_VELOCITY_FACTOR;
+    x *= GOAL_POSE_FACTOR_SHARED;
+    y *= GOAL_POSE_FACTOR_SHARED;
+    v *= GOAL_VEL_FACTOR_SHARED;
 
     quint32 xi, yi;
     quint16 vi;
@@ -577,28 +529,42 @@ void CelluloBluetooth::setGoalPosition(float x, float y, float v){
         vi = (quint16)v;
 
     sendPacket.clear();
-    sendPacket.setSendPacketType(SEND_PACKET_TYPE::SET_GOAL_POSITION);
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeSetGoalPosition);
     sendPacket.load((quint32)xi);
     sendPacket.load((quint32)yi);
     sendPacket.load((quint16)vi);
     sendCommand();
 }
 
-void CelluloBluetooth::setVisualState(int state){
+void CelluloBluetooth::setLEDResponseMode(CelluloBluetoothEnums::LEDResponseMode mode){
     sendPacket.clear();
-    sendPacket.setSendPacketType(SEND_PACKET_TYPE::SET_VISUAL_STATE);
-    sendPacket.load((quint8)state);
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeSetLEDResponseMode);
+    sendPacket.load((quint8)mode);
     sendCommand();
 }
 
-void CelluloBluetooth::setVisualEffect(int effect, QColor color, int value){
+void CelluloBluetooth::setLocomotionInteractivityMode(CelluloBluetoothEnums::LocomotionInteractivityMode mode){
+    sendPacket.clear();
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeSetLocomotionInteractivityMode);
+    sendPacket.load((quint8)mode);
+    sendCommand();
+}
+
+void CelluloBluetooth::setGestureEnabled(bool enabled){
+    sendPacket.clear();
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeGestureEnable);
+    sendPacket.load((quint8)enabled);
+    sendCommand();
+}
+
+void CelluloBluetooth::setVisualEffect(CelluloBluetoothEnums::VisualEffect effect, QColor color, int value){
     if(value > 0xFF)
         value = 0xFF;
     else if(value < 0)
         value = 0;
 
     sendPacket.clear();
-    sendPacket.setSendPacketType(SEND_PACKET_TYPE::SET_VISUAL_EFFECT);
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeSetVisualEffect);
     sendPacket.load((quint8)effect);
     sendPacket.load((quint8)color.red());
     sendPacket.load((quint8)color.green());
@@ -609,13 +575,13 @@ void CelluloBluetooth::setVisualEffect(int effect, QColor color, int value){
 
 void CelluloBluetooth::reset(){
     sendPacket.clear();
-    sendPacket.setSendPacketType(SEND_PACKET_TYPE::RESET);
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeReset);
     sendCommand();
 }
 
 void CelluloBluetooth::shutdown(){
     sendPacket.clear();
-    sendPacket.setSendPacketType(SEND_PACKET_TYPE::SHUTDOWN);
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeShutdown);
     sendCommand();
 }
 

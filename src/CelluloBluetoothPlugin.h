@@ -19,7 +19,6 @@
  * @file CelluloBluetoothPlugin.h
  * @brief Header for exposing Cellulo Bluetooth communication as a QML object
  * @author Ayberk Özgür
- * @version 1.0
  * @date 2014-05-20
  */
 
@@ -39,8 +38,6 @@
 #include "zones/CelluloZoneEngine.h"
 #include "authoring/CelluloZoneJsonHandler.h"
 #include "zones/CelluloZoneTypes.h"
-
-
 
 /**
  * @brief Object that exposes Cellulo Bluetooth communicator as QML objects

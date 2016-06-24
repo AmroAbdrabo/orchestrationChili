@@ -26,75 +26,10 @@
 #include <QMetaObject>
 #include <QMetaEnum>
 
-const char* CelluloBluetoothPacket::sendPacketTypeStr[] = {
-    "P", //PING
-    "D", //SET_BCAST_PERIOD
-    "T", //TIMESTAMP_ENABLE
-    "F", //FRAME_REQUEST
-    "B", //BATTERY_STATE_REQUEST
-    "V", //SET_VISUAL_STATE
-    "E", //SET_VISUAL_EFFECT
-    "M", //SET_MOTOR_OUTPUT
-    "A", //SET_ALL_MOTOR_OUTPUTS
-    "C", //SET_GOAL_VELOCITY
-    "Y", //Set goal velocit(y) compact
-    "G", //SET_GOAL_POSE
-    "N", //SET_GOAL_POSITION
-    "R", //RESET
-    "S"  //SHUTDOWN
-};
-
-const int CelluloBluetoothPacket::sendPacketPayloadLen[] = {
-    0,                 //PING
-    2,                 //SET_BCAST_PERIOD
-    1,                 //TIMESTAMP_ENABLE
-    0,                 //FRAME_REQUEST
-    0,                 //BATTERY_STATE_REQUEST
-    1,                 //SET_VISUAL_STATE
-    1 + 1 + 1 + 1 + 1, //SET_VISUAL_EFFECT
-    1 + 2,             //SET_MOTOR_OUTPUT
-    2 + 2 + 2,         //SET_ALL_MOTOR_OUTPUTS
-    2 + 2 + 2,         //SET_GOAL_VELOCITY
-    -1,                //Set goal velocity compact
-    4 + 4 + 2 + 2 + 2, //SET_GOAL_POSE
-    4 + 4 + 2,         //SET_GOAL_POSITION
-    0,                 //RESET
-    0                  //SHUTDOWN
-};
-
-const char* CelluloBluetoothPacket::receivePacketTypeStr[] = {
-    "O", //BOOT_COMPLETE
-    "H", //WAKE_UP
-    "D", //SHUTTING_DOWN
-    "W", //LOW_BATTERY
-    "B", //BATTERY_STATE_CHANGED
-    "T", //TOUCH_BEGIN
-    "L", //TOUCH_LONG_PRESSED
-    "R", //TOUCH_RELEASED
-    "P", //POSE_CHANGED
-    "S", //POSE_CHANGED_TIMESTAMPED
-    "K", //KIDNAP
-    "A", //ACKNOWLEDGED
-    "C", //CAMERA_IMAGE_LINE
-    "E"  //DEBUG
-};
-
-const int CelluloBluetoothPacket::receivePacketPayloadLen[] = {
-    0,             //BOOT_COMPLETE
-    0,             //WAKE_UP
-    0,             //SHUTTING_DOWN
-    0,             //LOW_BATTERY
-    1,             //BATTERY_STATE_CHANGED
-    1,             //TOUCH_BEGIN
-    1,             //TOUCH_LONG_PRESSED
-    1,             //TOUCH_RELEASED
-    4 + 4 + 2,     //POSE_CHANGED
-    4 + 4 + 2 + 4, //POSE_CHANGED_TIMESTAMPED
-    1,             //KIDNAP
-    0,             //ACKNOWLEDGED
-    2 + IMG_WIDTH, //CAMERA_IMAGE_LINE
-    0              //DEBUG
-};
+const char* CelluloBluetoothPacket::sendPacketTypeStr[] = COMMAND_PACKET_STR_SHARED;
+const int CelluloBluetoothPacket::sendPacketPayloadLen[] = COMMAND_PACKET_PAYLOAD_LEN_SHARED;
+const char* CelluloBluetoothPacket::receivePacketTypeStr[] = EVENT_PACKET_STR_SHARED;
+const int CelluloBluetoothPacket::receivePacketPayloadLen[] = EVENT_PACKET_PAYLOAD_LEN_SHARED;
 
 CelluloBluetoothPacket::operator QString() const {
     QString str;
@@ -128,17 +63,18 @@ CelluloBluetoothPacket::CelluloBluetoothPacket(){
     clear();
 }
 
-CelluloBluetoothPacket::~CelluloBluetoothPacket(){ }
+CelluloBluetoothPacket::~CelluloBluetoothPacket(){
+}
 
-void CelluloBluetoothPacket::setSendPacketType(SEND_PACKET_TYPE type){
+void CelluloBluetoothPacket::setSendPacketType(CmdPacketType type){
     sendPacketType = type;
 }
 
 void CelluloBluetoothPacket::clear(){
-    sendPacketType = SEND_PACKET_TYPE::INVALID_PACKET_TYPE;
-    receivePacketType = RECEIVE_PACKET_TYPE::INVALID_PACKET_TYPE;
+    sendPacketType = CmdPacketTypeNumElements;
+    receivePacketType = EventPacketTypeNumElements;
 
-    receiveStatus = RECEIVE_STATUS::NOT_RECEIVING;
+    receiveStatus = ReceiveStatus::NotReceiving;
     receiveBytesRemaining = -1;
 
     payload.clear();
@@ -222,7 +158,7 @@ void CelluloBluetoothPacket::load(qint8 num){
 QByteArray CelluloBluetoothPacket::getSendData(){
     QByteArray data;
 
-    data.append(PACKET_START_CHAR);
+    data.append(PACKET_START_CHAR_SHARED);
     data.append(sendPacketTypeStr[(int)sendPacketType]);
     data.append(payload);
 
@@ -231,30 +167,30 @@ QByteArray CelluloBluetoothPacket::getSendData(){
 
 bool CelluloBluetoothPacket::loadReceivedByte(char c){
     switch(receiveStatus){
-        case RECEIVE_STATUS::NOT_RECEIVING:
-            if(c == PACKET_START_CHAR)
-                receiveStatus = RECEIVE_STATUS::WAITING_FOR_TYPE;
+        case ReceiveStatus::NotReceiving:
+            if(c == PACKET_START_CHAR_SHARED)
+                receiveStatus = ReceiveStatus::WaitingForType;
             return false;
 
-        case RECEIVE_STATUS::WAITING_FOR_TYPE:
+        case ReceiveStatus::WaitingForType:
 
             //Determine type
-            receivePacketType = RECEIVE_PACKET_TYPE::INVALID_PACKET_TYPE;
-            for(int i=0; i<(int)RECEIVE_PACKET_TYPE::NUM_RECEIVE_PACKET_TYPES; i++)
+            receivePacketType = EventPacketTypeNumElements;
+            for(int i=0; i<(int)EventPacketTypeNumElements; i++)
                 if(receivePacketTypeStr[i][0] == c){
-                    receivePacketType = (RECEIVE_PACKET_TYPE)i;
+                    receivePacketType = (EventPacketType)i;
                     break;
                 }
 
             //Valid packet type
-            if(receivePacketType != RECEIVE_PACKET_TYPE::INVALID_PACKET_TYPE){
+            if(receivePacketType != EventPacketTypeNumElements){
                 receiveBytesRemaining = receivePacketPayloadLen[(int)receivePacketType];
                 if(receiveBytesRemaining <= 0){
-                    receiveStatus = RECEIVE_STATUS::END_OF_PACKET;
+                    receiveStatus = ReceiveStatus::EndOfPacket;
                     return true;
                 }
                 else{
-                    receiveStatus = RECEIVE_STATUS::PAYLOAD_RECEIVING;
+                    receiveStatus = ReceiveStatus::PayloadReceiving;
                     return false;
                 }
             }
@@ -265,20 +201,20 @@ bool CelluloBluetoothPacket::loadReceivedByte(char c){
                 return false;
             }
 
-        case RECEIVE_STATUS::PAYLOAD_RECEIVING:
+        case ReceiveStatus::PayloadReceiving:
             payload.append(c);
             receiveBytesRemaining--;
             if(receiveBytesRemaining <= 0){
-                receiveStatus = RECEIVE_STATUS::END_OF_PACKET;
+                receiveStatus = ReceiveStatus::EndOfPacket;
                 return true;
             }
             else
                 return false;
 
-        case RECEIVE_STATUS::END_OF_PACKET:
-            if(c == PACKET_START_CHAR){
+        case ReceiveStatus::EndOfPacket:
+            if(c == PACKET_START_CHAR_SHARED){
                 clear();
-                receiveStatus = RECEIVE_STATUS::WAITING_FOR_TYPE;
+                receiveStatus = ReceiveStatus::WaitingForType;
             }
             return false;
 

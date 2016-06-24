@@ -50,8 +50,7 @@ ApplicationWindow {
                     ]
                     onConnectRequested: robotComm.macAddr = selectedAddress
                     onDisconnectRequested: robotComm.disconnectFromServer()
-                    connected: robotComm.connected
-                    connecting: robotComm.connecting
+                    connectionStatus: robotComm.connectionStatus
                 }
             }
 
@@ -65,25 +64,26 @@ ApplicationWindow {
                     anchors.right: parent.right
                     spacing: 5
 
-                    ComboBox {
-                        id: effect
-                        model: [
-                            "CONST_ALL",
-                            "CONST_SINGLE",
-                            "ALERT_ALL",
-                            "ALERT_SINGLE",
-                            "PROGRESS",
-                            "WAITING",
-                            "DIRECTION",
-                            "BLINK",
-                            "BREATHE",
-                            "PULSE"
-                        ]
-                        currentIndex: 0
+                    Column{
+                        ComboBox {
+                            id: effect
+                            model: CelluloBluetoothEnums.VisualEffectStrings
+                            currentIndex: 0
+                        }
+                        ComboBox {
+                            model: CelluloBluetoothEnums.LEDResponseModeStrings
+                            currentIndex: 0
+                            onCurrentIndexChanged: {
+                                if(robotComm != null)
+                                    robotComm.setLEDResponseMode(currentIndex)
+                            }
+                        }
                     }
                     Column{
                         Layout.fillWidth: true
                         Slider{
+                            property string hexStr: (value < 16 ? "0" : "") + value.toString(16).toUpperCase()
+
                             id: redSlider
                             anchors.left: parent.left
                             anchors.right: parent.right
@@ -99,6 +99,8 @@ ApplicationWindow {
                             }
                         }
                         Slider{
+                            property string hexStr: (value < 16 ? "0" : "") + value.toString(16).toUpperCase()
+
                             id: greenSlider
                             anchors.left: parent.left
                             anchors.right: parent.right
@@ -114,6 +116,8 @@ ApplicationWindow {
                             }
                         }
                         Slider{
+                            property string hexStr: (value < 16 ? "0" : "") + value.toString(16).toUpperCase()
+
                             id: blueSlider
                             anchors.left: parent.left
                             anchors.right: parent.right
@@ -142,11 +146,32 @@ ApplicationWindow {
                     }
                     Button {
                         text: "Send"
-                        onClicked:robotComm.setVisualEffect(effect.currentIndex, "#FF"
-                                                            + (redSlider.value < 16 ? "0" : "") + redSlider.value.toString(16).toUpperCase()
-                                                            + (greenSlider.value < 16 ? "0" : "") + greenSlider.value.toString(16).toUpperCase()
-                                                            + (blueSlider.value < 16 ? "0" : "") + blueSlider.value.toString(16).toUpperCase(),
-                                                            effectValue.value);
+                        onClicked:robotComm.setVisualEffect(effect.currentIndex, "#FF" + redSlider.hexStr + greenSlider.hexStr + blueSlider.hexStr, effectValue.value);
+                    }
+                }
+            }
+
+            GroupBox {
+                id: modesBox
+                title: "Robot Modes"
+                width: gWidth
+
+                Column{
+                    spacing: 5
+
+                    ComboBox {
+                        model: CelluloBluetoothEnums.LocomotionInteractivityModeStrings
+                        currentIndex: 0
+                        onCurrentIndexChanged: {
+                            if(robotComm != null)
+                                robotComm.setLocomotionInteractivityMode(currentIndex)
+                        }
+                    }
+
+                    CheckBox{
+                        checked: false
+                        text: "Gesture enabled"
+                        onCheckedChanged: robotComm.setGestureEnabled(checked)
                     }
                 }
             }
@@ -382,7 +407,7 @@ ApplicationWindow {
                         spacing: 5
 
                         Text{
-                            text: "Battery State: " + robotComm.batteryState
+                            text: "Battery State: " + CelluloBluetoothEnums.BatteryStateString(robotComm.batteryState)
                         }
                         Text{
                             id: k0
@@ -414,6 +439,15 @@ ApplicationWindow {
                             text: "K5"
                             color: "black"
                         }
+                    }
+                    Text{
+                        text: "Raw key values: " +
+                            robotComm.touchRawValues[0] +  " " +
+                            robotComm.touchRawValues[1] +  " " +
+                            robotComm.touchRawValues[2] +  " " +
+                            robotComm.touchRawValues[3] +  " " +
+                            robotComm.touchRawValues[4] +  " " +
+                            robotComm.touchRawValues[5]
                     }
                     Row{
                         spacing: 5
@@ -489,6 +523,8 @@ ApplicationWindow {
                             var oldSource = source;
                             source = "";
                             source = oldSource;
+                            if(grabCamFramesContinuously.checked)
+                                robotComm.requestFrame();
                         }
 
                         fillMode: Image.PreserveAspectFit
@@ -501,7 +537,17 @@ ApplicationWindow {
 
                         Button{
                             text: "Grab one frame"
-                            onClicked: robotComm.requestFrame();
+                            onClicked: robotComm.requestFrame()
+                        }
+
+                        CheckBox{
+                            id: grabCamFramesContinuously
+                            text: "Grab frames continuously"
+                            checked: false
+                            onCheckedChanged:{
+                                if(checked)
+                                    robotComm.requestFrame();
+                            }
                         }
 
                         ProgressBar{
