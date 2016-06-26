@@ -609,9 +609,6 @@ void CelluloBluetooth::actOnZoneCalculateChanged(const QString& key, float value
         case CelluloZoneTypes::RECTANGLEDISTANCE:
             zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZoneRectangleDistance *>(obj)));
             break;
-        case CelluloZoneTypes::LINEINNER:
-            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZoneLineInner *>(obj)));
-            break;
         case CelluloZoneTypes::LINEDISTANCE:
             zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZoneLineDistance *>(obj)));
             break;

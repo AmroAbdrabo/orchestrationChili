@@ -87,9 +87,6 @@ bool CelluloZoneEngine::addNewZoneFromQML(int type, QVariantMap properties){
         case CelluloZoneTypes::RECTANGLEDISTANCE:
             childrenItem = new CelluloZoneRectangleDistance();
             break;
-        case CelluloZoneTypes::LINEINNER:
-            childrenItem = new CelluloZoneLineInner();
-            break;
         case CelluloZoneTypes::LINEDISTANCE:
             childrenItem = new CelluloZoneLineDistance();
             break;

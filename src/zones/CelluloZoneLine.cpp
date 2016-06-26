@@ -24,6 +24,10 @@
 
 #include "CelluloZoneLine.h"
 
+/**
+ * CelluloZoneLine
+ */
+
 CelluloZoneLine::CelluloZoneLine() :
     CelluloZone()
 {
@@ -67,16 +71,9 @@ void CelluloZoneLine::read(const QJsonObject &json){
     y2 = json["y2"].toDouble();
 }
 
-CelluloZoneLineInner::CelluloZoneLineInner() :
-    CelluloZoneLine()
-{
-    type = CelluloZoneTypes::LINEINNER;
-}
-
-float CelluloZoneLineInner::calculate(float xRobot, float yRobot, float thetaRobot){
-    float distancePointToLine = pointToSegmentDistance(xRobot, yRobot, x1, y1, x2, y2);
-    return distancePointToLine == 0 ? 1 : 0;
-}
+/**
+ * CelluloZoneLineDistance
+ */
 
 CelluloZoneLineDistance::CelluloZoneLineDistance() :
     CelluloZoneLine()

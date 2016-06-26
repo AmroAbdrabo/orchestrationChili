@@ -130,9 +130,6 @@ function drawNewZone(type, properties, childnumber, playgroundWidth, playgroundH
         case CelluloZoneTypes.RECTANGLEDISTANCE:
             drawNewRectangle("black", properties["x"], properties["y"], properties["height"], properties["width"], 0, properties["stackingOrder"], childnumber, playgroundWidth, playgroundHeight)
             break;
-        case CelluloZoneTypes.LINEINNER:
-            drawNewLine(properties["x1"], properties["y1"], properties["x2"], properties["y2"], properties["stackingOrder"], childnumber, playgroundWidth, playgroundHeight)
-            break;
         case CelluloZoneTypes.LINEDISTANCE:
             drawNewLine(properties["x1"], properties["y1"], properties["x2"], properties["y2"], properties["stackingOrder"], childnumber, playgroundWidth, playgroundHeight)
             break;

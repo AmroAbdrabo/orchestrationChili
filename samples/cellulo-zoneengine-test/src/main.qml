@@ -545,13 +545,6 @@ ApplicationWindow {
                 case CelluloZoneTypes.RECTANGLEDISTANCE:
                     addDistancesToMap(zoneConcerned.name, value, robot.distancesToZones, robot.robotName)
                     break;
-                case CelluloZoneTypes.LINEINNER:
-                    if(value === 1){
-                        robot.setVisualEffect(0, "magenta", 0);
-                    } else{
-                        robot.setVisualEffect(0, "white", 0);
-                    }
-                    break;
                 case CelluloZoneTypes.LINEDISTANCE:
                     addDistancesToMap(zoneConcerned.name, value, robot.distancesToZones, robot.robotName)
                     break;

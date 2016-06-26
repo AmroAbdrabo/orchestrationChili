@@ -25,6 +25,10 @@
 #include "CelluloZoneCircle.h"
 #include <QQmlEngine>
 
+/**
+ * CelluloZoneCircle
+ */
+
 CelluloZoneCircle::CelluloZoneCircle() :
     CelluloZone()
 {
@@ -64,6 +68,9 @@ void CelluloZoneCircle::read(const QJsonObject &json){
     r = json["r"].toDouble();
 }
 
+/**
+ * CelluloZoneCircleInner
+ */
 
 CelluloZoneCircleInner::CelluloZoneCircleInner() :
     CelluloZoneCircle()
@@ -74,6 +81,10 @@ CelluloZoneCircleInner::CelluloZoneCircleInner() :
 float CelluloZoneCircleInner::calculate(float xRobot, float yRobot, float thetaRobot){
     return ((xRobot-x)*(xRobot-x) + (yRobot -y)*(yRobot -y) <= r*r) ? 1 : 0;
 }
+
+/**
+ * CelluloZoneCircleBorder
+ */
 
 CelluloZoneCircleBorder::CelluloZoneCircleBorder() :
     CelluloZoneCircle()
@@ -88,6 +99,10 @@ float CelluloZoneCircleBorder::calculate(float xRobot, float yRobot, float theta
     float rInner = r - marginThickeness/2;
     return temp <= (rOuter*rOuter) && temp > (rInner* rInner) ? 1 : 0;
 }
+
+/**
+ * CelluloZoneCircleDistance
+ */
 
 CelluloZoneCircleDistance::CelluloZoneCircleDistance() :
     CelluloZoneCircle()

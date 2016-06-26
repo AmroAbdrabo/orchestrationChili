@@ -127,9 +127,6 @@ QMap<QString, QVariant> CelluloZoneJsonHandler::read(const QJsonObject &json){
                 case CelluloZoneTypes::RECTANGLEDISTANCE:
                     zone = new CelluloZoneRectangleDistance();
                     break;
-                case CelluloZoneTypes::LINEINNER:
-                    zone = new CelluloZoneLineInner();
-                    break;
                 case CelluloZoneTypes::LINEDISTANCE:
                     zone = new CelluloZoneLineDistance();
                     break;

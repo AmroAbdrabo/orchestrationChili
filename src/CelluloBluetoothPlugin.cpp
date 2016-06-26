@@ -41,7 +41,6 @@ void CelluloBluetoothPlugin::registerTypes(const char *uri){
     qmlRegisterType<CelluloZoneRectangleBorder>(uri, 1, 0, "CelluloZoneRectangleBorder");
     qmlRegisterType<CelluloZoneRectangleDistance>(uri, 1, 0, "CelluloZoneRectangleDistance");
 
-    qmlRegisterType<CelluloZoneLineInner>(uri, 1, 0, "CelluloZoneLineInner");
     qmlRegisterType<CelluloZoneLineDistance>(uri, 1, 0, "CelluloZoneLineDistance");
 
     qmlRegisterType<CelluloZonePointDistance>(uri, 1, 0, "CelluloZonePointDistance");
