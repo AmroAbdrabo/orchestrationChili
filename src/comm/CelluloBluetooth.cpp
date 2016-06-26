@@ -30,7 +30,10 @@
 QByteArray CelluloBluetooth::frameBuffer;
 
 CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) :
-    QQuickItem(parent){
+    CelluloZoneClient(parent)
+{
+    connect(this, SIGNAL(poseChanged(qreal,qreal,qreal)), this, SIGNAL(poseChanged_inherited()));
+
     socket = NULL;
 
     btConnectTimeoutTimer.setSingleShot(true);
@@ -71,7 +74,7 @@ void CelluloBluetooth::resetProperties(){
     x = 0;
     y = 0;
     theta = 0;
-    emit poseChanged();
+    emit poseChanged(x, y, theta);
     lastTimestamp = 0;
     framerate = 0.0;
     emit timestampChanged();
@@ -242,7 +245,7 @@ void CelluloBluetooth::processResponse(){
             x = recvPacket.unloadUInt32()/(float)GOAL_POSE_FACTOR_SHARED;
             y = recvPacket.unloadUInt32()/(float)GOAL_POSE_FACTOR_SHARED;
             theta = recvPacket.unloadUInt16()/(float)GOAL_POSE_FACTOR_SHARED;
-            emit poseChanged();
+            emit poseChanged(x,y,theta);
 
             if(kidnapped){
                 kidnapped = false;
@@ -256,7 +259,7 @@ void CelluloBluetooth::processResponse(){
             x = recvPacket.unloadUInt32()/(float)GOAL_POSE_FACTOR_SHARED;
             y = recvPacket.unloadUInt32()/(float)GOAL_POSE_FACTOR_SHARED;
             theta = recvPacket.unloadUInt16()/(float)GOAL_POSE_FACTOR_SHARED;
-            emit poseChanged();
+            emit poseChanged(x,y,theta);
 
             unsigned int newTimestamp = recvPacket.unloadUInt32();
             framerate =

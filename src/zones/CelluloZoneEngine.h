@@ -36,9 +36,9 @@
 #include "CelluloZoneLine.h"
 #include "CelluloZonePoint.h"
 #include "CelluloZonePolygon.h"
-#include "src/authoring/CelluloZoneJsonHandler.h"
+#include "../authoring/CelluloZoneJsonHandler.h"
 
-#include "src/CelluloBluetooth.h"
+#include "../comm/CelluloBluetooth.h"
 
 class CelluloZoneEngine : public QQuickItem {
     /* *INDENT-OFF* */

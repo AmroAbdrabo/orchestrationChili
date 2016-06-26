@@ -28,7 +28,7 @@
 #include <QObject>
 
 #include "CelluloBluetoothSharedDefs.h"
-#include "CelluloEnumDecl.h"
+#include "../CelluloEnumDecl.h"
 
 /**
  * @brief Wrapper containing all the enums of CelluloBluetooth

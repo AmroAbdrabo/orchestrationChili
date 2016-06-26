@@ -16,34 +16,21 @@
  */
 
 /**
- * @file CelluloBluetoothPlugin.h
- * @brief Header for exposing Cellulo Bluetooth communication as a QML object
+ * @file CelluloPlugin.h
+ * @brief Header for exposing Cellulo objects as QML objects
  * @author Ayberk Özgür
- * @date 2014-05-20
+ * @date 2016-06-26
  */
 
-#ifndef CELLULOBLUETOOTHPLUGIN_H
-#define CELLULOBLUETOOTHPLUGIN_H
+#ifndef CELLULOPLUGIN_H
+#define CELLULOPLUGIN_H
 
 #include <QQmlExtensionPlugin>
-#include <qqml.h>
-
-#include "CelluloBluetooth.h"
-#include "zones/CelluloZone.h"
-#include "zones/CelluloZonePolygon.h"
-#include "zones/CelluloZonePoint.h"
-#include "zones/CelluloZoneLine.h"
-#include "zones/CelluloZoneCircle.h"
-#include "zones/CelluloZoneRectangle.h"
-#include "zones/CelluloZoneEngine.h"
-#include "authoring/CelluloZoneJsonHandler.h"
-#include "zones/CelluloZoneTypes.h"
 
 /**
- * @brief Object that exposes Cellulo Bluetooth communicator as QML objects
+ * @brief Object that exposes all relevant Cellulo objects as QML objects
  */
-class CelluloBluetoothPlugin : public QQmlExtensionPlugin
-{
+class CelluloPlugin : public QQmlExtensionPlugin {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
@@ -54,4 +41,4 @@ public:
     void initializeEngine(QQmlEngine *engine, const char *uri);
 };
 
-#endif // CELLULOBLUETOOTHPLUGIN_H
+#endif // CELLULOPLUGIN_H

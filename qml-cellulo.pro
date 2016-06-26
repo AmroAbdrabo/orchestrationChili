@@ -3,10 +3,12 @@ QT += qml quick bluetooth
 CONFIG += qt plugin c++11 nostrip
 
 HEADERS += \
-    src/CelluloBluetooth.h \
-    src/CelluloBluetoothEnums.h \
-    src/CameraFrameImageProvider.h \
-    src/CelluloBluetoothPlugin.h \
+    src/CelluloPlugin.h \
+    src/comm/CelluloBluetooth.h \
+    src/comm/CelluloBluetoothEnums.h \
+    src/comm/CameraFrameImageProvider.h \
+    src/comm/CelluloBluetoothPacket.h \
+    src/zones/CelluloZoneClient.h \
     src/zones/CelluloZonePoint.h \
     src/zones/CelluloZoneLine.h \
     src/zones/CelluloZoneCircle.h \
@@ -15,14 +17,15 @@ HEADERS += \
     src/zones/CelluloZoneRectangle.h \
     src/zones/CelluloZoneEngine.h \
     src/authoring/CelluloZoneJsonHandler.h \
-    src/zones/CelluloZoneTypes.h \
-    src/CelluloBluetoothPacket.h
+    src/zones/CelluloZoneTypes.h
 
 SOURCES += \
-    src/CelluloBluetooth.cpp \
-    src/CelluloBluetoothEnums.cpp \
-    src/CameraFrameImageProvider.cpp \
-    src/CelluloBluetoothPlugin.cpp \
+    src/CelluloPlugin.cpp \
+    src/comm/CelluloBluetooth.cpp \
+    src/comm/CelluloBluetoothEnums.cpp \
+    src/comm/CameraFrameImageProvider.cpp \
+    src/comm/CelluloBluetoothPacket.cpp \
+    src/zones/CelluloZoneClient.cpp \
     src/zones/CelluloZonePoint.cpp \
     src/zones/CelluloZoneLine.cpp \
     src/zones/CelluloZoneCircle.cpp \
@@ -31,8 +34,7 @@ SOURCES += \
     src/zones/CelluloZoneRectangle.cpp \
     src/zones/CelluloZoneEngine.cpp \
     src/authoring/CelluloZoneJsonHandler.cpp \
-    src/zones/CelluloZoneTypes.cpp \
-    src/CelluloBluetoothPacket.cpp
+    src/zones/CelluloZoneTypes.cpp
 
 INCLUDEPATH += \
     include/
@@ -65,7 +67,7 @@ else{
 
     qmldir.files = qmldir
     javascript.files = src/cellulo-toolkit.js \
-    src/cellulo-zonesdrawer.js
+    src/zones/cellulo-zonesdrawer.js
     qml.files = src/CelluloRobot.qml src/MacAddrSelector.qml
 
     OTHER_FILES += qmldir.files javascript.files qml.files

@@ -23,7 +23,7 @@
  */
 
 #include "CelluloZone.h"
-#include "src/CelluloBluetooth.h"
+#include "../comm/CelluloBluetooth.h"
 
 CelluloZone::CelluloZone(QQuickItem* parent) :
     QQuickItem(parent)

@@ -35,17 +35,18 @@
 
 #include "CelluloBluetoothEnums.h"
 #include "CelluloBluetoothPacket.h"
-#include "zones/CelluloZone.h"
-#include "zones/CelluloZoneCircle.h"
-#include "zones/CelluloZoneRectangle.h"
-#include "zones/CelluloZoneLine.h"
-#include "zones/CelluloZonePoint.h"
-#include "zones/CelluloZonePolygon.h"
+#include "../zones/CelluloZoneClient.h"
+#include "../zones/CelluloZone.h"
+#include "../zones/CelluloZoneCircle.h"
+#include "../zones/CelluloZoneRectangle.h"
+#include "../zones/CelluloZoneLine.h"
+#include "../zones/CelluloZonePoint.h"
+#include "../zones/CelluloZonePolygon.h"
 
 /**
  * @brief Bluetooth communicator for a Cellulo robot
  */
-class CelluloBluetooth : public QQuickItem {
+class CelluloBluetooth : public CelluloZoneClient {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
@@ -55,9 +56,9 @@ class CelluloBluetooth : public QQuickItem {
 
     Q_PROPERTY(CelluloBluetoothEnums::BatteryState batteryState READ getBatteryState NOTIFY batteryStateChanged)
 
-    Q_PROPERTY(float x READ getX NOTIFY poseChanged)
-    Q_PROPERTY(float y READ getY NOTIFY poseChanged)
-    Q_PROPERTY(float theta READ getTheta NOTIFY poseChanged)
+    Q_PROPERTY(float x READ getX NOTIFY poseChanged_inherited)
+    Q_PROPERTY(float y READ getY NOTIFY poseChanged_inherited)
+    Q_PROPERTY(float theta READ getTheta NOTIFY poseChanged_inherited)
     Q_PROPERTY(bool kidnapped READ getKidnapped NOTIFY kidnappedChanged)
 
     Q_PROPERTY(QList<int> touchRawValues READ getTouchRawValues NOTIFY touchRawValuesUpdated)
@@ -431,9 +432,11 @@ signals:
     void touchReleased(int key);
 
     /**
-     * @brief Emitted when the pose of the robot changes
+     * @brief DO NOT USE EXPLICITLY
+     *
+     * Emitted when the base class emits poseChanged() since NOTIFY cannot be used with inherited signals
      */
-    void poseChanged();
+    void poseChanged_inherited();
 
     /**
      * @brief A new onboard localization timestamp has been received

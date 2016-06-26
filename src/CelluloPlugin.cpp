@@ -17,21 +17,43 @@
 
 /**
  * @file CelluloBluetoothPlugin.cpp
- * @brief Source for exposing Cellulo Bluetooth communication as a QML object
+ * @brief Source for exposing Cellulo objects as QML objects
  * @author Ayberk Özgür
- * @date 2015-05-20
+ * @date 2016-06-26
  */
 
-#include "CelluloBluetoothPlugin.h"
+#include "CelluloPlugin.h"
 
 #include <QQmlEngine>
+#include <qqml.h>
 
-#include "CelluloBluetooth.h"
-#include "CelluloBluetoothEnums.h"
-#include "CameraFrameImageProvider.h"
+#include "comm/CelluloBluetooth.h"
+#include "comm/CelluloBluetoothEnums.h"
+#include "comm/CameraFrameImageProvider.h"
+#include "zones/CelluloZone.h"
+#include "zones/CelluloZonePolygon.h"
+#include "zones/CelluloZonePoint.h"
+#include "zones/CelluloZoneLine.h"
+#include "zones/CelluloZoneCircle.h"
+#include "zones/CelluloZoneRectangle.h"
+#include "zones/CelluloZoneEngine.h"
+#include "authoring/CelluloZoneJsonHandler.h"
+#include "zones/CelluloZoneTypes.h"
 
-void CelluloBluetoothPlugin::registerTypes(const char *uri){
+void CelluloPlugin::registerTypes(const char *uri){
     qmlRegisterType<CelluloBluetooth>(uri, 1, 0, "CelluloBluetooth");
+
+    qmlRegisterSingletonType<CelluloBluetoothEnums>(uri, 1, 0, "CelluloBluetoothEnums",
+                                                    [] (QQmlEngine* qmlEngine, QJSEngine* jsEngine)->QObject* {
+                                                        Q_UNUSED(qmlEngine)
+                                                        Q_UNUSED(jsEngine)
+                                                        return new CelluloBluetoothEnums();
+                                                    });
+
+    qmlRegisterType<CelluloZoneEngine>(uri, 1, 0, "CelluloZoneClient");
+    qmlRegisterType<CelluloZoneEngine>(uri, 1, 0, "CelluloZoneEngine");
+    qmlRegisterType<CelluloZoneJsonHandler>(uri, 1, 0, "CelluloZoneJsonHandler");
+    qmlRegisterType<CelluloZoneTypes>(uri, 1, 0, "CelluloZoneTypes");
 
     qmlRegisterType<CelluloZoneCircleInner>(uri, 1, 0, "CelluloZoneCircleInner");
     qmlRegisterType<CelluloZoneCircleBorder>(uri, 1, 0, "CelluloZoneCircleBorder");
@@ -52,21 +74,9 @@ void CelluloBluetoothPlugin::registerTypes(const char *uri){
     qmlRegisterType<CelluloZoneRegularPolygonInner>(uri, 1, 0, "CelluloZoneRegularPolygonInner");
     qmlRegisterType<CelluloZoneRegularPolygonBorder>(uri, 1, 0, "CelluloZoneRegularPolygonBorder");
     qmlRegisterType<CelluloZoneRegularPolygonDistance>(uri, 1, 0, "CelluloZoneRegularPolygonDistance");
-
-
-    qmlRegisterType<CelluloZoneEngine>(uri, 1, 0, "CelluloZoneEngine");
-    qmlRegisterType<CelluloZoneJsonHandler>(uri, 1, 0, "CelluloZoneJsonHandler");
-    qmlRegisterType<CelluloZoneTypes>(uri, 1, 0, "CelluloZoneTypes");
-
-    qmlRegisterSingletonType<CelluloBluetoothEnums>(uri, 1, 0, "CelluloBluetoothEnums",
-                                                    [](QQmlEngine* qmlEngine, QJSEngine* jsEngine)->QObject* {
-                                                        Q_UNUSED(qmlEngine)
-                                                        Q_UNUSED(jsEngine)
-                                                        return new CelluloBluetoothEnums();
-                                                    });
 }
 
-void CelluloBluetoothPlugin::initializeEngine(QQmlEngine *engine, const char *uri){
+void CelluloPlugin::initializeEngine(QQmlEngine *engine, const char *uri){
     Q_UNUSED(uri)
     engine->addImageProvider("cameraFrame", new CameraFrameImageProvider());
 }
