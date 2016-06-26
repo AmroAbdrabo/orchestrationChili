@@ -23,7 +23,7 @@
  */
 
 #include "CelluloZone.h"
-#include "../comm/CelluloBluetooth.h"
+#include "CelluloZoneClient.h"
 
 CelluloZone::CelluloZone(QQuickItem* parent) :
     QQuickItem(parent)
@@ -34,26 +34,37 @@ CelluloZone::CelluloZone(QQuickItem* parent) :
     name = "anonymousZone";
 }
 
-void CelluloZone::calculateOnPoseChanged(){
-    CelluloBluetooth *cellulo = qobject_cast<CelluloBluetooth *>(QObject::sender());
-    if(cellulo && active){
-        changeInCellulosCalculate(cellulo->getMacAddr(),this->calculate(cellulo->getX()*0.508, cellulo->getY()*0.508, cellulo->getTheta()));
-    }
-}
+void CelluloZone::onClientPoseChanged(qreal x, qreal y, qreal theta){
+    CelluloZoneClient* client = qobject_cast<CelluloZoneClient*>(QObject::sender());
 
-void CelluloZone::changeInCellulosCalculate(const QString& key, float value){
-    // only emit value changed if the value has actually changed
-    QHash<QString, float>::iterator it = cellulosCalculate.find(key);
-    if(it != cellulosCalculate.end()){
-        if(it.value() != value){
-            cellulosCalculate[key] = value;
-            emit calculateCelluloChanged(key, value);
+    if(client){
+
+        //TODO: REPLACE ACTIVE WITH ENABLED
+        if(active){
+
+            //Calculate the new value associated with the client whose pose has changed
+            qreal newVal = calculate(x*0.508, y*0.508, theta); //TODO: GET RID OF 0.508
+
+            //We already have a previous value for this client
+            if(clientsLastValues.contains(client)){
+
+                //If the value of this zone changed, alert the client
+                qreal& oldValRef = clientsLastValues[client];
+                if(oldValRef != newVal){
+                    emit client->zoneValueChanged(this, newVal);
+                    oldValRef = newVal;
+                }
+            }
+
+            //We don't have a previous value for this client, simply create it and alert the client
+            else{
+                client->zoneValueChanged(this, newVal);
+                clientsLastValues[client] = newVal;
+            }
         }
     }
-    else{
-        cellulosCalculate.insert(key, value);
-        emit calculateCelluloChanged(key, value);
-    }
+    else
+        qDebug() << "CelluloZone::onClientPoseChanged(): Zone can only connect to a CelluloZoneClient-derived object.";
 }
 
 // taken from http://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment

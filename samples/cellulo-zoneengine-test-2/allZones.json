@@ -1,0 +1,200 @@
+{
+    "playgoundSizeInmm": {
+        "height": 297.03890991210938,
+        "width": 209.90278625488281
+    },
+    "zones": [
+        {
+            "marginThickeness": 0,
+            "name": "inner_circleInner",
+            "r": 31.827659606933594,
+            "stackingOrder": 0,
+            "type": "CIRCLEINNER",
+            "x": 38.569637298583984,
+            "y": 40.227783203125
+        },
+        {
+            "marginThickeness": 10,
+            "name": "border_circleBorder",
+            "r": 30.201221466064453,
+            "stackingOrder": 0,
+            "type": "CIRCLEBORDER",
+            "x": 107.31279754638672,
+            "y": 41.102298736572266
+        },
+        {
+            "marginThickeness": 0,
+            "name": "distance_circleDistance",
+            "r": 32.577850341796875,
+            "stackingOrder": 0,
+            "type": "CIRCLEDISTANCE",
+            "x": 176.40579223632812,
+            "y": 33.581451416015625
+        },
+        {
+            "height": 52.645927429199219,
+            "marginThickeness": 0,
+            "name": "inner_rectangleInner",
+            "stackingOrder": 0,
+            "type": "RECTANGLEINNER",
+            "width": 57.810726165771484,
+            "x": 8.6584901809692383,
+            "y": 81.854789733886719
+        },
+        {
+            "height": 58.06793212890625,
+            "marginThickeness": 8,
+            "name": "border_rectangleBorder",
+            "stackingOrder": 0,
+            "type": "RECTANGLEBORDER",
+            "width": 33.496986389160156,
+            "x": 87.546951293945312,
+            "y": 84.1285400390625
+        },
+        {
+            "height": 59.292255401611328,
+            "marginThickeness": 0,
+            "name": "distance_rectangleDistance",
+            "stackingOrder": 0,
+            "type": "RECTANGLEDISTANCE",
+            "width": 43.467369079589844,
+            "x": 148.24383544921875,
+            "y": 72.759811401367188
+        },
+        {
+            "marginThickeness": 0,
+            "name": "distance_lineDistance",
+            "stackingOrder": 0,
+            "type": "LINEDISTANCE",
+            "x1": 137.57377624511719,
+            "x2": 184.97682189941406,
+            "y1": 139.92271423339844,
+            "y2": 149.0177001953125
+        },
+        {
+            "marginThickeness": 0,
+            "name": "distance_pointDistance",
+            "stackingOrder": 0,
+            "type": "POINTDISTANCE",
+            "x": 101.25181579589844,
+            "y": 153.97544860839844
+        },
+        {
+            "marginThickeness": 0,
+            "name": "inner_regInner",
+            "numEdges": 3,
+            "r": 27.307781219482422,
+            "rotAngle": 308.18280029296875,
+            "stackingOrder": 0,
+            "type": "RPOLYGONINNER",
+            "x": 32.387966156005859,
+            "y": 185.40528869628906
+        },
+        {
+            "marginThickeness": 5,
+            "name": "border_regBorder",
+            "numEdges": 5,
+            "r": 34.540592193603516,
+            "rotAngle": 273.7598876953125,
+            "stackingOrder": 0,
+            "type": "RPOLYGONBORDER",
+            "x": 95.783477783203125,
+            "y": 201.67556762695312
+        },
+        {
+            "marginThickeness": 0,
+            "name": "distance_regDistance",
+            "numEdges": 6,
+            "r": 28.871528625488281,
+            "rotAngle": 327.81735229492188,
+            "stackingOrder": 0,
+            "type": "RPOLYGONDISTANCE",
+            "x": 166.24398803710938,
+            "y": 196.10108947753906
+        },
+        {
+            "marginThickeness": 0,
+            "name": "inner_irrregInner",
+            "stackingOrder": 0,
+            "type": "IRPOLYGONINNER",
+            "vertices": [
+                {
+                    "x": 10.050661120047453,
+                    "y": 233.14690850303788
+                },
+                {
+                    "x": 36.065011700596841,
+                    "y": 226.92614491228571
+                },
+                {
+                    "x": 48.21031204444629,
+                    "y": 238.18276474317062
+                },
+                {
+                    "x": 50.580126745685192,
+                    "y": 254.77146765184298
+                },
+                {
+                    "x": 40.804641103074644,
+                    "y": 242.03371363268383
+                },
+                {
+                    "x": 25.400845545021699,
+                    "y": 243.51484782095815
+                }
+            ]
+        },
+        {
+            "marginThickeness": 4,
+            "name": "border_irregBorder",
+            "stackingOrder": 0,
+            "type": "IRPOLYGONBORDER",
+            "vertices": [
+                {
+                    "x": 72.797139569800109,
+                    "y": 265.43563380741813
+                },
+                {
+                    "x": 81.980171537100887,
+                    "y": 244.40352833392276
+                },
+                {
+                    "x": 109.52926743900338,
+                    "y": 255.66014816480759
+                },
+                {
+                    "x": 125.82174351002095,
+                    "y": 269.58280953458626
+                },
+                {
+                    "x": 90.735320294455789,
+                    "y": 280.70777299318007
+                }
+            ]
+        },
+        {
+            "marginThickeness": 0,
+            "name": "distance_irregDistance",
+            "stackingOrder": 0,
+            "type": "IRPOLYGONDISTANCE",
+            "vertices": [
+                {
+                    "x": 136.4859096655961,
+                    "y": 248.78110271260013
+                },
+                {
+                    "x": 153.6012380634327,
+                    "y": 239.56515665222662
+                },
+                {
+                    "x": 143.39786921087625,
+                    "y": 230.34921059185299
+                },
+                {
+                    "x": 134.84020501195792,
+                    "y": 229.36178779967014
+                }
+            ]
+        }
+    ]
+}

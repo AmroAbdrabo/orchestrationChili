@@ -22,9 +22,11 @@
  * @date 2016-03-04
  */
 
+#include <QTimer>
 #include <QQmlProperty>
-#include "CelluloZoneEngine.h"
 #include <QSignalMapper>
+
+#include "CelluloZoneEngine.h"
 
 CelluloZoneEngine::CelluloZoneEngine(QQuickItem* parent) :
     QQuickItem(parent)
@@ -34,16 +36,16 @@ CelluloZoneEngine::CelluloZoneEngine(QQuickItem* parent) :
     realPlaygroundWidth = -1;
     realPlaygroundHeight = -1;
     //Fires lookup for original zones and robots as soon as the event loop is up and running and there are no more startup events pending.
-    QTimer::singleShot(0, this, SLOT(traverseTreeForCelluloRobotFinding()));
+    //QTimer::singleShot(0, this, SLOT(traverseTreeForCelluloRobotFinding()));
 }
 
 CelluloZoneEngine::~CelluloZoneEngine(){
+
+    //TODO: DELETE CLIENTS AND ZONES IN THE LISTS
 }
 
+/*
 void CelluloZoneEngine::traverseTreeForCelluloRobotFinding(){
-
-    //find original robots
-    celluloBluetoothRobots = this->parent()->findChildren<CelluloBluetooth *>();
 
     //find original zones
     QList<CelluloZone*> celluloZones = this->parent()->findChildren<CelluloZone *>();
@@ -56,16 +58,25 @@ void CelluloZoneEngine::traverseTreeForCelluloRobotFinding(){
     }
 
     emit(initializationDone());
+}*/
+
+void CelluloZoneEngine::bindClientToZone(CelluloZoneClient* client, CelluloZone* zone){
+    connect(client, SIGNAL(poseChanged(qreal,qreal,qreal)), zone, SLOT(onClientPoseChanged(qreal,qreal,qreal)));
 }
 
-void CelluloZoneEngine::bindRobotsAndZone(CelluloZone* zone){
-    for(int i = 0; i < celluloBluetoothRobots.length(); ++i){
-        CelluloBluetooth *robot = celluloBluetoothRobots.at(i);
-        connect(robot, SIGNAL(poseChanged()), zone, SLOT(calculateOnPoseChanged()));
-        connect(zone, SIGNAL(calculateCelluloChanged(const QString &, float)), robot, SLOT(actOnZoneCalculateChanged(const QString &, float)));
-    }
+void CelluloZoneEngine::addNewClient(CelluloZoneClient* newClient){
+    clients += newClient;
+    for(auto zone : zones)
+        bindClientToZone(newClient, zone);
 }
 
+void CelluloZoneEngine::addNewZone(CelluloZone* newZone){
+    zones += newZone;
+    for(auto client : clients)
+        bindClientToZone(client, newZone);
+}
+
+/*
 bool CelluloZoneEngine::addNewZoneFromQML(int type, QVariantMap properties){
     QQuickItem *childrenItem;
     switch(type){
@@ -139,9 +150,9 @@ bool CelluloZoneEngine::addNewZoneFromQML(int type, QVariantMap properties){
         qDebug() << "Problem when casting object to CelluloZone";
         return false;
     }
-}
+}*/
 
-bool CelluloZoneEngine::addNewZoneFromJSON(QString path){
+/*bool CelluloZoneEngine::addNewZoneFromJSON(QString path){
     QMap<QString, QVariant> result = CelluloZoneJsonHandler::loadZones(path);
     QList<CelluloZone*> zonesFromJSON;
     QList<QVariant> list = result["zones"].toList();
@@ -194,37 +205,27 @@ bool CelluloZoneEngine::addNewZoneFromJSON(QString path){
         qDebug() << "zones added from JSON file" << this->children().at(var)->metaObject()->className();
     }
     return true;
-}
+}*/
 
-void CelluloZoneEngine::setParentToZone(CelluloZone* zone){
+/*void CelluloZoneEngine::setParentToZone(CelluloZone* zone){
     QQmlEngine::setObjectOwnership(zone, QQmlEngine::CppOwnership);
 
     zone->setParent(this);
     zone->setParentItem(this);
 
     bindRobotsAndZone(zone);
-}
+}*/
 
-QVariantList CelluloZoneEngine::calculateForAllChildren(float xRobot, float yRobot, float thetaRobot){
-    QList<CelluloZone*> list = this->findChildren<CelluloZone *>();
-    QVariantList calculateResults;
-    float calculateResult;
-    foreach(CelluloZone *z, list) {
-        calculateResult = z->calculate(xRobot, yRobot, thetaRobot);
-        calculateResults.append(QVariant(calculateResult));
-    }
-    return calculateResults;
-}
-
-QStringList CelluloZoneEngine::getAllZoneNames(){
+/*QStringList CelluloZoneEngine::getAllZoneNames(){
     QStringList zonesNames;
     QList<CelluloZone*> list = this->findChildren<CelluloZone *>();
     foreach(CelluloZone *z, list) {
         zonesNames.append(z->getName());
     }
     return zonesNames;
-}
+}*/
 
+/*
 QVariant CelluloZoneEngine::getZoneFromName(QString name){
     QList<CelluloZone*> list = this->findChildren<CelluloZone *>();
     QVariant returnedZone;
@@ -269,9 +270,10 @@ QVariant CelluloZoneEngine::getZoneFromName(QString name){
     }
     qDebug() << "No zone handled by this engine";
     return QVariant();
-}
+}*/
 
+/*
 bool CelluloZoneEngine::getAllZonesAndSaveThem(QString path){
     QList<CelluloZone*> zones = this->parent()->findChildren<CelluloZone *>();
     return CelluloZoneJsonHandler::saveZones(zones, path, realPlaygroundWidth, realPlaygroundHeight);
-}
+}*/

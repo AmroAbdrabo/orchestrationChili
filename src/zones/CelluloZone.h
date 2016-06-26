@@ -29,7 +29,9 @@
 #include <QHash>
 #include <QJsonObject>
 #include <QJsonArray>
+
 #include "CelluloZoneTypes.h"
+#include "CelluloZoneClient.h"
 
 /**
  * @brief CelluloZone Base Class for zones
@@ -159,9 +161,15 @@ public:
 public slots:
 
     /**
-     * @brief slot associated to the CelluloBluetooth signal onPoseChanged, change zone quantity for this robot if robot exists and zone is active
+     * @brief Slot associated to the CelluloZoneClient signal poseChanged
+     *
+     * Calculates zone quantity for the sender client (must inherit CelluloZoneClient) if zone is active
+     *
+     * @param x New x coordinate of the client
+     * @param y New y coordinate of the client
+     * @param theta New orientaton of the client
      */
-    void calculateOnPoseChanged();
+    void onClientPoseChanged(qreal x, qreal y, qreal theta);
 
 protected:
 
@@ -171,13 +179,6 @@ protected:
     float marginThickeness;                     ///< margin accepted to tell if a robot is on zone's border (middle of the margin is the border)
     bool active;                                ///< true if zone is active false otherwise
     QHash<QString, float> cellulosCalculate;    ///< map of cellulorobot (represented by their MacAdress) and their zone quantity for this zone
-
-    /**
-     * @brief update the zone quantity of the robot for this zone
-     * @param key robot MacAdress
-     * @param value Zone quantity
-     */
-    void changeInCellulosCalculate(const QString& key, float value);
 
     /////////////////////////////////////////////////////////////////////// Mathematical functions for children
 
@@ -244,12 +245,9 @@ signals:
      */
     void typeChanged();
 
-    /**
-     * @brief Emitted when the zone quantity of any robot has changed
-     * @param key robot concerned by this change of zone quantity
-     * @param newValue new zone quantity for the robot with the MacAdress key
-     */
-    void calculateCelluloChanged(const QString& key, float newValue);
+private:
+
+    QHash<CelluloZoneClient*, qreal> clientsLastValues;  ///< Stores the most recent values calculated for clients
 
 };
 

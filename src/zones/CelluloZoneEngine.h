@@ -30,15 +30,12 @@
 #include <QQmlEngine>
 #include <QQmlContext>
 
-#include "CelluloZoneEngine.h"
 #include "CelluloZoneCircle.h"
 #include "CelluloZoneRectangle.h"
 #include "CelluloZoneLine.h"
 #include "CelluloZonePoint.h"
 #include "CelluloZonePolygon.h"
 #include "../authoring/CelluloZoneJsonHandler.h"
-
-#include "../comm/CelluloBluetooth.h"
 
 class CelluloZoneEngine : public QQuickItem {
     /* *INDENT-OFF* */
@@ -148,17 +145,6 @@ public:
     }
 
     /**
-     * @brief Call calculate function on all children
-     *
-     * @param xRobot x position of the robot
-     * @param yRobot y position of the robot
-     * @param thetaRobot theta orientation of the robot
-     *
-     * @return  list of result of the calculate function for all children
-     */
-    Q_INVOKABLE QVariantList calculateForAllChildren(float xRobot, float yRobot, float thetaRobot);
-
-    /**
      * @brief Get all zones handled by this engine and save them in a json file
      *
      * @param path Path of the json file containing zones to be loaded
@@ -175,7 +161,7 @@ public:
      *
      * @return true if operation was successful, 0 otherwise
      */
-    Q_INVOKABLE bool addNewZoneFromQML(int typeStringVersion, QVariantMap properties);
+    //Q_INVOKABLE bool addNewZoneFromQML(int typeStringVersion, QVariantMap properties);
 
     /**
      * @brief Add new zones from json file
@@ -184,14 +170,14 @@ public:
      *
      * @return True if operation was successful, 0 otherwise
      */
-    Q_INVOKABLE bool addNewZoneFromJSON(QString path);
+    //Q_INVOKABLE bool addNewZoneFromJSON(QString path);
 
     /**
      * @brief Get all the names of the zone handled by this engine
      *
      * @return names of the zone handled by this engine
      */
-    Q_INVOKABLE QStringList getAllZoneNames();
+    //Q_INVOKABLE QStringList getAllZoneNames();
 
     /**
      * @brief Get zone handled by this engine having the corresponding name
@@ -200,21 +186,37 @@ public:
      *
      * @return First zone handled by this engine to have this name or empty qvariant if there was a problem
      */
-    Q_INVOKABLE QVariant getZoneFromName(QString name);
+    //Q_INVOKABLE QVariant getZoneFromName(QString name);
+
+public slots:
+
+    /**
+     * @brief Adds a new client to the engine, binds to all existing zones
+     *
+     * @param newClient Client to add
+     */
+    void addNewClient(CelluloZoneClient* newClient);
+
+    /**
+     * @brief Adds a new zone to the engine, binds to all existing clients
+     *
+     * @param newZone Zone to add
+     */
+    void addNewZone(CelluloZone* newZone);
 
 private slots:
 
     /**
      * @brief Called when the engine is set up in order to find initial static robots and zone and bind them together
      */
-    void traverseTreeForCelluloRobotFinding();
+    //void traverseTreeForCelluloRobotFinding();
 
 signals:
 
     /**
      * @brief Emitted when new Zone has been created
      */
-    void newZoneCreatedReadyForVisualization(int type, QVariantMap properties, int childNumber, float vRplaygroundWidth, float vRplaygroundHeight);
+    //void newZoneCreatedReadyForVisualization(int type, QVariantMap properties, int childNumber, float vRplaygroundWidth, float vRplaygroundHeight);
 
     /**
      * @brief Emitted when the width size of the virtual playground changes
@@ -236,7 +238,7 @@ signals:
      */
     void realPlaygroundHeightChanged();
 
-    void initializationDone();
+    //void initializationDone();
 
 private:
 
@@ -244,21 +246,26 @@ private:
     float vRplaygroundHeight;                           ///< Height size of the virtual playground
     float realPlaygroundWidth;                          ///< Width size of the real playground
     float realPlaygroundHeight;                         ///< Height size of the virtual playground
-    QList<CelluloBluetooth*> celluloBluetoothRobots;    ///< QML Static cellulo robots known by the engine
+    QSet<CelluloZoneClient*> clients;                   ///< All clients bound to this engine
+    QSet<CelluloZone*> zones;                           ///< All zones bound to this engine
 
     /**
-     * @brief Bind zone's selected signals and slots with all known robots's selected signal and slots
+     * @brief Binds client to zone
      *
-     * @param zone Zone to be binded
+     * Connects Client's poseChanged(real,real,real) signal to Zone's onClientPoseChanged(real,real,real) slot.
+     * Zone invokes the zoneValueChanged(zone*,real) signal of the appropriate Client automatically.
+     *
+     * @param client Client to be bound
+     * @param zone Zone to be bound
      */
-    void bindRobotsAndZone(CelluloZone* zone);
+    void bindClientToZone(CelluloZoneClient* client, CelluloZone* zone);
 
     /**
      * @brief Set engine as parent of the zone and bind it with existing robots
      *
      * @param zone Zone to be child of the engine and binded with existing robots
      */
-    void setParentToZone(CelluloZone* zone);
+    //void setParentToZone(CelluloZone* zone);
 
 };
 

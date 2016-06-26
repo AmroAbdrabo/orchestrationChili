@@ -22,9 +22,12 @@
  * @date 2016-06-26
  */
 
+#ifndef CELLULOZONECLIENT_H
+#define CELLULOZONECLIENT_H
+
 #include <QQuickItem>
 
-#include "CelluloZone.h"
+class CelluloZone;
 
 /**
  * @brief Describes an object with a physical pose (e.g a robot) that may interact with Cellulo zones
@@ -38,6 +41,7 @@ public:
 
     /**
      * @brief Creates a new zone client
+     *
      * @param parent Qt parent
      */
     explicit CelluloZoneClient(QQuickItem* parent = 0);
@@ -50,7 +54,7 @@ signals:
      * @param zone The zone whose value has changed
      * @param value The new value
      */
-    void zoneValueChanged(const CelluloZone& zone, qreal value);
+    void zoneValueChanged(CelluloZone* zone, qreal value);
 
     /**
      * @brief Emitted when the physical pose of the object changes
@@ -62,3 +66,5 @@ signals:
     void poseChanged(qreal x, qreal y, qreal theta);
 
 };
+
+#endif //CELLULOZONECLIENT_H
