@@ -28,7 +28,6 @@
 #include "CelluloZone.h"
 #include <math.h>
 
-
 /**
  * @brief CelluloZone Base Class for polygonal zones
  */

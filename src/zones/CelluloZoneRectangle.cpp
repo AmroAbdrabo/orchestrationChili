@@ -24,6 +24,10 @@
 
 #include "CelluloZoneRectangle.h"
 
+/**
+ * CelluloZoneRectangle
+ */
+
 CelluloZoneRectangle::CelluloZoneRectangle() :
     CelluloZone()
 {
@@ -67,6 +71,10 @@ void CelluloZoneRectangle::read(const QJsonObject &json){
     height = json["height"].toDouble();
 }
 
+/**
+ * CelluloZoneRectangleInner
+ */
+
 CelluloZoneRectangleInner::CelluloZoneRectangleInner() :
     CelluloZoneRectangle()
 {
@@ -76,6 +84,10 @@ CelluloZoneRectangleInner::CelluloZoneRectangleInner() :
 float CelluloZoneRectangleInner::calculate(float xRobot, float yRobot, float thetaRobot){
     return x <= xRobot && x + width >= xRobot && y <= yRobot && y + height >= yRobot ? 1 : 0;
 }
+
+/**
+ * CelluloZoneRectangleBorder
+ */
 
 CelluloZoneRectangleBorder::CelluloZoneRectangleBorder() :
     CelluloZoneRectangle()
@@ -88,6 +100,10 @@ float CelluloZoneRectangleBorder::calculate(float xRobot, float yRobot, float th
         (((x - (marginThickeness/2)) <= xRobot && (x + width + (marginThickeness/2)) >= xRobot && (y - (marginThickeness/2)) <= yRobot && (y + height + (marginThickeness/2)) >= yRobot) == 1) &&
         (((x + (marginThickeness/2)) <= xRobot && (x + width - (marginThickeness/2)) >= xRobot && (y + (marginThickeness/2)) <= yRobot && (y + height - (marginThickeness/2)) >= yRobot) == 0);
 }
+
+/**
+ * CelluloZoneRectangleDistance
+ */
 
 CelluloZoneRectangleDistance::CelluloZoneRectangleDistance() :
     CelluloZoneRectangle()

@@ -24,6 +24,10 @@
 
 #include "CelluloZonePolygon.h"
 
+/**
+ * CelluloZonePolygon
+ */
+
 CelluloZonePolygon::CelluloZonePolygon() :
     CelluloZone()
 {
@@ -86,6 +90,10 @@ float CelluloZonePolygon::getPointToPolygonDistance(float xPoint, float yPoint){
     }
     return min;
 }
+
+/**
+ * CelluloZoneIrregularPolygon
+ */
 
 QVariantMap CelluloZoneIrregularPolygon::getRatioProperties(float realPlaygroundWidth, float realPlaygroundHeight){
     QVariantMap properties;
@@ -151,6 +159,10 @@ QList<QPointF> CelluloZoneIrregularPolygon::convertQVariantToQPointF(){
     }
     return newPointsQt;
 }
+
+/**
+ * CelluloZoneRegularPolygon
+ */
 
 CelluloZoneRegularPolygon::CelluloZoneRegularPolygon() :
     CelluloZonePolygon()
@@ -221,6 +233,10 @@ QList<QPointF> CelluloZoneRegularPolygon::createPolygonPointsFromOuterCircle(){
     return newPointsQt;
 }
 
+/**
+ * CelluloZoneIrregularPolygonInner
+ */
+
 CelluloZoneIrregularPolygonInner::CelluloZoneIrregularPolygonInner() :
     CelluloZoneIrregularPolygon()
 {
@@ -230,6 +246,10 @@ CelluloZoneIrregularPolygonInner::CelluloZoneIrregularPolygonInner() :
 float CelluloZoneIrregularPolygonInner::calculate(float xRobot, float yRobot, float thetaRobot){
     return pointInPoly(xRobot, yRobot, minX, maxX, minY, maxY, pointsQt);
 }
+
+/**
+ * CelluloZoneIrregularPolygonBorder
+ */
 
 CelluloZoneIrregularPolygonBorder::CelluloZoneIrregularPolygonBorder() :
     CelluloZoneIrregularPolygon()
@@ -241,6 +261,10 @@ float CelluloZoneIrregularPolygonBorder::calculate(float xRobot, float yRobot, f
     return isPointOnPolygonBorder(xRobot, yRobot);
 }
 
+/**
+ * CelluloZoneIrregularPolygonDistance
+ */
+
 CelluloZoneIrregularPolygonDistance::CelluloZoneIrregularPolygonDistance() :
     CelluloZoneIrregularPolygon()
 {
@@ -250,6 +274,10 @@ CelluloZoneIrregularPolygonDistance::CelluloZoneIrregularPolygonDistance() :
 float CelluloZoneIrregularPolygonDistance::calculate(float xRobot, float yRobot, float thetaRobot){
     return getPointToPolygonDistance(xRobot, yRobot);
 }
+
+/**
+ * CelluloZoneRegularPolygonInner
+ */
 
 CelluloZoneRegularPolygonInner::CelluloZoneRegularPolygonInner() :
     CelluloZoneRegularPolygon()
@@ -261,6 +289,10 @@ float CelluloZoneRegularPolygonInner::calculate(float xRobot, float yRobot, floa
     return pointInPoly(xRobot, yRobot, x-r, x+r, y-r, y+r, pointsQt);
 }
 
+/**
+ * CelluloZoneRegularPolygonBorder
+ */
+
 CelluloZoneRegularPolygonBorder::CelluloZoneRegularPolygonBorder() :
     CelluloZoneRegularPolygon()
 {
@@ -270,6 +302,10 @@ CelluloZoneRegularPolygonBorder::CelluloZoneRegularPolygonBorder() :
 float CelluloZoneRegularPolygonBorder::calculate(float xRobot, float yRobot, float thetaRobot){
     return isPointOnPolygonBorder(xRobot, yRobot);
 }
+
+/**
+ * CelluloZoneRegularPolygonDistance
+ */
 
 CelluloZoneRegularPolygonDistance::CelluloZoneRegularPolygonDistance() :
     CelluloZoneRegularPolygon()
