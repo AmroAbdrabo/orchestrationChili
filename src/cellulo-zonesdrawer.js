@@ -136,9 +136,6 @@ function drawNewZone(type, properties, childnumber, playgroundWidth, playgroundH
         case CelluloZoneTypes.LINEDISTANCE:
             drawNewLine(properties["x1"], properties["y1"], properties["x2"], properties["y2"], properties["stackingOrder"], childnumber, playgroundWidth, playgroundHeight)
             break;
-        case CelluloZoneTypes.POINTINNER:
-            drawNewPoint(properties["x"], properties["y"], properties["stackingOrder"], childnumber, playgroundWidth, playgroundHeight)
-            break;
         case CelluloZoneTypes.POINTDISTANCE:
             drawNewPoint(properties["x"], properties["y"], properties["stackingOrder"], childnumber, playgroundWidth, playgroundHeight)
             break;

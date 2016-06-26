@@ -47,7 +47,6 @@ public:
         RECTANGLEDISTANCE,
         LINEINNER,
         LINEDISTANCE,
-        POINTINNER,
         POINTDISTANCE,
         RPOLYGONINNER,
         RPOLYGONBORDER,

@@ -24,6 +24,10 @@
 
 #include "CelluloZonePoint.h"
 
+/**
+ * CelluloZonePoint
+ */
+
 CelluloZonePoint::CelluloZonePoint() :
     CelluloZone()
 {
@@ -59,15 +63,9 @@ void CelluloZonePoint::read(const QJsonObject &json){
     y = json["y"].toDouble();
 }
 
-CelluloZonePointInner::CelluloZonePointInner() :
-    CelluloZonePoint()
-{
-    type = CelluloZoneTypes::POINTINNER;
-}
-
-float CelluloZonePointInner::calculate(float xRobot, float yRobot, float thetaRobot){
-    return xRobot == x && yRobot == y;
-}
+/**
+ * CelluloZonePointDistance
+ */
 
 CelluloZonePointDistance::CelluloZonePointDistance() :
     CelluloZonePoint()

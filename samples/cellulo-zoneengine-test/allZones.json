@@ -83,14 +83,6 @@
         },
         {
             "marginThickeness": 0,
-            "name": "inner_pointInner",
-            "stackingOrder": 0,
-            "type": "POINTINNER",
-            "x": 24.469821929931641,
-            "y": 160.93321228027344
-        },
-        {
-            "marginThickeness": 0,
             "name": "distance_pointDistance",
             "stackingOrder": 0,
             "type": "POINTDISTANCE",

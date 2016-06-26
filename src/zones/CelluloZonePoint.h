@@ -123,31 +123,6 @@ signals:
 };
 
 /**
- * @brief CelluloZone Specific Class for point zones inner determination
- */
-class CelluloZonePointInner : public CelluloZonePoint {
-    /* *INDENT-OFF* */
-    Q_OBJECT
-    /* *INDENT-ON* */
-
-public:
-
-    CelluloZonePointInner();
-
-    /**
-     * @brief Calculate whether the robot lies inside this point zone
-     *
-     * @param xRobot x position of the robot
-     * @param yRobot y position of the robot
-     * @param thetaRobot theta position of the robot
-     *
-     * @return  1 if the robot is inside this point zone 0 otherwise
-     */
-    Q_INVOKABLE float calculate(float xRobot, float yRobot, float thetaRobot);
-
-};
-
-/**
  * @brief CelluloZone Specific Class for point zones distance determination
  */
 class CelluloZonePointDistance : public CelluloZonePoint {

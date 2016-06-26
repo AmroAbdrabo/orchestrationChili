@@ -93,9 +93,6 @@ bool CelluloZoneEngine::addNewZoneFromQML(int type, QVariantMap properties){
         case CelluloZoneTypes::LINEDISTANCE:
             childrenItem = new CelluloZoneLineDistance();
             break;
-        case CelluloZoneTypes::POINTINNER:
-            childrenItem = new CelluloZonePointInner();
-            break;
         case CelluloZoneTypes::POINTDISTANCE:
             childrenItem = new CelluloZonePointDistance();
             break;

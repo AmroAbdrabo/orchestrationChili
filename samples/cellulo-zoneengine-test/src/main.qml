@@ -555,13 +555,6 @@ ApplicationWindow {
                 case CelluloZoneTypes.LINEDISTANCE:
                     addDistancesToMap(zoneConcerned.name, value, robot.distancesToZones, robot.robotName)
                     break;
-                case CelluloZoneTypes.POINTINNER:
-                    if(value === 1){
-                        robot.setVisualEffect(0, "violet", 0);
-                    } else{
-                        robot.setVisualEffect(0, "white", 0);
-                    }
-                    break;
                 case CelluloZoneTypes.POINTDISTANCE:
                     addDistancesToMap(zoneConcerned.name, value, robot.distancesToZones, robot.robotName)
                     break;
@@ -626,4 +619,3 @@ ApplicationWindow {
 
     }
 }
-
