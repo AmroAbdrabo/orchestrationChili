@@ -51,10 +51,10 @@ signals:
     /**
      * @brief Emitted when a zone's value with respect to this object changes
      *
-     * @param zone The zone whose value has changed
+     * @param zone Zone whose value has changed
      * @param value The new value
      */
-    void zoneValueChanged(CelluloZone* zone, qreal value);
+    void zoneValueChanged(QObject* zone, qreal value);
 
     /**
      * @brief Emitted when the physical pose of the object changes

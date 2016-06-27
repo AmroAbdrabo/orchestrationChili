@@ -46,15 +46,23 @@ void CelluloZoneEngine::bindClientToZone(CelluloZoneClient* client, CelluloZone*
 }
 
 void CelluloZoneEngine::addNewClient(CelluloZoneClient* newClient){
-    clients += newClient;
-    for(auto zone : zones)
-        bindClientToZone(newClient, zone);
+    if(clients.contains(newClient))
+        qDebug() << "CelluloZoneEngine::addNewClient(): Client already exists, not adding.";
+    else{
+        clients += newClient;
+        for(auto zone : zones)
+            bindClientToZone(newClient, zone);
+    }
 }
 
 void CelluloZoneEngine::addNewZone(CelluloZone* newZone){
-    zones += newZone;
-    for(auto client : clients)
-        bindClientToZone(client, newZone);
+    if(zones.contains(newZone))
+        qDebug() << "CelluloZoneEngine::addNewZone(): Zone already exists, not adding.";
+    else{
+        zones += newZone;
+        for(auto client : clients)
+            bindClientToZone(client, newZone);
+    }
 }
 
 void CelluloZoneEngine::itemChange(ItemChange change, const ItemChangeData& value){
@@ -200,23 +208,12 @@ bool CelluloZoneEngine::addNewZoneFromQML(int type, QVariantMap properties){
     return true;
 }*/
 
-/*void CelluloZoneEngine::setParentToZone(CelluloZone* zone){
-    QQmlEngine::setObjectOwnership(zone, QQmlEngine::CppOwnership);
-
-    zone->setParent(this);
-    zone->setParentItem(this);
-
-    bindRobotsAndZone(zone);
-}*/
-
-/*QStringList CelluloZoneEngine::getAllZoneNames(){
-    QStringList zonesNames;
-    QList<CelluloZone*> list = this->findChildren<CelluloZone *>();
-    foreach(CelluloZone *z, list) {
-        zonesNames.append(z->getName());
-    }
-    return zonesNames;
-}*/
+QStringList CelluloZoneEngine::getAllZoneNames(){
+    QStringList zoneNames;
+    for(CelluloZone* zone : zones)
+        zoneNames.append(zone->getName());
+    return zoneNames;
+}
 
 /*
 QVariant CelluloZoneEngine::getZoneFromName(QString name){

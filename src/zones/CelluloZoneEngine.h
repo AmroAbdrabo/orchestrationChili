@@ -174,11 +174,11 @@ public:
     //Q_INVOKABLE bool addNewZoneFromJSON(QString path);
 
     /**
-     * @brief Get all the names of the zone handled by this engine
+     * @brief Get list of names of all zones handled by this engine
      *
-     * @return names of the zone handled by this engine
+     * @return Names of the zones handled by this engine
      */
-    //Q_INVOKABLE QStringList getAllZoneNames();
+    Q_INVOKABLE QStringList getAllZoneNames();
 
     /**
      * @brief Get zone handled by this engine having the corresponding name
