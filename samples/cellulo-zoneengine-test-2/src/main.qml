@@ -22,11 +22,21 @@ ApplicationWindow {
             y: 140
             r: 50
         }
+
+        CelluloZoneCircleInner{
+            name: "MY_ZONE_DUDE_SMALLER"
+
+            x: 630
+            y: 140
+            r: 25
+
+            onXChanged: console.log(x)
+        }
     }
 
     Button{
-        text: "seechildren"
-        onClicked: console.log(zoneEngine.getAllZoneNames())
+        text: "zonetoright"
+        onClicked: zoneEngine.getZoneByName("MY_ZONE_DUDE_SMALLER").x = 680
     }
 
     CelluloBluetooth{
@@ -36,18 +46,5 @@ ApplicationWindow {
         Component.onCompleted: zoneEngine.addNewClient(btClient)
 
         onZoneValueChanged: console.log(value + " " + zone.name + " " + zone)
-    }
-
-
-    CelluloZoneCircleInner{
-        id: asdasd
-
-        name: "MY_ZONE_DUDE_SMALLER"
-
-        x: 630
-        y: 140
-        r: 25
-
-        Component.onCompleted: zoneEngine.addNewZone(asdasd)
     }
 }

@@ -215,6 +215,13 @@ QStringList CelluloZoneEngine::getAllZoneNames(){
     return zoneNames;
 }
 
+QObject* CelluloZoneEngine::getZoneByName(QString name){
+    for(CelluloZone* zone : zones)
+        if(zone->getName() == name)
+            return zone;
+    return NULL;
+}
+
 /*
 QVariant CelluloZoneEngine::getZoneFromName(QString name){
     QList<CelluloZone*> list = this->findChildren<CelluloZone *>();

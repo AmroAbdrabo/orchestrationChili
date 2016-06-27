@@ -184,10 +184,9 @@ public:
      * @brief Get zone handled by this engine having the corresponding name
      *
      * @param name Lookup name for the zone
-     *
-     * @return First zone handled by this engine to have this name or empty qvariant if there was a problem
+     * @return First zone handled by this engine to have this name or NULL if not found
      */
-    //Q_INVOKABLE QVariant getZoneFromName(QString name);
+    Q_INVOKABLE QObject* getZoneByName(QString name);
 
 signals:
 
