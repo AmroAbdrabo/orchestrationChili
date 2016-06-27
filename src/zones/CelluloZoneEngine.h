@@ -30,18 +30,20 @@
 #include <QQmlEngine>
 #include <QQmlContext>
 #include <QChildEvent>
+#include <QVariantList>
 
 #include "CelluloZoneCircle.h"
 #include "CelluloZoneRectangle.h"
 #include "CelluloZoneLine.h"
 #include "CelluloZonePoint.h"
 #include "CelluloZonePolygon.h"
-#include "../authoring/CelluloZoneJsonHandler.h"
+#include "CelluloZoneJsonHandler.h"
 
 class CelluloZoneEngine : public QQuickItem {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
+    Q_PROPERTY(QVariantList zones READ getZonesList NOTIFY zonesChanged)
 
 public:
 
@@ -72,13 +74,6 @@ public:
     Q_INVOKABLE void loadZonesFromJson(QString filename);
 
     /**
-     * @brief Returns the list of all zones in this engine
-     *
-     * @return The list of all zones
-     */
-    Q_INVOKABLE QList<CelluloZone*> getAllZones();
-
-    /**
      * @brief Get list of names of all zones handled by this engine
      *
      * @return Names of the zones handled by this engine
@@ -93,7 +88,26 @@ public:
      */
     Q_INVOKABLE QObject* getZoneByName(QString name);
 
+    /**
+     * @brief Adds the given list of zones to the already existing zones
+     *
+     * @param newZones New zones
+     */
+    void addNewZones(QList<CelluloZone*> newZones);
+
+    /**
+     * @brief Adds the given list of zones to the alreadt existing zones
+     *
+     * @param newZones New zones (QML-compatible)
+     */
+    Q_INVOKABLE void addNewZones(QVariantList newZones);
+
 signals:
+
+    /**
+     * @brief Emitted when the zone list changes
+     */
+    void zonesChanged();
 
     /**
      * @brief Emitted when new Zone has been created
@@ -115,6 +129,15 @@ public slots:
      * @param newZone Zone to add
      */
     void addNewZone(CelluloZone* newZone);
+
+private slots:
+
+    /**
+     * @brief Returns the list of all zones in this engine
+     *
+     * @return The list of all zones
+     */
+    Q_INVOKABLE QVariantList getZonesList();
 
 private:
 
@@ -141,5 +164,7 @@ private:
     void itemChange(ItemChange change, const ItemChangeData& value) override;
 
 };
+
+Q_DECLARE_METATYPE(QList<CelluloZone*>)
 
 #endif // CELLULOZONEENGINE_H

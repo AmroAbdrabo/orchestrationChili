@@ -24,17 +24,59 @@
 
 #include "CelluloZoneTypes.h"
 
-QString CelluloZoneTypes::typeToString(const CelluloZoneTypes::ZoneType &type){
-    const QMetaObject &mo = CelluloZoneTypes::staticMetaObject;
-    int index = mo.indexOfEnumerator("ZoneType");
-    QMetaEnum metaEnum = mo.enumerator(index);
-    return metaEnum.valueToKey(type);
+#include "CelluloZoneCircle.h"
+#include "CelluloZoneRectangle.h"
+#include "CelluloZoneLine.h"
+#include "CelluloZonePoint.h"
+#include "CelluloZonePolygon.h"
+
+CelluloZoneTypes::CelluloZoneTypes(QObject* parent) : QObject(parent){
 }
 
+CelluloZoneTypes::~CelluloZoneTypes(){
+}
+
+//TODO: PUT THIS IN CELLULO_ENUM_DECL
 CelluloZoneTypes::ZoneType CelluloZoneTypes::typeFromString(const QString &typeName){
     const QMetaObject &mo = CelluloZoneTypes::staticMetaObject;
     int index = mo.indexOfEnumerator("ZoneType");
     QMetaEnum metaEnum = mo.enumerator(index);
     int value = metaEnum.keyToValue(qPrintable(typeName));
     return static_cast<CelluloZoneTypes::ZoneType>(value);
+}
+
+CelluloZone* CelluloZoneTypes::newZoneFromType(ZoneType type){
+    switch(type){
+        case CIRCLEINNER:
+            return (CelluloZone*)(new CelluloZoneCircleInner());
+        case CIRCLEBORDER:
+            return (CelluloZone*)(new CelluloZoneCircleBorder());
+        case CIRCLEDISTANCE:
+            return (CelluloZone*)(new CelluloZoneCircleDistance());
+        case RECTANGLEINNER:
+            return (CelluloZone*)(new CelluloZoneRectangleInner());
+        case RECTANGLEBORDER:
+            return (CelluloZone*)(new CelluloZoneRectangleBorder());
+        case RECTANGLEDISTANCE:
+            return (CelluloZone*)(new CelluloZoneRectangleDistance());
+        case LINEDISTANCE:
+            return (CelluloZone*)(new CelluloZoneLineDistance());
+        case POINTDISTANCE:
+            return (CelluloZone*)(new CelluloZonePointDistance());
+        case RPOLYGONINNER:
+            return (CelluloZone*)(new CelluloZoneRegularPolygonInner());
+        case RPOLYGONBORDER:
+            return (CelluloZone*)(new CelluloZoneRegularPolygonBorder());
+        case RPOLYGONDISTANCE:
+            return (CelluloZone*)(new CelluloZoneRegularPolygonDistance());
+        case IRPOLYGONINNER:
+            return (CelluloZone*)(new CelluloZoneIrregularPolygonInner());
+        case IRPOLYGONBORDER:
+            return (CelluloZone*)(new CelluloZoneIrregularPolygonBorder());
+        case IRPOLYGONDISTANCE:
+            return (CelluloZone*)(new CelluloZoneIrregularPolygonDistance());
+        default:
+            qWarning() << "CelluloZoneTypes::newZoneFromType(): Unknown type.";
+            return NULL;
+    }
 }

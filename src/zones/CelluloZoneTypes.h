@@ -25,19 +25,24 @@
 #ifndef CELLULOZONETYPES_H
 #define CELLULOZONETYPES_H
 
-#include <QQuickItem>
+#include <QObject>
 
-/**
- * @brief holds Q_ENUMS used from frontend and associtated conversion functions
- */
-class CelluloZoneTypes : public QQuickItem {
+#include "../CelluloEnumDecl.h"
+class CelluloZone;
+
+class CelluloZoneTypes : public QObject {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
-    Q_ENUMS(ZoneType)
 
 public:
 
+    CelluloZoneTypes(QObject* parent = 0);
+    ~CelluloZoneTypes();
+
+    /**
+     * @brief List of possible zones
+     */
     enum ZoneType {
         CIRCLEINNER = 0,
         CIRCLEBORDER,
@@ -52,23 +57,30 @@ public:
         RPOLYGONDISTANCE,
         IRPOLYGONINNER,
         IRPOLYGONBORDER,
-        IRPOLYGONDISTANCE
+        IRPOLYGONDISTANCE,
+        ZoneTypeNumElements
     };
+    Q_ENUM(ZoneType)
+    CELLULO_ENUM_DECL(ZoneType)
 
     /**
-     * @brief convert the enum type to a Qstring
-     * @param type ZoneType to be converted
-     * @return QString representation of the ZoneType
-     */
-    Q_INVOKABLE static QString typeToString(const CelluloZoneTypes::ZoneType &type);
-
-    /**
-     * @brief convert the QString to its ZoneType representation
+     * @brief Converts the QString to its ZoneType representation
+     *
      * @param typeName QString to be converted
-     * @return ZoneType reprensentation of the QString
+     * @return ZoneType Reprensentation of the QString
      */
-    Q_INVOKABLE static CelluloZoneTypes::ZoneType typeFromString(const QString &typeName);
+    Q_INVOKABLE static ZoneType typeFromString(const QString &typeName);
+
+    /**
+     * @brief Creates a new zone based on the given type
+     *
+     * @param type The desired type
+     * @return Pointer to the created zone
+     */
+    Q_INVOKABLE static CelluloZone* newZoneFromType(ZoneType type);
 
 };
+
+Q_DECLARE_METATYPE(CelluloZoneTypes::ZoneType)
 
 #endif // CELLULOZONETYPES_H

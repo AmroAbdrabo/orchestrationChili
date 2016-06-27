@@ -28,9 +28,7 @@
 
 #include "CelluloZoneEngine.h"
 
-CelluloZoneEngine::CelluloZoneEngine(QQuickItem* parent) :
-    QQuickItem(parent)
-{
+CelluloZoneEngine::CelluloZoneEngine(QQuickItem* parent) : QQuickItem(parent){
 }
 
 CelluloZoneEngine::~CelluloZoneEngine(){
@@ -58,6 +56,7 @@ void CelluloZoneEngine::addNewZone(CelluloZone* newZone){
         zones += newZone;
         for(auto client : clients)
             bindClientToZone(client, newZone);
+        emit zonesChanged();
     }
 }
 
@@ -71,65 +70,6 @@ void CelluloZoneEngine::itemChange(ItemChange change, const ItemChangeData& valu
     }
 
     QQuickItem::itemChange(change, value);
-}
-
-/*bool CelluloZoneEngine::addNewZoneFromJSON(QString path){
-    QMap<QString, QVariant> result = CelluloZoneJsonHandler::loadZones(path);
-    QList<CelluloZone*> zonesFromJSON;
-    QList<QVariant> list = result["zones"].toList();
-    for(int i=0; i<list.length(); i++){
-        CelluloZone* zone = qvariant_cast<CelluloZone*>(list[i]);
-        zonesFromJSON.append(zone);
-    }
-    if(zonesFromJSON.length()>0){
-        foreach (CelluloZone* zone, zonesFromJSON) {
-            if(zone){
-                setParentToZone(zone);
-                emit(newZoneCreatedReadyForVisualization(zone->getType(), zone->getRatioProperties(realPlaygroundWidth, realPlaygroundHeight), this->children().size(), vRplaygroundWidth, vRplaygroundHeight));
-                double jsonRealPlaygroundWidth = qvariant_cast<double>(result["realPlaygroundWidth"]);
-                if(jsonRealPlaygroundWidth){
-                    if(realPlaygroundWidth != -1 && realPlaygroundWidth!=jsonRealPlaygroundWidth){
-                        qDebug() << "Real width value you provided: " << realPlaygroundWidth <<"and the one from the JSON file: " << jsonRealPlaygroundWidth <<" differ. Taking JSON file value";
-                    }
-                    realPlaygroundWidth = jsonRealPlaygroundWidth;
-                    emit realPlaygroundWidthChanged();
-                }
-                else{
-                    qDebug() << "Problem no width of playground given by jsonHandler";
-                    return false;
-                }
-                double jsonRealPlaygroundHeight = qvariant_cast<double>(result["realPlaygroundHeight"]);
-                if(jsonRealPlaygroundHeight){
-                    if(realPlaygroundHeight != -1 && realPlaygroundHeight!=jsonRealPlaygroundHeight){
-                        qDebug() << "Real height value you provided: " << realPlaygroundHeight <<"and the one from the JSON file: " << jsonRealPlaygroundHeight <<" differ. Taking JSON file value";
-                    }
-                    realPlaygroundHeight = jsonRealPlaygroundHeight;
-                    emit realPlaygroundHeightChanged();
-                }
-                else{
-                    qDebug() << "Problem no height of playground given by jsonHandler";
-                    return false;
-                }
-            }
-            else{
-                qDebug() << "Problem when casting zone from json representation";
-                return false;
-            }
-        }
-    }
-    else{
-        qDebug() << "Problem when loading zone with jsonHandler";
-        return false;
-    }
-
-    for(int var = 0; var < this->children().size(); ++var){
-        qDebug() << "zones added from JSON file" << this->children().at(var)->metaObject()->className();
-    }
-    return true;
-}*/
-
-QList<CelluloZone*> CelluloZoneEngine::getAllZones(){
-    return zones.toList();
 }
 
 QStringList CelluloZoneEngine::getAllZoneNames(){
@@ -146,8 +86,19 @@ QObject* CelluloZoneEngine::getZoneByName(QString name){
     return NULL;
 }
 
-/*
-bool CelluloZoneEngine::getAllZonesAndSaveThem(QString path){
-    QList<CelluloZone*> zones = this->parent()->findChildren<CelluloZone *>();
-    return CelluloZoneJsonHandler::saveZones(zones, path, realPlaygroundWidth, realPlaygroundHeight);
-}*/
+QVariantList CelluloZoneEngine::getZonesList(){
+    QVariantList variantList;
+    for(const auto& zone : zones)
+        variantList.append(QVariant::fromValue(zone));
+    return variantList;
+}
+
+void CelluloZoneEngine::addNewZones(QList<CelluloZone*> newZones){
+    for(const auto& zone : newZones)
+        addNewZone(zone);
+}
+
+void CelluloZoneEngine::addNewZones(QVariantList newZones){
+    for(const auto& zone : newZones)
+        addNewZone(zone.value<CelluloZone*>());
+}

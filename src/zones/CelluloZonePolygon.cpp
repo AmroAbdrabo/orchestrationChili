@@ -110,7 +110,7 @@ QVariantMap CelluloZoneIrregularPolygon::getRatioProperties(float realPlayground
 }
 
 void CelluloZoneIrregularPolygon::write(QJsonObject &json){
-    json["type"] = CelluloZoneTypes::typeToString(type);
+    json["type"] = CelluloZoneTypes::ZoneTypeString(type);
     json["name"] = name;
     json["stackingOrder"] = stackingOrder;
     json["marginThickeness"] = marginThickeness;
@@ -194,7 +194,7 @@ QVariantMap CelluloZoneRegularPolygon::getRatioProperties(float realPlaygroundWi
 }
 
 void CelluloZoneRegularPolygon::write(QJsonObject &json){
-    json["type"] = CelluloZoneTypes::typeToString(type);
+    json["type"] = CelluloZoneTypes::ZoneTypeString(type);
     json["name"] = name;
     json["stackingOrder"] = stackingOrder;
     json["marginThickeness"] = marginThickeness;

@@ -37,7 +37,7 @@
 #include "zones/CelluloZoneCircle.h"
 #include "zones/CelluloZoneRectangle.h"
 #include "zones/CelluloZoneEngine.h"
-#include "authoring/CelluloZoneJsonHandler.h"
+#include "zones/CelluloZoneJsonHandler.h"
 #include "zones/CelluloZoneTypes.h"
 
 void CelluloPlugin::registerTypes(const char *uri){
@@ -52,8 +52,18 @@ void CelluloPlugin::registerTypes(const char *uri){
 
     qmlRegisterType<CelluloZoneEngine>(uri, 1, 0, "CelluloZoneClient");
     qmlRegisterType<CelluloZoneEngine>(uri, 1, 0, "CelluloZoneEngine");
-    qmlRegisterType<CelluloZoneJsonHandler>(uri, 1, 0, "CelluloZoneJsonHandler");
-    qmlRegisterType<CelluloZoneTypes>(uri, 1, 0, "CelluloZoneTypes");
+    qmlRegisterSingletonType<CelluloZoneJsonHandler>(uri, 1, 0, "CelluloZoneJsonHandler",
+                                                    [] (QQmlEngine* qmlEngine, QJSEngine* jsEngine)->QObject* {
+                                                        Q_UNUSED(qmlEngine)
+                                                        Q_UNUSED(jsEngine)
+                                                        return new CelluloZoneJsonHandler();
+                                                    });
+    qmlRegisterSingletonType<CelluloZoneTypes>(uri, 1, 0, "CelluloZoneTypes",
+                                                    [] (QQmlEngine* qmlEngine, QJSEngine* jsEngine)->QObject* {
+                                                        Q_UNUSED(qmlEngine)
+                                                        Q_UNUSED(jsEngine)
+                                                        return new CelluloZoneTypes();
+                                                    });
 
     qmlRegisterType<CelluloZoneCircleInner>(uri, 1, 0, "CelluloZoneCircleInner");
     qmlRegisterType<CelluloZoneCircleBorder>(uri, 1, 0, "CelluloZoneCircleBorder");

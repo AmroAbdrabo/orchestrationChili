@@ -50,7 +50,7 @@ QVariantMap CelluloZoneRectangle::getRatioProperties(float realPlaygroundWidth, 
 }
 
 void CelluloZoneRectangle::write(QJsonObject &json){
-    json["type"] = CelluloZoneTypes::typeToString(type);
+    json["type"] = CelluloZoneTypes::ZoneTypeString(type);
     json["name"] = name;
     json["stackingOrder"] = stackingOrder;
     json["marginThickeness"] = marginThickeness;

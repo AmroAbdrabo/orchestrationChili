@@ -49,7 +49,7 @@ QVariantMap CelluloZoneCircle::getRatioProperties(float realPlaygroundWidth, flo
 }
 
 void CelluloZoneCircle::write(QJsonObject &json){
-    json["type"] = CelluloZoneTypes::typeToString(type);
+    json["type"] = CelluloZoneTypes::ZoneTypeString(type);
     json["name"] = name;
     json["stackingOrder"] = stackingOrder;
     json["marginThickeness"] = marginThickeness;

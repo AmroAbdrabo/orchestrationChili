@@ -15,35 +15,58 @@ ApplicationWindow {
     CelluloZoneEngine{
         id: zoneEngine
 
-        CelluloZoneCircleInner{
+        /*CelluloZoneCircleInner{
+            id: zone1
             name: "MY_ZONE_DUDE"
 
             x: 630
             y: 140
             r: 50
+        }*/
+    }
+
+    Row{
+        Button{
+            text: "listofzones"
+            onClicked: console.log(zoneEngine.getAllZoneNames())
         }
-    }
 
-    Button{
-        text: "listofzones"
-        onClicked: console.log(zoneEngine.getAllZoneNames())
-    }
+        Button{
+            text: "addnewzone"
+            onClicked: {
+                Qt.createQmlObject(
+                            '
+                                    import Cellulo 1.0
+                                    CelluloZoneCircleInner{
+                                        name:"DYNAZONE"
+                                        x: 630
+                                        y: 140
+                                        r: 50
+                                    }
+                               ',
+                            zoneEngine, "dynamicallyCreatedZone");
 
-    Button{
-        text: "addnewzone"
-        onClicked: {
-            Qt.createQmlObject(
-                        '
-                                import Cellulo 1.0
-                                CelluloZoneCircleInner{
-                                    name:"DYNAZONE"
-                                    x: 630
-                                    y: 140
-                                    r: 50
-                                }
-                           ',
-                        zoneEngine, "dynamicallyCreatedZone");
-            CelluloZoneJsonHandler.loadQMLZones("qrc://allZones.json");
+
+            }
+        }
+
+        Button{
+            text: "savezones"
+            onClicked: CelluloZoneJsonHandler.saveZones(zoneEngine.zones, "/home/equilibrium/zones.json")
+        }
+
+        Button{
+            text: "savezonesinline"
+            onClicked: {
+                CelluloZoneJsonHandler.saveZones([zone1], "/home/equilibrium/zones.json")
+            }
+        }
+
+        Button{
+            text: "loadzones"
+            onClicked: {
+                zoneEngine.addNewZones(CelluloZoneJsonHandler.loadZonesQML("/home/equilibrium/zones.json"))
+            }
         }
     }
 

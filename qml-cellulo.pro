@@ -16,7 +16,7 @@ HEADERS += \
     src/zones/CelluloZone.h \
     src/zones/CelluloZoneRectangle.h \
     src/zones/CelluloZoneEngine.h \
-    src/authoring/CelluloZoneJsonHandler.h \
+    src/zones/CelluloZoneJsonHandler.h \
     src/zones/CelluloZoneTypes.h
 
 SOURCES += \
@@ -33,7 +33,7 @@ SOURCES += \
     src/zones/CelluloZone.cpp \
     src/zones/CelluloZoneRectangle.cpp \
     src/zones/CelluloZoneEngine.cpp \
-    src/authoring/CelluloZoneJsonHandler.cpp \
+    src/zones/CelluloZoneJsonHandler.cpp \
     src/zones/CelluloZoneTypes.cpp
 
 INCLUDEPATH += \

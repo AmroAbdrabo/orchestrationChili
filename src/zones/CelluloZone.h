@@ -251,4 +251,6 @@ private:
 
 };
 
+Q_DECLARE_METATYPE(CelluloZone*)
+
 #endif // CELLULOZONE_H
