@@ -29,6 +29,7 @@
 #include <QQmlComponent>
 #include <QQmlEngine>
 #include <QQmlContext>
+#include <QChildEvent>
 
 #include "CelluloZoneCircle.h"
 #include "CelluloZoneRectangle.h"
@@ -188,29 +189,6 @@ public:
      */
     //Q_INVOKABLE QVariant getZoneFromName(QString name);
 
-public slots:
-
-    /**
-     * @brief Adds a new client to the engine, binds to all existing zones
-     *
-     * @param newClient Client to add
-     */
-    void addNewClient(CelluloZoneClient* newClient);
-
-    /**
-     * @brief Adds a new zone to the engine, binds to all existing clients
-     *
-     * @param newZone Zone to add
-     */
-    void addNewZone(CelluloZone* newZone);
-
-private slots:
-
-    /**
-     * @brief Called when the engine is set up in order to find initial static robots and zone and bind them together
-     */
-    //void traverseTreeForCelluloRobotFinding();
-
 signals:
 
     /**
@@ -238,7 +216,21 @@ signals:
      */
     void realPlaygroundHeightChanged();
 
-    //void initializationDone();
+public slots:
+
+    /**
+     * @brief Adds a new client to the engine, binds to all existing zones
+     *
+     * @param newClient Client to add
+     */
+    void addNewClient(CelluloZoneClient* newClient);
+
+    /**
+     * @brief Adds a new zone to the engine, binds to all existing clients
+     *
+     * @param newZone Zone to add
+     */
+    void addNewZone(CelluloZone* newZone);
 
 private:
 
@@ -261,11 +253,12 @@ private:
     void bindClientToZone(CelluloZoneClient* client, CelluloZone* zone);
 
     /**
-     * @brief Set engine as parent of the zone and bind it with existing robots
+     * @brief Override; adds the added child to zones if it is a CelluloZone
      *
-     * @param zone Zone to be child of the engine and binded with existing robots
+     * @param change The change that occurred, must be ItemChildAddedChange
+     * @param value Points to the added child when change is ItemChildAddedChange
      */
-    //void setParentToZone(CelluloZone* zone);
+    void itemChange(ItemChange change, const ItemChangeData& value) override;
 
 };
 

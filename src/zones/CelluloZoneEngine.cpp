@@ -35,30 +35,11 @@ CelluloZoneEngine::CelluloZoneEngine(QQuickItem* parent) :
     vRplaygroundHeight = -1;
     realPlaygroundWidth = -1;
     realPlaygroundHeight = -1;
-    //Fires lookup for original zones and robots as soon as the event loop is up and running and there are no more startup events pending.
-    //QTimer::singleShot(0, this, SLOT(traverseTreeForCelluloRobotFinding()));
 }
 
 CelluloZoneEngine::~CelluloZoneEngine(){
-
-    //TODO: DELETE CLIENTS AND ZONES IN THE LISTS
+    //TODO: FIGURE OUT HOW TO DELETE CLIENTS AND ZONES IN THE LISTS, THEY MAY HAVE BEEN CREATED IN QML BY STATIC CODE
 }
-
-/*
-void CelluloZoneEngine::traverseTreeForCelluloRobotFinding(){
-
-    //find original zones
-    QList<CelluloZone*> celluloZones = this->parent()->findChildren<CelluloZone *>();
-
-    //bind original robots and zones
-    foreach(CelluloZone *zone, celluloZones) {
-        setParentToZone(zone);
-        emit(newZoneCreatedReadyForVisualization(zone->getType(), zone->getRatioProperties(realPlaygroundWidth, realPlaygroundHeight), this->children().size(), vRplaygroundWidth, vRplaygroundHeight));
-        qDebug() << "original zone" << zone << ";" << zone->getName();
-    }
-
-    emit(initializationDone());
-}*/
 
 void CelluloZoneEngine::bindClientToZone(CelluloZoneClient* client, CelluloZone* zone){
     connect(client, SIGNAL(poseChanged(qreal,qreal,qreal)), zone, SLOT(onClientPoseChanged(qreal,qreal,qreal)));
@@ -74,6 +55,18 @@ void CelluloZoneEngine::addNewZone(CelluloZone* newZone){
     zones += newZone;
     for(auto client : clients)
         bindClientToZone(client, newZone);
+}
+
+void CelluloZoneEngine::itemChange(ItemChange change, const ItemChangeData& value){
+    if(change == ItemChange::ItemChildAddedChange){
+        CelluloZone* newZone = qobject_cast<CelluloZone*>(value.item);
+        if(newZone){
+            addNewZone(newZone);
+            qDebug() << "CelluloZoneEngine::itemChange(): Child zone " + newZone->getName() + " automatically added.";
+        }
+    }
+
+    QQuickItem::itemChange(change, value);
 }
 
 /*
