@@ -31,10 +31,6 @@
 CelluloZoneEngine::CelluloZoneEngine(QQuickItem* parent) :
     QQuickItem(parent)
 {
-    vRplaygroundWidth = -1;
-    vRplaygroundHeight = -1;
-    realPlaygroundWidth = -1;
-    realPlaygroundHeight = -1;
 }
 
 CelluloZoneEngine::~CelluloZoneEngine(){
@@ -131,6 +127,10 @@ void CelluloZoneEngine::itemChange(ItemChange change, const ItemChangeData& valu
     }
     return true;
 }*/
+
+QList<CelluloZone*> CelluloZoneEngine::getAllZones(){
+    return zones.toList();
+}
 
 QStringList CelluloZoneEngine::getAllZoneNames(){
     QStringList zoneNames;

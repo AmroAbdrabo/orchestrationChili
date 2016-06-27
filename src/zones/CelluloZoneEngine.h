@@ -42,10 +42,6 @@ class CelluloZoneEngine : public QQuickItem {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
-    Q_PROPERTY(float vRplaygroundWidth WRITE setVRPlaygroundWidth READ getVRPlaygroundWidth NOTIFY VRplaygroundWidthChanged)
-    Q_PROPERTY(float vRplaygroundHeight WRITE setVRPlaygroundHeight READ getVRPlaygroundHeight NOTIFY VRplaygroundHeightChanged)
-    Q_PROPERTY(float realPlaygroundWidth WRITE setRealPlaygroundWidth READ getRealPlaygroundWidth NOTIFY realPlaygroundWidthChanged)
-    Q_PROPERTY(float realPlaygroundHeight WRITE setRealPlaygroundHeight READ getRealPlaygroundHeight NOTIFY realPlaygroundHeightChanged)
 
 public:
 
@@ -62,106 +58,25 @@ public:
     virtual ~CelluloZoneEngine();
 
     /**
-     * @brief Get the width size of the virtual playground
+     * @brief Get all zones handled by this engine and save them to a Json file
      *
-     * @return Width size of the virtual playground
+     * @param filename Name of the desired Json file
      */
-    float getVRPlaygroundWidth() {
-        return vRplaygroundWidth;
-    }
-
-    /**
-     * @brief Set the width size of the virtual playground
-     *
-     * @param newVRPlaygroundWidth New width size of the virtual playground
-     */
-    void setVRPlaygroundWidth(float newVRPlaygroundWidth){
-        if(newVRPlaygroundWidth!=vRplaygroundWidth){
-            vRplaygroundWidth = newVRPlaygroundWidth;
-            emit(VRplaygroundWidthChanged());
-        }
-    }
-
-    /**
-     * @brief Get the height size of the virtual playground
-     *
-     * @return Heigth size of the virtual playground
-     */
-    float getVRPlaygroundHeight() {
-        return vRplaygroundHeight;
-    }
-
-    /**
-     * @brief Set the height size of the virtual playground
-     *
-     * @param newVRPlaygroundHeight New height size of the virtual playground
-     */
-    void setVRPlaygroundHeight(float newVRPlaygroundHeight){
-        if(newVRPlaygroundHeight!=vRplaygroundHeight){
-            vRplaygroundHeight = newVRPlaygroundHeight;
-            emit(VRplaygroundHeightChanged());
-        }
-    }
-
-    /**
-     * @brief Get the width size of the real playground
-     *
-     * @return Width size of the real playground
-     */
-    float getRealPlaygroundWidth() {
-        return realPlaygroundWidth;
-    }
-
-    /**
-     * @brief Set the width size of the real playground
-     *
-     * @param newRealPlaygroundWidth New width size of the real playground
-     */
-    void setRealPlaygroundWidth(float newRealPlaygroundWidth){
-        if(newRealPlaygroundWidth!=realPlaygroundWidth){
-            realPlaygroundWidth = newRealPlaygroundWidth;
-            emit(realPlaygroundWidthChanged());
-        }
-    }
-
-    /**
-     * @brief Get the height size of the real playground
-     *
-     * @return Heigth size of the real playground
-     */
-    float getRealPlaygroundHeight() {
-        return realPlaygroundHeight;
-    }
-
-    /**
-     * @brief Set the height size of the real playground
-     *
-     * @param newRealPlaygroundHeight New height size of the real playground
-     */
-    void setRealPlaygroundHeight(float newRealPlaygroundHeight){
-        if(newRealPlaygroundHeight!=realPlaygroundHeight){
-            realPlaygroundHeight = newRealPlaygroundHeight;
-            emit(realPlaygroundHeightChanged());
-        }
-    }
-
-    /**
-     * @brief Get all zones handled by this engine and save them in a json file
-     *
-     * @param path Path of the json file containing zones to be loaded
-     *
-     * @return  true if operation was successful, 0 otherwise
-     */
-    Q_INVOKABLE bool getAllZonesAndSaveThem(QString path);
+    Q_INVOKABLE void saveZonesToJson(QString filename);
 
     /**
      * @brief Add new zones from json file
      *
-     * @param path Path of the json file containing zones to be loaded
-     *
-     * @return True if operation was successful, 0 otherwise
+     * @param filename Name of the Json file containing the zones
      */
-    //Q_INVOKABLE bool addNewZoneFromJSON(QString path);
+    Q_INVOKABLE void loadZonesFromJson(QString filename);
+
+    /**
+     * @brief Returns the list of all zones in this engine
+     *
+     * @return The list of all zones
+     */
+    Q_INVOKABLE QList<CelluloZone*> getAllZones();
 
     /**
      * @brief Get list of names of all zones handled by this engine
@@ -185,26 +100,6 @@ signals:
      */
     //void newZoneCreatedReadyForVisualization(int type, QVariantMap properties, int childNumber, float vRplaygroundWidth, float vRplaygroundHeight);
 
-    /**
-     * @brief Emitted when the width size of the virtual playground changes
-     */
-    void VRplaygroundWidthChanged();
-
-    /**
-     * @brief Emitted when the height size of the virtual playground changes
-     */
-    void VRplaygroundHeightChanged();
-
-    /**
-     * @brief Emitted when the width size of the real playground changes
-     */
-    void realPlaygroundWidthChanged();
-
-    /**
-     * @brief Emitted when the height size of the real playground changes
-     */
-    void realPlaygroundHeightChanged();
-
 public slots:
 
     /**
@@ -223,10 +118,6 @@ public slots:
 
 private:
 
-    float vRplaygroundWidth;                            ///< Width size of the virtual playground
-    float vRplaygroundHeight;                           ///< Height size of the virtual playground
-    float realPlaygroundWidth;                          ///< Width size of the real playground
-    float realPlaygroundHeight;                         ///< Height size of the virtual playground
     QSet<CelluloZoneClient*> clients;                   ///< All clients bound to this engine
     QSet<CelluloZone*> zones;                           ///< All zones bound to this engine
 

@@ -31,8 +31,9 @@ ApplicationWindow {
 
     Button{
         text: "addnewzone"
-        onClicked: Qt.createQmlObject(
-                            '
+        onClicked: {
+            Qt.createQmlObject(
+                        '
                                 import Cellulo 1.0
                                 CelluloZoneCircleInner{
                                     name:"DYNAZONE"
@@ -41,7 +42,9 @@ ApplicationWindow {
                                     r: 50
                                 }
                            ',
-                           zoneEngine, "dynamicallyCreatedZone")
+                        zoneEngine, "dynamicallyCreatedZone");
+            CelluloZoneJsonHandler.loadQMLZones("qrc://allZones.json");
+        }
     }
 
     CelluloBluetooth{

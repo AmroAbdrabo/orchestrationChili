@@ -25,19 +25,11 @@
 #ifndef CELLULOZONEJSONHANDLER_H
 #define CELLULOZONEJSONHANDLER_H
 
-#include <QDebug>
-#include <QFile>
 #include <QJsonObject>
 #include <QJsonDocument>
-#include <QJsonObject>
 #include <QJsonArray>
 
-#include "src/zones/CelluloZone.h"
-#include "src/zones/CelluloZoneCircle.h"
-#include "src/zones/CelluloZoneRectangle.h"
-#include "src/zones/CelluloZoneLine.h"
-#include "src/zones/CelluloZonePoint.h"
-#include "src/zones/CelluloZonePolygon.h"
+#include "../zones/CelluloZone.h"
 
 class CelluloZoneJsonHandler : public QQuickItem {
     /* *INDENT-OFF* */
@@ -47,7 +39,7 @@ class CelluloZoneJsonHandler : public QQuickItem {
 public:
 
     /**
-     * @brief Save zones in JSON file from QML side
+     * @brief Save zones in JSON file
      *
      * @param qmlZones zones to be saved from QML world
      * @param path path of the JSON file where to save the zones

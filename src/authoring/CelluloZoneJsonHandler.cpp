@@ -24,6 +24,12 @@
 
 #include "CelluloZoneJsonHandler.h"
 
+#include "../zones/CelluloZoneCircle.h"
+#include "../zones/CelluloZoneRectangle.h"
+#include "../zones/CelluloZoneLine.h"
+#include "../zones/CelluloZonePoint.h"
+#include "../zones/CelluloZonePolygon.h"
+
 bool CelluloZoneJsonHandler::saveQMLZones(QList<QVariant> qmlZones, QString path, const float mmPgdWidth, const float mmPgdHeight){
     QList<CelluloZone*> zones;
     foreach (QVariant qmlZone, qmlZones) {
