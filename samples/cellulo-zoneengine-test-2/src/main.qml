@@ -22,21 +22,26 @@ ApplicationWindow {
             y: 140
             r: 50
         }
-
-        CelluloZoneCircleInner{
-            name: "MY_ZONE_DUDE_SMALLER"
-
-            x: 630
-            y: 140
-            r: 25
-
-            onXChanged: console.log(x)
-        }
     }
 
     Button{
-        text: "zonetoright"
-        onClicked: zoneEngine.getZoneByName("MY_ZONE_DUDE_SMALLER").x = 680
+        text: "listofzones"
+        onClicked: console.log(zoneEngine.getAllZoneNames())
+    }
+
+    Button{
+        text: "addnewzone"
+        onClicked: Qt.createQmlObject(
+                            '
+                                import Cellulo 1.0
+                                CelluloZoneCircleInner{
+                                    name:"DYNAZONE"
+                                    x: 630
+                                    y: 140
+                                    r: 50
+                                }
+                           ',
+                           zoneEngine, "dynamicallyCreatedZone")
     }
 
     CelluloBluetooth{

@@ -155,16 +155,6 @@ public:
     Q_INVOKABLE bool getAllZonesAndSaveThem(QString path);
 
     /**
-     * @brief Add new zone from qml world
-     *
-     * @param type type of the zone
-     * @param properties properties of the zone
-     *
-     * @return true if operation was successful, 0 otherwise
-     */
-    //Q_INVOKABLE bool addNewZoneFromQML(int typeStringVersion, QVariantMap properties);
-
-    /**
      * @brief Add new zones from json file
      *
      * @param path Path of the json file containing zones to be loaded

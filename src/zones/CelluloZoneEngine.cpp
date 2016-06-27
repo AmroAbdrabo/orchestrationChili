@@ -77,82 +77,6 @@ void CelluloZoneEngine::itemChange(ItemChange change, const ItemChangeData& valu
     QQuickItem::itemChange(change, value);
 }
 
-/*
-bool CelluloZoneEngine::addNewZoneFromQML(int type, QVariantMap properties){
-    QQuickItem *childrenItem;
-    switch(type){
-        case CelluloZoneTypes::CIRCLEINNER:
-            childrenItem = new CelluloZoneCircleInner();
-            break;
-        case CelluloZoneTypes::CIRCLEBORDER:
-            childrenItem = new CelluloZoneCircleBorder();
-            break;
-        case CelluloZoneTypes::CIRCLEDISTANCE:
-            childrenItem = new CelluloZoneCircleDistance();
-            break;
-        case CelluloZoneTypes::RECTANGLEINNER:
-            childrenItem = new CelluloZoneRectangleInner();
-            break;
-        case CelluloZoneTypes::RECTANGLEBORDER:
-            childrenItem = new CelluloZoneRectangleBorder();
-            break;
-        case CelluloZoneTypes::RECTANGLEDISTANCE:
-            childrenItem = new CelluloZoneRectangleDistance();
-            break;
-        case CelluloZoneTypes::LINEDISTANCE:
-            childrenItem = new CelluloZoneLineDistance();
-            break;
-        case CelluloZoneTypes::POINTDISTANCE:
-            childrenItem = new CelluloZonePointDistance();
-            break;
-        case CelluloZoneTypes::RPOLYGONINNER:
-            childrenItem = new CelluloZoneRegularPolygonInner();
-            break;
-        case CelluloZoneTypes::RPOLYGONBORDER:
-            childrenItem = new CelluloZoneRegularPolygonBorder();
-            break;
-        case CelluloZoneTypes::RPOLYGONDISTANCE:
-            childrenItem = new CelluloZoneRegularPolygonDistance();
-            break;
-        case CelluloZoneTypes::IRPOLYGONINNER:
-            childrenItem = new CelluloZoneIrregularPolygonInner();
-            break;
-        case CelluloZoneTypes::IRPOLYGONBORDER:
-            childrenItem = new CelluloZoneIrregularPolygonBorder();
-            break;
-        case CelluloZoneTypes::IRPOLYGONDISTANCE:
-            childrenItem = new CelluloZoneIrregularPolygonDistance();
-            break;
-        default:
-            qDebug() << "Forgot to handle an enum case";
-            return false;
-            break;
-    }
-
-    CelluloZone* zone = qobject_cast<CelluloZone *>(childrenItem);
-
-    if(zone){
-        Q_FOREACH(QString property, properties.keys()){
-            if(zone->getRatioProperties(realPlaygroundWidth,realPlaygroundHeight).contains(property.toStdString().c_str())){
-                zone->setProperty(property.toStdString().c_str(), properties[property]);
-            } else {
-                qDebug() << "Problem when setting property to the zone, property '" << property.toStdString().c_str() << "' not valid for this zone";
-                return false;
-            }
-        }
-        zone->setProperty("realPlaygroundWidth", realPlaygroundWidth);
-        zone->setProperty("realPlaygroundHeight", realPlaygroundHeight);
-        setParentToZone(zone);
-        emit(newZoneCreatedReadyForVisualization(zone->getType(), zone->getRatioProperties(realPlaygroundWidth, realPlaygroundHeight), this->children().size(), vRplaygroundWidth, vRplaygroundHeight));
-        return true;
-
-    }
-    else{
-        qDebug() << "Problem when casting object to CelluloZone";
-        return false;
-    }
-}*/
-
 /*bool CelluloZoneEngine::addNewZoneFromJSON(QString path){
     QMap<QString, QVariant> result = CelluloZoneJsonHandler::loadZones(path);
     QList<CelluloZone*> zonesFromJSON;
@@ -221,53 +145,6 @@ QObject* CelluloZoneEngine::getZoneByName(QString name){
             return zone;
     return NULL;
 }
-
-/*
-QVariant CelluloZoneEngine::getZoneFromName(QString name){
-    QList<CelluloZone*> list = this->findChildren<CelluloZone *>();
-    QVariant returnedZone;
-    foreach(CelluloZone *z, list) {
-        QString zoneName = z->getName();
-        if(zoneName == name){
-            switch(z->getType()){
-                case CelluloZoneTypes::CIRCLEINNER:
-                    returnedZone = QVariant::fromValue(dynamic_cast<CelluloZoneCircleInner *>(z));
-                    break;
-                case CelluloZoneTypes::CIRCLEBORDER:
-                    returnedZone = QVariant::fromValue(dynamic_cast<CelluloZoneCircleBorder *>(z));
-                    break;
-                case CelluloZoneTypes::CIRCLEDISTANCE:
-                    returnedZone = QVariant::fromValue(dynamic_cast<CelluloZoneCircleDistance *>(z));
-                    break;
-                case CelluloZoneTypes::RECTANGLEINNER:
-                    returnedZone = QVariant::fromValue(dynamic_cast<CelluloZoneRectangleInner *>(z));
-                    break;
-                case CelluloZoneTypes::RECTANGLEBORDER:
-                    returnedZone = QVariant::fromValue(dynamic_cast<CelluloZoneRectangleBorder *>(z));
-                    break;
-                case CelluloZoneTypes::LINEDISTANCE:
-                    returnedZone = QVariant::fromValue(dynamic_cast<CelluloZoneLineDistance *>(z));
-                    break;
-                case CelluloZoneTypes::POINTDISTANCE:
-                    returnedZone = QVariant::fromValue(dynamic_cast<CelluloZonePointDistance *>(z));
-                    break;
-                case CelluloZoneTypes::RPOLYGONINNER:
-                    returnedZone = QVariant::fromValue(dynamic_cast<CelluloZoneRegularPolygonInner *>(z));
-                    break;
-                case CelluloZoneTypes::IRPOLYGONINNER:
-                    returnedZone = QVariant::fromValue(dynamic_cast<CelluloZoneIrregularPolygonInner *>(z));
-                    break;
-                default:
-                    qDebug() << "Forgot to handle an enum case";
-                    return QVariant();
-                    break;
-            }
-            return returnedZone;
-        }
-    }
-    qDebug() << "No zone handled by this engine";
-    return QVariant();
-}*/
 
 /*
 bool CelluloZoneEngine::getAllZonesAndSaveThem(QString path){
