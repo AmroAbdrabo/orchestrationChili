@@ -85,6 +85,16 @@ float CelluloZoneRectangleInner::calculate(float xRobot, float yRobot, float the
     return x <= xRobot && x + width >= xRobot && y <= yRobot && y + height >= yRobot ? 1 : 0;
 }
 
+void CelluloZoneRectangleInner::paint(QPainter* painter, qreal width, qreal height){
+    QBrush brush(QColor("#007430"));
+
+    painter->setBrush(brush);
+    painter->setPen(Qt::NoPen);
+    painter->setRenderHint(QPainter::Antialiasing);
+
+    painter->drawRoundedRect(0, 0, width, height, 10, 10);
+}
+
 /**
  * CelluloZoneRectangleBorder
  */
@@ -99,6 +109,10 @@ float CelluloZoneRectangleBorder::calculate(float xRobot, float yRobot, float th
     return
         (((x - (marginThickeness/2)) <= xRobot && (x + width + (marginThickeness/2)) >= xRobot && (y - (marginThickeness/2)) <= yRobot && (y + height + (marginThickeness/2)) >= yRobot) == 1) &&
         (((x + (marginThickeness/2)) <= xRobot && (x + width - (marginThickeness/2)) >= xRobot && (y + (marginThickeness/2)) <= yRobot && (y + height - (marginThickeness/2)) >= yRobot) == 0);
+}
+
+void CelluloZoneRectangleBorder::paint(QPainter* painter, qreal width, qreal height){
+
 }
 
 /**
@@ -125,4 +139,8 @@ float CelluloZoneRectangleDistance::calculate(float xRobot, float yRobot, float 
     }
 
     return min;
+}
+
+void CelluloZoneRectangleDistance::paint(QPainter* painter, qreal width, qreal height){
+
 }

@@ -145,6 +145,8 @@ ApplicationWindow {
         id: zoneEngine
 
         CelluloZoneRectangleInner{
+            id: staticZone
+
             height: 30
             width: 50
             x: 150
@@ -434,7 +436,15 @@ ApplicationWindow {
                 border.width: 2
                 radius: 5
 
-                Image{
+                CelluloZonePaintedItem{
+                    x: parent.width/4
+                    y: parent.height/4
+                    height: 100
+                    width: 100
+                    associatedZone: staticZone
+                }
+
+                /*Image{
                     source: robotComm1.kidnapped ? "../assets/redHexagon.svg" : "../assets/greenHexagon.svg"
                     rotation: -robotComm1.theta //QML wants clockwise angle for some reason
                     x: robotComm1.x*parent.gridSpacing*parent.scaleCoeff - width/2
@@ -472,7 +482,7 @@ ApplicationWindow {
                         border.width: 1
                         radius: 2.5
                     }
-                }
+                }*/
             }
         }
     }

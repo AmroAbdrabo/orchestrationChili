@@ -82,6 +82,10 @@ float CelluloZoneCircleInner::calculate(float xRobot, float yRobot, float thetaR
     return ((xRobot-x)*(xRobot-x) + (yRobot -y)*(yRobot -y) <= r*r) ? 1 : 0;
 }
 
+void CelluloZoneCircleInner::paint(QPainter* painter, qreal width, qreal height){
+
+}
+
 /**
  * CelluloZoneCircleBorder
  */
@@ -92,12 +96,15 @@ CelluloZoneCircleBorder::CelluloZoneCircleBorder() :
     type = CelluloZoneTypes::CIRCLEBORDER;
 }
 
-
 float CelluloZoneCircleBorder::calculate(float xRobot, float yRobot, float thetaRobot){
     float temp = (xRobot-x)*(xRobot-x) + (yRobot -y)*(yRobot -y);
     float rOuter = r + marginThickeness/2;
     float rInner = r - marginThickeness/2;
     return temp <= (rOuter*rOuter) && temp > (rInner* rInner) ? 1 : 0;
+}
+
+void CelluloZoneCircleBorder::paint(QPainter* painter, qreal width, qreal height){
+
 }
 
 /**
@@ -110,7 +117,10 @@ CelluloZoneCircleDistance::CelluloZoneCircleDistance() :
     type = CelluloZoneTypes::CIRCLEDISTANCE;
 }
 
-
 float CelluloZoneCircleDistance::calculate(float xRobot, float yRobot, float thetaRobot){
     return fabs(sqrt((xRobot-x)*(xRobot-x) + (yRobot -y)*(yRobot -y)) - r);
+}
+
+void CelluloZoneCircleDistance::paint(QPainter* painter, qreal width, qreal height){
+
 }

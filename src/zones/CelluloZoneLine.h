@@ -187,6 +187,15 @@ public:
      */
     Q_INVOKABLE float calculate(float xRobot, float yRobot, float thetaRobot);
 
+    /**
+     * @brief Draws this zone onto the pointer
+     *
+     * @param painter Object to draw onto
+     * @param width Width of the canvas
+     * @param height Height of the canvas
+     */
+    void paint(QPainter* painter, qreal width, qreal height);
+
 };
 
 #endif // CELLULOZONELINE_H

@@ -76,3 +76,7 @@ CelluloZonePointDistance::CelluloZonePointDistance() :
 float CelluloZonePointDistance::calculate(float xRobot, float yRobot, float thetaRobot){
     return sqrt((xRobot-x)*(xRobot-x) + (yRobot -y)*(yRobot -y));
 }
+
+void CelluloZonePointDistance::paint(QPainter* painter, qreal width, qreal height){
+
+}

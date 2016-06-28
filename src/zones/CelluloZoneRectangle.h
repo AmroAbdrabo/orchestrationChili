@@ -127,7 +127,6 @@ public:
      */
     void write(QJsonObject &json);
 
-
     /**
      * @brief Read the zone infos from the given json Object
      * @param json json object to be read
@@ -188,6 +187,15 @@ public:
      */
     Q_INVOKABLE float calculate(float xRobot, float yRobot, float thetaRobot);
 
+    /**
+     * @brief Draws this zone onto the pointer
+     *
+     * @param painter Object to draw onto
+     * @param width Width of the canvas
+     * @param height Height of the canvas
+     */
+    void paint(QPainter* painter, qreal width, qreal height);
+
 };
 
 /**
@@ -213,6 +221,15 @@ public:
      */
     Q_INVOKABLE float calculate(float xRobot, float yRobot, float thetaRobot);
 
+    /**
+     * @brief Draws this zone onto the pointer
+     *
+     * @param painter Object to draw onto
+     * @param width Width of the canvas
+     * @param height Height of the canvas
+     */
+    void paint(QPainter* painter, qreal width, qreal height);
+
 };
 
 /**
@@ -237,6 +254,15 @@ public:
      * @return the distance between the robot pose and the border of this rectangular zone
      */
     Q_INVOKABLE float calculate(float xRobot, float yRobot, float thetaRobot);
+
+    /**
+     * @brief Draws this zone onto the pointer
+     *
+     * @param painter Object to draw onto
+     * @param width Width of the canvas
+     * @param height Height of the canvas
+     */
+    void paint(QPainter* painter, qreal width, qreal height);
 
 };
 

@@ -247,6 +247,10 @@ float CelluloZoneIrregularPolygonInner::calculate(float xRobot, float yRobot, fl
     return pointInPoly(xRobot, yRobot, minX, maxX, minY, maxY, pointsQt);
 }
 
+void CelluloZoneIrregularPolygonInner::paint(QPainter* painter, qreal width, qreal height){
+
+}
+
 /**
  * CelluloZoneIrregularPolygonBorder
  */
@@ -259,6 +263,10 @@ CelluloZoneIrregularPolygonBorder::CelluloZoneIrregularPolygonBorder() :
 
 float CelluloZoneIrregularPolygonBorder::calculate(float xRobot, float yRobot, float thetaRobot){
     return isPointOnPolygonBorder(xRobot, yRobot);
+}
+
+void CelluloZoneIrregularPolygonBorder::paint(QPainter* painter, qreal width, qreal height){
+
 }
 
 /**
@@ -275,6 +283,10 @@ float CelluloZoneIrregularPolygonDistance::calculate(float xRobot, float yRobot,
     return getPointToPolygonDistance(xRobot, yRobot);
 }
 
+void CelluloZoneIrregularPolygonDistance::paint(QPainter* painter, qreal width, qreal height){
+
+}
+
 /**
  * CelluloZoneRegularPolygonInner
  */
@@ -287,6 +299,10 @@ CelluloZoneRegularPolygonInner::CelluloZoneRegularPolygonInner() :
 
 float CelluloZoneRegularPolygonInner::calculate(float xRobot, float yRobot, float thetaRobot){
     return pointInPoly(xRobot, yRobot, x-r, x+r, y-r, y+r, pointsQt);
+}
+
+void CelluloZoneRegularPolygonInner::paint(QPainter* painter, qreal width, qreal height){
+
 }
 
 /**
@@ -303,6 +319,10 @@ float CelluloZoneRegularPolygonBorder::calculate(float xRobot, float yRobot, flo
     return isPointOnPolygonBorder(xRobot, yRobot);
 }
 
+void CelluloZoneRegularPolygonBorder::paint(QPainter* painter, qreal width, qreal height){
+
+}
+
 /**
  * CelluloZoneRegularPolygonDistance
  */
@@ -315,4 +335,8 @@ CelluloZoneRegularPolygonDistance::CelluloZoneRegularPolygonDistance() :
 
 float CelluloZoneRegularPolygonDistance::calculate(float xRobot, float yRobot, float thetaRobot){
     return getPointToPolygonDistance(xRobot, yRobot);
+}
+
+void CelluloZoneRegularPolygonDistance::paint(QPainter* painter, qreal width, qreal height){
+
 }

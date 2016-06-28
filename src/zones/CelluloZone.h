@@ -26,12 +26,17 @@
 #define CELLULOZONE_H
 
 #include <QQuickItem>
+#include <QQuickPaintedItem>
+#include <QPainter>
 #include <QHash>
 #include <QJsonObject>
 #include <QJsonArray>
 
 #include "CelluloZoneTypes.h"
 #include "CelluloZoneClient.h"
+#include "CelluloZonePaintedItem.h"
+
+class CelluloZonePaintedItem;
 
 /**
  * @brief CelluloZone Base Class for zones
@@ -158,6 +163,15 @@ public:
      */
     virtual void read(const QJsonObject &json) = 0;
 
+    /**
+     * @brief Creates a PaintedItem that is the visual representation of this zone
+     *
+     * @param parent QML parent
+     *
+     * @return A PaintedItem that is the visual representation of this zone
+     */
+    Q_INVOKABLE CelluloZonePaintedItem* getPaintedItem(QQuickItem* parent = 0);
+
 public slots:
 
     /**
@@ -170,6 +184,15 @@ public slots:
      * @param theta New orientaton of the client
      */
     void onClientPoseChanged(qreal x, qreal y, qreal theta);
+
+    /**
+     * @brief Draws this zone onto the painter
+     *
+     * @param painter Object to draw onto
+     * @param width Width of the canvas
+     * @param height Height of the canvas
+     */
+    virtual void paint(QPainter* painter, qreal width, qreal height) = 0;
 
 protected:
 

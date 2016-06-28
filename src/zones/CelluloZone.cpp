@@ -137,3 +137,9 @@ QList<QPointF> CelluloZone::getRectangleFromLine(float x1,float y1,float x2, flo
 
     return list;
 }
+
+CelluloZonePaintedItem* CelluloZone::getPaintedItem(QQuickItem* parent){
+    CelluloZonePaintedItem* item = new CelluloZonePaintedItem(parent);
+    item->setAssociatedZone(this);
+    return item;
+}

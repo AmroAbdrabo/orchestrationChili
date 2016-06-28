@@ -39,6 +39,7 @@
 #include "zones/CelluloZoneEngine.h"
 #include "zones/CelluloZoneJsonHandler.h"
 #include "zones/CelluloZoneTypes.h"
+#include "zones/CelluloZonePaintedItem.h"
 
 void CelluloPlugin::registerTypes(const char *uri){
     qmlRegisterType<CelluloBluetooth>(uri, 1, 0, "CelluloBluetooth");
@@ -84,6 +85,8 @@ void CelluloPlugin::registerTypes(const char *uri){
     qmlRegisterType<CelluloZoneRegularPolygonInner>(uri, 1, 0, "CelluloZoneRegularPolygonInner");
     qmlRegisterType<CelluloZoneRegularPolygonBorder>(uri, 1, 0, "CelluloZoneRegularPolygonBorder");
     qmlRegisterType<CelluloZoneRegularPolygonDistance>(uri, 1, 0, "CelluloZoneRegularPolygonDistance");
+
+    qmlRegisterType<CelluloZonePaintedItem>(uri, 1, 0, "CelluloZonePaintedItem");
 }
 
 void CelluloPlugin::initializeEngine(QQmlEngine *engine, const char *uri){
