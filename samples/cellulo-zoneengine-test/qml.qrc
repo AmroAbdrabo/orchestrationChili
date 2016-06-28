@@ -3,6 +3,6 @@
         <file>src/main.qml</file>
         <file>assets/redHexagon.svg</file>
         <file>assets/greenHexagon.svg</file>
-        <file>allZones.json</file>
+        <file>zones.json</file>
     </qresource>
 </RCC>

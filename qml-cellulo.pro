@@ -68,7 +68,7 @@ else{
     qmldir.files = qmldir
     javascript.files = src/cellulo-toolkit.js \
     src/zones/cellulo-zonesdrawer.js
-    qml.files = src/CelluloRobot.qml src/MacAddrSelector.qml
+    qml.files = src/CelluloRobot.qml src/comm/MacAddrSelector.qml
 
     OTHER_FILES += qmldir.files javascript.files qml.files
 
