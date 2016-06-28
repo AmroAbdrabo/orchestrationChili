@@ -30,6 +30,7 @@
 #define IMG_HEIGHT_SHARED (480/4)     ///< Height of localization camera image
 #define GOAL_POSE_FACTOR_SHARED 100   ///< Goal pose elements are multiplied by this before being sent over comm. channel
 #define GOAL_VEL_FACTOR_SHARED 100    ///< Goal velocity elements are multiplied by this before being sent over comm. channel
+#define DOTS_GRID_SPACING 0.508f      ///< Average distance between two grid lines in localization dots grid
 
 /**
  * @brief Battery states
