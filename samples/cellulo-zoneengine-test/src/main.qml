@@ -152,6 +152,8 @@ ApplicationWindow {
             x: 150
             y: 30
             name: "ZONE_RECTANGLE_INNER_STATIC"
+
+            Component.onCompleted: staticZone.getPaintedItem(page)
         }
     }
 
@@ -436,13 +438,13 @@ ApplicationWindow {
                 border.width: 2
                 radius: 5
 
-                CelluloZonePaintedItem{
+                /*CelluloZonePaintedItem{
                     x: parent.width/4
                     y: parent.height/4
                     height: 100
                     width: 100
                     associatedZone: staticZone
-                }
+                }*/
 
                 /*Image{
                     source: robotComm1.kidnapped ? "../assets/redHexagon.svg" : "../assets/greenHexagon.svg"

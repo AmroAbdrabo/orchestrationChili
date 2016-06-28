@@ -24,13 +24,59 @@
 
 #include "CelluloZonePaintedItem.h"
 
+#include <QVariant>
+
 CelluloZonePaintedItem::CelluloZonePaintedItem(QQuickItem* parent) : QQuickPaintedItem(parent){
     associatedZone = NULL;
+
+    if(parent){
+        connect(parent, SIGNAL(widthChanged()), this, SLOT(parentWidthChanged()));
+        connect(parent, SIGNAL(heightChanged()), this, SLOT(parentHeightChanged()));
+        setWidth(parent->width());
+        setHeight(parent->height());
+    }
+    else
+        qWarning() << "CelluloZonePaintedItem::CelluloZonePaintedItem(): CelluloZonePaintedItem must be initialized with a parent.";
+}
+
+void CelluloZonePaintedItem::parentWidthChanged(){
+    setWidth(parentItem()->width());
+    qDebug() << "setting width...";
+}
+
+void CelluloZonePaintedItem::parentHeightChanged(){
+    setHeight(parentItem()->height());
+    qDebug() << "setting height...";
+}
+
+/**
+ * @brief Sets the associated zone
+ *
+ * @param associatedZone The CelluloZone that will take care of painting
+ */
+void CelluloZonePaintedItem::setAssociatedZone(CelluloZone* zone){
+    if(associatedZone != zone){
+        associatedZone = zone;
+        emit associatedZoneChanged();
+
+        /*QVariant scaleCoeffVariant = parent()->property("scaleCoeff");
+        if(scaleCoeffVariant.isValid()){
+            qreal scaleCoeff = scaleCoeffVariant.value<qreal>();
+            setX(100*scaleCoeff);
+            setY(100*scaleCoeff);
+            setWidth(100*scaleCoeff);
+            setWidth(100*scaleCoeff);
+        }
+        else
+            qWarning() << "CelluloZonePaintedItem::paint(): Parent of CelluloZonePaintedItem must contain a real scaleCoeff property.";*/
+    }
 }
 
 void CelluloZonePaintedItem::paint(QPainter* painter){
-    if(associatedZone)
-        associatedZone->paint(painter, boundingRect().width(), boundingRect().height());
+    if(associatedZone){
+        qDebug() << "painting";
+        associatedZone->paint(painter, width(), height());
+    }
     else
         qWarning() << "CelluloZonePaintedItem::paint(): No associatedZone set.";
 }

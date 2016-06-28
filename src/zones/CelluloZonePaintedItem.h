@@ -47,19 +47,14 @@ public:
      *
      * @param parent QML parent
      */
-    explicit CelluloZonePaintedItem(QQuickItem* parent = 0);
+    explicit CelluloZonePaintedItem(QQuickItem* parent);
 
     /**
      * @brief Sets the associated zone
      *
      * @param associatedZone The CelluloZone that will take care of painting
      */
-    void setAssociatedZone(CelluloZone* zone){
-        if(associatedZone != zone){
-            associatedZone = zone;
-            emit associatedZoneChanged();
-        }
-    }
+    void setAssociatedZone(CelluloZone* zone);
 
     /**
      * @brief Gets the associated zone
@@ -83,6 +78,12 @@ signals:
      * @brief Emitted when the associated zone changes
      */
     void associatedZoneChanged();
+
+private slots:
+
+    void parentWidthChanged();
+
+    void parentHeightChanged();
 
 private:
 
