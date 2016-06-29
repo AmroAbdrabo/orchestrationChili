@@ -41,14 +41,12 @@ class CelluloZonePaintedItem;
 /**
  * @brief CelluloZone Base Class for zones
  */
-class CelluloZone : public QQuickItem{
+class CelluloZone : public QQuickItem {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
     Q_PROPERTY(bool active WRITE setActive READ isActive NOTIFY activeChanged)
     Q_PROPERTY(QString name WRITE setName READ getName NOTIFY nameChanged)
-    Q_PROPERTY(float marginThickeness WRITE setMarginThickeness READ getMarginTickeness NOTIFY marginThickenessChanged)
-    Q_PROPERTY(int stackingOrder WRITE setStackingOrder READ getStackingOrder NOTIFY stackingOrderChanged)
     Q_PROPERTY(CelluloZoneTypes::ZoneType type READ getType NOTIFY typeChanged)
 
 public:
@@ -62,75 +60,37 @@ public:
      * @brief Get the type of the zone
      * @return Type of the zone
      */
-    CelluloZoneTypes::ZoneType getType() { return type; }
+    CelluloZoneTypes::ZoneType getType() {
+        return type;
+    }
 
     /**
      * @brief Get the name of the zone
      * @return Name of the zone
      */
-    QString getName() { return name; }
+    QString getName() {
+        return name;
+    }
 
     /**
      * @brief Set the name of the zone
      * @param newName new name for the zone
      */
-    void setName(QString newName){
-        if(newName!=name){
-            name = newName;
-            emit(nameChanged());
-        }
-    }
-
-    /**
-     * @brief Get the margin thickeness which is the margin accepted to tell if a robot is on border
-     * @return Marginthickeness
-     */
-    float getMarginTickeness() { return marginThickeness; }
-
-    /**
-     * @brief Sets a margin thickeness
-     * @param newMarginthickeness new margin thickeness to be set >0
-     */
-    void setMarginThickeness(float newMarginThickeness){
-        if(newMarginThickeness!=marginThickeness && newMarginThickeness>0){
-            marginThickeness = newMarginThickeness;
-            emit(marginThickenessChanged());
-        }
-    }
-
-    /**
-     * @brief Get the stacking order
-     * @return StackingOrder
-     */
-    float getStackingOrder() { return stackingOrder; }
-
-    /**
-     * @brief Sets the stacking order
-     * @param newStackingOrder new stacking order to be set >=0
-     */
-    void setStackingOrder(float newStackingOrder){
-        if(newStackingOrder!=stackingOrder && newStackingOrder>=0){
-            stackingOrder = newStackingOrder;
-            emit(stackingOrderChanged());
-        }
-    }
+    void setName(QString newName);
 
     /**
      * @brief Return if the zone is active or not
      * @return Active state
      */
-    float isActive() { return active; }
+    float isActive() {
+        return active;
+    }
 
     /**
      * @brief Sets active state
      * @param newActive new active state
      */
-    void setActive(float newActive){
-        if(newActive!=active){
-            active = newActive;
-            emit(activeChanged());
-        }
-    }
+    void setActive(float newActive);
 
     /**
      * @brief Calculate the zone quantity of this zone according to the robot's pose
@@ -196,12 +156,12 @@ protected:
 
     QString name;                               ///< name of the zone
     CelluloZoneTypes::ZoneType type;            ///< type of the zone
-    int stackingOrder;                          ///< stacking order of the zone
-    float marginThickeness;                     ///< margin accepted to tell if a robot is on zone's border (middle of the margin is the border)
     bool active;                                ///< true if zone is active false otherwise
-    QHash<QString, float> cellulosCalculate;    ///< map of cellulorobot (represented by their MacAdress) and their zone quantity for this zone
 
-    /////////////////////////////////////////////////////////////////////// Mathematical functions for children
+    /**
+     * @brief Repaints the associated PaintedItem (if any)
+     */
+    void updatePaintedItem();
 
     /**
      * @brief pointToSegmentDistance Compute distance between point and segement
@@ -242,16 +202,6 @@ protected:
 signals:
 
     /**
-     * @brief Emitted when the margin thickeness of the zone changes
-     */
-    void marginThickenessChanged();
-
-    /**
-     * @brief Emitted when the stacking order of the zone changes
-     */
-    void stackingOrderChanged();
-
-    /**
      * @brief Emitted when the active state of the zone changes
      */
     void activeChanged();
@@ -269,6 +219,7 @@ signals:
 private:
 
     QHash<CelluloZoneClient*, qreal> clientsLastValues;  ///< Stores the most recent values calculated for clients
+    CelluloZonePaintedItem* paintedItem;                 ///< The PaintedItem associated with this zone
 
 };
 

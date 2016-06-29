@@ -51,12 +51,12 @@ public:
     float getX() {
         return x;
     }
-    void setX(float newX) {
-        if(newX!=x){
-            x = newX;
-            emit(xChanged());
-        }
-    }
+
+    /**
+     * @brief Updates the x position of the point
+     * @param newX New x position in mm
+     */
+    void setX(float newX);
 
     /**
      * @brief Gets the y position of the point
@@ -65,12 +65,12 @@ public:
     float getY() {
         return y;
     }
-    void setY(float newY) {
-        if(newY!=y){
-            y = newY;
-            emit(yChanged());
-        }
-    }
+
+    /**
+     * @brief Updates the y position of the point
+     * @param newY New y position in mm
+     */
+    void setY(float newY);
 
     /**
      * @brief Write the zone infos to the given json Object

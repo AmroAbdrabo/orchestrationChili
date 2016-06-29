@@ -53,12 +53,12 @@ public:
     float getX() {
         return x;
     }
-    void setX(float newX) {
-        if(newX!=x){
-            x = newX;
-            emit(xChanged());
-        }
-    }
+
+    /**
+     * @brief Updates the rectangle's left edge x position
+     * @param newX New x position in mm
+     */
+    void setX(float newX);
 
     /**
      * @brief Gets the y position of upper left corner of the rectangle
@@ -67,12 +67,12 @@ public:
     float getY() {
         return y;
     }
-    void setY(float newY) {
-        if(newY!=y){
-            y = newY;
-            emit(yChanged());
-        }
-    }
+
+    /**
+     * @brief Updates the rectangle's top edge y position
+     * @param newY New y position in mm
+     */
+    void setY(float newY);
 
     /**
      * @brief Gets the height of the rectangle
@@ -81,12 +81,12 @@ public:
     float getHeight() {
         return height;
     }
-    void setHeight(float newHeight) {
-        if(newHeight!=height){
-            height = newHeight;
-            emit(heightChanged());
-        }
-    }
+
+    /**
+     * @brief Updates the rectangle's height
+     * @param newHeight New height in mm
+     */
+    void setHeight(float newHeight);
 
     /**
      * @brief Gets the width of the rectangle
@@ -95,12 +95,12 @@ public:
     float getWidth() {
         return width;
     }
-    void setWidth(float newWidth) {
-        if(newWidth!=width){
-            width = newWidth;
-            emit(widthChanged());
-        }
-    }
+
+    /**
+     * @brief Updates the rectangle's width
+     * @param newHeight New width in mm
+     */
+    void setWidth(float newWidth);
 
     /**
      * @brief Write the zone infos to the given json Object

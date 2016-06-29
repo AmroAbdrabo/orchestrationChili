@@ -55,6 +55,30 @@ void CelluloZoneCircle::paint(QPainter* painter, qreal canvasWidth, qreal canvas
 
 }
 
+void CelluloZoneCircle::setX(float newX){
+    if(newX != x){
+        x = newX;
+        emit(xChanged());
+        updatePaintedItem();
+    }
+}
+
+void CelluloZoneCircle::setY(float newY){
+    if(newY != y){
+        y = newY;
+        emit(yChanged());
+        updatePaintedItem();
+    }
+}
+
+void CelluloZoneCircle::setR(float newR){
+    if(newR != r){
+        r = newR;
+        emit(rChanged());
+        updatePaintedItem();
+    }
+}
+
 /**
  * CelluloZoneCircleInner
  */
@@ -81,8 +105,8 @@ CelluloZoneCircleBorder::CelluloZoneCircleBorder() :
 
 float CelluloZoneCircleBorder::calculate(float xRobot, float yRobot, float thetaRobot){
     float temp = (xRobot-x)*(xRobot-x) + (yRobot -y)*(yRobot -y);
-    float rOuter = r + marginThickeness/2;
-    float rInner = r - marginThickeness/2;
+    float rOuter = r;// + marginThickeness/2; //TODO: PUT MARGIN HERE
+    float rInner = r;// - marginThickeness/2; //TODO: PUT MARGIN HERE
     return temp <= (rOuter*rOuter) && temp > (rInner* rInner) ? 1 : 0;
 }
 

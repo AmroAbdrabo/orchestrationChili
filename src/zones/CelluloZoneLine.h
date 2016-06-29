@@ -52,12 +52,12 @@ public:
     float getX1() {
         return x1;
     }
-    void setX1(float newx1) {
-        if(newx1!=x1){
-            x1 = newx1;
-            emit(x1Changed());
-        }
-    }
+
+    /**
+     * @brief Updates the x position of the line segment first endpoint
+     * @param newx1 New x position in mm
+     */
+    void setX1(float newX1);
 
     /**
      * @brief Gets the y position of the first line's point
@@ -66,12 +66,12 @@ public:
     float getY1() {
         return y1;
     }
-    void setY1(float newY1) {
-        if(newY1!=y1){
-            y1 = newY1;
-            emit(y1Changed());
-        }
-    }
+
+    /**
+     * @brief Updates the y position of the line segment first endpoint
+     * @param newx1 New y position in mm
+     */
+    void setY1(float newY1);
 
     /**
      * @brief Gets the x position of the second line's point
@@ -80,12 +80,12 @@ public:
     float getX2() {
         return x2;
     }
-    void setX2(float newx2) {
-        if(newx2!=x2){
-            x2 = newx2;
-            emit(x2Changed());
-        }
-    }
+
+    /**
+     * @brief Updates the x position of the line segment second endpoint
+     * @param newX2 New x position in mm
+     */
+    void setX2(float newX2);
 
     /**
      * @brief Gets the y position of the second line's point
@@ -94,12 +94,12 @@ public:
     float getY2() {
         return y2;
     }
-    void setY2(float newY2) {
-        if(newY2!=y2){
-            y2 = newY2;
-            emit(y2Changed());
-        }
-    }
+
+    /**
+     * @brief Updates the y position of the line segment second endpoint
+     * @param newY1 New y position in mm
+     */
+    void setY2(float newY2);
 
     /**
      * @brief Write the zone infos to the given json Object

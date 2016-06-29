@@ -115,16 +115,15 @@ public:
      * @brief Gets the vertices (set via QML) of the irregular polygon
      * @return List of vertices (set via QML) of the irregular polygon
      */
-    QList<QVariant> getVertices() {
+    QList<QVariant> getVertices(){
         return vertices;
     }
-    Q_INVOKABLE void setVertices(QList<QVariant> newPoints) {
-        if(newPoints!=vertices){
-            vertices = newPoints;
-            emit(verticesChanged());
-            setPointsQt(convertQVariantToQPointF());
-        }
-    }
+
+    /**
+     * @brief Updates the list of vertices
+     * @param newPoints New list of vertices
+     */
+    void setVertices(QList<QVariant> newPoints);
 
     /**
      * @brief Write the zone infos to the given json Object
@@ -237,12 +236,12 @@ class CelluloZoneRegularPolygon : public CelluloZonePolygon {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
-    Q_PROPERTY(float numEdges WRITE setNumEdges READ getNumEdges NOTIFY numEdgesChanged)
+    Q_PROPERTY(int numEdges WRITE setNumEdges READ getNumEdges NOTIFY numEdgesChanged)
     Q_PROPERTY(float x WRITE setX READ getX NOTIFY xChanged)
     Q_PROPERTY(float y WRITE setY READ getY NOTIFY yChanged)
     Q_PROPERTY(float r WRITE setR READ getR NOTIFY rChanged)
     Q_PROPERTY(float rotAngle WRITE setRotAngle READ getRotAngle NOTIFY rotAngleChanged)
-    Q_PROPERTY (QList<QVariant> vertices READ getVertices NOTIFY verticesChanged)
+    Q_PROPERTY(QList<QVariant> vertices READ getVertices NOTIFY verticesChanged)
 
 public:
 
@@ -255,98 +254,72 @@ public:
      * @brief Gets the number of edges of the regular polygon
      * @return The number of edges of the regular polygon
      */
-    float getNumEdges() {
+    int getNumEdges(){
         return numEdges;
     }
-    void setNumEdges(float newNumEdge) {
-        if(newNumEdge!=numEdges){
-            numEdges = newNumEdge;
-            emit(numEdgesChanged());
-            if(numEdges>2){
-                setPointsQt(createPolygonPointsFromOuterCircle());
-            }
-        }
-    }
+    void setNumEdges(int newNumEdge);
 
     /**
      * @brief Gets the vertices (computed from the shape properties) of the regular polygon
      * @return List of vertices (computed from the shape properties) of the regular polygon
      */
-    QList<QVariant> getVertices() {
-        QList<QVariant> newVertices;
-        for(int i = 0; i < pointsQt.size(); ++i){
-            newVertices.append(QVariant::fromValue(pointsQt.at(i)));
-        }
-        return newVertices;
-    }
+    QList<QVariant> getVertices();
 
     /**
      * @brief Gets the x position of regular polygon definer circle's center
      * @return X position of regular polygon definer circle's center
      */
-    float getX() {
+    float getX(){
         return x;
     }
-    void setX(float newX) {
-        if(newX!=x){
-            x = newX;
-            emit(xChanged());
-            if(numEdges>2){
-                setPointsQt(createPolygonPointsFromOuterCircle());
-            }
-        }
-    }
+
+    /**
+     * @brief Sets the x position of the center of the regular polygon
+     * @param newX Center x position in mm
+     */
+    void setX(float newX);
 
     /**
      * @brief Gets the y position of regular polygon definer circle's center
      * @return Y position of regular polygon definer circle's center
      */
-    float getY() {
+    float getY(){
         return y;
     }
-    void setY(float newY) {
-        if(newY!=y){
-            y = newY;
-            emit(yChanged());
-            if(numEdges>2){
-                setPointsQt(createPolygonPointsFromOuterCircle());
-            }
-        }
-    }
+
+    /**
+     * @brief Sets the y position of the center of the regular polygon
+     * @param newY Center y position in mm
+     */
+    void setY(float newY);
 
     /**
      * @brief Gets the radius of the regular polygon definer circle
      * @return R the radius of the regular polygon definer circle
      */
-    float getR() {
+    float getR(){
         return r;
     }
-    void setR( float newR) {
-        if(newR!=r){
-            r = newR;
-            emit(rChanged());
-            if(numEdges>2){
-                setPointsQt(createPolygonPointsFromOuterCircle());
-            }
-        }
-    }
+
+    /**
+     * @brief Sets the radius of the outer circle of the regular polygon
+     * @param newR Radius of the outer circle in mm
+     */
+    void setR(float newR);
 
     /**
      * @brief Gets the rotational angle of the regular polygon
      * @return The rotational angle of the regular polygon
      */
-    float getRotAngle() {
+    float getRotAngle(){
         return rotAngle;
     }
-    void setRotAngle( float newRotAngle) {
-        if(newRotAngle!=rotAngle){
-            rotAngle = newRotAngle;
-            emit(rotAngleChanged());
-            if(numEdges>2){
-                setPointsQt(createPolygonPointsFromOuterCircle());
-            }
-        }
-    }
+
+    /**
+     * @brief Sets the orientation of the regular polygon
+     * @param newRotAngle The
+     */
+    void setRotAngle(float newRotAngle);
 
     /**
      * @brief Write the zone infos to the given json Object

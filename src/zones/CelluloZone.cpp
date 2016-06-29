@@ -28,10 +28,10 @@
 CelluloZone::CelluloZone(QQuickItem* parent) :
     QQuickItem(parent)
 {
-    marginThickeness = 0;
     active = true;
-    stackingOrder = 0;
     name = "anonymousZone";
+
+    paintedItem = NULL;
 }
 
 void CelluloZone::onClientPoseChanged(qreal x, qreal y, qreal theta){
@@ -70,15 +70,39 @@ void CelluloZone::onClientPoseChanged(qreal x, qreal y, qreal theta){
 void CelluloZone::write(QJsonObject& json){
     json["type"] = CelluloZoneTypes::ZoneTypeString(type);
     json["name"] = name;
-    json["stackingOrder"] = stackingOrder;
-    json["marginThickeness"] = marginThickeness;
 }
 
 void CelluloZone::read(const QJsonObject& json){
     type = CelluloZoneTypes::typeFromString(json["type"].toString());
     name = json["name"].toString();
-    stackingOrder= json["stackingOrder"].toInt();
-    marginThickeness = json["marginThickeness"].toDouble();
+}
+
+void CelluloZone::setName(QString newName){
+    if(newName != name){
+        name = newName;
+        emit(nameChanged());
+    }
+}
+
+void CelluloZone::setActive(float newActive){
+    if(newActive!=active){
+        active = newActive;
+        emit(activeChanged());
+    }
+}
+
+void CelluloZone::updatePaintedItem(){
+    if(paintedItem)
+        paintedItem->update();
+}
+
+CelluloZonePaintedItem* CelluloZone::createPaintedItem(QQuickItem* parent, qreal physicalPlaygroundWidth, qreal physicalPlaygroundHeight){
+    delete paintedItem;
+    paintedItem = new CelluloZonePaintedItem(parent);
+    paintedItem->setAssociatedZone(this);
+    paintedItem->setPhysicalPlaygroundWidth(physicalPlaygroundWidth);
+    paintedItem->setPhysicalPlaygroundHeight(physicalPlaygroundHeight);
+    return paintedItem;
 }
 
 // taken from http://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment
@@ -150,12 +174,4 @@ QList<QPointF> CelluloZone::getRectangleFromLine(float x1,float y1,float x2, flo
     list.append(QPointF(x1+v2x, y1+v2y));
 
     return list;
-}
-
-CelluloZonePaintedItem* CelluloZone::createPaintedItem(QQuickItem* parent, qreal physicalPlaygroundWidth, qreal physicalPlaygroundHeight){
-    CelluloZonePaintedItem* item = new CelluloZonePaintedItem(parent);
-    item->setAssociatedZone(this);
-    item->setPhysicalPlaygroundWidth(physicalPlaygroundWidth);
-    item->setPhysicalPlaygroundHeight(physicalPlaygroundHeight);
-    return item;
 }

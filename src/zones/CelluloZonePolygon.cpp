@@ -65,7 +65,9 @@ float CelluloZonePolygon::isPointOnPolygonBorder(float xPoint, float yPoint){
     if(!(xPoint>maxX || xPoint<minX || yPoint>maxY || yPoint<minY)){
         float result = 0;
         for(int i = 0; i < pointsQt.length(); ++i){
-            result = pointInPoly(xPoint, yPoint, minX, maxX, minY, maxY, getRectangleFromLine(pointsQt.at(i%pointsQt.length()).x(),pointsQt.at(i%pointsQt.length()).y(),pointsQt.at((i+1)%pointsQt.length()).x(),pointsQt.at((i+1)%pointsQt.length()).y(),marginThickeness/2));
+            //result = pointInPoly(xPoint, yPoint, minX, maxX, minY, maxY, getRectangleFromLine(pointsQt.at(i%pointsQt.length()).x(),pointsQt.at(i%pointsQt.length()).y(),pointsQt.at((i+1)%pointsQt.length()).x(),pointsQt.at((i+1)%pointsQt.length()).y(),marginThickeness/2));
+            //
+            //TODO: GET MARGIN THICKNESS IN HERE
             if(result == 1){
                 return 1;
             }
@@ -98,6 +100,15 @@ void CelluloZonePolygon::paint(QPainter* painter, qreal canvasWidth, qreal canva
 /**
  * CelluloZoneIrregularPolygon
  */
+
+ void CelluloZoneIrregularPolygon::setVertices(QList<QVariant> newPoints) {
+     if(newPoints != vertices){
+         vertices = newPoints;
+         emit(verticesChanged());
+         setPointsQt(convertQVariantToQPointF());
+         updatePaintedItem();
+     }
+ }
 
 void CelluloZoneIrregularPolygon::write(QJsonObject &json){
     CelluloZone::write(json);
@@ -197,8 +208,60 @@ CelluloZoneRegularPolygon::CelluloZoneRegularPolygon() :
     x = 0;
     y = 0;
     r = 0;
-    numEdges = 0;
+    numEdges = 3;
     rotAngle = 0;
+}
+
+void CelluloZoneRegularPolygon::setNumEdges(int newNumEdge) {
+    if(newNumEdge > 2 && newNumEdge != numEdges){
+        numEdges = newNumEdge;
+        emit(numEdgesChanged());
+        setPointsQt(createPolygonPointsFromOuterCircle());
+        updatePaintedItem();
+    }
+}
+
+QList<QVariant> CelluloZoneRegularPolygon::getVertices() {
+    QList<QVariant> newVertices;
+    for(int i = 0; i < pointsQt.size(); ++i)
+        newVertices.append(QVariant::fromValue(pointsQt.at(i)));
+    return newVertices;
+}
+
+void CelluloZoneRegularPolygon::setX(float newX) {
+    if(newX != x){
+        x = newX;
+        emit(xChanged());
+        setPointsQt(createPolygonPointsFromOuterCircle());
+        updatePaintedItem();
+    }
+}
+
+void CelluloZoneRegularPolygon::setY(float newY) {
+    if(newY != y){
+        y = newY;
+        emit(yChanged());
+        setPointsQt(createPolygonPointsFromOuterCircle());
+        updatePaintedItem();
+    }
+}
+
+void CelluloZoneRegularPolygon::setR(float newR) {
+    if(newR != r){
+        r = newR;
+        emit(rChanged());
+        setPointsQt(createPolygonPointsFromOuterCircle());
+        updatePaintedItem();
+    }
+}
+
+void CelluloZoneRegularPolygon::setRotAngle(float newRotAngle) {
+    if(newRotAngle != rotAngle){
+        rotAngle = newRotAngle;
+        emit(rotAngleChanged());
+        setPointsQt(createPolygonPointsFromOuterCircle());
+        updatePaintedItem();
+    }
 }
 
 void CelluloZoneRegularPolygon::write(QJsonObject &json){

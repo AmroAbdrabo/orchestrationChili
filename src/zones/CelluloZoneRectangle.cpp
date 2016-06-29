@@ -37,6 +37,38 @@ CelluloZoneRectangle::CelluloZoneRectangle() :
     width = 0;
 }
 
+void CelluloZoneRectangle::setX(float newX) {
+    if(newX!=x){
+        x = newX;
+        emit(xChanged());
+        updatePaintedItem();
+    }
+}
+
+void CelluloZoneRectangle::setY(float newY) {
+    if(newY!=y){
+        y = newY;
+        emit(yChanged());
+        updatePaintedItem();
+    }
+}
+
+void CelluloZoneRectangle::setHeight(float newHeight) {
+    if(newHeight!=height){
+        height = newHeight;
+        emit(heightChanged());
+        updatePaintedItem();
+    }
+}
+
+void CelluloZoneRectangle::setWidth(float newWidth) {
+    if(newWidth!=width){
+        width = newWidth;
+        emit(widthChanged());
+        updatePaintedItem();
+    }
+}
+
 void CelluloZoneRectangle::write(QJsonObject &json){
     CelluloZone::write(json);
 
@@ -56,7 +88,16 @@ void CelluloZoneRectangle::read(const QJsonObject &json){
 }
 
 void CelluloZoneRectangle::paint(QPainter* painter, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
-    qDebug() << "UNIMPL";
+    QBrush brush(QColor("#007430"));
+
+    painter->setBrush(brush);
+    painter->setPen(Qt::NoPen);
+    painter->setRenderHint(QPainter::Antialiasing);
+
+    qreal horizontalScaleCoeff = canvasWidth/physicalWidth;
+    qreal verticalScaleCoeff = canvasHeight/physicalHeight;
+
+    painter->drawRect(x*horizontalScaleCoeff, y*verticalScaleCoeff, width*horizontalScaleCoeff, height*verticalScaleCoeff);
 }
 
 /**
@@ -74,20 +115,7 @@ float CelluloZoneRectangleInner::calculate(float xRobot, float yRobot, float the
 }
 
 void CelluloZoneRectangleInner::paint(QPainter* painter, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
-    QBrush brush(QColor("#007430"));
-
-    painter->setBrush(brush);
-    painter->setPen(Qt::NoPen);
-    painter->setRenderHint(QPainter::Antialiasing);
-
-    qreal hsc = canvasWidth/physicalWidth;
-    qreal vsc = canvasHeight/physicalHeight;
-    qreal bw = 50;
-    qreal bh = 40;
-    qreal bx = 100;
-    qreal by = 200;
-
-    painter->drawRoundedRect(bx*hsc, by*vsc, bw*hsc, bh*vsc, 0, 0);
+    CelluloZoneRectangle::paint(painter, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
 }
 
 /**
@@ -101,9 +129,10 @@ CelluloZoneRectangleBorder::CelluloZoneRectangleBorder() :
 }
 
 float CelluloZoneRectangleBorder::calculate(float xRobot, float yRobot, float thetaRobot){
-    return
+    return 0; //TODO: GET MARGIN THICKNESS IN HERE
+    /*return
         (((x - (marginThickeness/2)) <= xRobot && (x + width + (marginThickeness/2)) >= xRobot && (y - (marginThickeness/2)) <= yRobot && (y + height + (marginThickeness/2)) >= yRobot) == 1) &&
-        (((x + (marginThickeness/2)) <= xRobot && (x + width - (marginThickeness/2)) >= xRobot && (y + (marginThickeness/2)) <= yRobot && (y + height - (marginThickeness/2)) >= yRobot) == 0);
+        (((x + (marginThickeness/2)) <= xRobot && (x + width - (marginThickeness/2)) >= xRobot && (y + (marginThickeness/2)) <= yRobot && (y + height - (marginThickeness/2)) >= yRobot) == 0);*/
 }
 
 /**

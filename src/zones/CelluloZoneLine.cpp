@@ -37,6 +37,38 @@ CelluloZoneLine::CelluloZoneLine() :
     y2 = 0;
 }
 
+void CelluloZoneLine::setX1(float newX1){
+    if(newX1 != x1){
+        x1 = newX1;
+        emit(x1Changed());
+        updatePaintedItem();
+    }
+}
+
+void CelluloZoneLine::setY1(float newY1){
+    if(newY1 != y1){
+        y1 = newY1;
+        emit(y1Changed());
+        updatePaintedItem();
+    }
+}
+
+void CelluloZoneLine::setX2(float newX2){
+    if(newX2 != x2){
+        x2 = newX2;
+        emit(x2Changed());
+        updatePaintedItem();
+    }
+}
+
+void CelluloZoneLine::setY2(float newY2){
+    if(newY2 != y2){
+        y2 = newY2;
+        emit(y2Changed());
+        updatePaintedItem();
+    }
+}
+
 void CelluloZoneLine::write(QJsonObject &json){
     CelluloZone::write(json);
     json["x1"] = x1;

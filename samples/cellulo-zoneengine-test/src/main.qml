@@ -157,6 +157,12 @@ ApplicationWindow {
         }
     }
 
+    Button{
+        text: "move zone"
+
+        onClicked: {staticZone.x += 10; staticZone.y += 10}
+    }
+
     GroupBox {
         id: addressBox
         title: "Robots"

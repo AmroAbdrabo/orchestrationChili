@@ -35,6 +35,22 @@ CelluloZonePoint::CelluloZonePoint() :
     y = 0;
 }
 
+void CelluloZonePoint::setX(float newX){
+    if(newX != x){
+        x = newX;
+        emit(xChanged());
+        updatePaintedItem();
+    }
+}
+
+void CelluloZonePoint::setY(float newY){
+    if(newY != y){
+        y = newY;
+        emit(yChanged());
+        updatePaintedItem();
+    }
+}
+
 void CelluloZonePoint::write(QJsonObject &json){
     CelluloZone::write(json);
     json["x"] = x;

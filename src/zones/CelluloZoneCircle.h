@@ -49,43 +49,43 @@ public:
      * @brief Gets the x position of circle's center
      * @return X position of circle's center
      */
-    float getX() {
+    float getX(){
         return x;
     }
-    void setX(float newX) {
-        if(newX!=x){
-            x = newX;
-            emit(xChanged());
-        }
-    }
+
+    /**
+     * @brief Updates the x position of circle's center
+     * @param newX New x position in mm
+     */
+    void setX(float newX);
 
     /**
      * @brief Gets the y position of circle's center
      * @return Y position of circle's center
      */
-    float getY() {
+    float getY(){
         return y;
     }
-    void setY(float newY) {
-        if(newY!=y){
-            y = newY;
-            emit(yChanged());
-        }
-    }
+
+    /**
+     * @brief Updates the y position of circle's center
+     * @param newY New y position in mm
+     */
+    void setY(float newY);
 
     /**
      * @brief Gets the radius of the circle
      * @return R the radius of the circle
      */
-    float getR() {
+    float getR(){
         return r;
     }
-    void setR( float newR) {
-        if(newR!=r){
-            r = newR;
-            emit(rChanged());
-        }
-    }
+
+    /**
+     * @brief Updates the radius of circle
+     * @param newR New radius in mm
+     */
+    void setR(float newR);
 
     /**
      * @brief Write the zone infos to the given json Object
@@ -156,7 +156,7 @@ public:
      *
      * @return 1 if the robot is inside this circular zone 0 otherwise
      */
-    Q_INVOKABLE float calculate(float xRobot, float yRobot, float thetaRobot) override;
+    Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) override;
 
 };
 
@@ -181,7 +181,7 @@ public:
      *
      * @return 1 if the robot is on the border of this circular zone (given the zone's margin) 0 otherwise
      */
-    Q_INVOKABLE float calculate(float xRobot, float yRobot, float thetaRobot) override;
+    Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) override;
 
 };
 
@@ -206,7 +206,7 @@ public:
      *
      * @return the distance between the robot pose and the border of this circular zone
      */
-    Q_INVOKABLE float calculate(float xRobot, float yRobot, float thetaRobot) override;
+    Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) override;
 
 };
 
