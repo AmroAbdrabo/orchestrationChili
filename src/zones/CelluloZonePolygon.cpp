@@ -93,7 +93,7 @@ float CelluloZonePolygon::getPointToPolygonDistance(float xPoint, float yPoint){
     return min;
 }
 
-void CelluloZonePolygon::paint(QPainter* painter, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+void CelluloZonePolygon::paint(QPainter* painter, QColor fillColor, QColor lineColor, qreal lineThickness, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
 
 }
 

@@ -87,12 +87,13 @@ void CelluloZoneRectangle::read(const QJsonObject &json){
     height = json["height"].toDouble();
 }
 
-void CelluloZoneRectangle::paint(QPainter* painter, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
-    QBrush brush(QColor("#007430"));
+void CelluloZoneRectangle::paint(QPainter* painter, QColor fillColor, QColor lineColor, qreal lineThickness,
+                                 qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
 
-    painter->setBrush(brush);
-    painter->setPen(Qt::NoPen);
     painter->setRenderHint(QPainter::Antialiasing);
+
+    painter->setBrush(QBrush(fillColor));
+    painter->setPen(Qt::NoPen);
 
     qreal horizontalScaleCoeff = canvasWidth/physicalWidth;
     qreal verticalScaleCoeff = canvasHeight/physicalHeight;
@@ -114,8 +115,18 @@ float CelluloZoneRectangleInner::calculate(float xRobot, float yRobot, float the
     return x <= xRobot && x + width >= xRobot && y <= yRobot && y + height >= yRobot ? 1 : 0;
 }
 
-void CelluloZoneRectangleInner::paint(QPainter* painter, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
-    CelluloZoneRectangle::paint(painter, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
+void CelluloZoneRectangleInner::paint(QPainter* painter, QColor fillColor, QColor lineColor, qreal lineThickness,
+                                      qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    CelluloZoneRectangle::paint(painter, fillColor, lineColor, lineThickness,
+                                canvasWidth, canvasHeight, physicalWidth, physicalHeight);
+
+    painter->setBrush(Qt::NoBrush);
+    painter->setPen(QPen(QBrush(lineColor), lineThickness));
+
+    qreal horizontalScaleCoeff = canvasWidth/physicalWidth;
+    qreal verticalScaleCoeff = canvasHeight/physicalHeight;
+
+    painter->drawRect(x*horizontalScaleCoeff, y*verticalScaleCoeff, width*horizontalScaleCoeff, height*verticalScaleCoeff);
 }
 
 /**

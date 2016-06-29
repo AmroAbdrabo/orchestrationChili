@@ -43,7 +43,6 @@ class CelluloZoneEngine : public QQuickItem {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
-    Q_PROPERTY(QVariantList zones READ getZonesList NOTIFY zonesChanged)
 
 public:
 
@@ -89,6 +88,13 @@ public:
     Q_INVOKABLE QObject* getZoneByName(QString name);
 
     /**
+     * @brief Returns the list of all zones in this engine
+     *
+     * @return The list of all zones
+     */
+    Q_INVOKABLE QVariantList getZonesList();
+
+    /**
      * @brief Adds the given list of zones to the already existing zones
      *
      * @param newZones New zones
@@ -101,18 +107,6 @@ public:
      * @param newZones New zones (QML-compatible)
      */
     Q_INVOKABLE void addNewZones(QVariantList newZones);
-
-signals:
-
-    /**
-     * @brief Emitted when the zone list changes
-     */
-    void zonesChanged();
-
-    /**
-     * @brief Emitted when new Zone has been created
-     */
-    //void newZoneCreatedReadyForVisualization(int type, QVariantMap properties, int childNumber, float vRplaygroundWidth, float vRplaygroundHeight);
 
 public slots:
 
@@ -130,14 +124,10 @@ public slots:
      */
     void addNewZone(CelluloZone* newZone);
 
-private slots:
-
     /**
-     * @brief Returns the list of all zones in this engine
-     *
-     * @return The list of all zones
+     * @brief Deletes all zones
      */
-    Q_INVOKABLE QVariantList getZonesList();
+    void clearZones();
 
 private:
 

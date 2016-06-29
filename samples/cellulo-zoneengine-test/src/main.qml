@@ -101,7 +101,7 @@ ApplicationWindow {
             else
                 robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "white", 0);
             break;
-        case "ZONE_IRREGULER_POLYGON_BORDER":
+        case "ZONE_IRREGULAR_POLYGON_BORDER":
             if(value === 1)
                 robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectBlink, "green", 0);
             else
@@ -152,15 +152,17 @@ ApplicationWindow {
             x: 150
             y: 30
             name: "ZONE_RECTANGLE_INNER_STATIC"
-
-            Component.onCompleted: staticZone.createPaintedItem(page, page.physicalWidth, page.physicalHeight)
         }
-    }
 
-    Button{
-        text: "move zone"
+        CelluloZoneRectangleInner{
+            id: staticZone2
 
-        onClicked: {staticZone.x += 10; staticZone.y += 10}
+            height: 30
+            width: 50
+            x: 140
+            y: 35
+            name: "ZONE_RECTANGLE_INNER_STATIC"
+        }
     }
 
     GroupBox {
@@ -210,206 +212,18 @@ ApplicationWindow {
         anchors.top: addressBox.bottom
 
         Row{
-            Column{
-                spacing: 5
+            Button{
+                text: "Clear all zones"
+                onClicked: zoneEngine.clearZones()
+            }
 
-                Row{
-                    ComboBox {
-                        id: combobox
-                        currentIndex: 0
-                        model: ListModel {
-                            id: cbItems
-                            ListElement { text: "Select a zone Type"}
-                            ListElement { text: "CirlceInner"}
-                            ListElement { text: "CircleBorder"}
-                            ListElement { text: "RectangleInner" }
-                        }
-                        width: 200
-                        onCurrentIndexChanged: {
-                            switch(combobox.currentIndex) {
-                            case 1:
-                                console.debug("CircleInner selected");
-                                circleInner.visible = true
-                                circleBorder.visible = false
-                                rectangleInner.visible = false
-                                break;
-                            case 2:
-                                console.debug("CircleBorder selected");
-                                circleInner.visible = false
-                                circleBorder.visible = true
-                                rectangleInner.visible = false
-                                break;
-                            case 3:
-                                console.debug("RectangleInner selected");
-                                circleInner.visible = false
-                                circleBorder.visible = false
-                                rectangleInner.visible = true
-                                break;
-                            default:
-                                console.debug("No Action");
-                            }
-                        }
-                    }
-                    Button {
-                        id: buttonAddChild
-                        text: "add new child"
-                        property var childTypeToBeAdd: combobox.currentIndex;
-
-                        onClicked: {
-                            var properties = {};
-
-                            switch(combobox.currentIndex) {
-                            case 1:
-                                console.debug("CircleInner creation");
-                                var r1 = parseFloat(rCircleInner.text)
-                                var x1 = parseFloat(xCircleInner.text)
-                                var y1 = parseFloat(yCircleInner.text)
-                                if(!isNaN(r1) && !isNaN(x1) && !isNaN(y1)){
-                                    properties["name"] = "zone" + zoneE.children.length
-                                    properties["r"] = r1;
-                                    properties["x"] = x1;
-                                    properties["y"] = y1;
-                                    zoneE.addNewZoneFromQML(CelluloZoneTypes.CIRCLEINNER, properties)
-                                }
-                                break;
-                            case 2:
-                                console.debug("CircleBorder creation");
-                                var r2 = parseFloat(rCircleBorder.text)
-                                var x2 = parseFloat(xCircleBorder.text)
-                                var y2 = parseFloat(yCircleBorder.text)
-                                var margin2 = parseFloat(marginCircleBorder.text)
-                                if(!isNaN(r2) && !isNaN(x2) && !isNaN(y2) && !isNaN(margin2)){
-                                    properties["name"] = "zone" + zoneE.children.length
-                                    properties["r"] = r2;
-                                    properties["x"] = x2;
-                                    properties["y"] = y2;
-                                    properties["marginThickeness"] = margin2;
-                                    zoneE.addNewZoneFromQML(CelluloZoneTypes.CIRCLEBORDER, properties)
-                                }
-
-                                break;
-                            case 3:
-                                console.debug("RectangleInner creation");
-                                var x3 = parseFloat(xRectangleInner.text)
-                                var y3 = parseFloat(yRectangleInner.text)
-                                var height3 = parseFloat(heightRectangleInner.text)
-                                var width3 = parseFloat(widthRectangleInner.text)
-                                if(!isNaN(x3) && !isNaN(y3) && !isNaN(height3) && !isNaN(width3)){
-                                    properties["name"] = "zone" + zoneE.children.length
-                                    properties["x"] = x3;
-                                    properties["y"] = y3;
-                                    properties["height"] = height3;
-                                    properties["width"] = width3;
-                                    zoneE.addNewZoneFromQML(CelluloZoneTypes.RECTANGLEINNER, properties)
-                                }
-                                break;
-                            default:
-                                console.debug("No Action");
-                            }
-                        }
-                    }
-                }
-
-
-                Row{
-                    spacing: 2
-                    id: circleInner
-                    visible: false
-                    Label{
-                        text: "r:"
-                    }
-                    TextField{
-                        id: rCircleInner
-                        placeholderText: "0.0"
-                    }
-                    Label{
-                        text: "x:"
-                    }
-                    TextField{
-                        id: xCircleInner
-                        placeholderText: "0.0"
-                    }
-                    Label{
-                        text: "y:"
-                    }
-                    TextField{
-                        id: yCircleInner
-                        placeholderText: "0.0"
-                    }
-                }
-                Row{
-                    spacing: 2
-                    id: circleBorder
-                    visible: false
-                    Label{
-                        text: "r:"
-                    }
-                    TextField{
-                        id: rCircleBorder
-                        placeholderText: "0.0"
-                    }
-                    Label{
-                        text: "x:"
-                    }
-                    TextField{
-                        id: xCircleBorder
-                        placeholderText: "0.0"
-                    }
-                    Label{
-                        text: "y:"
-                    }
-                    TextField{
-                        id: yCircleBorder
-                        placeholderText: "0.0"
-                    }
-                    Label{
-                        text: "margin:"
-                    }
-                    TextField{
-                        id: marginCircleBorder
-                        placeholderText: "0.0"
-                    }
-                }
-
-                Row{
-                    spacing: 2
-                    id: rectangleInner
-                    visible: false
-                    Label{
-                        text: "x:"
-                    }
-                    TextField{
-                        id: xRectangleInner
-                        placeholderText: "0.0"
-                    }
-                    Label{
-                        text: "y:"
-                    }
-                    TextField{
-                        id: yRectangleInner
-                        placeholderText: "0.0"
-                    }
-                    Label{
-                        text: "height:"
-                    }
-                    TextField{
-                        id: heightRectangleInner
-                        placeholderText: "0.0"
-                    }
-                    Label{
-                        text: "width:"
-                    }
-                    TextField{
-                        id: widthRectangleInner
-                        placeholderText: "0.0"
-                    }
-
-
-                }
-
-                Button {
-                    text: "Load from zones.json"
-                    onClicked: zoneEngine.addNewZones(CelluloZoneJsonHandler.loadZonesQML(":/zones.json"))
+            Button {
+                text: "Load from zones.json"
+                onClicked: {
+                    var zones = CelluloZoneJsonHandler.loadZonesQML(":/zones.json");
+                    for(var i=0;i<zones.length;i++)
+                        zones[i].createPaintedItem(page, "#80800000", "#80FF0000", 2, page.physicalWidth, page.physicalHeight);
+                    zoneEngine.addNewZones(zones);
                 }
             }
         }
@@ -444,13 +258,23 @@ ApplicationWindow {
                 border.width: 2
                 radius: 5
 
-                /*CelluloZonePaintedItem{
-                    x: parent.width/4
-                    y: parent.height/4
-                    height: 100
-                    width: 100
+                CelluloZonePaintedItem{
+                    fillColor: "#80800000"
+                    lineColor: "#80FF0000"
+                    lineThickness: 2
+                    physicalPlaygroundWidth: parent.physicalWidth
+                    physicalPlaygroundHeight: parent.physicalHeight
                     associatedZone: staticZone
-                }*/
+                }
+
+                CelluloZonePaintedItem{
+                    fillColor: "#80800000"
+                    lineColor: "#80FF0000"
+                    lineThickness: 2
+                    physicalPlaygroundWidth: parent.physicalWidth
+                    physicalPlaygroundHeight: parent.physicalHeight
+                    associatedZone: staticZone2
+                }
 
                 /*Image{
                     source: robotComm1.kidnapped ? "../assets/redHexagon.svg" : "../assets/greenHexagon.svg"

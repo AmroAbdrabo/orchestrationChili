@@ -52,7 +52,7 @@ public:
      * @param physicalWidth Physical width of the canvas in mm
      * @param physicalHeight Physical height of the canvas in mm
      */
-    virtual void paint(QPainter* painter, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
+    virtual void paint(QPainter* painter, QColor fillColor, QColor lineColor, qreal lineThickness, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
 protected:
 

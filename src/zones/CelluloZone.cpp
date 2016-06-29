@@ -34,6 +34,10 @@ CelluloZone::CelluloZone(QQuickItem* parent) :
     paintedItem = NULL;
 }
 
+CelluloZone::~CelluloZone(){
+    delete paintedItem;
+}
+
 void CelluloZone::onClientPoseChanged(qreal x, qreal y, qreal theta){
     CelluloZoneClient* client = qobject_cast<CelluloZoneClient*>(QObject::sender());
 
@@ -96,9 +100,12 @@ void CelluloZone::updatePaintedItem(){
         paintedItem->update();
 }
 
-CelluloZonePaintedItem* CelluloZone::createPaintedItem(QQuickItem* parent, qreal physicalPlaygroundWidth, qreal physicalPlaygroundHeight){
+CelluloZonePaintedItem* CelluloZone::createPaintedItem(QQuickItem* parent, QColor fillColor, QColor lineColor, qreal lineThickness, qreal physicalPlaygroundWidth, qreal physicalPlaygroundHeight){
     delete paintedItem;
     paintedItem = new CelluloZonePaintedItem(parent);
+    paintedItem->setFillColor(fillColor);
+    paintedItem->setLineColor(lineColor);
+    paintedItem->setLineThickness(lineThickness);
     paintedItem->setAssociatedZone(this);
     paintedItem->setPhysicalPlaygroundWidth(physicalPlaygroundWidth);
     paintedItem->setPhysicalPlaygroundHeight(physicalPlaygroundHeight);

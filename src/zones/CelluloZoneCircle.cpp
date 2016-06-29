@@ -51,7 +51,7 @@ void CelluloZoneCircle::read(const QJsonObject &json){
     r = json["r"].toDouble();
 }
 
-void CelluloZoneCircle::paint(QPainter* painter, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+void CelluloZoneCircle::paint(QPainter* painter, QColor fillColor, QColor lineColor, qreal lineThickness, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
 
 }
 

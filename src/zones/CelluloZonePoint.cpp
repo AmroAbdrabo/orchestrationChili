@@ -63,7 +63,7 @@ void CelluloZonePoint::read(const QJsonObject &json){
     y = json["y"].toDouble();
 }
 
-void CelluloZonePoint::paint(QPainter* painter, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+void CelluloZonePoint::paint(QPainter* painter, QColor fillColor, QColor lineColor, qreal lineThickness, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
 
 }
 

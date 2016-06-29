@@ -56,8 +56,13 @@ void CelluloZoneEngine::addNewZone(CelluloZone* newZone){
         zones += newZone;
         for(auto client : clients)
             bindClientToZone(client, newZone);
-        emit zonesChanged();
     }
+}
+
+void CelluloZoneEngine::clearZones(){
+    for(CelluloZone* zone : zones)
+        zone->deleteLater();
+    zones.clear();
 }
 
 void CelluloZoneEngine::itemChange(ItemChange change, const ItemChangeData& value){
