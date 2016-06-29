@@ -47,14 +47,6 @@ public:
     CelluloZoneRectangle();
 
     /**
-     * @brief get the properties of this zone in rationalized form
-     * @param realPlaygroundWidth real playground width
-     * @param realPlaygroundHeight real playground height
-     * @return map of rationalized properties
-     */
-    QVariantMap getRatioProperties(float realPlaygroundWidth, float realPlaygroundHeight);
-
-    /**
      * @brief Gets the x position of upper left corner of the rectangle
      * @return X position of upper left corner of the rectangle
      */
@@ -111,27 +103,27 @@ public:
     }
 
     /**
-     * @brief Calculate the zone quantity of this rectangular zone according to the robot's pose
-     *
-     * @param xRobot x position of the robot
-     * @param yRobot y position of the robot
-     * @param thetaRobot theta position of the robot
-     *
-     * @return Zone quantity for this zone and this robot's pose
-     */
-    Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) = 0;
-
-    /**
      * @brief Write the zone infos to the given json Object
      * @param QJsonObject json object to be written
      */
-    void write(QJsonObject &json);
+    virtual void write(QJsonObject &json) override;
 
     /**
      * @brief Read the zone infos from the given json Object
      * @param json json object to be read
      */
-    void read(const QJsonObject &json);
+    virtual void read(const QJsonObject &json) override;
+
+    /**
+     * @brief Draws this zone onto the painter
+     *
+     * @param painter Object to draw onto
+     * @param canvasWidth Screen width of the canvas in pixels
+     * @param canvasHeight Screen height of the canvas in pixels
+     * @param physicalWidth Physical width of the canvas in mm
+     * @param physicalHeight Physical height of the canvas in mm
+     */
+    virtual void paint(QPainter* painter, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
 protected:
 
@@ -185,16 +177,18 @@ public:
      *
      * @return 1 if the robot is inside this rectangular zone 0 otherwise
      */
-    Q_INVOKABLE float calculate(float xRobot, float yRobot, float thetaRobot);
+    Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) override;
 
     /**
-     * @brief Draws this zone onto the pointer
+     * @brief Draws this zone onto the painter
      *
      * @param painter Object to draw onto
-     * @param width Width of the canvas
-     * @param height Height of the canvas
+     * @param canvasWidth Screen width of the canvas in pixels
+     * @param canvasHeight Screen height of the canvas in pixels
+     * @param physicalWidth Physical width of the canvas in mm
+     * @param physicalHeight Physical height of the canvas in mm
      */
-    void paint(QPainter* painter, qreal width, qreal height);
+    virtual void paint(QPainter* painter, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
 };
 
@@ -219,16 +213,7 @@ public:
      *
      * @return 1 if the robot is on the border of this rectangular zone (given the zone's margin) 0 otherwise
      */
-    Q_INVOKABLE float calculate(float xRobot, float yRobot, float thetaRobot);
-
-    /**
-     * @brief Draws this zone onto the pointer
-     *
-     * @param painter Object to draw onto
-     * @param width Width of the canvas
-     * @param height Height of the canvas
-     */
-    void paint(QPainter* painter, qreal width, qreal height);
+    Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) override;
 
 };
 
@@ -253,16 +238,7 @@ public:
      *
      * @return the distance between the robot pose and the border of this rectangular zone
      */
-    Q_INVOKABLE float calculate(float xRobot, float yRobot, float thetaRobot);
-
-    /**
-     * @brief Draws this zone onto the pointer
-     *
-     * @param painter Object to draw onto
-     * @param width Width of the canvas
-     * @param height Height of the canvas
-     */
-    void paint(QPainter* painter, qreal width, qreal height);
+    Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) override;
 
 };
 

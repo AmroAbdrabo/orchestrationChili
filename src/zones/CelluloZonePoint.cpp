@@ -35,32 +35,20 @@ CelluloZonePoint::CelluloZonePoint() :
     y = 0;
 }
 
-QVariantMap CelluloZonePoint::getRatioProperties(float realPlaygroundWidth, float realPlaygroundHeight){
-    QVariantMap properties;
-    properties["name"] = QVariant(name);
-    properties["stackingOrder"] = QVariant(stackingOrder);
-    properties["marginThickeness"] = QVariant(marginThickeness/realPlaygroundWidth);
-    properties["x"] = QVariant(x/realPlaygroundWidth);
-    properties["y"] = QVariant(y/realPlaygroundHeight);
-    return properties;
-}
-
 void CelluloZonePoint::write(QJsonObject &json){
-    json["type"] = CelluloZoneTypes::ZoneTypeString(type);
-    json["name"] = name;
-    json["stackingOrder"] = stackingOrder;
-    json["marginThickeness"] = marginThickeness;
+    CelluloZone::write(json);
     json["x"] = x;
     json["y"] = y;
 }
 
 void CelluloZonePoint::read(const QJsonObject &json){
-    type = CelluloZoneTypes::typeFromString(json["type"].toString());
-    name = json["name"].toString();
-    stackingOrder= json["stackingOrder"].toInt();
-    marginThickeness = json["marginThickeness"].toDouble();
+    CelluloZone::read(json);
     x = json["x"].toDouble();
     y = json["y"].toDouble();
+}
+
+void CelluloZonePoint::paint(QPainter* painter, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+
 }
 
 /**
@@ -75,8 +63,4 @@ CelluloZonePointDistance::CelluloZonePointDistance() :
 
 float CelluloZonePointDistance::calculate(float xRobot, float yRobot, float thetaRobot){
     return sqrt((xRobot-x)*(xRobot-x) + (yRobot -y)*(yRobot -y));
-}
-
-void CelluloZonePointDistance::paint(QPainter* painter, qreal width, qreal height){
-
 }

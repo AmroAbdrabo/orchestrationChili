@@ -133,14 +133,6 @@ public:
     }
 
     /**
-     * @brief Get the properties of the zones in their rationalized form
-     * @param realPlaygroundWidth playground width in mm
-     * @param realPlaygroundHeight playground height in mm
-     * @return map of rationalized properties
-     */
-    virtual QVariantMap getRatioProperties(float realPlaygroundWidth, float realPlaygroundHeight) = 0;
-
-    /**
      * @brief Calculate the zone quantity of this zone according to the robot's pose
      *
      * @param xRobot x position of the robot
@@ -153,24 +145,39 @@ public:
 
     /**
      * @brief Write the zone infos to the given json Object
-     * @param QJsonObject json object to be written
+     *
+     * @param QJsonObject Json object to be written
      */
-    virtual void write(QJsonObject &json) = 0;
+    virtual void write(QJsonObject& json);
 
     /**
      * @brief Read the zone infos from the given json Object
-     * @param json json object to be read
+     *
+     * @param json Json object to be read
      */
-    virtual void read(const QJsonObject &json) = 0;
+    virtual void read(const QJsonObject& json);
+
+    /**
+     * @brief Draws this zone onto the painter
+     *
+     * @param painter Object to draw onto
+     * @param canvasWidth Screen width of the canvas in pixels
+     * @param canvasHeight Screen height of the canvas in pixels
+     * @param physicalWidth Physical width of the canvas in mm
+     * @param physicalHeight Physical height of the canvas in mm
+     */
+    virtual void paint(QPainter* painter, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) = 0;
 
     /**
      * @brief Creates a PaintedItem that is the visual representation of this zone
      *
-     * @param parent QML parent
+     * @param parent Visual QML parent that this item will fill
+     * @param physicalPlaygroundWidth Playground width in mm
+     * @param physicalPlaygroundHeight Playground height in mm
      *
      * @return A PaintedItem that is the visual representation of this zone
      */
-    Q_INVOKABLE CelluloZonePaintedItem* getPaintedItem(QQuickItem* parent = 0);
+    Q_INVOKABLE CelluloZonePaintedItem* createPaintedItem(QQuickItem* parent, qreal physicalPlaygroundWidth, qreal physicalPlaygroundHeight);
 
 public slots:
 
@@ -184,15 +191,6 @@ public slots:
      * @param theta New orientaton of the client
      */
     void onClientPoseChanged(qreal x, qreal y, qreal theta);
-
-    /**
-     * @brief Draws this zone onto the painter
-     *
-     * @param painter Object to draw onto
-     * @param width Width of the canvas
-     * @param height Height of the canvas
-     */
-    virtual void paint(QPainter* painter, qreal width, qreal height) = 0;
 
 protected:
 

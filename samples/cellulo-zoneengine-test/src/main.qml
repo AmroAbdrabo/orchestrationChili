@@ -153,7 +153,7 @@ ApplicationWindow {
             y: 30
             name: "ZONE_RECTANGLE_INNER_STATIC"
 
-            Component.onCompleted: staticZone.getPaintedItem(page)
+            Component.onCompleted: staticZone.createPaintedItem(page, page.physicalWidth, page.physicalHeight)
         }
     }
 

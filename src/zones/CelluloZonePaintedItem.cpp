@@ -36,7 +36,7 @@ CelluloZonePaintedItem::CelluloZonePaintedItem(QQuickItem* parent) : QQuickPaint
         setHeight(parent->height());
     }
     else
-        qWarning() << "CelluloZonePaintedItem::CelluloZonePaintedItem(): CelluloZonePaintedItem must be initialized with a parent.";
+        qWarning() << "CelluloZonePaintedItem::CelluloZonePaintedItem(): CelluloZonePaintedItem must be initialized with a parent to function properly.";
 }
 
 void CelluloZonePaintedItem::parentWidthChanged(){
@@ -49,33 +49,33 @@ void CelluloZonePaintedItem::parentHeightChanged(){
     qDebug() << "setting height...";
 }
 
-/**
- * @brief Sets the associated zone
- *
- * @param associatedZone The CelluloZone that will take care of painting
- */
 void CelluloZonePaintedItem::setAssociatedZone(CelluloZone* zone){
     if(associatedZone != zone){
         associatedZone = zone;
         emit associatedZoneChanged();
+    }
+}
 
-        /*QVariant scaleCoeffVariant = parent()->property("scaleCoeff");
-        if(scaleCoeffVariant.isValid()){
-            qreal scaleCoeff = scaleCoeffVariant.value<qreal>();
-            setX(100*scaleCoeff);
-            setY(100*scaleCoeff);
-            setWidth(100*scaleCoeff);
-            setWidth(100*scaleCoeff);
-        }
-        else
-            qWarning() << "CelluloZonePaintedItem::paint(): Parent of CelluloZonePaintedItem must contain a real scaleCoeff property.";*/
+void CelluloZonePaintedItem::setPhysicalPlaygroundWidth(qreal newWidth){
+    if(newWidth != physicalPlaygroundWidth){
+        physicalPlaygroundWidth = newWidth;
+        emit physicalPlaygroundWidthChanged();
+        update();
+    }
+}
+
+void CelluloZonePaintedItem::setPhysicalPlaygroundHeight(qreal newHeight){
+    if(newHeight != physicalPlaygroundHeight){
+        physicalPlaygroundHeight = newHeight;
+        emit physicalPlaygroundHeightChanged();
+        update();
     }
 }
 
 void CelluloZonePaintedItem::paint(QPainter* painter){
     if(associatedZone){
         qDebug() << "painting";
-        associatedZone->paint(painter, width(), height());
+        associatedZone->paint(painter, width(), height(), physicalPlaygroundWidth, physicalPlaygroundHeight);
     }
     else
         qWarning() << "CelluloZonePaintedItem::paint(): No associatedZone set.";

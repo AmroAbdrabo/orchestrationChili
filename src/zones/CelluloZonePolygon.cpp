@@ -91,29 +91,17 @@ float CelluloZonePolygon::getPointToPolygonDistance(float xPoint, float yPoint){
     return min;
 }
 
+void CelluloZonePolygon::paint(QPainter* painter, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+
+}
+
 /**
  * CelluloZoneIrregularPolygon
  */
 
-QVariantMap CelluloZoneIrregularPolygon::getRatioProperties(float realPlaygroundWidth, float realPlaygroundHeight){
-    QVariantMap properties;
-    properties["name"] = QVariant(name);
-    properties["stackingOrder"] = QVariant(stackingOrder);
-    properties["marginThickeness"] = QVariant(marginThickeness/realPlaygroundWidth);
-    QList<QVariant> ratioVertices;
-    foreach(QPointF point, convertQVariantToQPointF()) {
-        QPointF ratioPoint = QPointF(point.x()/realPlaygroundWidth, point.y()/realPlaygroundHeight);
-        ratioVertices.append(QVariant(ratioPoint));
-    }
-    properties["vertices"] = ratioVertices;
-    return properties;
-}
-
 void CelluloZoneIrregularPolygon::write(QJsonObject &json){
-    json["type"] = CelluloZoneTypes::ZoneTypeString(type);
-    json["name"] = name;
-    json["stackingOrder"] = stackingOrder;
-    json["marginThickeness"] = marginThickeness;
+    CelluloZone::write(json);
+
     QJsonObject obj;
     QJsonArray verticesArray;
     foreach(QPointF point, convertQVariantToQPointF()) {
@@ -123,15 +111,12 @@ void CelluloZoneIrregularPolygon::write(QJsonObject &json){
         verticesArray.append(pointObject);
     }
     json["vertices"] = verticesArray;
-
 }
 
 void CelluloZoneIrregularPolygon::read(const QJsonObject &json){
+    CelluloZone::read(json);
+
     vertices.clear();
-    type = CelluloZoneTypes::typeFromString(json["type"].toString());
-    name = json["name"].toString();
-    stackingOrder= json["stackingOrder"].toInt();
-    marginThickeness = json["marginThickeness"].toDouble();
     QJsonArray verticesArray = json["vertices"].toArray();
     foreach(QVariant pointObject, verticesArray.toVariantList()) {
         QMap<QString, QVariant> pointMap = pointObject.toMap();
@@ -161,6 +146,48 @@ QList<QPointF> CelluloZoneIrregularPolygon::convertQVariantToQPointF(){
 }
 
 /**
+ * CelluloZoneIrregularPolygonInner
+ */
+
+CelluloZoneIrregularPolygonInner::CelluloZoneIrregularPolygonInner() :
+    CelluloZoneIrregularPolygon()
+{
+    type = CelluloZoneTypes::IRPOLYGONINNER;
+}
+
+float CelluloZoneIrregularPolygonInner::calculate(float xRobot, float yRobot, float thetaRobot){
+    return pointInPoly(xRobot, yRobot, minX, maxX, minY, maxY, pointsQt);
+}
+
+/**
+ * CelluloZoneIrregularPolygonBorder
+ */
+
+CelluloZoneIrregularPolygonBorder::CelluloZoneIrregularPolygonBorder() :
+    CelluloZoneIrregularPolygon()
+{
+    type = CelluloZoneTypes::IRPOLYGONBORDER;
+}
+
+float CelluloZoneIrregularPolygonBorder::calculate(float xRobot, float yRobot, float thetaRobot){
+    return isPointOnPolygonBorder(xRobot, yRobot);
+}
+
+/**
+ * CelluloZoneIrregularPolygonDistance
+ */
+
+CelluloZoneIrregularPolygonDistance::CelluloZoneIrregularPolygonDistance() :
+    CelluloZoneIrregularPolygon()
+{
+    type = CelluloZoneTypes::IRPOLYGONDISTANCE;
+}
+
+float CelluloZoneIrregularPolygonDistance::calculate(float xRobot, float yRobot, float thetaRobot){
+    return getPointToPolygonDistance(xRobot, yRobot);
+}
+
+/**
  * CelluloZoneRegularPolygon
  */
 
@@ -174,30 +201,9 @@ CelluloZoneRegularPolygon::CelluloZoneRegularPolygon() :
     rotAngle = 0;
 }
 
-QVariantMap CelluloZoneRegularPolygon::getRatioProperties(float realPlaygroundWidth, float realPlaygroundHeight){
-    QVariantMap properties;
-    properties["name"] = QVariant(name);
-    properties["stackingOrder"] = QVariant(stackingOrder);
-    properties["marginThickeness"] = QVariant(marginThickeness/realPlaygroundWidth);
-    properties["numEdges"] = QVariant(numEdges);
-    properties["x"] = QVariant(x/realPlaygroundHeight);
-    properties["y"] = QVariant(y/realPlaygroundWidth);
-    properties["r"] = QVariant((r*r)/(realPlaygroundWidth*realPlaygroundHeight));
-    properties["rotAngle"] = QVariant(rotAngle);
-    QList<QVariant> ratioVertices;
-    foreach(QPointF point, pointsQt) {
-        QPointF ratioPoint = QPointF(point.x()/realPlaygroundWidth, point.y()/realPlaygroundHeight);
-        ratioVertices.append(QVariant(ratioPoint));
-    }
-    properties["vertices"] = ratioVertices;
-    return properties;
-}
-
 void CelluloZoneRegularPolygon::write(QJsonObject &json){
-    json["type"] = CelluloZoneTypes::ZoneTypeString(type);
-    json["name"] = name;
-    json["stackingOrder"] = stackingOrder;
-    json["marginThickeness"] = marginThickeness;
+    CelluloZonePolygon::write(json);
+
     json["numEdges"] = numEdges;
     json["x"] = x;
     json["y"] = y;
@@ -206,10 +212,8 @@ void CelluloZoneRegularPolygon::write(QJsonObject &json){
 }
 
 void CelluloZoneRegularPolygon::read(const QJsonObject &json){
-    type = CelluloZoneTypes::typeFromString(json["type"].toString());
-    name = json["name"].toString();
-    stackingOrder= json["stackingOrder"].toInt();
-    marginThickeness = json["marginThickeness"].toDouble();
+    CelluloZonePolygon::read(json);
+
     numEdges = json["numEdges"].toDouble();
     x = json["x"].toDouble();
     y = json["y"].toDouble();
@@ -234,60 +238,6 @@ QList<QPointF> CelluloZoneRegularPolygon::createPolygonPointsFromOuterCircle(){
 }
 
 /**
- * CelluloZoneIrregularPolygonInner
- */
-
-CelluloZoneIrregularPolygonInner::CelluloZoneIrregularPolygonInner() :
-    CelluloZoneIrregularPolygon()
-{
-    type = CelluloZoneTypes::IRPOLYGONINNER;
-}
-
-float CelluloZoneIrregularPolygonInner::calculate(float xRobot, float yRobot, float thetaRobot){
-    return pointInPoly(xRobot, yRobot, minX, maxX, minY, maxY, pointsQt);
-}
-
-void CelluloZoneIrregularPolygonInner::paint(QPainter* painter, qreal width, qreal height){
-
-}
-
-/**
- * CelluloZoneIrregularPolygonBorder
- */
-
-CelluloZoneIrregularPolygonBorder::CelluloZoneIrregularPolygonBorder() :
-    CelluloZoneIrregularPolygon()
-{
-    type = CelluloZoneTypes::IRPOLYGONBORDER;
-}
-
-float CelluloZoneIrregularPolygonBorder::calculate(float xRobot, float yRobot, float thetaRobot){
-    return isPointOnPolygonBorder(xRobot, yRobot);
-}
-
-void CelluloZoneIrregularPolygonBorder::paint(QPainter* painter, qreal width, qreal height){
-
-}
-
-/**
- * CelluloZoneIrregularPolygonDistance
- */
-
-CelluloZoneIrregularPolygonDistance::CelluloZoneIrregularPolygonDistance() :
-    CelluloZoneIrregularPolygon()
-{
-    type = CelluloZoneTypes::IRPOLYGONDISTANCE;
-}
-
-float CelluloZoneIrregularPolygonDistance::calculate(float xRobot, float yRobot, float thetaRobot){
-    return getPointToPolygonDistance(xRobot, yRobot);
-}
-
-void CelluloZoneIrregularPolygonDistance::paint(QPainter* painter, qreal width, qreal height){
-
-}
-
-/**
  * CelluloZoneRegularPolygonInner
  */
 
@@ -299,10 +249,6 @@ CelluloZoneRegularPolygonInner::CelluloZoneRegularPolygonInner() :
 
 float CelluloZoneRegularPolygonInner::calculate(float xRobot, float yRobot, float thetaRobot){
     return pointInPoly(xRobot, yRobot, x-r, x+r, y-r, y+r, pointsQt);
-}
-
-void CelluloZoneRegularPolygonInner::paint(QPainter* painter, qreal width, qreal height){
-
 }
 
 /**
@@ -319,10 +265,6 @@ float CelluloZoneRegularPolygonBorder::calculate(float xRobot, float yRobot, flo
     return isPointOnPolygonBorder(xRobot, yRobot);
 }
 
-void CelluloZoneRegularPolygonBorder::paint(QPainter* painter, qreal width, qreal height){
-
-}
-
 /**
  * CelluloZoneRegularPolygonDistance
  */
@@ -335,8 +277,4 @@ CelluloZoneRegularPolygonDistance::CelluloZoneRegularPolygonDistance() :
 
 float CelluloZoneRegularPolygonDistance::calculate(float xRobot, float yRobot, float thetaRobot){
     return getPointToPolygonDistance(xRobot, yRobot);
-}
-
-void CelluloZoneRegularPolygonDistance::paint(QPainter* painter, qreal width, qreal height){
-
 }

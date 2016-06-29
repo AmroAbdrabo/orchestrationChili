@@ -33,12 +33,16 @@ class CelluloZone;
 
 /**
  * @brief A QML compatible QQuickPaintedItem for CelluloZones
+ *
+ * Visually covers the parent (from (0,0) to (parent.width,parent.height)) and draws the zone at the appropriate place
  */
 class CelluloZonePaintedItem : public QQuickPaintedItem {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
     Q_PROPERTY(CelluloZone* associatedZone WRITE setAssociatedZone READ getAssociatedZone NOTIFY associatedZoneChanged)
+    Q_PROPERTY(qreal physicalPlaygroundWidth WRITE setPhysicalPlaygroundWidth READ getPhysicalPlaygroundWidth NOTIFY physicalPlaygroundWidthChanged)
+    Q_PROPERTY(qreal physicalPlaygroundHeight WRITE setPhysicalPlaygroundHeight READ getPhysicalPlaygroundHeight NOTIFY physicalPlaygroundHeightChanged)
 
 public:
 
@@ -47,7 +51,7 @@ public:
      *
      * @param parent QML parent
      */
-    explicit CelluloZonePaintedItem(QQuickItem* parent);
+    explicit CelluloZonePaintedItem(QQuickItem* parent = 0);
 
     /**
      * @brief Sets the associated zone
@@ -66,6 +70,38 @@ public:
     }
 
     /**
+     * @brief Changes the physical playground width
+     *
+     * @param newWidth New width in millimeters
+     */
+    void setPhysicalPlaygroundWidth(qreal newWidth);
+
+    /**
+     * @brief Gets the physical playground width
+     *
+     * @return The physical playground width in mm
+     */
+    qreal getPhysicalPlaygroundWidth(){
+        return physicalPlaygroundWidth;
+    }
+
+    /**
+     * @brief Changes the physical playground height
+     *
+     * @param newWidth New height in millimeters
+     */
+    void setPhysicalPlaygroundHeight(qreal newHeight);
+
+    /**
+     * @brief Gets the physical playground height
+     *
+     * @return The physical playground height in mm
+     */
+    qreal getPhysicalPlaygroundHeight(){
+        return physicalPlaygroundHeight;
+    }
+
+    /**
      * @brief Implementation of pure virtual function in QQuickPaintedItem
      *
      * @param painter Object to paint on
@@ -79,16 +115,33 @@ signals:
      */
     void associatedZoneChanged();
 
+    /**
+     * @brief Emitted when the physical playground width changes
+     */
+    void physicalPlaygroundWidthChanged();
+
+    /**
+     * @brief Emitted when the physical playground height changes
+     */
+    void physicalPlaygroundHeightChanged();
+
 private slots:
 
+    /**
+     * @brief Sets this item's width equal to the parent's width
+     */
     void parentWidthChanged();
 
+    /**
+     * @brief Sets this item's height equal to the parent's height
+     */
     void parentHeightChanged();
 
 private:
 
-    CelluloZone* associatedZone; ///< The zone that will draw on the painter
-
+    CelluloZone* associatedZone;    ///< The zone that will draw on the painter
+    qreal physicalPlaygroundWidth;  ///< Physical playground width in mm
+    qreal physicalPlaygroundHeight; ///< Physical playground height in mm
 };
 
 #endif // CELLULOZONEPAINTEDITEM_H

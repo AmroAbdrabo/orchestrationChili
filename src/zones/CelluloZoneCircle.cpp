@@ -37,35 +37,22 @@ CelluloZoneCircle::CelluloZoneCircle() :
     r = 0;
 }
 
-QVariantMap CelluloZoneCircle::getRatioProperties(float realPlaygroundWidth, float realPlaygroundHeight){
-    QVariantMap properties;
-    properties["name"] = QVariant(name);
-    properties["stackingOrder"] = QVariant(stackingOrder);
-    properties["marginThickeness"] = QVariant(marginThickeness/realPlaygroundWidth);
-    properties["x"] = QVariant(x/realPlaygroundWidth);
-    properties["y"] = QVariant(y/realPlaygroundHeight);
-    properties["r"] = QVariant((r*r)/(realPlaygroundWidth*realPlaygroundHeight));
-    return properties;
-}
-
 void CelluloZoneCircle::write(QJsonObject &json){
-    json["type"] = CelluloZoneTypes::ZoneTypeString(type);
-    json["name"] = name;
-    json["stackingOrder"] = stackingOrder;
-    json["marginThickeness"] = marginThickeness;
+    CelluloZone::write(json);
     json["x"] = x;
     json["y"] = y;
     json["r"] = r;
 }
 
 void CelluloZoneCircle::read(const QJsonObject &json){
-    type = CelluloZoneTypes::typeFromString(json["type"].toString());
-    name = json["name"].toString();
-    stackingOrder= json["stackingOrder"].toInt();
-    marginThickeness = json["marginThickeness"].toDouble();
+    CelluloZone::read(json);
     x = json["x"].toDouble();
     y = json["y"].toDouble();
     r = json["r"].toDouble();
+}
+
+void CelluloZoneCircle::paint(QPainter* painter, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+
 }
 
 /**
@@ -80,10 +67,6 @@ CelluloZoneCircleInner::CelluloZoneCircleInner() :
 
 float CelluloZoneCircleInner::calculate(float xRobot, float yRobot, float thetaRobot){
     return ((xRobot-x)*(xRobot-x) + (yRobot -y)*(yRobot -y) <= r*r) ? 1 : 0;
-}
-
-void CelluloZoneCircleInner::paint(QPainter* painter, qreal width, qreal height){
-
 }
 
 /**
@@ -103,10 +86,6 @@ float CelluloZoneCircleBorder::calculate(float xRobot, float yRobot, float theta
     return temp <= (rOuter*rOuter) && temp > (rInner* rInner) ? 1 : 0;
 }
 
-void CelluloZoneCircleBorder::paint(QPainter* painter, qreal width, qreal height){
-
-}
-
 /**
  * CelluloZoneCircleDistance
  */
@@ -119,8 +98,4 @@ CelluloZoneCircleDistance::CelluloZoneCircleDistance() :
 
 float CelluloZoneCircleDistance::calculate(float xRobot, float yRobot, float thetaRobot){
     return fabs(sqrt((xRobot-x)*(xRobot-x) + (yRobot -y)*(yRobot -y)) - r);
-}
-
-void CelluloZoneCircleDistance::paint(QPainter* painter, qreal width, qreal height){
-
 }

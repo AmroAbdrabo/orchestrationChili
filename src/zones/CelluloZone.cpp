@@ -67,6 +67,20 @@ void CelluloZone::onClientPoseChanged(qreal x, qreal y, qreal theta){
         qDebug() << "CelluloZone::onClientPoseChanged(): Zone can only connect to a CelluloZoneClient-derived object.";
 }
 
+void CelluloZone::write(QJsonObject& json){
+    json["type"] = CelluloZoneTypes::ZoneTypeString(type);
+    json["name"] = name;
+    json["stackingOrder"] = stackingOrder;
+    json["marginThickeness"] = marginThickeness;
+}
+
+void CelluloZone::read(const QJsonObject& json){
+    type = CelluloZoneTypes::typeFromString(json["type"].toString());
+    name = json["name"].toString();
+    stackingOrder= json["stackingOrder"].toInt();
+    marginThickeness = json["marginThickeness"].toDouble();
+}
+
 // taken from http://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment
 float CelluloZone::pointToSegmentDistance(float x,float y, float x1, float y1, float x2, float y2) {
     float A = x - x1;
@@ -138,8 +152,10 @@ QList<QPointF> CelluloZone::getRectangleFromLine(float x1,float y1,float x2, flo
     return list;
 }
 
-CelluloZonePaintedItem* CelluloZone::getPaintedItem(QQuickItem* parent){
+CelluloZonePaintedItem* CelluloZone::createPaintedItem(QQuickItem* parent, qreal physicalPlaygroundWidth, qreal physicalPlaygroundHeight){
     CelluloZonePaintedItem* item = new CelluloZonePaintedItem(parent);
     item->setAssociatedZone(this);
+    item->setPhysicalPlaygroundWidth(physicalPlaygroundWidth);
+    item->setPhysicalPlaygroundHeight(physicalPlaygroundHeight);
     return item;
 }
