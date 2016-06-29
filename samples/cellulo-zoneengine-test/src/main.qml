@@ -153,16 +153,6 @@ ApplicationWindow {
             y: 30
             name: "ZONE_RECTANGLE_INNER_STATIC"
         }
-
-        CelluloZoneRectangleInner{
-            id: staticZone2
-
-            height: 30
-            width: 50
-            x: 140
-            y: 35
-            name: "ZONE_RECTANGLE_INNER_STATIC"
-        }
     }
 
     GroupBox {
@@ -267,16 +257,7 @@ ApplicationWindow {
                     associatedZone: staticZone
                 }
 
-                CelluloZonePaintedItem{
-                    fillColor: "#80800000"
-                    lineColor: "#80FF0000"
-                    lineThickness: 2
-                    physicalPlaygroundWidth: parent.physicalWidth
-                    physicalPlaygroundHeight: parent.physicalHeight
-                    associatedZone: staticZone2
-                }
-
-                /*Image{
+                Image{
                     source: robotComm1.kidnapped ? "../assets/redHexagon.svg" : "../assets/greenHexagon.svg"
                     rotation: -robotComm1.theta //QML wants clockwise angle for some reason
                     x: robotComm1.x*parent.gridSpacing*parent.scaleCoeff - width/2
@@ -314,7 +295,7 @@ ApplicationWindow {
                         border.width: 1
                         radius: 2.5
                     }
-                }*/
+                }
             }
         }
     }

@@ -15,12 +15,12 @@
  * along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
- /**
-  * @file CelluloZonePaintedItem.cpp
-  * @brief Source for a QML compatible QQuickPaintedItem for Cellulo zones
-  * @author Ayberk Özgür
-  * @date 2016-06-28
-  */
+/**
+ * @file CelluloZonePaintedItem.cpp
+ * @brief Source for a QML compatible QQuickPaintedItem for Cellulo zones
+ * @author Ayberk Özgür
+ * @date 2016-06-28
+ */
 
 #include "CelluloZonePaintedItem.h"
 
@@ -117,7 +117,8 @@ void CelluloZonePaintedItem::setPhysicalPlaygroundHeight(qreal newHeight){
 
 void CelluloZonePaintedItem::paint(QPainter* painter){
     if(associatedZone){
-        associatedZone->paint(painter, fillColor, lineColor, lineThickness, width(), height(), physicalPlaygroundWidth, physicalPlaygroundHeight);
+        associatedZone->paint(painter, fillColor, lineColor, lineThickness,
+                              width(), height(), physicalPlaygroundWidth, physicalPlaygroundHeight);
     }
     else
         qWarning() << "CelluloZonePaintedItem::paint(): No associatedZone set.";
