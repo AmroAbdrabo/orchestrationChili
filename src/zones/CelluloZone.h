@@ -126,29 +126,25 @@ public:
      * @brief Draws this zone onto the painter
      *
      * @param painter Object to draw onto
-     * @param fillColor Color to draw insides of zones
-     * @param lineColor Color to draw borders of zones
-     * @param lineThickness Thickness of borders of zones in pixels
+     * @param color Color to paint with
      * @param canvasWidth Screen width of the canvas in pixels
      * @param canvasHeight Screen height of the canvas in pixels
      * @param physicalWidth Physical width of the canvas in mm
      * @param physicalHeight Physical height of the canvas in mm
      */
-    virtual void paint(QPainter* painter, QColor fillColor, QColor lineColor, qreal lineThickness, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) = 0;
+    virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) = 0;
 
     /**
      * @brief Creates a PaintedItem that is the visual representation of this zone
      *
      * @param parent Visual QML parent that this item will fill
-     * @param fillColor Color to draw insides of zones
-     * @param lineColor Color to draw borders of zones
-     * @param lineThickness Thickness of borders of zones in pixels
+     * @param color Color to paint with
      * @param physicalPlaygroundWidth Playground width in mm
      * @param physicalPlaygroundHeight Playground height in mm
      *
      * @return A PaintedItem that is the visual representation of this zone
      */
-    Q_INVOKABLE CelluloZonePaintedItem* createPaintedItem(QQuickItem* parent, QColor fillColor, QColor lineColor, qreal lineThickness, qreal physicalPlaygroundWidth, qreal physicalPlaygroundHeight);
+    Q_INVOKABLE CelluloZonePaintedItem* createPaintedItem(QQuickItem* parent, QColor color, qreal physicalPlaygroundWidth, qreal physicalPlaygroundHeight);
 
 public slots:
 

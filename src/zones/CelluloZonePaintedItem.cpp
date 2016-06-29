@@ -28,9 +28,7 @@
 
 CelluloZonePaintedItem::CelluloZonePaintedItem(QQuickItem* parent) : QQuickPaintedItem(parent){
     associatedZone = NULL;
-    fillColor = QColor(128,128,128,128);
-    lineColor = QColor(64,64,64,196);
-    lineThickness = 2;
+    color = QColor(128,128,128,128);
 
     if(parent)
         updateParentWidthHeightBinding(parent);
@@ -67,26 +65,10 @@ void CelluloZonePaintedItem::updateParentWidthHeightBinding(QQuickItem* newParen
     setHeight(newParent->height());
 }
 
-void CelluloZonePaintedItem::setFillColor(QColor newColor){
-    if(newColor != fillColor){
-        fillColor = newColor;
-        emit fillColorChanged();
-        update();
-    }
-}
-
-void CelluloZonePaintedItem::setLineColor(QColor newColor){
-    if(newColor != lineColor){
-        lineColor = newColor;
-        emit lineColorChanged();
-        update();
-    }
-}
-
-void CelluloZonePaintedItem::setLineThickness(qreal newThickness){
-    if(newThickness != lineThickness){
-        lineThickness = newThickness;
-        emit lineThicknessChanged();
+void CelluloZonePaintedItem::setColor(QColor newColor){
+    if(newColor != color){
+        color = newColor;
+        emit colorChanged();
         update();
     }
 }
@@ -117,8 +99,7 @@ void CelluloZonePaintedItem::setPhysicalPlaygroundHeight(qreal newHeight){
 
 void CelluloZonePaintedItem::paint(QPainter* painter){
     if(associatedZone){
-        associatedZone->paint(painter, fillColor, lineColor, lineThickness,
-                              width(), height(), physicalPlaygroundWidth, physicalPlaygroundHeight);
+        associatedZone->paint(painter, color, width(), height(), physicalPlaygroundWidth, physicalPlaygroundHeight);
     }
     else
         qWarning() << "CelluloZonePaintedItem::paint(): No associatedZone set.";

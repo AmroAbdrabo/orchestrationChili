@@ -12,13 +12,22 @@ ApplicationWindow {
     minimumHeight: 100
     minimumWidth: 200
 
+    property color colorRect:   "#80FFFF00"
+    property color colorCirc:   "#800000FF"
+    property color colorRpoly:  "#80FF00FF"
+    property color colorIrpoly: "#8000FF00"
+    property color colorPoint:  "#80FF0000"
+    property color colorLine:   "#8000FFFF"
+
     function respondToZoneChange(robot, zone, value){
+        console.log(zone.name);
+
         switch(zone.name){
 
             //Statically added rectangle
         case "ZONE_RECTANGLE_INNER_STATIC":
             if(value === 1)
-                robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "yellow", 0);
+                robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, colorRect, 0);
             else
                 robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "white", 0);
             break;
@@ -26,13 +35,13 @@ ApplicationWindow {
             //Circle
         case "ZONE_CIRCLE_INNER":
             if(value === 1)
-                robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "blue", 0);
+                robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, colorCirc, 0);
             else
                 robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "white", 0);
             break;
         case "ZONE_CIRCLE_BORDER":
             if(value === 1)
-                robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectBlink, "blue", 0);
+                robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectBlink, colorCirc, 0);
             else
                 robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "white", 0);
             break;
@@ -45,13 +54,13 @@ ApplicationWindow {
             //Rectangle
         case "ZONE_RECTANGLE_INNER":
             if(value === 1)
-                robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "yellow", 0);
+                robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, colorRect, 0);
             else
                 robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "white", 0);
             break;
         case "ZONE_RECTANGLE_BORDER":
             if(value === 1)
-                robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectBlink, "yellow", 0);
+                robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectBlink, colorRect, 0);
             else
                 robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "white", 0);
             break;
@@ -78,13 +87,13 @@ ApplicationWindow {
             //Regular polygon
         case "ZONE_REGULAR_POLYGON_INNER":
             if(value === 1)
-                robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "purple", 0);
+                robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, colorRpoly, 0);
             else
                 robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "white", 0);
             break;
         case "ZONE_REGULAR_POLYGON_BORDER":
             if(value === 1)
-                robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectBlink, "purple", 0);
+                robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectBlink, colorRpoly, 0);
             else
                 robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "white", 0);
             break;
@@ -97,13 +106,13 @@ ApplicationWindow {
             //Irregular polygon
         case "ZONE_IRREGULAR_POLYGON_INNER":
             if(value === 1)
-                robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "green", 0);
+                robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, colorIrPoly, 0);
             else
                 robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "white", 0);
             break;
         case "ZONE_IRREGULAR_POLYGON_BORDER":
             if(value === 1)
-                robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectBlink, "green", 0);
+                robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectBlink, colorIrPoly, 0);
             else
                 robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "white", 0);
             break;
@@ -152,6 +161,16 @@ ApplicationWindow {
             x: 150
             y: 30
             name: "ZONE_RECTANGLE_INNER_STATIC"
+        }
+
+        CelluloZoneRectangleInner{
+            id: staticZone2
+
+            height: 30
+            width: 50
+            x: 80
+            y: 30
+            name: "ZONE_RECTANGLE_INNER_STATIC2"
         }
     }
 
@@ -207,12 +226,38 @@ ApplicationWindow {
                 onClicked: zoneEngine.clearZones()
             }
 
-            Button {
+            Button{
                 text: "Load from zones.json"
+
+                function getColorFromZoneType(zoneType){
+                    switch(zoneType){
+                    case CelluloZoneTypes.CIRCLEBORDER:
+                    case CelluloZoneTypes.CIRCLEDISTANCE:
+                    case CelluloZoneTypes.CIRCLEINNER:
+                        return colorCirc;
+                    case CelluloZoneTypes.RECTANGLEBORDER:
+                    case CelluloZoneTypes.RECTANGLEDISTANCE:
+                    case CelluloZoneTypes.RECTANGLEINNER:
+                        return colorRect;
+                    case CelluloZoneTypes.RPOLYGONBORDER:
+                    case CelluloZoneTypes.RPOLYGONDISTANCE:
+                    case CelluloZoneTypes.RPOLYGONINNER:
+                        return colorRpoly;
+                    case CelluloZoneTypes.IRPOLYGONBORDER:
+                    case CelluloZoneTypes.IRPOLYGONDISTANCE:
+                    case CelluloZoneTypes.IRPOLYGONINNER:
+                        return colorIrpoly;
+                    case CelluloZoneTypes.POINTDISTANCE:
+                        return colorPoint;
+                    case CelluloZoneTypes.LINEDISTANCE:
+                        return colorLine;
+                    }
+                }
+
                 onClicked: {
                     var zones = CelluloZoneJsonHandler.loadZonesQML(":/zones.json");
                     for(var i=0;i<zones.length;i++)
-                        zones[i].createPaintedItem(page, "#80800000", "#80FF0000", 2, page.physicalWidth, page.physicalHeight);
+                        zones[i].createPaintedItem(page, getColorFromZoneType(zones[i].type), page.physicalWidth, page.physicalHeight);
                     zoneEngine.addNewZones(zones);
                 }
             }
@@ -249,12 +294,17 @@ ApplicationWindow {
                 radius: 5
 
                 CelluloZonePaintedItem{
-                    fillColor: "#80800000"
-                    lineColor: "#80FF0000"
-                    lineThickness: 2
+                    color: colorRect
                     physicalPlaygroundWidth: parent.physicalWidth
                     physicalPlaygroundHeight: parent.physicalHeight
                     associatedZone: staticZone
+                }
+
+                CelluloZonePaintedItem{
+                    color: colorRect
+                    physicalPlaygroundWidth: parent.physicalWidth
+                    physicalPlaygroundHeight: parent.physicalHeight
+                    associatedZone: staticZone2
                 }
 
                 Image{

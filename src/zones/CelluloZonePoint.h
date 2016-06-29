@@ -88,12 +88,13 @@ public:
      * @brief Draws this zone onto the painter
      *
      * @param painter Object to draw onto
+     * @param color Color of the paint
      * @param canvasWidth Screen width of the canvas in pixels
      * @param canvasHeight Screen height of the canvas in pixels
      * @param physicalWidth Physical width of the canvas in mm
      * @param physicalHeight Physical height of the canvas in mm
      */
-    virtual void paint(QPainter* painter, QColor fillColor, QColor lineColor, qreal lineThickness, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
+    virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
 protected:
 

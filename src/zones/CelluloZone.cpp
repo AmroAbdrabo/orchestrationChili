@@ -100,12 +100,10 @@ void CelluloZone::updatePaintedItem(){
         paintedItem->update();
 }
 
-CelluloZonePaintedItem* CelluloZone::createPaintedItem(QQuickItem* parent, QColor fillColor, QColor lineColor, qreal lineThickness, qreal physicalPlaygroundWidth, qreal physicalPlaygroundHeight){
+CelluloZonePaintedItem* CelluloZone::createPaintedItem(QQuickItem* parent, QColor color, qreal physicalPlaygroundWidth, qreal physicalPlaygroundHeight){
     delete paintedItem;
     paintedItem = new CelluloZonePaintedItem(parent);
-    paintedItem->setFillColor(fillColor);
-    paintedItem->setLineColor(lineColor);
-    paintedItem->setLineThickness(lineThickness);
+    paintedItem->setColor(color);
     paintedItem->setAssociatedZone(this);
     paintedItem->setPhysicalPlaygroundWidth(physicalPlaygroundWidth);
     paintedItem->setPhysicalPlaygroundHeight(physicalPlaygroundHeight);

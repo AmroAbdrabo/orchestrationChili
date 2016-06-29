@@ -118,12 +118,13 @@ public:
      * @brief Draws this zone onto the painter
      *
      * @param painter Object to draw onto
+     * @param color Color of the paint
      * @param canvasWidth Screen width of the canvas in pixels
      * @param canvasHeight Screen height of the canvas in pixels
      * @param physicalWidth Physical width of the canvas in mm
      * @param physicalHeight Physical height of the canvas in mm
      */
-    virtual void paint(QPainter* painter, QColor fillColor, QColor lineColor, qreal lineThickness, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
+    virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
 protected:
 
@@ -183,12 +184,13 @@ public:
      * @brief Draws this zone onto the painter
      *
      * @param painter Object to draw onto
+     * @param color Color of the paint
      * @param canvasWidth Screen width of the canvas in pixels
      * @param canvasHeight Screen height of the canvas in pixels
      * @param physicalWidth Physical width of the canvas in mm
      * @param physicalHeight Physical height of the canvas in mm
      */
-    virtual void paint(QPainter* painter, QColor fillColor, QColor lineColor, qreal lineThickness, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
+    virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
 };
 
@@ -199,10 +201,37 @@ class CelluloZoneRectangleBorder : public CelluloZoneRectangle {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
+    Q_PROPERTY(qreal borderThickness WRITE setBorderThickness READ getBorderThickness NOTIFY borderThicknessChanged)
 
 public:
 
     CelluloZoneRectangleBorder();
+
+    /**
+     * @brief Gets the border thickness
+     *
+     * @return Border thickness in mm
+     */
+    qreal getBorderThickness(){ return borderThickness; }
+
+    /**
+     * @brief Sets the new border thickness
+     *
+     * @param newThickness New thickness in mm
+     */
+    void setBorderThickness(qreal newThickness);
+
+    /**
+     * @brief Write the zone infos to the given json Object
+     * @param QJsonObject json object to be written
+     */
+    virtual void write(QJsonObject &json) override;
+
+    /**
+     * @brief Read the zone infos from the given json Object
+     * @param json json object to be read
+     */
+    virtual void read(const QJsonObject &json) override;
 
     /**
      * @brief Calculate whether the robot lies on the border of this rectangular zone (given the zone's margin)
@@ -214,6 +243,29 @@ public:
      * @return 1 if the robot is on the border of this rectangular zone (given the zone's margin) 0 otherwise
      */
     Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) override;
+
+    /**
+     * @brief Draws this zone onto the painter
+     *
+     * @param painter Object to draw onto
+     * @param color Color of the paint
+     * @param canvasWidth Screen width of the canvas in pixels
+     * @param canvasHeight Screen height of the canvas in pixels
+     * @param physicalWidth Physical width of the canvas in mm
+     * @param physicalHeight Physical height of the canvas in mm
+     */
+    virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
+
+signals:
+
+    /**
+     * @brief Emitted when border thickness changes
+     */
+    void borderThicknessChanged();
+
+private:
+
+    qreal borderThickness;
 
 };
 
@@ -239,6 +291,18 @@ public:
      * @return the distance between the robot pose and the border of this rectangular zone
      */
     Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) override;
+
+    /**
+     * @brief Draws this zone onto the painter
+     *
+     * @param painter Object to draw onto
+     * @param color Color of the paint
+     * @param canvasWidth Screen width of the canvas in pixels
+     * @param canvasHeight Screen height of the canvas in pixels
+     * @param physicalWidth Physical width of the canvas in mm
+     * @param physicalHeight Physical height of the canvas in mm
+     */
+    virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
 };
 

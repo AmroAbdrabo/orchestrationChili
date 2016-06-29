@@ -33,7 +33,7 @@
         "height": 58.06793212890625,
         "name": "ZONE_RECTANGLE_BORDER",
         "type": "RECTANGLEBORDER",
-        "borderThickness": 8,
+        "borderThickness": 20,
         "width": 33.496986389160156,
         "x": 87.546951293945312,
         "y": 84.1285400390625
