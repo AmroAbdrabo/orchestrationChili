@@ -45,7 +45,7 @@ void CelluloZone::onClientPoseChanged(qreal x, qreal y, qreal theta){
         if(active){
 
             //Calculate the new value associated with the client whose pose has changed
-            qreal newVal = calculate(x*0.508, y*0.508, theta); //TODO: GET RID OF 0.508
+            qreal newVal = calculate(x, y, theta);
 
             //We already have a previous value for this client
             if(clientsLastValues.contains(client)){

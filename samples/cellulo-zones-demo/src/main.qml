@@ -299,7 +299,6 @@ ApplicationWindow {
                 height: Screen.height/2
 
                 property real scaleCoeff: width/physicalWidth
-                property real gridSpacing: 0.508
 
                 color: "#EEEEEE"
                 border.color: "black"
@@ -323,8 +322,8 @@ ApplicationWindow {
                 Image{
                     source: robotComm1.kidnapped ? "../assets/redHexagon.svg" : "../assets/greenHexagon.svg"
                     rotation: -robotComm1.theta //QML wants clockwise angle for some reason
-                    x: robotComm1.x*parent.gridSpacing*parent.scaleCoeff - width/2
-                    y: robotComm1.y*parent.gridSpacing*parent.scaleCoeff - height/2
+                    x: robotComm1.x*parent.scaleCoeff - width/2
+                    y: robotComm1.y*parent.scaleCoeff - height/2
                     width: parent.physicalRobotWidth*parent.scaleCoeff
                     fillMode: Image.PreserveAspectFit
 
@@ -343,8 +342,8 @@ ApplicationWindow {
                 Image{
                     source: robotComm2.kidnapped ? "../assets/redHexagon.svg" : "../assets/greenHexagon.svg"
                     rotation: -robotComm2.theta //QML wants clockwise angle for some reason
-                    x: robotComm2.x*parent.gridSpacing*parent.scaleCoeff - width/2
-                    y: robotComm2.y*parent.gridSpacing*parent.scaleCoeff - height/2
+                    x: robotComm2.x*parent.scaleCoeff - width/2
+                    y: robotComm2.y*parent.scaleCoeff - height/2
                     width: parent.physicalRobotWidth*parent.scaleCoeff
                     fillMode: Image.PreserveAspectFit
 

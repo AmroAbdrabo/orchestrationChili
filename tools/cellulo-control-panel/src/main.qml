@@ -301,12 +301,12 @@ ApplicationWindow {
 
                             TextField{
                                 id: goalPoseX
-                                placeholderText: "x (grid coords)"
+                                placeholderText: "x (mm)"
                             }
 
                             TextField{
                                 id: goalPoseY
-                                placeholderText: "y (grid coords)"
+                                placeholderText: "y (mm)"
 
                             }
 
@@ -342,12 +342,12 @@ ApplicationWindow {
 
                             TextField{
                                 id: goalPositionX
-                                placeholderText: "x (grid coords)"
+                                placeholderText: "x (mm)"
                             }
 
                             TextField{
                                 id: goalPositionY
-                                placeholderText: "y (grid coords)"
+                                placeholderText: "y (mm)"
 
                             }
 
@@ -457,7 +457,7 @@ ApplicationWindow {
                             color: robotComm.kidnapped ? "red" : "green"
                         }
                         Text{
-                            text: "X=" + robotComm.x.toFixed(2) + " Y=" + robotComm.y.toFixed(2) + " Theta=" + robotComm.theta.toFixed(1)
+                            text: "X=" + robotComm.x.toFixed(2) + "mm Y=" + robotComm.y.toFixed(2) + "mm Theta=" + robotComm.theta.toFixed(1) + "deg"
                         }
                     }
                 }

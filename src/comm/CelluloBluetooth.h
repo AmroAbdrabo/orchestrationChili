@@ -36,12 +36,6 @@
 #include "CelluloBluetoothEnums.h"
 #include "CelluloBluetoothPacket.h"
 #include "../zones/CelluloZoneClient.h"
-#include "../zones/CelluloZone.h"
-#include "../zones/CelluloZoneCircle.h"
-#include "../zones/CelluloZoneRectangle.h"
-#include "../zones/CelluloZoneLine.h"
-#include "../zones/CelluloZonePoint.h"
-#include "../zones/CelluloZonePolygon.h"
 
 /**
  * @brief Bluetooth communicator for a Cellulo robot
@@ -68,12 +62,10 @@ class CelluloBluetooth : public CelluloZoneClient {
     Q_PROPERTY(float framerate READ getFramerate NOTIFY timestampChanged)
 
     Q_PROPERTY(float cameraImageProgress READ getCameraImageProgress NOTIFY cameraImageProgressChanged)
-    Q_PROPERTY(QVariantList zonesChangesHandler READ getZonesChangesHandler NOTIFY zonesChangesHandlerChanged)
 
 public:
 
     static const int BT_CONNECT_TIMEOUT_MILLIS     = 30000;  ///< Will try to reconnect after this much time
-
     static constexpr float FRAMERATE_SMOOTH_FACTOR = 0.99f;  ///< Smoothing factor for framerate, closer to 1.0 means less update
 
     static QByteArray frameBuffer;                           ///< Container for the received camera frame data
@@ -136,7 +128,7 @@ public:
     /**
      * @brief Gets the latest x position
      *
-     * @return Latest x position in grid coordinates
+     * @return Latest x position in mm
      */
     float getX(){
         return x;
@@ -145,7 +137,7 @@ public:
     /**
      * @brief Gets the latest y position
      *
-     * @return Latest y position in grid coordinates
+     * @return Latest y position in mm
      */
     float getY(){
         return y;
@@ -199,13 +191,6 @@ public:
     float getCameraImageProgress(){
         return cameraImageProgress;
     }
-
-    /**
-     * @brief Gets handler of the zones calculate's results
-     *
-     * @return zone at index 0, current calculate's result of this zone at index 1
-     */
-    QVariantList getZonesChangesHandler(){ return zonesChangesHandler; }
 
 private slots:
 
@@ -304,8 +289,8 @@ public slots:
     /**
      * @brief Sets a pose goal to track
      *
-     * @param x X goal in grid coordinates
-     * @param y Y goal in grid coordinates
+     * @param x X goal in mm
+     * @param y Y goal in mm
      * @param theta Theta goal in degrees
      * @param v Maximum linear speed to track pose in mm/s
      * @param w Maximum angular speed to track pose in rad/s
@@ -315,8 +300,8 @@ public slots:
     /**
      * @brief Sets a position goal to track
      *
-     * @param x X goal in grid coordinates
-     * @param y Y goal in grid coordinates
+     * @param x X goal in mm
+     * @param y Y goal in mm
      * @param v Maximum linear speed to track pose in mm/s
      */
     void setGoalPosition(float x, float y, float v);
@@ -375,13 +360,6 @@ public slots:
      * @brief Initiates sleep on the robot
      */
     void shutdown();
-
-    /**
-     * @brief Act on calculate result's change
-     * @param key MAC address of the concerned robot
-     * @param value new calculate result for the zone (which is the sender of the signal)
-     */
-    void actOnZoneCalculateChanged(const QString& key, float value);
 
 signals:
 
@@ -463,10 +441,6 @@ signals:
      */
     void frameReady();
 
-    /**
-     * @brief Emitted when the handler of the zones calculate's results changes
-     */
-    void zonesChangesHandlerChanged();
 private:
 
     CelluloBluetoothPacket sendPacket;                        ///< Outgoing packet
@@ -483,14 +457,12 @@ private:
     float cameraImageProgress;                                ///< Camera image streaming progress
 
     CelluloBluetoothEnums::BatteryState batteryState;         ///< Current battery state
-    float x;                                                  ///< Current x position in grid coordinates
-    float y;                                                  ///< Current y position in grid coordinates
+    float x;                                                  ///< Current x position in mm
+    float y;                                                  ///< Current y position in mm
     float theta;                                              ///< Current orientation in degrees
     bool kidnapped;                                           ///< Whether currently kidnapped
 
     QList<int> touchRawValues;                                ///< Touch key raw offsets
-
-    QVariantList zonesChangesHandler;  ///< List containing zone concerned with change of quantity (index 0) and respective current calculate result (index 1)
 
     /**
      * @brief Resets properties of the robot to default

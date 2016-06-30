@@ -242,8 +242,8 @@ void CelluloBluetooth::processResponse(){
         }
 
         case CelluloBluetoothPacket::EventPacketTypePoseChanged: {
-            x = recvPacket.unloadUInt32()/(float)GOAL_POSE_FACTOR_SHARED;
-            y = recvPacket.unloadUInt32()/(float)GOAL_POSE_FACTOR_SHARED;
+            x = recvPacket.unloadUInt32()*DOTS_GRID_SPACING/(float)GOAL_POSE_FACTOR_SHARED;
+            y = recvPacket.unloadUInt32()*DOTS_GRID_SPACING/(float)GOAL_POSE_FACTOR_SHARED;
             theta = recvPacket.unloadUInt16()/(float)GOAL_POSE_FACTOR_SHARED;
             emit poseChanged(x,y,theta);
 
@@ -256,8 +256,8 @@ void CelluloBluetooth::processResponse(){
         }
 
         case CelluloBluetoothPacket::EventPacketTypePoseChangedTimestamped: {
-            x = recvPacket.unloadUInt32()/(float)GOAL_POSE_FACTOR_SHARED;
-            y = recvPacket.unloadUInt32()/(float)GOAL_POSE_FACTOR_SHARED;
+            x = recvPacket.unloadUInt32()*DOTS_GRID_SPACING/(float)GOAL_POSE_FACTOR_SHARED;
+            y = recvPacket.unloadUInt32()*DOTS_GRID_SPACING/(float)GOAL_POSE_FACTOR_SHARED;
             theta = recvPacket.unloadUInt16()/(float)GOAL_POSE_FACTOR_SHARED;
             emit poseChanged(x,y,theta);
 
@@ -464,8 +464,8 @@ void CelluloBluetooth::setGoalVelocity(float vx, float vy, float w){
 }
 
 void CelluloBluetooth::setGoalPose(float x, float y, float theta, float v, float w){
-    x *= GOAL_POSE_FACTOR_SHARED;
-    y *= GOAL_POSE_FACTOR_SHARED;
+    x *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
+    y *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
     theta *= GOAL_POSE_FACTOR_SHARED;
     v *= GOAL_VEL_FACTOR_SHARED;
     w *= GOAL_VEL_FACTOR_SHARED;
@@ -509,8 +509,8 @@ void CelluloBluetooth::setGoalPose(float x, float y, float theta, float v, float
 }
 
 void CelluloBluetooth::setGoalPosition(float x, float y, float v){
-    x *= GOAL_POSE_FACTOR_SHARED;
-    y *= GOAL_POSE_FACTOR_SHARED;
+    x *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
+    y *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
     v *= GOAL_VEL_FACTOR_SHARED;
 
     quint32 xi, yi;
@@ -586,61 +586,4 @@ void CelluloBluetooth::shutdown(){
     sendPacket.clear();
     sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeShutdown);
     sendCommand();
-}
-
-void CelluloBluetooth::actOnZoneCalculateChanged(const QString& key, float value){
-
-    zonesChangesHandler.clear();
-    if(key == macAddr){
-        CelluloZone* obj = static_cast<CelluloZone *>(sender());
-        switch (obj->getType()) {
-        case CelluloZoneTypes::CIRCLEINNER:
-            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZoneCircleInner *>(obj)));
-            break;
-        case CelluloZoneTypes::CIRCLEBORDER:
-            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZoneCircleBorder *>(obj)));
-            break;
-        case CelluloZoneTypes::CIRCLEDISTANCE:
-            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZoneCircleDistance *>(obj)));
-            break;
-        case CelluloZoneTypes::RECTANGLEINNER:
-            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZoneRectangleInner *>(obj)));
-            break;
-        case CelluloZoneTypes::RECTANGLEBORDER:
-            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZoneRectangleBorder *>(obj)));
-            break;
-        case CelluloZoneTypes::RECTANGLEDISTANCE:
-            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZoneRectangleDistance *>(obj)));
-            break;
-        case CelluloZoneTypes::LINEDISTANCE:
-            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZoneLineDistance *>(obj)));
-            break;
-        case CelluloZoneTypes::POINTDISTANCE:
-            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZonePointDistance *>(obj)));
-            break;
-        case CelluloZoneTypes::RPOLYGONINNER:
-            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZoneRegularPolygonInner *>(obj)));
-            break;
-        case CelluloZoneTypes::RPOLYGONBORDER:
-            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZoneRegularPolygonBorder *>(obj)));
-            break;
-        case CelluloZoneTypes::RPOLYGONDISTANCE:
-            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZoneRegularPolygonDistance*>(obj)));
-            break;
-        case CelluloZoneTypes::IRPOLYGONINNER:
-            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZoneIrregularPolygonInner *>(obj)));
-            break;
-        case CelluloZoneTypes::IRPOLYGONBORDER:
-            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZoneIrregularPolygonBorder *>(obj)));
-            break;
-        case CelluloZoneTypes::IRPOLYGONDISTANCE:
-            zonesChangesHandler.append(QVariant::fromValue(dynamic_cast<CelluloZoneIrregularPolygonDistance *>(obj)));
-            break;
-        default:
-            qDebug() << "Forgot to handle an enum case";
-            break;
-        }
-        zonesChangesHandler.append(value);
-        emit zonesChangesHandlerChanged();
-    }
 }
