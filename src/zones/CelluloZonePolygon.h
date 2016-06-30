@@ -86,22 +86,6 @@ protected:
      */
     void updateBounds();
 
-    /**
-     * @brief isPointOnPolygonBorder calculate if point is on border of the polygon
-     * @param xPoint x position of the point to be checked
-     * @param yPoint y position of the point to be checked
-     * @return 1 if the robot is on the border of this polygon 0 otherwise
-     */
-    //float isPointOnPolygonBorder(float xPoint, float yPoint);
-
-    /**
-     * @brief getPointToPolygonDistance calculate distance between point and polygon
-     * @param xPoint x position of the point to be checked
-     * @param yPoint y position of the point to be checked
-     * @return distance between point and polygon
-     */
-    //float getPointToPolygonDistance(float xPoint, float yPoint);
-
     QList<QVector2D> vertices; ///< Vertices of the polygon
     float minX;                ///< Minimal x bound for the polygon
     float maxX;                ///< Maximum x bound for the polygon
@@ -191,10 +175,39 @@ class CelluloZoneIrregularPolygonBorder : public CelluloZoneIrregularPolygon {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
+    Q_PROPERTY(qreal borderThickness WRITE setBorderThickness READ getBorderThickness NOTIFY borderThicknessChanged)
 
 public:
 
     CelluloZoneIrregularPolygonBorder();
+
+    /**
+     * @brief Gets the border thickness
+     *
+     * @return Border thickness in mm
+     */
+    qreal getBorderThickness(){
+        return borderThickness;
+    }
+
+    /**
+     * @brief Sets the new border thickness
+     *
+     * @param newThickness New thickness in mm
+     */
+    void setBorderThickness(qreal newThickness);
+
+    /**
+     * @brief Write the zone infos to the given json Object
+     * @param QJsonObject json object to be written
+     */
+    virtual void write(QJsonObject &json) override;
+
+    /**
+     * @brief Read the zone infos from the given json Object
+     * @param json json object to be read
+     */
+    virtual void read(const QJsonObject &json) override;
 
     /**
      * @brief Calculate whether the robot lies on the border of this irregular polygonal zone (given the zone's margin)
@@ -218,6 +231,17 @@ public:
      * @param physicalHeight Physical height of the canvas in mm
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
+
+signals:
+
+    /**
+     * @brief Emitted when border thickness changes
+     */
+    void borderThicknessChanged();
+
+private:
+
+    qreal borderThickness;      ///< The border thickness in mm
 
 };
 

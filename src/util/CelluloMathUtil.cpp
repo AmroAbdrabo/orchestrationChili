@@ -60,3 +60,17 @@ bool CelluloMathUtil::pointInPoly(const QVector2D& p, const QList<QVector2D>& v)
     }
     return result;
 }
+
+qreal CelluloMathUtil::pointToPolyBorderDist(const QVector2D& p, const QList<QVector2D>& v){
+    qreal minDist = std::numeric_limits<qreal>::max();
+    qreal tempDist;
+    for(int i=0;i<v.size()-1;i++){
+        tempDist = pointToSegmentDist(p, v[i], v[i + 1]);
+        if(tempDist < minDist)
+            minDist = tempDist;
+    }
+    tempDist = pointToSegmentDist(p, v[v.size() - 1], v[0]);
+    if(tempDist < minDist)
+        minDist = tempDist;
+    return minDist;
+}

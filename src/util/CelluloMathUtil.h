@@ -58,6 +58,15 @@ public:
      */
     Q_INVOKABLE static bool pointInPoly(const QVector2D& p, const QList<QVector2D>& v);
 
+    /**
+     * @brief Calculates the distance of the point to the polygon border
+     *
+     * @param p The point (may be in the polygon)
+     * @param v The vertices of the polygon
+     * @return The distance of the point to the polygon border
+     */
+    Q_INVOKABLE static qreal pointToPolyBorderDist(const QVector2D& p, const QList<QVector2D>& v);
+
 };
 
 #endif // CELLULOMATHUTIL_H

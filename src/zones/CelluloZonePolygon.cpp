@@ -61,40 +61,6 @@ void CelluloZonePolygon::setVertices(const QList<QVector2D> &newVertices){
     }
 }
 
-/*float CelluloZonePolygon::isPointOnPolygonBorder(float xPoint, float yPoint){
-    if(!(xPoint>maxX || xPoint<minX || yPoint>maxY || yPoint<minY)){
-        float result = 0;
-        for(int i = 0; i < pointsQt.length(); ++i){
-            //result = pointInPoly(xPoint, yPoint, minX, maxX, minY, maxY, getRectangleFromLine(pointsQt.at(i%pointsQt.length()).x(),pointsQt.at(i%pointsQt.length()).y(),pointsQt.at((i+1)%pointsQt.length()).x(),pointsQt.at((i+1)%pointsQt.length()).y(),marginThickeness/2));
-            //
-            //TODO: GET MARGIN THICKNESS IN HERE
-            if(result == 1){
-                return 1;
-            }
-        }
-        return 0;
-    }
-    else{
-        return 0;
-    }
-}*/
-
-/*float CelluloZonePolygon::getPointToPolygonDistance(float xPoint, float yPoint){
-    float distances [pointsQt.length()];
-    for(int i = 0; i < pointsQt.length(); ++i){
-        distances[i] = CelluloMathUtil::pointToSegmentDist(
-            QVector2D(xPoint, yPoint), QVector2D(pointsQt.at(i%pointsQt.length()).x(),pointsQt.at(i%pointsQt.length()).y()),
-            QVector2D(pointsQt.at((i+1)%pointsQt.length()).x(),pointsQt.at((i+1)%pointsQt.length()).y()));
-    }
-    float min = std::numeric_limits<float>::max();
-    for(int i = 0; i < pointsQt.length(); i++){
-        if( distances[i] < min ){
-            min = distances[i];
-        }
-    }
-    return min;
-}*/
-
 void CelluloZonePolygon::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
     Q_UNUSED(color);
     Q_UNUSED(canvasWidth);
@@ -112,7 +78,7 @@ void CelluloZoneIrregularPolygon::write(QJsonObject& json){
     CelluloZone::write(json);
 
     QJsonArray verticesArray;
-    for(const QVector2D& vertex : vertices) {
+    for(const QVector2D& vertex : vertices){
         QJsonObject vertexObj;
         vertexObj["x"] = vertex.x();
         vertexObj["y"] = vertex.y();
@@ -174,33 +140,49 @@ void CelluloZoneIrregularPolygonInner::paint(QPainter* painter, QColor color, qr
  * CelluloZoneIrregularPolygonBorder
  */
 
-CelluloZoneIrregularPolygonBorder::CelluloZoneIrregularPolygonBorder() :
-    CelluloZoneIrregularPolygon()
-{
+CelluloZoneIrregularPolygonBorder::CelluloZoneIrregularPolygonBorder() : CelluloZoneIrregularPolygon(){
     type = CelluloZoneTypes::IRPOLYGONBORDER;
+}
+
+void CelluloZoneIrregularPolygonBorder::setBorderThickness(qreal newThickness){
+    if(borderThickness != newThickness){
+        borderThickness = newThickness;
+        emit borderThicknessChanged();
+        updatePaintedItem();
+    }
+}
+
+void CelluloZoneIrregularPolygonBorder::write(QJsonObject &json){
+    CelluloZoneIrregularPolygon::write(json);
+
+    json["borderThickness"] = borderThickness;
+}
+
+void CelluloZoneIrregularPolygonBorder::read(const QJsonObject &json){
+    CelluloZoneIrregularPolygon::read(json);
+
+    borderThickness = json["borderThickness"].toDouble();
 }
 
 float CelluloZoneIrregularPolygonBorder::calculate(float xRobot, float yRobot, float thetaRobot){
     Q_UNUSED(thetaRobot);
-    //return isPointOnPolygonBorder(xRobot, yRobot);
-    return 0;
+    return CelluloMathUtil::pointToPolyBorderDist(QVector2D(xRobot, yRobot), vertices) <= borderThickness/2 ? 1 : 0;
 }
 
 void CelluloZoneIrregularPolygonBorder::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
     CelluloZoneIrregularPolygon::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
 
+    qreal horizontalScaleCoeff = canvasWidth/physicalWidth;
+    qreal verticalScaleCoeff = canvasHeight/physicalHeight;
 
+    painter->setBrush(Qt::NoBrush);
+    painter->setPen(QPen(QBrush(color), borderThickness*(horizontalScaleCoeff + verticalScaleCoeff)/2));
 
+    QPolygonF poly;
+    for(const QVector2D& vertex : vertices)
+        poly.append(QPointF(vertex.x()*horizontalScaleCoeff, vertex.y()*verticalScaleCoeff));
 
-
-
-
-
-
-
-
-
-
+    painter->drawPolygon(poly);
 }
 
 /**

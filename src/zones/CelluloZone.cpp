@@ -107,24 +107,3 @@ CelluloZonePaintedItem* CelluloZone::createPaintedItem(QQuickItem* parent, QColo
     paintedItem->setPhysicalPlaygroundHeight(physicalPlaygroundHeight);
     return paintedItem;
 }
-
-QList<QPointF> CelluloZone::getRectangleFromLine(float x1,float y1,float x2, float y2, float rectangleWidth){
-    QList<QPointF> list;
-
-    float dx = x2-x1;
-    float dy = y2-y1;
-    float norm = sqrt(dy*dy + dx*dx);
-
-    float v1x = -dy/norm * rectangleWidth;
-    float v1y = dx/norm * rectangleWidth;
-
-    float v2x = dy/norm * rectangleWidth;
-    float v2y = -dx/norm * rectangleWidth;
-
-    list.append(QPointF(x1+v1x, y1+v1y));
-    list.append(QPointF(x2+v1x, y2+v1y));
-    list.append(QPointF(x2+v2x, y2+v2y));
-    list.append(QPointF(x1+v2x, y1+v2y));
-
-    return list;
-}

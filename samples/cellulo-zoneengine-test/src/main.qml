@@ -110,7 +110,7 @@ ApplicationWindow {
             else
                 robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "white", 0);
             break;
-        case "ZONE_IRREGULAR_POLYGON_BORDER":
+        case "ZONE_IRREGULER_POLYGON_BORDER":
             if(value === 1)
                 robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectBlink, colorIrpoly, 0);
             else

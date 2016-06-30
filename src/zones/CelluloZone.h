@@ -170,17 +170,6 @@ protected:
      */
     void updatePaintedItem();
 
-    /**
-     * @brief getRectangleFromLine Get rectangle around line with given margin
-     * @param x1 X position of the first line's point
-     * @param y1 Y position of the first line's point
-     * @param x2 X position of the second line's point
-     * @param y2 Y position of the second line's point
-     * @param rectangleWidth width wanted for the surrounding rectangle
-     * @return points of the rectangle surrounding the line
-     */
-    QList<QPointF> getRectangleFromLine(float x1,float y1,float x2, float y2, float rectangleWidth);
-
 signals:
 
     /**
