@@ -108,40 +108,6 @@ CelluloZonePaintedItem* CelluloZone::createPaintedItem(QQuickItem* parent, QColo
     return paintedItem;
 }
 
-// taken from http://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment
-float CelluloZone::pointToSegmentDistance(float x,float y, float x1, float y1, float x2, float y2) {
-    float A = x - x1;
-    float B = y - y1;
-    float C = x2 - x1;
-    float D = y2 - y1;
-
-    float dot = A * C + B * D;
-    float len_sq = C * C + D * D;
-    float param = -1;
-    if(len_sq != 0){  //in case of 0 length line
-        param = dot / len_sq;
-    }
-
-    float xx, yy;
-
-    if(param < 0){
-        xx = x1;
-        yy = y1;
-    }
-    else if(param > 1){
-        xx = x2;
-        yy = y2;
-    }
-    else {
-        xx = x1 + param * C;
-        yy = y1 + param * D;
-    }
-
-    float dx = x - xx;
-    float dy = y - yy;
-    return sqrt(dx * dx + dy * dy);
-}
-
 //taken from: https://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
 float CelluloZone::pointInPoly(float xRobot, float yRobot,float minX,float maxX, float minY, float maxY, QList<QPointF> pointsQt){
     if(!(xRobot>maxX || xRobot<minX || yRobot>maxY || yRobot<minY)){

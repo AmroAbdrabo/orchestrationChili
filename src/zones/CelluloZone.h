@@ -171,18 +171,6 @@ protected:
     void updatePaintedItem();
 
     /**
-     * @brief pointToSegmentDistance Compute distance between point and segement
-     * @param x X position of the point
-     * @param y Y position of the point
-     * @param x1 X position of the first line's point
-     * @param y1 Y position of the first line's point
-     * @param x2 X position of the second line's point
-     * @param y2 Y position of the second line's point
-     * @return distance between point and segment
-     */
-    float pointToSegmentDistance(float x,float y, float x1, float y1, float x2, float y2);
-
-    /**
      * @brief pointInPoly Detect if a points is inside this polygonal zone
      * @param xRobot x position of the point to be checked
      * @param yRobot y position of the point to be checked

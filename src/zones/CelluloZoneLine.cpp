@@ -24,13 +24,13 @@
 
 #include "CelluloZoneLine.h"
 
+#include "../util/CelluloMathUtil.h"
+
 /**
  * CelluloZoneLine
  */
 
-CelluloZoneLine::CelluloZoneLine() :
-    CelluloZone()
-{
+CelluloZoneLine::CelluloZoneLine() : CelluloZone(){
     x1 = 0;
     y1 = 0;
     x2 = 0;
@@ -86,19 +86,35 @@ void CelluloZoneLine::read(const QJsonObject &json){
 }
 
 void CelluloZoneLine::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
-
+    Q_UNUSED(color);
+    Q_UNUSED(canvasWidth);
+    Q_UNUSED(canvasHeight);
+    Q_UNUSED(physicalWidth);
+    Q_UNUSED(physicalHeight);
+    painter->setRenderHint(QPainter::Antialiasing);
 }
 
 /**
  * CelluloZoneLineDistance
  */
 
-CelluloZoneLineDistance::CelluloZoneLineDistance() :
-    CelluloZoneLine()
-{
+CelluloZoneLineDistance::CelluloZoneLineDistance() : CelluloZoneLine(){
     type = CelluloZoneTypes::LINEDISTANCE;
 }
 
 float CelluloZoneLineDistance::calculate(float xRobot, float yRobot, float thetaRobot){
-    return pointToSegmentDistance(xRobot, yRobot, x1, y1, x2, y2);
+    Q_UNUSED(thetaRobot);
+    return CelluloMathUtil::pointToSegmentDist(QVector2D(xRobot, yRobot), QVector2D(x1, y1), QVector2D(x2, y2));
+}
+
+void CelluloZoneLineDistance::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    CelluloZoneLine::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
+
+    painter->setBrush(Qt::NoBrush);
+    painter->setPen(QPen(QBrush(color), 2));
+
+    qreal horizontalScaleCoeff = canvasWidth/physicalWidth;
+    qreal verticalScaleCoeff = canvasHeight/physicalHeight;
+
+    painter->drawLine(QPointF(x1*horizontalScaleCoeff, y1*verticalScaleCoeff), QPointF(x2*horizontalScaleCoeff, y2*verticalScaleCoeff));
 }

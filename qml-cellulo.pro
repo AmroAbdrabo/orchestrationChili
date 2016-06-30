@@ -18,7 +18,8 @@ HEADERS += \
     src/zones/CelluloZoneEngine.h \
     src/zones/CelluloZoneJsonHandler.h \
     src/zones/CelluloZoneTypes.h \
-    src/zones/CelluloZonePaintedItem.h
+    src/zones/CelluloZonePaintedItem.h \
+    src/util/CelluloMathUtil.h
 
 SOURCES += \
     src/CelluloPlugin.cpp \
@@ -36,7 +37,8 @@ SOURCES += \
     src/zones/CelluloZoneEngine.cpp \
     src/zones/CelluloZoneJsonHandler.cpp \
     src/zones/CelluloZoneTypes.cpp \
-    src/zones/CelluloZonePaintedItem.cpp
+    src/zones/CelluloZonePaintedItem.cpp \
+    src/util/CelluloMathUtil.cpp
 
 INCLUDEPATH += \
     include/

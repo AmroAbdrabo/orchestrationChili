@@ -24,6 +24,8 @@
 
 #include "CelluloZoneRectangle.h"
 
+#include "../util/CelluloMathUtil.h"
+
 /**
  * CelluloZoneRectangle
  */
@@ -86,6 +88,11 @@ void CelluloZoneRectangle::read(const QJsonObject &json){
 }
 
 void CelluloZoneRectangle::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    Q_UNUSED(color);
+    Q_UNUSED(canvasWidth);
+    Q_UNUSED(canvasHeight);
+    Q_UNUSED(physicalWidth);
+    Q_UNUSED(physicalHeight);
     painter->setRenderHint(QPainter::Antialiasing);
 }
 
@@ -174,13 +181,19 @@ float CelluloZoneRectangleDistance::calculate(float xRobot, float yRobot, float 
     if(x <= xRobot && x + width >= xRobot && y <= yRobot && y + height >= yRobot)
         return 0;
     else{
-        float distances[4] = { pointToSegmentDistance(xRobot, yRobot, x,y,width+x,y),
-                               pointToSegmentDistance(xRobot, yRobot, width+x,y,width+x,height+y),
-                               pointToSegmentDistance(xRobot, yRobot, width+x,height+y,x,height+y),
-                               pointToSegmentDistance(xRobot, yRobot, x,height+y,x,y)};
+        qreal distances[4] = {
+            CelluloMathUtil::pointToSegmentDist(
+                QVector2D(xRobot, yRobot), QVector2D(x, y),                     QVector2D(width + x, y)),
+            CelluloMathUtil::pointToSegmentDist(
+                QVector2D(xRobot, yRobot), QVector2D(width + x, y),             QVector2D(width + x, height + y)),
+            CelluloMathUtil::pointToSegmentDist(
+                QVector2D(xRobot, yRobot), QVector2D(width + x, height + y),    QVector2D(x, height + y)),
+            CelluloMathUtil::pointToSegmentDist(
+                QVector2D(xRobot, yRobot), QVector2D(x, height + y),            QVector2D(x, y))
+        };
 
-        float min = std::numeric_limits<float>::max();
-        for(int i = 0; i < 4; i++)
+        qreal min = std::numeric_limits<qreal>::max();
+        for(int i=0; i<4; i++)
             if(distances[i] < min)
                 min = distances[i];
         return min;

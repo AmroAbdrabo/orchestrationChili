@@ -24,6 +24,8 @@
 
 #include "CelluloZonePolygon.h"
 
+#include "../util/CelluloMathUtil.h"
+
 /**
  * CelluloZonePolygon
  */
@@ -82,7 +84,9 @@ float CelluloZonePolygon::isPointOnPolygonBorder(float xPoint, float yPoint){
 float CelluloZonePolygon::getPointToPolygonDistance(float xPoint, float yPoint){
     float distances [pointsQt.length()];
     for(int i = 0; i < pointsQt.length(); ++i){
-        distances[i] = pointToSegmentDistance(xPoint, yPoint, pointsQt.at(i%pointsQt.length()).x(),pointsQt.at(i%pointsQt.length()).y(),pointsQt.at((i+1)%pointsQt.length()).x(),pointsQt.at((i+1)%pointsQt.length()).y());
+        distances[i] = CelluloMathUtil::pointToSegmentDist(
+            QVector2D(xPoint, yPoint), QVector2D(pointsQt.at(i%pointsQt.length()).x(),pointsQt.at(i%pointsQt.length()).y()),
+            QVector2D(pointsQt.at((i+1)%pointsQt.length()).x(),pointsQt.at((i+1)%pointsQt.length()).y()));
     }
     float min = std::numeric_limits<float>::max();
     for(int i = 0; i < pointsQt.length(); i++){
@@ -101,14 +105,14 @@ void CelluloZonePolygon::paint(QPainter* painter, QColor color, qreal canvasWidt
  * CelluloZoneIrregularPolygon
  */
 
- void CelluloZoneIrregularPolygon::setVertices(QList<QVariant> newPoints) {
-     if(newPoints != vertices){
-         vertices = newPoints;
-         emit(verticesChanged());
-         setPointsQt(convertQVariantToQPointF());
-         updatePaintedItem();
-     }
- }
+void CelluloZoneIrregularPolygon::setVertices(QList<QVariant> newPoints) {
+    if(newPoints != vertices){
+        vertices = newPoints;
+        emit(verticesChanged());
+        setPointsQt(convertQVariantToQPointF());
+        updatePaintedItem();
+    }
+}
 
 void CelluloZoneIrregularPolygon::write(QJsonObject &json){
     CelluloZone::write(json);
