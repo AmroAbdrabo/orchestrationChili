@@ -28,9 +28,7 @@
  * CelluloZonePoint
  */
 
-CelluloZonePoint::CelluloZonePoint() :
-    CelluloZone()
-{
+CelluloZonePoint::CelluloZonePoint() : CelluloZone(){
     x = 0;
     y = 0;
 }
@@ -64,19 +62,44 @@ void CelluloZonePoint::read(const QJsonObject &json){
 }
 
 void CelluloZonePoint::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
-
+    Q_UNUSED(color);
+    Q_UNUSED(canvasWidth);
+    Q_UNUSED(canvasHeight);
+    Q_UNUSED(physicalWidth);
+    Q_UNUSED(physicalHeight);
+    painter->setRenderHint(QPainter::Antialiasing);
 }
 
 /**
  * CelluloZonePointDistance
  */
 
-CelluloZonePointDistance::CelluloZonePointDistance() :
-    CelluloZonePoint()
-{
+CelluloZonePointDistance::CelluloZonePointDistance() : CelluloZonePoint(){
     type = CelluloZoneTypes::POINTDISTANCE;
 }
 
 float CelluloZonePointDistance::calculate(float xRobot, float yRobot, float thetaRobot){
-    return sqrt((xRobot-x)*(xRobot-x) + (yRobot -y)*(yRobot -y));
+    Q_UNUSED(thetaRobot);
+    return sqrt((xRobot - x)*(xRobot - x) + (yRobot - y)*(yRobot - y));
+}
+
+void CelluloZonePointDistance::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    CelluloZonePoint::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
+
+    painter->setBrush(QBrush(color));
+    painter->setPen(Qt::NoPen);
+
+    qreal horizontalScaleCoeff = canvasWidth/physicalWidth;
+    qreal verticalScaleCoeff = canvasHeight/physicalHeight;
+
+    painter->drawEllipse(QPointF(x*horizontalScaleCoeff, y*verticalScaleCoeff), 2*horizontalScaleCoeff, 2*verticalScaleCoeff);
+
+    painter->setPen(QPen(QBrush(color), 1));
+
+    painter->drawLine(
+        QPointF((x - 3)*horizontalScaleCoeff, (y - 3)*verticalScaleCoeff),
+        QPointF((x + 3)*horizontalScaleCoeff, (y + 3)*verticalScaleCoeff));
+    painter->drawLine(
+        QPointF((x - 3)*horizontalScaleCoeff, (y + 3)*verticalScaleCoeff),
+        QPointF((x + 3)*horizontalScaleCoeff, (y - 3)*verticalScaleCoeff));
 }
