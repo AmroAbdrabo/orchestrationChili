@@ -106,13 +106,13 @@ ApplicationWindow {
             //Irregular polygon
         case "ZONE_IRREGULAR_POLYGON_INNER":
             if(value === 1)
-                robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, colorIrPoly, 0);
+                robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, colorIrpoly, 0);
             else
                 robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "white", 0);
             break;
         case "ZONE_IRREGULAR_POLYGON_BORDER":
             if(value === 1)
-                robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectBlink, colorIrPoly, 0);
+                robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectBlink, colorIrpoly, 0);
             else
                 robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "white", 0);
             break;

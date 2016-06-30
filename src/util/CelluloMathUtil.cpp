@@ -48,3 +48,15 @@ qreal CelluloMathUtil::pointToSegmentDist(const QVector2D& p, const QVector2D& s
     const QVector2D projection = seg1 + t*(seg2 - seg1); //Projection falls on the segment
     return projection.distanceToPoint(p);
 }
+
+bool CelluloMathUtil::pointInPoly(const QVector2D& p, const QList<QVector2D>& v){
+    //Taken from: https://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+
+    bool result = false;
+    for(int i = 0, j = v.size() - 1; i < v.size(); j = i++){
+        if((v[i].y() > p.y()) != (v[j].y() > p.y()) &&
+           (p.x() < (v[j].x() - v[i].x())*(p.y() - v[i].y())/(v[j].y() - v[i].y()) + v[i].x()))
+            result = !result;
+    }
+    return result;
+}

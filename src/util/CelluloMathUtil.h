@@ -49,6 +49,15 @@ public:
      */
     Q_INVOKABLE static qreal pointToSegmentDist(const QVector2D& p, const QVector2D& seg1, const QVector2D& seg2);
 
+    /**
+     * @brief Calculates whether the given point is in the given polygon
+     *
+     * @param p The point
+     * @param v The vertices of the polygon
+     * @return Whether the point lies in the given polygon
+     */
+    Q_INVOKABLE static bool pointInPoly(const QVector2D& p, const QList<QVector2D>& v);
+
 };
 
 #endif // CELLULOMATHUTIL_H

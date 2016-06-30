@@ -108,22 +108,6 @@ CelluloZonePaintedItem* CelluloZone::createPaintedItem(QQuickItem* parent, QColo
     return paintedItem;
 }
 
-//taken from: https://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
-float CelluloZone::pointInPoly(float xRobot, float yRobot,float minX,float maxX, float minY, float maxY, QList<QPointF> pointsQt){
-    if(!(xRobot>maxX || xRobot<minX || yRobot>maxY || yRobot<minY)){
-        int i, j, c = 0;
-        for(i = 0, j = pointsQt.size()-1; i < pointsQt.size(); j = i++){
-            if( ((pointsQt.at(i).y()>yRobot) != (pointsQt.at(j).y()>yRobot)) &&
-                (xRobot < (pointsQt.at(j).x()-pointsQt.at(i).x()) * (yRobot-pointsQt.at(i).y()) / (pointsQt.at(j).y()-pointsQt.at(i).y()) + pointsQt.at(i).x()))
-                c = !c;
-        }
-        return c ? 1 : 0;
-    }
-    else{
-        return 0;
-    }
-}
-
 QList<QPointF> CelluloZone::getRectangleFromLine(float x1,float y1,float x2, float y2, float rectangleWidth){
     QList<QPointF> list;
 

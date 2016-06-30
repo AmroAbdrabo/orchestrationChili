@@ -24,6 +24,8 @@
 
 #include "CelluloZonePolygon.h"
 
+#include <QPolygon>
+
 #include "../util/CelluloMathUtil.h"
 
 /**
@@ -37,31 +39,29 @@ CelluloZonePolygon::CelluloZonePolygon() : CelluloZone(){
     minY = std::numeric_limits<qreal>::max();
 }
 
-void CelluloZonePolygon::setMaxMinOuterRectangle(const QList<QPointF> &pointsQt, float *minX, float *maxX, float *minY, float *maxY){
-    for(int i = 0; i < pointsQt.size(); ++i){
-        if(pointsQt.at(i).x() < *minX){
-            *minX = pointsQt.at(i).x();
-        }
-        if(pointsQt.at(i).x() > *maxX){
-            *maxX = pointsQt.at(i).x();
-        }
-        if(pointsQt.at(i).y() < *minY){
-            *minY = pointsQt.at(i).y();
-        }
-        if(pointsQt.at(i).y() > *maxY){
-            *maxY = pointsQt.at(i).y();
-        }
+void CelluloZonePolygon::updateBounds(){
+    for(const QVector2D& vertex : vertices){
+        if(vertex.x() < minX)
+            minX = vertex.x();
+        if(vertex.x() > maxX)
+            maxX = vertex.x();
+        if(vertex.y() < minY)
+            minY = vertex.y();
+        if(vertex.y() > maxY)
+            maxY = vertex.y();
     }
 }
 
-void CelluloZonePolygon::setPointsQt(const QList<QPointF> &newPointsQt){
-    if(newPointsQt!=pointsQt){
-        pointsQt = newPointsQt;
-        setMaxMinOuterRectangle(pointsQt, &minX, &maxX, &minY, &maxY);
+void CelluloZonePolygon::setVertices(const QList<QVector2D> &newVertices){
+    if(newVertices != vertices){
+        vertices = newVertices;
+        emit verticesChanged();
+        updateBounds();
+        updatePaintedItem();
     }
 }
 
-float CelluloZonePolygon::isPointOnPolygonBorder(float xPoint, float yPoint){
+/*float CelluloZonePolygon::isPointOnPolygonBorder(float xPoint, float yPoint){
     if(!(xPoint>maxX || xPoint<minX || yPoint>maxY || yPoint<minY)){
         float result = 0;
         for(int i = 0; i < pointsQt.length(); ++i){
@@ -77,9 +77,9 @@ float CelluloZonePolygon::isPointOnPolygonBorder(float xPoint, float yPoint){
     else{
         return 0;
     }
-}
+}*/
 
-float CelluloZonePolygon::getPointToPolygonDistance(float xPoint, float yPoint){
+/*float CelluloZonePolygon::getPointToPolygonDistance(float xPoint, float yPoint){
     float distances [pointsQt.length()];
     for(int i = 0; i < pointsQt.length(); ++i){
         distances[i] = CelluloMathUtil::pointToSegmentDist(
@@ -93,7 +93,7 @@ float CelluloZonePolygon::getPointToPolygonDistance(float xPoint, float yPoint){
         }
     }
     return min;
-}
+}*/
 
 void CelluloZonePolygon::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
     Q_UNUSED(color);
@@ -108,25 +108,15 @@ void CelluloZonePolygon::paint(QPainter* painter, QColor color, qreal canvasWidt
  * CelluloZoneIrregularPolygon
  */
 
-void CelluloZoneIrregularPolygon::setVertices(QList<QVariant> newPoints) {
-    if(newPoints != vertices){
-        vertices = newPoints;
-        emit(verticesChanged());
-        setPointsQt(convertQVariantToQPointF());
-        updatePaintedItem();
-    }
-}
-
-void CelluloZoneIrregularPolygon::write(QJsonObject &json){
+void CelluloZoneIrregularPolygon::write(QJsonObject& json){
     CelluloZone::write(json);
 
-    QJsonObject obj;
     QJsonArray verticesArray;
-    foreach(QPointF point, convertQVariantToQPointF()) {
-        QJsonObject pointObject;
-        pointObject["x"] = point.x();
-        pointObject["y"] = point.y();
-        verticesArray.append(pointObject);
+    for(const QVector2D& vertex : vertices) {
+        QJsonObject vertexObj;
+        vertexObj["x"] = vertex.x();
+        vertexObj["y"] = vertex.y();
+        verticesArray.append(vertexObj);
     }
     json["vertices"] = verticesArray;
 }
@@ -134,33 +124,13 @@ void CelluloZoneIrregularPolygon::write(QJsonObject &json){
 void CelluloZoneIrregularPolygon::read(const QJsonObject &json){
     CelluloZone::read(json);
 
-    vertices.clear();
+    QList<QVector2D> newVertices;
     QJsonArray verticesArray = json["vertices"].toArray();
-    foreach(QVariant pointObject, verticesArray.toVariantList()) {
-        QMap<QString, QVariant> pointMap = pointObject.toMap();
-        QPointF point;
-        point.setX(pointMap["x"].toDouble());
-        point.setY(pointMap["y"].toDouble());
-        vertices.append(point);
+    for(const QJsonValue& vertexValue : verticesArray){
+        const QJsonObject& vertexObj = vertexValue.toObject();
+        newVertices.append(QVector2D(vertexObj["x"].toDouble(), vertexObj["y"].toDouble()));
     }
-    setPointsQt(convertQVariantToQPointF());
-}
-
-QList<QPointF> CelluloZoneIrregularPolygon::convertQVariantToQPointF(){
-    QList<QPointF> newPointsQt;
-    for(int i = 0; i < vertices.size(); ++i){
-        if(vertices.at(i).canConvert(QVariant::PointF)){
-            if(QVariant(vertices.at(i)).convert(QVariant::PointF)){
-                QPointF newPoint = vertices.at(i).toPointF();
-                newPointsQt.append(newPoint);
-            } else{
-                qDebug() << "Problem with convert() at index " << i;
-            }
-        }else {
-            qDebug() << "Problem with canConvert() at index " << i;
-        }
-    }
-    return newPointsQt;
+    setVertices(newVertices);
 }
 
 void CelluloZoneIrregularPolygon::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
@@ -177,24 +147,27 @@ CelluloZoneIrregularPolygonInner::CelluloZoneIrregularPolygonInner() : CelluloZo
 
 float CelluloZoneIrregularPolygonInner::calculate(float xRobot, float yRobot, float thetaRobot){
     Q_UNUSED(thetaRobot);
-    return pointInPoly(xRobot, yRobot, minX, maxX, minY, maxY, pointsQt);
+
+    if(minX <= xRobot && xRobot <= maxX && minY <= yRobot && yRobot <= maxY)
+        return CelluloMathUtil::pointInPoly(QVector2D(xRobot, yRobot), vertices) ? 1 : 0;
+    else
+        return 0;
 }
 
 void CelluloZoneIrregularPolygonInner::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
     CelluloZoneIrregularPolygon::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
 
+    painter->setBrush(QBrush(color));
+    painter->setPen(Qt::NoPen);
 
+    qreal horizontalScaleCoeff = canvasWidth/physicalWidth;
+    qreal verticalScaleCoeff = canvasHeight/physicalHeight;
 
+    QPolygonF poly;
+    for(const QVector2D& vertex : vertices)
+        poly.append(QPointF(vertex.x()*horizontalScaleCoeff, vertex.y()*verticalScaleCoeff));
 
-
-
-
-
-
-
-
-
-
+    painter->drawPolygon(poly);
 }
 
 /**
@@ -209,7 +182,8 @@ CelluloZoneIrregularPolygonBorder::CelluloZoneIrregularPolygonBorder() :
 
 float CelluloZoneIrregularPolygonBorder::calculate(float xRobot, float yRobot, float thetaRobot){
     Q_UNUSED(thetaRobot);
-    return isPointOnPolygonBorder(xRobot, yRobot);
+    //return isPointOnPolygonBorder(xRobot, yRobot);
+    return 0;
 }
 
 void CelluloZoneIrregularPolygonBorder::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
@@ -241,7 +215,8 @@ CelluloZoneIrregularPolygonDistance::CelluloZoneIrregularPolygonDistance() :
 
 float CelluloZoneIrregularPolygonDistance::calculate(float xRobot, float yRobot, float thetaRobot){
     Q_UNUSED(thetaRobot);
-    return getPointToPolygonDistance(xRobot, yRobot);
+    //return getPointToPolygonDistance(xRobot, yRobot);
+    return 0;
 }
 
 void CelluloZoneIrregularPolygonDistance::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
@@ -280,23 +255,16 @@ void CelluloZoneRegularPolygon::setNumEdges(int newNumEdge) {
     if(newNumEdge > 2 && newNumEdge != numEdges){
         numEdges = newNumEdge;
         emit(numEdgesChanged());
-        setPointsQt(createPolygonPointsFromOuterCircle());
+        //setPointsQt(createPolygonPointsFromOuterCircle());
         updatePaintedItem();
     }
-}
-
-QList<QVariant> CelluloZoneRegularPolygon::getVertices() {
-    QList<QVariant> newVertices;
-    for(int i = 0; i < pointsQt.size(); ++i)
-        newVertices.append(QVariant::fromValue(pointsQt.at(i)));
-    return newVertices;
 }
 
 void CelluloZoneRegularPolygon::setX(float newX) {
     if(newX != x){
         x = newX;
         emit(xChanged());
-        setPointsQt(createPolygonPointsFromOuterCircle());
+        //setPointsQt(createPolygonPointsFromOuterCircle());
         updatePaintedItem();
     }
 }
@@ -305,7 +273,7 @@ void CelluloZoneRegularPolygon::setY(float newY) {
     if(newY != y){
         y = newY;
         emit(yChanged());
-        setPointsQt(createPolygonPointsFromOuterCircle());
+        //setPointsQt(createPolygonPointsFromOuterCircle());
         updatePaintedItem();
     }
 }
@@ -314,7 +282,7 @@ void CelluloZoneRegularPolygon::setR(float newR) {
     if(newR != r){
         r = newR;
         emit(rChanged());
-        setPointsQt(createPolygonPointsFromOuterCircle());
+        //setPointsQt(createPolygonPointsFromOuterCircle());
         updatePaintedItem();
     }
 }
@@ -323,14 +291,12 @@ void CelluloZoneRegularPolygon::setRotAngle(float newRotAngle) {
     if(newRotAngle != rotAngle){
         rotAngle = newRotAngle;
         emit(rotAngleChanged());
-        setPointsQt(createPolygonPointsFromOuterCircle());
+        //setPointsQt(createPolygonPointsFromOuterCircle());
         updatePaintedItem();
     }
 }
 
 void CelluloZoneRegularPolygon::write(QJsonObject &json){
-    CelluloZonePolygon::write(json);
-
     json["numEdges"] = numEdges;
     json["x"] = x;
     json["y"] = y;
@@ -339,14 +305,18 @@ void CelluloZoneRegularPolygon::write(QJsonObject &json){
 }
 
 void CelluloZoneRegularPolygon::read(const QJsonObject &json){
-    CelluloZonePolygon::read(json);
-
     numEdges = json["numEdges"].toDouble();
     x = json["x"].toDouble();
     y = json["y"].toDouble();
     r = json["r"].toDouble();
     rotAngle = json["rotAngle"].toDouble();
-    setPointsQt(createPolygonPointsFromOuterCircle());
+
+
+
+
+
+
+    //setPointsQt(createPolygonPointsFromOuterCircle());
 }
 
 QList<QPointF> CelluloZoneRegularPolygon::createPolygonPointsFromOuterCircle(){
@@ -366,6 +336,18 @@ QList<QPointF> CelluloZoneRegularPolygon::createPolygonPointsFromOuterCircle(){
 
 void CelluloZoneRegularPolygon::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
     CelluloZonePolygon::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 /**
@@ -378,19 +360,24 @@ CelluloZoneRegularPolygonInner::CelluloZoneRegularPolygonInner() : CelluloZoneRe
 
 float CelluloZoneRegularPolygonInner::calculate(float xRobot, float yRobot, float thetaRobot){
     Q_UNUSED(thetaRobot);
-    return pointInPoly(xRobot, yRobot, x-r, x+r, y-r, y+r, pointsQt);
+    //return pointInPoly(xRobot, yRobot, x-r, x+r, y-r, y+r, pointsQt);
+    return 0;
 }
 
 void CelluloZoneRegularPolygonInner::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
     CelluloZoneRegularPolygon::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
 
+    painter->setBrush(QBrush(color));
+    painter->setPen(Qt::NoPen);
 
+    qreal horizontalScaleCoeff = canvasWidth/physicalWidth;
+    qreal verticalScaleCoeff = canvasHeight/physicalHeight;
 
+    QPolygonF poly;
+    for(const QVector2D& vertex : vertices)
+        poly.append(QPointF(vertex.x()*horizontalScaleCoeff, vertex.y()*verticalScaleCoeff));
 
-
-
-
-
+    painter->drawPolygon(poly);
 }
 
 /**
@@ -403,7 +390,8 @@ CelluloZoneRegularPolygonBorder::CelluloZoneRegularPolygonBorder() : CelluloZone
 
 float CelluloZoneRegularPolygonBorder::calculate(float xRobot, float yRobot, float thetaRobot){
     Q_UNUSED(thetaRobot);
-    return isPointOnPolygonBorder(xRobot, yRobot);
+    //return isPointOnPolygonBorder(xRobot, yRobot);
+    return 0;
 }
 
 void CelluloZoneRegularPolygonBorder::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
@@ -428,7 +416,8 @@ CelluloZoneRegularPolygonDistance::CelluloZoneRegularPolygonDistance() : Cellulo
 
 float CelluloZoneRegularPolygonDistance::calculate(float xRobot, float yRobot, float thetaRobot){
     Q_UNUSED(thetaRobot);
-    return getPointToPolygonDistance(xRobot, yRobot);
+    //return getPointToPolygonDistance(xRobot, yRobot);
+    return 0;
 }
 
 void CelluloZoneRegularPolygonDistance::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){

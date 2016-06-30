@@ -119,6 +119,7 @@ void CelluloZoneCircleBorder::setBorderThickness(qreal newThickness){
     if(borderThickness != newThickness){
         borderThickness = newThickness;
         emit borderThicknessChanged();
+        updatePaintedItem();
     }
 }
 

@@ -35,6 +35,7 @@ class CelluloZonePolygon : public CelluloZone {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
+    Q_PROPERTY(QList<QVector2D> vertices WRITE setVertices READ getVertices NOTIFY verticesChanged)
 
 public:
 
@@ -42,6 +43,22 @@ public:
      * @brief Creates a new Cellulo polygonal zone
      */
     CelluloZonePolygon();
+
+    /**
+     * @brief Gets the polygon's vertices
+     *
+     * @return List of polygon's vertices
+     */
+    const QList<QVector2D>& getVertices(){
+        return vertices;
+    }
+
+    /**
+     * @brief Sets the polygon's vertices
+     *
+     * @param newVertices List of new vertices
+     */
+    virtual void setVertices(const QList<QVector2D>& newVertices);
 
     /**
      * @brief Draws this zone onto the painter
@@ -55,32 +72,19 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+signals:
+
+    /**
+     * @brief Emitted when the vertices change
+     */
+    void verticesChanged();
+
 protected:
 
-    QList<QPointF> pointsQt;                ///< points of the polygon
-    float minX;                             ///< minimal x position from all polygon's point
-    float maxX;                             ///< maximal x position from all polygon's point
-    float minY;                             ///< minimal x position from all polygon's point
-    float maxY;                             ///< maximal y position from all polygon's point
-
     /**
-     * @brief Gets the polygon's points
-     * @return List of polygon's points
+     * @brief Updates the bounding rectangle from the new list of vertices
      */
-    QList<QPointF> getPointsQt() const {
-        return pointsQt;
-    }
-    void setPointsQt(const QList<QPointF> &newPointsQt);
-
-    /**
-     * @brief setMaxMinOuterRectangle set the max and min points to determine the outer rectangle of this polygonal zone
-     * @param pointsQt polygon's points
-     * @param minX minimal x position from all polygon's point
-     * @param maxX maximal x position from all polygon's point
-     * @param minY minimal y position from all polygon's point
-     * @param maxY maximal y position from all polygon's point
-     */
-    void setMaxMinOuterRectangle(const QList<QPointF> &pointsQt, float *minX, float *maxX, float *minY, float *maxY);
+    void updateBounds();
 
     /**
      * @brief isPointOnPolygonBorder calculate if point is on border of the polygon
@@ -88,7 +92,7 @@ protected:
      * @param yPoint y position of the point to be checked
      * @return 1 if the robot is on the border of this polygon 0 otherwise
      */
-    float isPointOnPolygonBorder(float xPoint, float yPoint);
+    //float isPointOnPolygonBorder(float xPoint, float yPoint);
 
     /**
      * @brief getPointToPolygonDistance calculate distance between point and polygon
@@ -96,7 +100,13 @@ protected:
      * @param yPoint y position of the point to be checked
      * @return distance between point and polygon
      */
-    float getPointToPolygonDistance(float xPoint, float yPoint);
+    //float getPointToPolygonDistance(float xPoint, float yPoint);
+
+    QList<QVector2D> vertices; ///< Vertices of the polygon
+    float minX;                ///< Minimal x bound for the polygon
+    float maxX;                ///< Maximum x bound for the polygon
+    float minY;                ///< Minimum y bound for the polygon
+    float maxY;                ///< Maximum y bound for the polygon
 
 };
 
@@ -108,7 +118,6 @@ class CelluloZoneIrregularPolygon : public CelluloZonePolygon {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
-    Q_PROPERTY (QList<QVariant> vertices READ getVertices WRITE setVertices NOTIFY verticesChanged)
 
 public:
 
@@ -125,50 +134,18 @@ public:
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
     /**
-     * @brief Gets the vertices (set via QML) of the irregular polygon
-     * @return List of vertices (set via QML) of the irregular polygon
-     */
-    QList<QVariant> getVertices(){
-        return vertices;
-    }
-
-    /**
-     * @brief Updates the list of vertices
-     * @param newPoints New list of vertices
-     */
-    void setVertices(QList<QVariant> newPoints);
-
-    /**
      * @brief Write the zone infos to the given json Object
      * @param QJsonObject json object to be written
      */
-    virtual void write(QJsonObject &json) override;
+    virtual void write(QJsonObject& json) override;
 
     /**
      * @brief Read the zone infos from the given json Object
      * @param json json object to be read
      */
-    virtual void read(const QJsonObject &json) override;
-
-protected:
-
-    QList<QVariant> vertices;                ///< vertices of the polygon set via QML
-
-    /**
-     * @brief convertQVariantToQPointF convert vertices set via QML into points visible by the backend
-     * @return List of points visible by the backend
-     */
-    QList<QPointF> convertQVariantToQPointF();
-
-signals:
-
-    /**
-     * @brief Emitted when vertices of the irregular polygonal zone changes
-     */
-    void verticesChanged();
+    virtual void read(const QJsonObject& json) override;
 
 };
-
 
 /**
  * @brief CelluloZone Specific Class for irregular polygonal zones inner determination
@@ -290,7 +267,6 @@ class CelluloZoneRegularPolygon : public CelluloZonePolygon {
     Q_PROPERTY(float y WRITE setY READ getY NOTIFY yChanged)
     Q_PROPERTY(float r WRITE setR READ getR NOTIFY rChanged)
     Q_PROPERTY(float rotAngle WRITE setRotAngle READ getRotAngle NOTIFY rotAngleChanged)
-    Q_PROPERTY(QList<QVariant> vertices READ getVertices NOTIFY verticesChanged)
 
 public:
 
@@ -307,12 +283,6 @@ public:
         return numEdges;
     }
     void setNumEdges(int newNumEdge);
-
-    /**
-     * @brief Gets the vertices (computed from the shape properties) of the regular polygon
-     * @return List of vertices (computed from the shape properties) of the regular polygon
-     */
-    QList<QVariant> getVertices();
 
     /**
      * @brief Gets the x position of regular polygon definer circle's center
@@ -401,7 +371,6 @@ protected:
     float y;                                ///< y position of regular polygon defined circle's center
     float r;                                ///< radius of the regular polygon defined circle
     float rotAngle;                         ///< rotational angle of the regular polygon
-    QList<QVariant> vertices;               ///< vertices of the polygon set via the shape properties)
 
 private:
 
@@ -437,11 +406,6 @@ signals:
      * @brief Emitted when the rotational angle of the regular polygonal zone changes
      */
     void rotAngleChanged();
-
-    /**
-     * @brief Emitted when vertices of the regular polygonal zone changes
-     */
-    void verticesChanged();
 
 };
 

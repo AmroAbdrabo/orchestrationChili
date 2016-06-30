@@ -171,19 +171,6 @@ protected:
     void updatePaintedItem();
 
     /**
-     * @brief pointInPoly Detect if a points is inside this polygonal zone
-     * @param xRobot x position of the point to be checked
-     * @param yRobot y position of the point to be checked
-     * @param minX min x value for heavy computation to be launched
-     * @param maxX max x value for heavy computation to be launched
-     * @param minY min y value for heavy computation to be launched
-     * @param maxY max y value for heavy computation to be launched
-     * @param pointsQt qt points of the polygon
-     * @return 1 if point is in poly, 0 otherwise
-     */
-    float pointInPoly(float xRobot, float yRobot,float minX,float maxX,float minY,float maxY, QList<QPointF> pointsQt);
-
-    /**
      * @brief getRectangleFromLine Get rectangle around line with given margin
      * @param x1 X position of the first line's point
      * @param y1 Y position of the first line's point
