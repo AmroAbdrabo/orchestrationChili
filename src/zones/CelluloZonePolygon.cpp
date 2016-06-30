@@ -30,9 +30,7 @@
  * CelluloZonePolygon
  */
 
-CelluloZonePolygon::CelluloZonePolygon() :
-    CelluloZone()
-{
+CelluloZonePolygon::CelluloZonePolygon() : CelluloZone(){
     maxX = std::numeric_limits<qreal>::min();
     maxY = std::numeric_limits<qreal>::min();
     minX = std::numeric_limits<qreal>::max();
@@ -98,7 +96,12 @@ float CelluloZonePolygon::getPointToPolygonDistance(float xPoint, float yPoint){
 }
 
 void CelluloZonePolygon::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
-
+    Q_UNUSED(color);
+    Q_UNUSED(canvasWidth);
+    Q_UNUSED(canvasHeight);
+    Q_UNUSED(physicalWidth);
+    Q_UNUSED(physicalHeight);
+    painter->setRenderHint(QPainter::Antialiasing);
 }
 
 /**
@@ -160,18 +163,38 @@ QList<QPointF> CelluloZoneIrregularPolygon::convertQVariantToQPointF(){
     return newPointsQt;
 }
 
+void CelluloZoneIrregularPolygon::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    CelluloZonePolygon::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
+}
+
 /**
  * CelluloZoneIrregularPolygonInner
  */
 
-CelluloZoneIrregularPolygonInner::CelluloZoneIrregularPolygonInner() :
-    CelluloZoneIrregularPolygon()
-{
+CelluloZoneIrregularPolygonInner::CelluloZoneIrregularPolygonInner() : CelluloZoneIrregularPolygon(){
     type = CelluloZoneTypes::IRPOLYGONINNER;
 }
 
 float CelluloZoneIrregularPolygonInner::calculate(float xRobot, float yRobot, float thetaRobot){
+    Q_UNUSED(thetaRobot);
     return pointInPoly(xRobot, yRobot, minX, maxX, minY, maxY, pointsQt);
+}
+
+void CelluloZoneIrregularPolygonInner::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    CelluloZoneIrregularPolygon::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 /**
@@ -185,7 +208,25 @@ CelluloZoneIrregularPolygonBorder::CelluloZoneIrregularPolygonBorder() :
 }
 
 float CelluloZoneIrregularPolygonBorder::calculate(float xRobot, float yRobot, float thetaRobot){
+    Q_UNUSED(thetaRobot);
     return isPointOnPolygonBorder(xRobot, yRobot);
+}
+
+void CelluloZoneIrregularPolygonBorder::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    CelluloZoneIrregularPolygon::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 /**
@@ -199,16 +240,35 @@ CelluloZoneIrregularPolygonDistance::CelluloZoneIrregularPolygonDistance() :
 }
 
 float CelluloZoneIrregularPolygonDistance::calculate(float xRobot, float yRobot, float thetaRobot){
+    Q_UNUSED(thetaRobot);
     return getPointToPolygonDistance(xRobot, yRobot);
+}
+
+void CelluloZoneIrregularPolygonDistance::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    CelluloZoneIrregularPolygon::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 /**
  * CelluloZoneRegularPolygon
  */
 
-CelluloZoneRegularPolygon::CelluloZoneRegularPolygon() :
-    CelluloZonePolygon()
-{
+CelluloZoneRegularPolygon::CelluloZoneRegularPolygon() : CelluloZonePolygon(){
     x = 0;
     y = 0;
     r = 0;
@@ -304,44 +364,81 @@ QList<QPointF> CelluloZoneRegularPolygon::createPolygonPointsFromOuterCircle(){
     return newPointsQt;
 }
 
+void CelluloZoneRegularPolygon::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    CelluloZonePolygon::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
+}
+
 /**
  * CelluloZoneRegularPolygonInner
  */
 
-CelluloZoneRegularPolygonInner::CelluloZoneRegularPolygonInner() :
-    CelluloZoneRegularPolygon()
-{
+CelluloZoneRegularPolygonInner::CelluloZoneRegularPolygonInner() : CelluloZoneRegularPolygon(){
     type = CelluloZoneTypes::RPOLYGONINNER;
 }
 
 float CelluloZoneRegularPolygonInner::calculate(float xRobot, float yRobot, float thetaRobot){
+    Q_UNUSED(thetaRobot);
     return pointInPoly(xRobot, yRobot, x-r, x+r, y-r, y+r, pointsQt);
+}
+
+void CelluloZoneRegularPolygonInner::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    CelluloZoneRegularPolygon::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
+
+
+
+
+
+
+
+
 }
 
 /**
  * CelluloZoneRegularPolygonBorder
  */
 
-CelluloZoneRegularPolygonBorder::CelluloZoneRegularPolygonBorder() :
-    CelluloZoneRegularPolygon()
-{
+CelluloZoneRegularPolygonBorder::CelluloZoneRegularPolygonBorder() : CelluloZoneRegularPolygon(){
     type = CelluloZoneTypes::RPOLYGONBORDER;
 }
 
 float CelluloZoneRegularPolygonBorder::calculate(float xRobot, float yRobot, float thetaRobot){
+    Q_UNUSED(thetaRobot);
     return isPointOnPolygonBorder(xRobot, yRobot);
+}
+
+void CelluloZoneRegularPolygonBorder::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    CelluloZoneRegularPolygon::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
+
+
+
+
+
+
+
+
 }
 
 /**
  * CelluloZoneRegularPolygonDistance
  */
 
-CelluloZoneRegularPolygonDistance::CelluloZoneRegularPolygonDistance() :
-    CelluloZoneRegularPolygon()
-{
+CelluloZoneRegularPolygonDistance::CelluloZoneRegularPolygonDistance() : CelluloZoneRegularPolygon(){
     type = CelluloZoneTypes::RPOLYGONDISTANCE;
 }
 
 float CelluloZoneRegularPolygonDistance::calculate(float xRobot, float yRobot, float thetaRobot){
+    Q_UNUSED(thetaRobot);
     return getPointToPolygonDistance(xRobot, yRobot);
+}
+
+void CelluloZoneRegularPolygonDistance::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    CelluloZoneRegularPolygon::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
+
+
+
+
+
+
+
+
 }

@@ -113,6 +113,18 @@ class CelluloZoneIrregularPolygon : public CelluloZonePolygon {
 public:
 
     /**
+     * @brief Draws this zone onto the painter
+     *
+     * @param painter Object to draw onto
+     * @param color Color of the paint
+     * @param canvasWidth Screen width of the canvas in pixels
+     * @param canvasHeight Screen height of the canvas in pixels
+     * @param physicalWidth Physical width of the canvas in mm
+     * @param physicalHeight Physical height of the canvas in mm
+     */
+    virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
+
+    /**
      * @brief Gets the vertices (set via QML) of the irregular polygon
      * @return List of vertices (set via QML) of the irregular polygon
      */
@@ -181,6 +193,18 @@ public:
      */
     Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) override;
 
+    /**
+     * @brief Draws this zone onto the painter
+     *
+     * @param painter Object to draw onto
+     * @param color Color of the paint
+     * @param canvasWidth Screen width of the canvas in pixels
+     * @param canvasHeight Screen height of the canvas in pixels
+     * @param physicalWidth Physical width of the canvas in mm
+     * @param physicalHeight Physical height of the canvas in mm
+     */
+    virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
+
 };
 
 /**
@@ -206,6 +230,18 @@ public:
      */
     Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) override;
 
+    /**
+     * @brief Draws this zone onto the painter
+     *
+     * @param painter Object to draw onto
+     * @param color Color of the paint
+     * @param canvasWidth Screen width of the canvas in pixels
+     * @param canvasHeight Screen height of the canvas in pixels
+     * @param physicalWidth Physical width of the canvas in mm
+     * @param physicalHeight Physical height of the canvas in mm
+     */
+    virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
+
 };
 
 /**
@@ -230,6 +266,18 @@ public:
      * @return the distance between the robot pose and the border of this irregular polygonal zone
      */
     Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) override;
+
+    /**
+     * @brief Draws this zone onto the painter
+     *
+     * @param painter Object to draw onto
+     * @param color Color of the paint
+     * @param canvasWidth Screen width of the canvas in pixels
+     * @param canvasHeight Screen height of the canvas in pixels
+     * @param physicalWidth Physical width of the canvas in mm
+     * @param physicalHeight Physical height of the canvas in mm
+     */
+    virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
 };
 
@@ -334,6 +382,18 @@ public:
      */
     virtual void read(const QJsonObject &json) override;
 
+    /**
+     * @brief Draws this zone onto the painter
+     *
+     * @param painter Object to draw onto
+     * @param color Color of the paint
+     * @param canvasWidth Screen width of the canvas in pixels
+     * @param canvasHeight Screen height of the canvas in pixels
+     * @param physicalWidth Physical width of the canvas in mm
+     * @param physicalHeight Physical height of the canvas in mm
+     */
+    virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
+
 protected:
 
     float numEdges;                         ///< number of edges of the regular polygon
@@ -408,6 +468,18 @@ public:
      */
     Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) override;
 
+    /**
+     * @brief Draws this zone onto the painter
+     *
+     * @param painter Object to draw onto
+     * @param color Color of the paint
+     * @param canvasWidth Screen width of the canvas in pixels
+     * @param canvasHeight Screen height of the canvas in pixels
+     * @param physicalWidth Physical width of the canvas in mm
+     * @param physicalHeight Physical height of the canvas in mm
+     */
+    virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
+
 };
 
 
@@ -434,6 +506,18 @@ public:
      */
     Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) override;
 
+    /**
+     * @brief Draws this zone onto the painter
+     *
+     * @param painter Object to draw onto
+     * @param color Color of the paint
+     * @param canvasWidth Screen width of the canvas in pixels
+     * @param canvasHeight Screen height of the canvas in pixels
+     * @param physicalWidth Physical width of the canvas in mm
+     * @param physicalHeight Physical height of the canvas in mm
+     */
+    virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
+
 };
 
 /**
@@ -458,6 +542,18 @@ public:
      * @return the distance between the robot pose and the border of this regular polygonal zone
      */
     Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) override;
+
+    /**
+     * @brief Draws this zone onto the painter
+     *
+     * @param painter Object to draw onto
+     * @param color Color of the paint
+     * @param canvasWidth Screen width of the canvas in pixels
+     * @param canvasHeight Screen height of the canvas in pixels
+     * @param physicalWidth Physical width of the canvas in mm
+     * @param physicalHeight Physical height of the canvas in mm
+     */
+    virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
 };
 
