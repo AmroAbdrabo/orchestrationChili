@@ -265,7 +265,7 @@ signals:
 
 private:
 
-    qreal borderThickness;
+    qreal borderThickness;  ///< The border thickness in mm
 
 };
 

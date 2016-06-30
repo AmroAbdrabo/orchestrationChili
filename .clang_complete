@@ -8,3 +8,5 @@
 -Iinclude/
 -fPIE
 -std=c++11
+-Wall
+-Wunused-parameter

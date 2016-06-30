@@ -25,9 +25,7 @@
 #include "CelluloZone.h"
 #include "CelluloZoneClient.h"
 
-CelluloZone::CelluloZone(QQuickItem* parent) :
-    QQuickItem(parent)
-{
+CelluloZone::CelluloZone(QQuickItem* parent) : QQuickItem(parent){
     active = true;
     name = "anonymousZone";
 

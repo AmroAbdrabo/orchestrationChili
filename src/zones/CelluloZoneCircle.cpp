@@ -29,9 +29,7 @@
  * CelluloZoneCircle
  */
 
-CelluloZoneCircle::CelluloZoneCircle() :
-    CelluloZone()
-{
+CelluloZoneCircle::CelluloZoneCircle() : CelluloZone(){
     x = 0;
     y = 0;
     r = 0;
@@ -52,7 +50,12 @@ void CelluloZoneCircle::read(const QJsonObject &json){
 }
 
 void CelluloZoneCircle::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
-
+    Q_UNUSED(color);
+    Q_UNUSED(canvasWidth);
+    Q_UNUSED(canvasHeight);
+    Q_UNUSED(physicalWidth);
+    Q_UNUSED(physicalHeight);
+    painter->setRenderHint(QPainter::Antialiasing);
 }
 
 void CelluloZoneCircle::setX(float newX){
@@ -83,43 +86,94 @@ void CelluloZoneCircle::setR(float newR){
  * CelluloZoneCircleInner
  */
 
-CelluloZoneCircleInner::CelluloZoneCircleInner() :
-    CelluloZoneCircle()
-{
+CelluloZoneCircleInner::CelluloZoneCircleInner() : CelluloZoneCircle(){
     type = CelluloZoneTypes::CIRCLEINNER;
 }
 
 float CelluloZoneCircleInner::calculate(float xRobot, float yRobot, float thetaRobot){
+    Q_UNUSED(thetaRobot);
     return ((xRobot-x)*(xRobot-x) + (yRobot -y)*(yRobot -y) <= r*r) ? 1 : 0;
+}
+
+void CelluloZoneCircleInner::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    CelluloZoneCircle::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
+
+    painter->setBrush(QBrush(color));
+    painter->setPen(Qt::NoPen);
+
+    qreal horizontalScaleCoeff = canvasWidth/physicalWidth;
+    qreal verticalScaleCoeff = canvasHeight/physicalHeight;
+
+    painter->drawEllipse(QPointF(x*horizontalScaleCoeff, y*verticalScaleCoeff), r*horizontalScaleCoeff, r*verticalScaleCoeff);
 }
 
 /**
  * CelluloZoneCircleBorder
  */
 
-CelluloZoneCircleBorder::CelluloZoneCircleBorder() :
-    CelluloZoneCircle()
-{
+CelluloZoneCircleBorder::CelluloZoneCircleBorder() : CelluloZoneCircle(){
     type = CelluloZoneTypes::CIRCLEBORDER;
 }
 
+void CelluloZoneCircleBorder::setBorderThickness(qreal newThickness){
+    if(borderThickness != newThickness){
+        borderThickness = newThickness;
+        emit borderThicknessChanged();
+    }
+}
+
+void CelluloZoneCircleBorder::write(QJsonObject &json){
+    CelluloZoneCircle::write(json);
+
+    json["borderThickness"] = borderThickness;
+}
+
+void CelluloZoneCircleBorder::read(const QJsonObject &json){
+    CelluloZoneCircle::read(json);
+
+    borderThickness = json["borderThickness"].toDouble();
+}
+
 float CelluloZoneCircleBorder::calculate(float xRobot, float yRobot, float thetaRobot){
-    float temp = (xRobot-x)*(xRobot-x) + (yRobot -y)*(yRobot -y);
-    float rOuter = r;// + marginThickeness/2; //TODO: PUT MARGIN HERE
-    float rInner = r;// - marginThickeness/2; //TODO: PUT MARGIN HERE
-    return temp <= (rOuter*rOuter) && temp > (rInner* rInner) ? 1 : 0;
+    Q_UNUSED(thetaRobot);
+    float robotRSquared = (xRobot - x)*(xRobot - x) + (yRobot - y)*(yRobot - y);
+    return ((r - borderThickness/2)*(r - borderThickness/2) <= robotRSquared && robotRSquared <= (r + borderThickness/2)*(r + borderThickness/2)) ? 1 : 0;
+}
+
+void CelluloZoneCircleBorder::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    CelluloZoneCircle::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
+
+    qreal horizontalScaleCoeff = canvasWidth/physicalWidth;
+    qreal verticalScaleCoeff = canvasHeight/physicalHeight;
+
+    painter->setBrush(Qt::NoBrush);
+    painter->setPen(QPen(QColor(color), borderThickness*(horizontalScaleCoeff + verticalScaleCoeff)/2, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin));
+
+    painter->drawEllipse(QPointF(x*horizontalScaleCoeff, y*verticalScaleCoeff), r*horizontalScaleCoeff, r*verticalScaleCoeff);
 }
 
 /**
  * CelluloZoneCircleDistance
  */
 
-CelluloZoneCircleDistance::CelluloZoneCircleDistance() :
-    CelluloZoneCircle()
-{
+CelluloZoneCircleDistance::CelluloZoneCircleDistance() : CelluloZoneCircle(){
     type = CelluloZoneTypes::CIRCLEDISTANCE;
 }
 
 float CelluloZoneCircleDistance::calculate(float xRobot, float yRobot, float thetaRobot){
-    return fabs(sqrt((xRobot-x)*(xRobot-x) + (yRobot -y)*(yRobot -y)) - r);
+    Q_UNUSED(thetaRobot);
+    float dist = sqrt((xRobot - x)*(xRobot - x) + (yRobot - y)*(yRobot - y)) - r;
+    return dist >= 0 ? dist : 0;
+}
+
+void CelluloZoneCircleDistance::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    CelluloZoneCircle::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
+
+    painter->setBrush(QBrush(color, Qt::Dense5Pattern));
+    painter->setPen(Qt::NoPen);
+
+    qreal horizontalScaleCoeff = canvasWidth/physicalWidth;
+    qreal verticalScaleCoeff = canvasHeight/physicalHeight;
+
+    painter->drawEllipse(QPointF(x*horizontalScaleCoeff, y*verticalScaleCoeff), r*horizontalScaleCoeff, r*verticalScaleCoeff);
 }
