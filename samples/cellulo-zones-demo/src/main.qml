@@ -20,12 +20,11 @@ ApplicationWindow {
     property color colorLine:   "#8000FFFF"
 
     function respondToZoneChange(robot, zone, value){
-        console.log(zone.name);
-
         switch(zone.name){
 
-            //Statically added rectangle
+            //Statically added rectangles
         case "ZONE_RECTANGLE_INNER_STATIC":
+        case "ZONE_RECTANGLE_INNER_STATIC2":
             if(value === 1)
                 robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, colorRect, 0);
             else
@@ -259,7 +258,7 @@ ApplicationWindow {
                 }
 
                 onClicked: {
-                    var zones = CelluloZoneJsonHandler.loadZonesQML(":/zones.json");
+                    var zones = CelluloZoneJsonHandler.loadZonesQML(":/assets/zones.json");
                     for(var i=0;i<zones.length;i++)
                         zones[i].createPaintedItem(page, getColorFromZoneType(zones[i].type), page.physicalWidth, page.physicalHeight);
                     zoneEngine.addNewZones(zones);
