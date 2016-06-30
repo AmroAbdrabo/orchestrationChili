@@ -31,6 +31,7 @@
 #include "comm/CelluloBluetoothEnums.h"
 #include "comm/CameraFrameImageProvider.h"
 #include "zones/CelluloZone.h"
+#include "zones/CelluloZoneClient.h"
 #include "zones/CelluloZonePolygon.h"
 #include "zones/CelluloZonePoint.h"
 #include "zones/CelluloZoneLine.h"
@@ -52,7 +53,7 @@ void CelluloPlugin::registerTypes(const char *uri){
                                                         return new CelluloBluetoothEnums();
                                                     });
 
-    qmlRegisterType<CelluloZoneEngine>(uri, 1, 0, "CelluloZoneClient");
+    qmlRegisterType<CelluloZoneClient>(uri, 1, 0, "CelluloZoneClient");
     qmlRegisterType<CelluloZoneEngine>(uri, 1, 0, "CelluloZoneEngine");
     qmlRegisterSingletonType<CelluloZoneJsonHandler>(uri, 1, 0, "CelluloZoneJsonHandler",
                                                     [] (QQmlEngine* qmlEngine, QJSEngine* jsEngine)->QObject* {
@@ -89,7 +90,7 @@ void CelluloPlugin::registerTypes(const char *uri){
 
     qmlRegisterType<CelluloZonePaintedItem>(uri, 1, 0, "CelluloZonePaintedItem");
 
-    qmlRegisterSingletonType<CelluloZoneTypes>(uri, 1, 0, "CelluloMathUtil",
+    qmlRegisterSingletonType<CelluloMathUtil>(uri, 1, 0, "CelluloMathUtil",
                                                     [] (QQmlEngine* qmlEngine, QJSEngine* jsEngine)->QObject* {
                                                         Q_UNUSED(qmlEngine)
                                                         Q_UNUSED(jsEngine)
