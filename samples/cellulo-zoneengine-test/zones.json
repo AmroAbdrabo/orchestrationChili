@@ -8,7 +8,7 @@
     },
     {
         "name": "ZONE_CIRCLE_BORDER",
-        "r": 30.201221466064453,
+        "r": 25.201221466064453,
         "type": "CIRCLEBORDER",
         "borderThickness": 10,
         "x": 107.31279754638672,
@@ -16,7 +16,7 @@
     },
     {
         "name": "ZONE_CIRCLE_DISTANCE",
-        "r": 32.577850341796875,
+        "r": 20.577850341796875,
         "type": "CIRCLEDISTANCE",
         "x": 176.40579223632812,
         "y": 33.581451416015625

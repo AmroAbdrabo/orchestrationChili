@@ -128,6 +128,30 @@ ApplicationWindow {
         }
     }
 
+    CelluloZoneEngine{
+        id: zoneEngine
+
+        CelluloZoneRectangleInner{
+            id: staticZone
+
+            height: 25
+            width: 50
+            x: 10
+            y: 260
+            name: "ZONE_RECTANGLE_INNER_STATIC"
+        }
+
+        CelluloZoneRectangleInner{
+            id: staticZone2
+
+            height: 25
+            width: 50
+            x: 150
+            y: 260
+            name: "ZONE_RECTANGLE_INNER_STATIC2"
+        }
+    }
+
     CelluloBluetooth{
         id: robotComm1
 
@@ -150,29 +174,7 @@ ApplicationWindow {
         onZoneValueChanged: respondToZoneChange(robotComm2, zone, value)
     }
 
-    CelluloZoneEngine{
-        id: zoneEngine
-
-        CelluloZoneRectangleInner{
-            id: staticZone
-
-            height: 30
-            width: 50
-            x: 150
-            y: 30
-            name: "ZONE_RECTANGLE_INNER_STATIC"
-        }
-
-        CelluloZoneRectangleInner{
-            id: staticZone2
-
-            height: 30
-            width: 50
-            x: 80
-            y: 30
-            name: "ZONE_RECTANGLE_INNER_STATIC2"
-        }
-    }
+    //Visible items
 
     GroupBox {
         id: addressBox
@@ -221,6 +223,8 @@ ApplicationWindow {
         anchors.top: addressBox.bottom
 
         Row{
+            spacing: 5
+
             Button{
                 text: "Clear all zones"
                 onClicked: zoneEngine.clearZones()
@@ -260,6 +264,16 @@ ApplicationWindow {
                         zones[i].createPaintedItem(page, getColorFromZoneType(zones[i].type), page.physicalWidth, page.physicalHeight);
                     zoneEngine.addNewZones(zones);
                 }
+            }
+
+            Button{
+                text: "Save zones to: "
+                onClicked: CelluloZoneJsonHandler.saveZones(zoneEngine.getZonesList(), savePath.text)
+            }
+
+            TextField{
+                id: savePath
+                placeholderText: "Full save path"
             }
         }
     }
