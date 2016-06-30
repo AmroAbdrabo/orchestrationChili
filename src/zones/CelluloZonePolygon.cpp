@@ -189,36 +189,30 @@ void CelluloZoneIrregularPolygonBorder::paint(QPainter* painter, QColor color, q
  * CelluloZoneIrregularPolygonDistance
  */
 
-CelluloZoneIrregularPolygonDistance::CelluloZoneIrregularPolygonDistance() :
-    CelluloZoneIrregularPolygon()
-{
+CelluloZoneIrregularPolygonDistance::CelluloZoneIrregularPolygonDistance() : CelluloZoneIrregularPolygon(){
     type = CelluloZoneTypes::IRPOLYGONDISTANCE;
 }
 
 float CelluloZoneIrregularPolygonDistance::calculate(float xRobot, float yRobot, float thetaRobot){
     Q_UNUSED(thetaRobot);
-    //return getPointToPolygonDistance(xRobot, yRobot);
-    return 0;
+    QVector2D robot(xRobot, yRobot);
+    return CelluloMathUtil::pointInPoly(robot, vertices) ? 0 : CelluloMathUtil::pointToPolyBorderDist(robot, vertices);
 }
 
 void CelluloZoneIrregularPolygonDistance::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
     CelluloZoneIrregularPolygon::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
 
+    painter->setBrush(QBrush(color, Qt::Dense5Pattern));
+    painter->setPen(Qt::NoPen);
 
+    qreal horizontalScaleCoeff = canvasWidth/physicalWidth;
+    qreal verticalScaleCoeff = canvasHeight/physicalHeight;
 
+    QPolygonF poly;
+    for(const QVector2D& vertex : vertices)
+        poly.append(QPointF(vertex.x()*horizontalScaleCoeff, vertex.y()*verticalScaleCoeff));
 
-
-
-
-
-
-
-
-
-
-
-
-
+    painter->drawPolygon(poly);
 }
 
 /**
@@ -398,18 +392,22 @@ CelluloZoneRegularPolygonDistance::CelluloZoneRegularPolygonDistance() : Cellulo
 
 float CelluloZoneRegularPolygonDistance::calculate(float xRobot, float yRobot, float thetaRobot){
     Q_UNUSED(thetaRobot);
-    //return getPointToPolygonDistance(xRobot, yRobot);
-    return 0;
+    QVector2D robot(xRobot, yRobot);
+    return CelluloMathUtil::pointInPoly(robot, vertices) ? 0 : CelluloMathUtil::pointToPolyBorderDist(robot, vertices);
 }
 
 void CelluloZoneRegularPolygonDistance::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
     CelluloZoneRegularPolygon::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
 
+    painter->setBrush(QBrush(color, Qt::Dense5Pattern));
+    painter->setPen(Qt::NoPen);
 
+    qreal horizontalScaleCoeff = canvasWidth/physicalWidth;
+    qreal verticalScaleCoeff = canvasHeight/physicalHeight;
 
+    QPolygonF poly;
+    for(const QVector2D& vertex : vertices)
+        poly.append(QPointF(vertex.x()*horizontalScaleCoeff, vertex.y()*verticalScaleCoeff));
 
-
-
-
-
+    painter->drawPolygon(poly);
 }
