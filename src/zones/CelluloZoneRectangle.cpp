@@ -28,9 +28,7 @@
  * CelluloZoneRectangle
  */
 
-CelluloZoneRectangle::CelluloZoneRectangle() :
-    CelluloZone()
-{
+CelluloZoneRectangle::CelluloZoneRectangle() : CelluloZone(){
     x = 0;
     y = 0;
     height = 0;
@@ -88,7 +86,6 @@ void CelluloZoneRectangle::read(const QJsonObject &json){
 }
 
 void CelluloZoneRectangle::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
-
     painter->setRenderHint(QPainter::Antialiasing);
 }
 
@@ -96,9 +93,7 @@ void CelluloZoneRectangle::paint(QPainter* painter, QColor color, qreal canvasWi
  * CelluloZoneRectangleInner
  */
 
-CelluloZoneRectangleInner::CelluloZoneRectangleInner() :
-    CelluloZoneRectangle()
-{
+CelluloZoneRectangleInner::CelluloZoneRectangleInner() : CelluloZoneRectangle(){
     type = CelluloZoneTypes::RECTANGLEINNER;
 }
 
@@ -123,9 +118,7 @@ void CelluloZoneRectangleInner::paint(QPainter* painter, QColor color, qreal can
  * CelluloZoneRectangleBorder
  */
 
-CelluloZoneRectangleBorder::CelluloZoneRectangleBorder() :
-    CelluloZoneRectangle()
-{
+CelluloZoneRectangleBorder::CelluloZoneRectangleBorder() : CelluloZoneRectangle(){
     type = CelluloZoneTypes::RECTANGLEBORDER;
     borderThickness = 0;
 }
@@ -172,9 +165,7 @@ void CelluloZoneRectangleBorder::paint(QPainter* painter, QColor color, qreal ca
  * CelluloZoneRectangleDistance
  */
 
-CelluloZoneRectangleDistance::CelluloZoneRectangleDistance() :
-    CelluloZoneRectangle()
-{
+CelluloZoneRectangleDistance::CelluloZoneRectangleDistance() : CelluloZoneRectangle(){
     type = CelluloZoneTypes::RECTANGLEDISTANCE;
 }
 
