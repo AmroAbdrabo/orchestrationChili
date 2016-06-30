@@ -59,20 +59,6 @@ public:
     virtual ~CelluloZoneEngine();
 
     /**
-     * @brief Get all zones handled by this engine and save them to a Json file
-     *
-     * @param filename Name of the desired Json file
-     */
-    //Q_INVOKABLE void saveZonesToJson(QString filename);
-
-    /**
-     * @brief Add new zones from json file
-     *
-     * @param filename Name of the Json file containing the zones
-     */
-    //Q_INVOKABLE void loadZonesFromJson(QString filename);
-
-    /**
      * @brief Get list of names of all zones handled by this engine
      *
      * @return Names of the zones handled by this engine

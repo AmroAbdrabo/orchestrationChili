@@ -1,7 +1,0 @@
-1. Create new .h/.cpp files and put CelluloZone as the parent of this new type
-2. Implement calculate,write, read and getRatioProperties functions in the zones representing the zone focus
-3. Add the new type in CelluloZoneType enum
-4. Handles this new type in CelluloZoneEngine, CelluloZoneJsonHandler and CelluloBluetooth types switches
-5. Register this new type and subtypes in CelluloBluetoothPlugin
-
--> As an example check how CelluloPointDistance is implemented

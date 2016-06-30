@@ -25,6 +25,7 @@
 #include "CelluloZonePolygon.h"
 
 #include <QPolygon>
+#include <cmath>
 
 #include "../util/CelluloMathUtil.h"
 
@@ -166,7 +167,11 @@ void CelluloZoneIrregularPolygonBorder::read(const QJsonObject &json){
 
 float CelluloZoneIrregularPolygonBorder::calculate(float xRobot, float yRobot, float thetaRobot){
     Q_UNUSED(thetaRobot);
-    return CelluloMathUtil::pointToPolyBorderDist(QVector2D(xRobot, yRobot), vertices) <= borderThickness/2 ? 1 : 0;
+
+    if(minX - borderThickness/2 <= xRobot && xRobot <= maxX + borderThickness/2 && minY - borderThickness/2 <= yRobot && yRobot <= maxY + borderThickness/2)
+        return CelluloMathUtil::pointToPolyBorderDist(QVector2D(xRobot, yRobot), vertices) <= borderThickness/2 ? 1 : 0;
+    else
+        return 0;
 }
 
 void CelluloZoneIrregularPolygonBorder::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
@@ -227,52 +232,54 @@ CelluloZoneRegularPolygon::CelluloZoneRegularPolygon() : CelluloZonePolygon(){
     rotAngle = 0;
 }
 
+void CelluloZoneRegularPolygon::setVertices(const QList<QVector2D>& newVertices){
+    Q_UNUSED(newVertices);
+    qDebug() << "CelluloZoneRegularPolygon::setVertices(): Setting the vertices of a regular polygon directly is not allowed.";
+}
+
 void CelluloZoneRegularPolygon::setNumEdges(int newNumEdge) {
     if(newNumEdge > 2 && newNumEdge != numEdges){
         numEdges = newNumEdge;
-        emit(numEdgesChanged());
-        //setPointsQt(createPolygonPointsFromOuterCircle());
-        updatePaintedItem();
+        emit numEdgesChanged();
+        updateVerticesFromRegularPolyParams();
     }
 }
 
 void CelluloZoneRegularPolygon::setX(float newX) {
     if(newX != x){
         x = newX;
-        emit(xChanged());
-        //setPointsQt(createPolygonPointsFromOuterCircle());
-        updatePaintedItem();
+        emit xChanged();
+        updateVerticesFromRegularPolyParams();
     }
 }
 
 void CelluloZoneRegularPolygon::setY(float newY) {
     if(newY != y){
         y = newY;
-        emit(yChanged());
-        //setPointsQt(createPolygonPointsFromOuterCircle());
-        updatePaintedItem();
+        emit yChanged();
+        updateVerticesFromRegularPolyParams();
     }
 }
 
 void CelluloZoneRegularPolygon::setR(float newR) {
     if(newR != r){
         r = newR;
-        emit(rChanged());
-        //setPointsQt(createPolygonPointsFromOuterCircle());
-        updatePaintedItem();
+        emit rChanged();
+        updateVerticesFromRegularPolyParams();
     }
 }
 
 void CelluloZoneRegularPolygon::setRotAngle(float newRotAngle) {
     if(newRotAngle != rotAngle){
         rotAngle = newRotAngle;
-        emit(rotAngleChanged());
-        //setPointsQt(createPolygonPointsFromOuterCircle());
-        updatePaintedItem();
+        emit rotAngleChanged();
+        updateVerticesFromRegularPolyParams();
     }
 }
 
 void CelluloZoneRegularPolygon::write(QJsonObject &json){
+    CelluloZone::write(json);
+
     json["numEdges"] = numEdges;
     json["x"] = x;
     json["y"] = y;
@@ -281,33 +288,23 @@ void CelluloZoneRegularPolygon::write(QJsonObject &json){
 }
 
 void CelluloZoneRegularPolygon::read(const QJsonObject &json){
+    CelluloZone::read(json);
+
     numEdges = json["numEdges"].toDouble();
     x = json["x"].toDouble();
     y = json["y"].toDouble();
     r = json["r"].toDouble();
     rotAngle = json["rotAngle"].toDouble();
 
-
-
-
-
-
-    //setPointsQt(createPolygonPointsFromOuterCircle());
+    updateVerticesFromRegularPolyParams();
 }
 
-QList<QPointF> CelluloZoneRegularPolygon::createPolygonPointsFromOuterCircle(){
-    QList<QPointF> newPointsQt;
-    float rotAngleRadian = rotAngle * (M_PI/180);
-    if(numEdges>2){
-        for(int i = 0; i < numEdges; i++){
-            //taken from: http://stackoverflow.com/questions/3436453/calculate-coordinates-of-a-regular-polygons-vertices
-            QPointF newPoint = QPointF(x + r * cos(2 * M_PI * i / numEdges + rotAngleRadian), y + r * sin(2 * M_PI * i / numEdges + rotAngleRadian));
-            newPointsQt.append(newPoint);
-        }
-    } else {
-        qDebug() << "n must be >2";
-    }
-    return newPointsQt;
+void CelluloZoneRegularPolygon::updateVerticesFromRegularPolyParams(){
+    QList<QVector2D> newVertices;
+    qreal rotAngleRadian = rotAngle*M_PI/180;
+    for(int i=0; i<numEdges; i++)
+        newVertices.append(QVector2D(x + r*cos(2*M_PI*i/numEdges + rotAngleRadian), y + r*sin(2*M_PI*i/numEdges + rotAngleRadian)));
+    CelluloZonePolygon::setVertices(newVertices);
 }
 
 void CelluloZoneRegularPolygon::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
@@ -336,8 +333,11 @@ CelluloZoneRegularPolygonInner::CelluloZoneRegularPolygonInner() : CelluloZoneRe
 
 float CelluloZoneRegularPolygonInner::calculate(float xRobot, float yRobot, float thetaRobot){
     Q_UNUSED(thetaRobot);
-    //return pointInPoly(xRobot, yRobot, x-r, x+r, y-r, y+r, pointsQt);
-    return 0;
+
+    if(minX <= xRobot && xRobot <= maxX && minY <= yRobot && yRobot <= maxY)
+        return CelluloMathUtil::pointInPoly(QVector2D(xRobot, yRobot), vertices) ? 1 : 0;
+    else
+        return 0;
 }
 
 void CelluloZoneRegularPolygonInner::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
@@ -364,22 +364,48 @@ CelluloZoneRegularPolygonBorder::CelluloZoneRegularPolygonBorder() : CelluloZone
     type = CelluloZoneTypes::RPOLYGONBORDER;
 }
 
+void CelluloZoneRegularPolygonBorder::setBorderThickness(qreal newThickness){
+    if(borderThickness != newThickness){
+        borderThickness = newThickness;
+        emit borderThicknessChanged();
+        updatePaintedItem();
+    }
+}
+
+void CelluloZoneRegularPolygonBorder::write(QJsonObject &json){
+    CelluloZoneRegularPolygon::write(json);
+
+    json["borderThickness"] = borderThickness;
+}
+
+void CelluloZoneRegularPolygonBorder::read(const QJsonObject &json){
+    CelluloZoneRegularPolygon::read(json);
+
+    borderThickness = json["borderThickness"].toDouble();
+}
+
 float CelluloZoneRegularPolygonBorder::calculate(float xRobot, float yRobot, float thetaRobot){
     Q_UNUSED(thetaRobot);
-    //return isPointOnPolygonBorder(xRobot, yRobot);
-    return 0;
+    if(minX - borderThickness/2 <= xRobot && xRobot <= maxX + borderThickness/2 && minY - borderThickness/2 <= yRobot && yRobot <= maxY + borderThickness/2)
+        return CelluloMathUtil::pointToPolyBorderDist(QVector2D(xRobot, yRobot), vertices) <= borderThickness/2 ? 1 : 0;
+    else
+        return 0;
 }
 
 void CelluloZoneRegularPolygonBorder::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
     CelluloZoneRegularPolygon::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
 
+    qreal horizontalScaleCoeff = canvasWidth/physicalWidth;
+    qreal verticalScaleCoeff = canvasHeight/physicalHeight;
 
+    painter->setBrush(Qt::NoBrush);
+    painter->setPen(QPen(QBrush(color), borderThickness*(horizontalScaleCoeff + verticalScaleCoeff)/2));
 
+    QPolygonF poly;
+    for(const QVector2D& vertex : vertices)
+        poly.append(QPointF(vertex.x()*horizontalScaleCoeff, vertex.y()*verticalScaleCoeff));
 
-
-
-
-
+    painter->drawPolygon(poly);
 }
 
 /**

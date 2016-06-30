@@ -300,16 +300,31 @@ public:
     CelluloZoneRegularPolygon();
 
     /**
+     * @brief Disables modifying vertices directly
+     *
+     * @param newVertices Don't care
+     */
+    virtual void setVertices(const QList<QVector2D>& newVertices) override;
+
+    /**
      * @brief Gets the number of edges of the regular polygon
+     *
      * @return The number of edges of the regular polygon
      */
     int getNumEdges(){
         return numEdges;
     }
+
+    /**
+     * @brief Sets the number of edges
+     *
+     * @param newNumEdge New number of edges, must be greater than 2
+     */
     void setNumEdges(int newNumEdge);
 
     /**
      * @brief Gets the x position of regular polygon definer circle's center
+     *
      * @return X position of regular polygon definer circle's center
      */
     float getX(){
@@ -318,12 +333,14 @@ public:
 
     /**
      * @brief Sets the x position of the center of the regular polygon
+     *
      * @param newX Center x position in mm
      */
     void setX(float newX);
 
     /**
      * @brief Gets the y position of regular polygon definer circle's center
+     *
      * @return Y position of regular polygon definer circle's center
      */
     float getY(){
@@ -332,12 +349,14 @@ public:
 
     /**
      * @brief Sets the y position of the center of the regular polygon
+     *
      * @param newY Center y position in mm
      */
     void setY(float newY);
 
     /**
      * @brief Gets the radius of the regular polygon definer circle
+     *
      * @return R the radius of the regular polygon definer circle
      */
     float getR(){
@@ -346,12 +365,14 @@ public:
 
     /**
      * @brief Sets the radius of the outer circle of the regular polygon
+     *
      * @param newR Radius of the outer circle in mm
      */
     void setR(float newR);
 
     /**
      * @brief Gets the rotational angle of the regular polygon
+     *
      * @return The rotational angle of the regular polygon
      */
     float getRotAngle(){
@@ -360,18 +381,21 @@ public:
 
     /**
      * @brief Sets the orientation of the regular polygon
+     *
      * @param newRotAngle The
      */
     void setRotAngle(float newRotAngle);
 
     /**
      * @brief Write the zone infos to the given json Object
+     *
      * @param QJsonObject json object to be written
      */
     virtual void write(QJsonObject &json) override;
 
     /**
      * @brief Read the zone infos from the given json Object
+     *
      * @param json json object to be read
      */
     virtual void read(const QJsonObject &json) override;
@@ -387,22 +411,6 @@ public:
      * @param physicalHeight Physical height of the canvas in mm
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
-
-protected:
-
-    float numEdges;                         ///< number of edges of the regular polygon
-    float x;                                ///< x position of regular polygon defined circle's center
-    float y;                                ///< y position of regular polygon defined circle's center
-    float r;                                ///< radius of the regular polygon defined circle
-    float rotAngle;                         ///< rotational angle of the regular polygon
-
-private:
-
-    /**
-     * @brief Define regular polygon's point following the polygon defined circle, the number of edges and the rotational angle
-     * @return points of the regular polygon
-     */
-    QList<QPointF> createPolygonPointsFromOuterCircle();
 
 signals:
 
@@ -430,6 +438,21 @@ signals:
      * @brief Emitted when the rotational angle of the regular polygonal zone changes
      */
     void rotAngleChanged();
+
+protected:
+
+    float numEdges;                         ///< number of edges of the regular polygon
+    float x;                                ///< x position of regular polygon defined circle's center
+    float y;                                ///< y position of regular polygon defined circle's center
+    float r;                                ///< radius of the regular polygon defined circle
+    float rotAngle;                         ///< rotational angle of the regular polygon
+
+private:
+
+    /**
+     * @brief Updates the vertices given the center position, radius of the outer circle, number of edges and rotation angle parameters
+     */
+    void updateVerticesFromRegularPolyParams();
 
 };
 
@@ -478,10 +501,39 @@ class CelluloZoneRegularPolygonBorder : public CelluloZoneRegularPolygon {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
+    Q_PROPERTY(qreal borderThickness WRITE setBorderThickness READ getBorderThickness NOTIFY borderThicknessChanged)
 
 public:
 
     CelluloZoneRegularPolygonBorder();
+
+    /**
+     * @brief Gets the border thickness
+     *
+     * @return Border thickness in mm
+     */
+    qreal getBorderThickness(){
+        return borderThickness;
+    }
+
+    /**
+     * @brief Sets the new border thickness
+     *
+     * @param newThickness New thickness in mm
+     */
+    void setBorderThickness(qreal newThickness);
+
+    /**
+     * @brief Write the zone infos to the given json Object
+     * @param QJsonObject json object to be written
+     */
+    virtual void write(QJsonObject &json) override;
+
+    /**
+     * @brief Read the zone infos from the given json Object
+     * @param json json object to be read
+     */
+    virtual void read(const QJsonObject &json) override;
 
     /**
      * @brief Calculate whether the robot lies on the border of this regular polygonal zone (given the zone's margin)
@@ -505,6 +557,17 @@ public:
      * @param physicalHeight Physical height of the canvas in mm
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
+
+signals:
+
+    /**
+     * @brief Emitted when border thickness changes
+     */
+    void borderThicknessChanged();
+
+private:
+
+    qreal borderThickness;          ///< The border thickness in mm
 
 };
 
