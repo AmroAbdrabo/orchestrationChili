@@ -1,6 +1,7 @@
 #Qt
 *.user
 build*/
+*~
 
 .directory
 
