@@ -59,8 +59,8 @@
  * @brief Locomotion response modes
  */
 #define LOCOMOTION_INTERACTIVITY_MODE_ENUM_SHARED enum LocomotionInteractivityMode { \
-        LocomotionInteractivityModeNormal = 0,        /** Robot moves normally */ \
-        LocomotionInteractivityModeRequiresTouch = 1, /** Robot requires at least 1 key being touched to move  */ \
+        LocomotionInteractivityModeNormal = 0,       /** Robot moves normally */ \
+        LocomotionInteractivityModeRequiresHold = 1, /** Robot requires Hold gesture */ \
         LocomotionInteractivityModeNumElements \
 }
 
@@ -92,12 +92,12 @@
         CmdPacketTypeBatteryStateRequest,            /** Request battery state */ \
         CmdPacketTypeSetLEDResponseMode,             /** Set LED response mode */ \
         CmdPacketTypeSetLocomotionInteractivityMode, /** Set the locomotion interactivity mode */ \
-        CmdPacketTypeGestureEnable,                  /** Enable/disable querying and processing raw touch signals */ \
+        DEPRECATED,                                  /** DEPRECATED */ \
         CmdPacketTypeSetVisualEffect,                /** Set visual effect */ \
         CmdPacketTypeSetMotorOutput,                 /** Set output of one motor */ \
         CmdPacketTypeSetAllMotorOutputs,             /** Set output of all motors */ \
         CmdPacketTypeSetGoalVelocity,                /** Set goal global velocity */ \
-        DEPRECATED,                                  /** DEPRECATED */ \
+        DEPRECATED_,                                 /** DEPRECATED */ \
         CmdPacketTypeSetGoalPose,                    /** Set goal pose */ \
         CmdPacketTypeSetGoalPosition,                /** Set goal position */ \
         CmdPacketTypeReset,                          /** Request reset */ \
@@ -116,7 +116,7 @@
         "B", /** CmdPacketTypeBatteryStateRequest */ \
         "L", /** CmdPacketTypeSetLEDResponseMode */ \
         "I", /** CmdPacketTypeSetLocomotionInteractivityMode */ \
-        "U", /** CmdPacketTypeGestureEnable */ \
+        "U", /** DEPRECATED */ \
         "E", /** CmdPacketTypeSetVisualEffect */ \
         "M", /** CmdPacketTypeSetMotorOutput */ \
         "A", /** CmdPacketTypeSetAllMotorOutputs */ \
@@ -139,7 +139,7 @@
         0,                 /** CmdPacketTypeBatteryStateRequest */ \
         1,                 /** CmdPacketTypeSetLEDResponseMode: uint8 mode */ \
         1,                 /** CmdPacketTypeSetLocomotionInteractivityMode: uint8 mode */ \
-        1,                 /** CmdPacketTypeGestureEnable: uint8 bool */ \
+        -1,                /** DEPRECATED */ \
         1 + 1 + 1 + 1 + 1, /** CmdPacketTypeSetVisualEffect: uint8 effect, uint8 red, uint8 green, uint8 blue, uint8 value */ \
         1 + 2,             /** CmdPacketTypeSetMotorOutput: uint8 motorIndex, int16 output (-0xFFF to 0xFFF) */ \
         2 + 2 + 2,         /** CmdPacketTypeSetAllMotorOutputs: int16 m1Output, int16 m2Output, int16 m3Output (-0xFFF to 0xFFF) */ \

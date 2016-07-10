@@ -167,12 +167,6 @@ ApplicationWindow {
                                 robotComm.setLocomotionInteractivityMode(currentIndex)
                         }
                     }
-
-                    CheckBox{
-                        checked: false
-                        text: "Gesture enabled"
-                        onCheckedChanged: robotComm.setGestureEnabled(checked)
-                    }
                 }
             }
 
