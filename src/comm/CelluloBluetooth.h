@@ -336,6 +336,13 @@ public slots:
     void setLocomotionInteractivityMode(CelluloBluetoothEnums::LocomotionInteractivityMode mode);
 
     /**
+     * @brief Enables/disables raw touch signal offset querying and processing
+     *
+     * @param enabled Whether to enable
+     */
+    void setGestureEnabled(bool enabled);
+
+    /**
      * @brief Sets the visual effect on the robot, changing LED illumination
      *
      * @param effect The effect ordinal
