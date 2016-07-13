@@ -26,7 +26,6 @@ ApplicationWindow {
             id: itemsCol
 
             GroupBox {
-                id: addressBox
                 title: "Robot Address"
                 width: gWidth
 
@@ -55,7 +54,6 @@ ApplicationWindow {
             }
 
             GroupBox {
-                id: colorBox
                 title: "Color Effects"
                 width: gWidth
 
@@ -152,7 +150,6 @@ ApplicationWindow {
             }
 
             GroupBox {
-                id: modesBox
                 title: "Robot Modes"
                 width: gWidth
 
@@ -177,7 +174,6 @@ ApplicationWindow {
             }
 
             GroupBox {
-                id: powerBox
                 title: "Power"
                 width: gWidth
 
@@ -200,7 +196,6 @@ ApplicationWindow {
             }
 
             GroupBox {
-                id: motorBox
                 title: "Locomotion"
                 width: gWidth
 
@@ -388,15 +383,30 @@ ApplicationWindow {
 
                             Button{
                                 text: "Set"
-                                onClicked: robotComm.setGoalVelocity(parseFloat(goalVelX.text), parseFloat(goalVelY.text), parseFloat(goalW.text));
+                                onClicked: robotComm.setGoalVelocity(parseFloat(goalVelX.text), parseFloat(goalVelY.text), parseFloat(goalW.text))
                             }
+                        }
+
+                        Button{
+                            text: "Clear tracking goals"
+                            onClicked: robotComm.clearTracking()
                         }
                     }
                 }
             }
 
             GroupBox {
-                id: statusBox
+                title: "Haptics"
+                width: gWidth
+
+                CheckBox{
+                    checked: false
+                    text: "Assisted backdrive enabled"
+                    onCheckedChanged: robotComm.setAssistedBackdriveEnabled(checked)
+                }
+            }
+
+            GroupBox {
                 title: "Status"
                 width: gWidth
 
@@ -454,20 +464,7 @@ ApplicationWindow {
                 }
             }
 
-            GroupBox {
-                id: hapticsBox
-                title: "Haptics"
-                width: gWidth
-
-                CheckBox{
-                    checked: false
-                    text: "Assisted backdrive enabled"
-                    onCheckedChanged: robotComm.setAssistedBackdriveEnabled(checked)
-                }
-            }
-
             GroupBox{
-                id: profilingBox
                 title: "Profiling"
                 width: gWidth
 
@@ -511,7 +508,6 @@ ApplicationWindow {
             }
 
             GroupBox{
-                id: cameraImageBox
                 title: "Camera image"
                 width: gWidth
 

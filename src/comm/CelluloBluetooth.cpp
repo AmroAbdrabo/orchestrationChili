@@ -544,6 +544,12 @@ void CelluloBluetooth::setGoalPosition(float x, float y, float v){
     sendCommand();
 }
 
+void CelluloBluetooth::clearTracking(){
+    sendPacket.clear();
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeClearTracking);
+    sendCommand();
+}
+
 void CelluloBluetooth::setLEDResponseMode(CelluloBluetoothEnums::LEDResponseMode mode){
     sendPacket.clear();
     sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeSetLEDResponseMode);

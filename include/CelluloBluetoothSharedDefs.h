@@ -98,9 +98,9 @@
         CmdPacketTypeSetMotorOutput,                 /** Set output of one motor */ \
         CmdPacketTypeSetAllMotorOutputs,             /** Set output of all motors */ \
         CmdPacketTypeSetGoalVelocity,                /** Set goal global velocity */ \
-        DEPRECATED,                                  /** DEPRECATED */ \
         CmdPacketTypeSetGoalPose,                    /** Set goal pose */ \
         CmdPacketTypeSetGoalPosition,                /** Set goal position */ \
+        CmdPacketTypeClearTracking,                  /** Clears goal pose/position/velocity */ \
         CmdPacketTypeReset,                          /** Request reset */ \
         CmdPacketTypeShutdown,                       /** Request shutdown */ \
         CmdPacketTypeNumElements, \
@@ -123,9 +123,9 @@
         "M", /** CmdPacketTypeSetMotorOutput */ \
         "A", /** CmdPacketTypeSetAllMotorOutputs */ \
         "C", /** CmdPacketTypeSetGoalVelocity */ \
-        "Y", /** DEPRECATED */ \
         "G", /** CmdPacketTypeSetGoalPose */ \
         "N", /** CmdPacketTypeSetGoalPosition */ \
+        "X", /** CmdPacketTypeClearTracking */ \
         "R", /** CmdPacketTypeReset */ \
         "S"  /** CmdPacketTypeShutdown */ \
 }
@@ -147,9 +147,9 @@
         1 + 2,             /** CmdPacketTypeSetMotorOutput: uint8 motorIndex, int16 output (-0xFFF to 0xFFF) */ \
         2 + 2 + 2,         /** CmdPacketTypeSetAllMotorOutputs: int16 m1Output, int16 m2Output, int16 m3Output (-0xFFF to 0xFFF) */ \
         2 + 2 + 2,         /** CmdPacketTypeSetGoalVelocity: int16 vx, int16 vy, int16 w */ \
-        -1,                /** DEPRECATED */ \
         4 + 4 + 2 + 2 + 2, /** CmdPacketTypeSetGoalPose: uint32 x, uint32 y, uint16 theta, uint16 vMax, uint6 wMax */ \
         4 + 4 + 2,         /** CmdPacketTypeSetGoalPosition: uint32 x, uint32 y, uint16 vMax */ \
+        0,                 /** CmdPacketTypeClearTracking */ \
         0,                 /** CmdPacketTypeReset */ \
         0                  /** CmdPacketTypeShutdown */ \
 }

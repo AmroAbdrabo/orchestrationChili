@@ -307,6 +307,11 @@ public slots:
     void setGoalPosition(float x, float y, float v);
 
     /**
+     * @brief Clears pose/position/velocity goals
+     */
+    void clearTracking();
+
+    /**
      * @brief Sends a ping, expecting an acknowledge
      */
     void ping();
