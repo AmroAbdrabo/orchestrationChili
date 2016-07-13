@@ -610,6 +610,12 @@ void CelluloBluetooth::simpleVibrate(float iX, float iY, float iTheta, unsigned 
     sendCommand();
 }
 
+void CelluloBluetooth::clearHapticFeedback(){
+    sendPacket.clear();
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeClearHapticFeedback);
+    sendCommand();
+}
+
 void CelluloBluetooth::setLEDResponseMode(CelluloBluetoothEnums::LEDResponseMode mode){
     sendPacket.clear();
     sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeSetLEDResponseMode);

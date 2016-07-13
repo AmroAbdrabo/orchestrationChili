@@ -465,8 +465,19 @@ ApplicationWindow {
 
                         Button{
                             text: "Go"
-                            onClicked: robotComm.simpleVibrate(parseFloat(vibrationIX.text), parseFloat(vibrationIY.text), parseFloat(vibrationITheta.text), parseInt(vibrationPeriod.text), parseInt(vibrationDuration.text))
+                            onClicked: robotComm.simpleVibrate(
+                                           parseFloat(vibrationIX.text),
+                                           parseFloat(vibrationIY.text),
+                                           parseFloat(vibrationITheta.text),
+                                           parseInt(vibrationPeriod.text),
+                                           parseInt(vibrationDuration.text)
+                                           )
                         }
+                    }
+
+                    Button{
+                        text: "Clear haptic feedbacks"
+                        onClicked: robotComm.clearHapticFeedback()
                     }
                 }
             }
