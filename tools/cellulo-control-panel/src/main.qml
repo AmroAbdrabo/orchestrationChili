@@ -454,6 +454,18 @@ ApplicationWindow {
                 }
             }
 
+            GroupBox {
+                id: hapticsBox
+                title: "Haptics"
+                width: gWidth
+
+                CheckBox{
+                    checked: false
+                    text: "Assisted backdrive enabled"
+                    onCheckedChanged: robotComm.setAssistedBackdriveEnabled(checked)
+                }
+            }
+
             GroupBox{
                 id: profilingBox
                 title: "Profiling"
