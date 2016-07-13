@@ -56,7 +56,7 @@ CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) :
     kidnapped = true;
 
     touchRawValues.reserve(6);
-    for(int i=0;i<6;i++)
+    for(int i=0; i<6; i++)
         touchRawValues.append(0);
 }
 
@@ -235,7 +235,7 @@ void CelluloBluetooth::processResponse(){
         }
 
         case CelluloBluetoothPacket::EventPacketTypeTouchRaw: {
-            for(int i=0;i<6;i++)
+            for(int i=0; i<6; i++)
                 touchRawValues[i] = recvPacket.unloadInt16();
             emit touchRawValuesUpdated();
             break;
@@ -320,7 +320,7 @@ void CelluloBluetooth::processResponse(){
             break;
         }
 
-        case CelluloBluetoothPacket::EventPacketTypeDebug:{
+        case CelluloBluetoothPacket::EventPacketTypeDebug: {
             //qDebug() << "CelluloBluetoothPacket::processResponse(): Debug event received";
             char s[64];
             int a = recvPacket.unloadInt32();
@@ -569,6 +569,44 @@ void CelluloBluetooth::setGoalOrientation(float theta, float w){
 void CelluloBluetooth::clearTracking(){
     sendPacket.clear();
     sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeClearTracking);
+    sendCommand();
+}
+
+void CelluloBluetooth::simpleVibrate(float iX, float iY, float iTheta, unsigned int period, unsigned int duration){
+    iX *= GOAL_VEL_FACTOR_SHARED;
+    iY *= GOAL_VEL_FACTOR_SHARED;
+    iTheta *= GOAL_VEL_FACTOR_SHARED;
+
+    quint16 iX_int, iY_int, iTheta_int;
+
+    if(iX > (float)0xFFFF)
+        iX_int = 0xFFFF;
+    else
+        iX_int = (quint16)iX;
+
+    if(iY > (float)0xFFFF)
+        iY_int = 0xFFFF;
+    else
+        iY_int = (quint16)iY;
+
+    if(iTheta > (float)0xFFFF)
+        iTheta_int = 0xFFFF;
+    else
+        iTheta_int = (quint16)iTheta;
+
+    if(duration > 0xFFFF)
+        duration = 0xFFFF;
+
+    if(period > 0xFFFF)
+        period = 0xFFFF;
+
+    sendPacket.clear();
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeSimpleVibrate);
+    sendPacket.load(iX_int);
+    sendPacket.load(iY_int);
+    sendPacket.load(iTheta_int);
+    sendPacket.load((qint16)period);
+    sendPacket.load((qint16)duration);
     sendCommand();
 }
 

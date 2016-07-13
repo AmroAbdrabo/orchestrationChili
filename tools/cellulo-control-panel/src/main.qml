@@ -420,10 +420,54 @@ ApplicationWindow {
                 title: "Haptics"
                 width: gWidth
 
-                CheckBox{
-                    checked: false
-                    text: "Assisted backdrive enabled"
-                    onCheckedChanged: robotComm.setAssistedBackdriveEnabled(checked)
+                Row{
+                    spacing: 5
+
+                    CheckBox{
+                        checked: false
+                        text: "Assisted\nbackdrive\nenabled"
+                        onCheckedChanged: robotComm.setAssistedBackdriveEnabled(checked)
+                    }
+
+                    Column{
+                        Label{
+                            text: "Vibration:"
+                        }
+
+                        TextField{
+                            id: vibrationIX
+                            placeholderText: "x intensity"
+                        }
+
+                        TextField{
+                            id: vibrationIY
+                            placeholderText: "y intensity"
+
+                        }
+
+                        TextField{
+                            id: vibrationITheta
+                            placeholderText: "theta intensity"
+
+                        }
+
+                        TextField{
+                            id: vibrationPeriod
+                            placeholderText: "period (ms)"
+
+                        }
+
+                        TextField{
+                            id: vibrationDuration
+                            placeholderText: "duration (ms)"
+
+                        }
+
+                        Button{
+                            text: "Go"
+                            onClicked: robotComm.simpleVibrate(parseFloat(vibrationIX.text), parseFloat(vibrationIY.text), parseFloat(vibrationITheta.text), parseInt(vibrationPeriod.text), parseInt(vibrationDuration.text))
+                        }
+                    }
                 }
             }
 

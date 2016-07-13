@@ -102,6 +102,7 @@
         CmdPacketTypeSetGoalPosition,                /** Set goal position */ \
         CmdPacketTypeSetGoalOrientation,             /** Set goal orientation */ \
         CmdPacketTypeClearTracking,                  /** Clears goal pose/position/velocity */ \
+        CmdPacketTypeSimpleVibrate,                  /** Simple vibration haptic feedback */ \
         CmdPacketTypeReset,                          /** Request reset */ \
         CmdPacketTypeShutdown,                       /** Request shutdown */ \
         CmdPacketTypeNumElements, \
@@ -128,6 +129,7 @@
         "N", /** CmdPacketTypeSetGoalPosition */ \
         "O", /** CmdPacketTypeSetGoalOrientation */ \
         "X", /** CmdPacketTypeClearTracking */ \
+        "V", /** CmdPacketTypeSimpleVibrate */ \
         "R", /** CmdPacketTypeReset */ \
         "S"  /** CmdPacketTypeShutdown */ \
 }
@@ -153,6 +155,7 @@
         4 + 4 + 2,         /** CmdPacketTypeSetGoalPosition: uint32 x, uint32 y, uint16 vMax */ \
         2 + 2,             /** CmdPacketTypeSetGoalOrientation: uint16 theta, uint16 wMax */ \
         0,                 /** CmdPacketTypeClearTracking */ \
+        2 + 2 + 2 + 2 + 2, /** CmdPacketTypeSimpleVibrate: uint16 ix, uint16 iy, uint16 itheta, uint16 period, uint16 duration */ \
         0,                 /** CmdPacketTypeReset */ \
         0                  /** CmdPacketTypeShutdown */ \
 }

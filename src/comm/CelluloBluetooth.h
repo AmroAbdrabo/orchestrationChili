@@ -320,6 +320,17 @@ public slots:
     void clearTracking();
 
     /**
+     * @brief Constantly vibrates the robot
+     *
+     * @param iX X intensity, scale is the same as linear velocity
+     * @param iY Y intensity, scale is the same as linear velocity
+     * @param iTheta Theta intensity, scale is the same as angular velocity
+     * @param period Period of vibration in milliseconds, maximum is 0xFFFF
+     * @param duration Duration of vibration in milliseconds, maximum is 0xFFFF
+     */
+    void simpleVibrate(float iX, float iY, float iTheta, unsigned int period, unsigned int duration);
+
+    /**
      * @brief Sends a ping, expecting an acknowledge
      */
     void ping();
