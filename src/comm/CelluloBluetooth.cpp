@@ -320,11 +320,16 @@ void CelluloBluetooth::processResponse(){
             break;
         }
 
-        case CelluloBluetoothPacket::EventPacketTypeDebug:
-            qDebug() << "CelluloBluetoothPacket::processResponse(): Debug event received";
-            //DO SOMETHING
+        case CelluloBluetoothPacket::EventPacketTypeDebug:{
+            //qDebug() << "CelluloBluetoothPacket::processResponse(): Debug event received";
+            char s[64];
+            int a = recvPacket.unloadInt32();
+            int b = recvPacket.unloadInt32();
+            int c = recvPacket.unloadInt32();
+            sprintf(s, "%6d %6d %6d", a, b, c);
+            qDebug() << s;
             break;
-
+        }
         default:
             break;
     }
@@ -556,6 +561,13 @@ void CelluloBluetooth::setLocomotionInteractivityMode(CelluloBluetoothEnums::Loc
 void CelluloBluetooth::setGestureEnabled(bool enabled){
     sendPacket.clear();
     sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeGestureEnable);
+    sendPacket.load((quint8)enabled);
+    sendCommand();
+}
+
+void CelluloBluetooth::setAssistedBackdriveEnabled(bool enabled){
+    sendPacket.clear();
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeAssistedBackdriveEnable);
     sendPacket.load((quint8)enabled);
     sendCommand();
 }

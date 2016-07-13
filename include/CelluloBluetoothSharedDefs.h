@@ -93,6 +93,7 @@
         CmdPacketTypeSetLEDResponseMode,             /** Set LED response mode */ \
         CmdPacketTypeSetLocomotionInteractivityMode, /** Set the locomotion interactivity mode */ \
         CmdPacketTypeGestureEnable,                  /** Enable/disable querying and processing raw touch signals */ \
+        CmdPacketTypeAssistedBackdriveEnable,        /** Enable/disable assisted backdriving */ \
         CmdPacketTypeSetVisualEffect,                /** Set visual effect */ \
         CmdPacketTypeSetMotorOutput,                 /** Set output of one motor */ \
         CmdPacketTypeSetAllMotorOutputs,             /** Set output of all motors */ \
@@ -117,6 +118,7 @@
         "L", /** CmdPacketTypeSetLEDResponseMode */ \
         "I", /** CmdPacketTypeSetLocomotionInteractivityMode */ \
         "U", /** CmdPacketTypeGestureEnable */ \
+        "K", /** CmdPacketTypeAssistedBackdriveEnable */ \
         "E", /** CmdPacketTypeSetVisualEffect */ \
         "M", /** CmdPacketTypeSetMotorOutput */ \
         "A", /** CmdPacketTypeSetAllMotorOutputs */ \
@@ -140,6 +142,7 @@
         1,                 /** CmdPacketTypeSetLEDResponseMode: uint8 mode */ \
         1,                 /** CmdPacketTypeSetLocomotionInteractivityMode: uint8 mode */ \
         1,                 /** CmdPacketTypeGestureEnable: uint8 bool */ \
+        1,                 /** CmdPacketTypeAssistedBackdriveEnable: uint8 bool */ \
         1 + 1 + 1 + 1 + 1, /** CmdPacketTypeSetVisualEffect: uint8 effect, uint8 red, uint8 green, uint8 blue, uint8 value */ \
         1 + 2,             /** CmdPacketTypeSetMotorOutput: uint8 motorIndex, int16 output (-0xFFF to 0xFFF) */ \
         2 + 2 + 2,         /** CmdPacketTypeSetAllMotorOutputs: int16 m1Output, int16 m2Output, int16 m3Output (-0xFFF to 0xFFF) */ \
@@ -209,7 +212,7 @@
         1,                    /** EventPacketTypeKidnapChanged: uint8 kidnappedBool */ \
         0,                    /** EventPacketTypeAcknowledged */ \
         2 + IMG_WIDTH_SHARED, /** EventPacketTypeFrameLine: uint16 currentLineIndex, IMG_WIDTH*uint8 grayscalePixel */ \
-        0                     /** EventPacketTypeDebug */ \
+        12                     /** EventPacketTypeDebug */ \
 }
 
 #endif // CELLULOBLUETOOTHSHAREDDEFS_H
