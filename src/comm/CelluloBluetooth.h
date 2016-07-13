@@ -307,6 +307,14 @@ public slots:
     void setGoalPosition(float x, float y, float v);
 
     /**
+     * @brief Sets a position goal to track
+     *
+     * @param theta Theta goal in degrees
+     * @param w Maximum angular speed to track pose in rad/s
+     */
+    void setGoalOrientation(float theta, float w);
+
+    /**
      * @brief Clears pose/position/velocity goals
      */
     void clearTracking();

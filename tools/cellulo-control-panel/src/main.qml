@@ -358,6 +358,27 @@ ApplicationWindow {
                             }
                         }
 
+                        Column{
+                            Label{
+                                text: "Orientation goal:"
+                            }
+
+                            TextField{
+                                id: goalOrientationTheta
+                                placeholderText: "theta (degrees)"
+
+                            }
+
+                            TextField{
+                                id: goalOrientationMaxW
+                                placeholderText: "w (rad/s)"
+                            }
+
+                            Button{
+                                text: "Go"
+                                onClicked: robotComm.setGoalOrientation(parseFloat(goalOrientationTheta.text), parseFloat(goalOrientationMaxW.text))
+                            }
+                        }
 
                         Column{
                             Label{

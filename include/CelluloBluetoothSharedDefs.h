@@ -100,6 +100,7 @@
         CmdPacketTypeSetGoalVelocity,                /** Set goal global velocity */ \
         CmdPacketTypeSetGoalPose,                    /** Set goal pose */ \
         CmdPacketTypeSetGoalPosition,                /** Set goal position */ \
+        CmdPacketTypeSetGoalOrientation,             /** Set goal orientation */ \
         CmdPacketTypeClearTracking,                  /** Clears goal pose/position/velocity */ \
         CmdPacketTypeReset,                          /** Request reset */ \
         CmdPacketTypeShutdown,                       /** Request shutdown */ \
@@ -125,6 +126,7 @@
         "C", /** CmdPacketTypeSetGoalVelocity */ \
         "G", /** CmdPacketTypeSetGoalPose */ \
         "N", /** CmdPacketTypeSetGoalPosition */ \
+        "O", /** CmdPacketTypeSetGoalOrientation */ \
         "X", /** CmdPacketTypeClearTracking */ \
         "R", /** CmdPacketTypeReset */ \
         "S"  /** CmdPacketTypeShutdown */ \
@@ -149,6 +151,7 @@
         2 + 2 + 2,         /** CmdPacketTypeSetGoalVelocity: int16 vx, int16 vy, int16 w */ \
         4 + 4 + 2 + 2 + 2, /** CmdPacketTypeSetGoalPose: uint32 x, uint32 y, uint16 theta, uint16 vMax, uint6 wMax */ \
         4 + 4 + 2,         /** CmdPacketTypeSetGoalPosition: uint32 x, uint32 y, uint16 vMax */ \
+        2 + 2,             /** CmdPacketTypeSetGoalOrientation: uint16 theta, uint16 wMax */ \
         0,                 /** CmdPacketTypeClearTracking */ \
         0,                 /** CmdPacketTypeReset */ \
         0                  /** CmdPacketTypeShutdown */ \
