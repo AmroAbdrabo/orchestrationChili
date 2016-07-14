@@ -15,7 +15,7 @@ ApplicationWindow {
     property bool mobile: Qt.platform.os === "android"
     property real gWidth: mobile ? Screen.width : 640
     width: gWidth
-    height: mobile ? Screen.desktopAvailableHeight : itemsCol.height
+    height: mobile ? Screen.desktopAvailableHeight : 0.7*Screen.height
 
     ScrollView {
         anchors.fill: parent
@@ -417,17 +417,58 @@ ApplicationWindow {
             }
 
             GroupBox {
+                title: "Backdrive Assist"
+                width: gWidth
+
+                Column{
+                    spacing: 5
+
+                    CheckBox{
+                        id: casualBdrvAssistCheckbox
+                        checked: false
+                        text: "Casual backdrive assist enabled"
+                        onCheckedChanged: robotComm.setCasualBackdriveAssistEnabled(checked)
+                    }
+                    Row{
+                        spacing: 5
+
+                        Column{
+                            Label{
+                                text: "Haptic backdrive assist\n(disables casual):"
+                            }
+
+                            TextField{
+                                id: hBdrvAssistXY
+                                placeholderText: "x,y coeff"
+                            }
+
+                            TextField{
+                                id: hBdrvAssistTheta
+                                placeholderText: "theta coeff"
+
+                            }
+
+                            Button{
+                                text: "Go"
+                                onClicked: {
+                                    robotComm.setHapticBackdriveAssist(
+                                        parseFloat(hBdrvAssistXY.text),
+                                        parseFloat(hBdrvAssistTheta.text)
+                                        );
+                                    casualBdrvAssistCheckbox.checked = false;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            GroupBox {
                 title: "Haptics"
                 width: gWidth
 
                 Row{
                     spacing: 5
-
-                    CheckBox{
-                        checked: false
-                        text: "Casual\nbackdrive\nassist\nenabled"
-                        onCheckedChanged: robotComm.setCasualBackdriveAssistEnabled(checked)
-                    }
 
                     Column{
                         Label{

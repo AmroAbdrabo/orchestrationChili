@@ -650,6 +650,33 @@ void CelluloBluetooth::setCasualBackdriveAssistEnabled(bool enabled){
     sendCommand();
 }
 
+void CelluloBluetooth::setHapticBackdriveAssist(float xyAssist, float thetaAssist){
+    xyAssist *= 100;
+    thetaAssist *= 100;
+
+    qint16 xyAssist_int, thetaAssist_int;
+
+    if(xyAssist > (float)0x7FFF)
+        xyAssist_int = 0x7FFF;
+    else if(xyAssist < (float)(-0x7FFF))
+        xyAssist_int = -0x7FFF;
+    else
+        xyAssist_int = (qint16)xyAssist;
+
+    if(thetaAssist > (float)0x7FFF)
+        thetaAssist_int = 0x7FFF;
+    else if(thetaAssist < (float)(-0x7FFF))
+        thetaAssist_int = -0x7FFF;
+    else
+        thetaAssist_int = (qint16)thetaAssist;
+
+    sendPacket.clear();
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeHapticBackdriveAssist);
+    sendPacket.load(xyAssist_int);
+    sendPacket.load(thetaAssist_int);
+    sendCommand();
+}
+
 void CelluloBluetooth::setVisualEffect(CelluloBluetoothEnums::VisualEffect effect, QColor color, int value){
     if(value > 0xFF)
         value = 0xFF;

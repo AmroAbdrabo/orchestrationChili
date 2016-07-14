@@ -359,6 +359,17 @@ public slots:
     void setCasualBackdriveAssistEnabled(bool enabled);
 
     /**
+     * @brief Haptic feedback-oriented backdrive assist
+     *
+     * Pass 0 to both parameters to disable.
+     * Disables casual backdrive assist upon enabling.
+     *
+     * @param xyAssist X,Y assist with respect to x,y drive velocities, can be negative
+     * @param thetaAssist Theta assist with respect to w drive, can be negative
+     */
+    void setHapticBackdriveAssist(float xyAssist, float thetaAssist);
+
+    /**
      * @brief Sets the visual effect on the robot, changing LED illumination
      *
      * @param effect The effect ordinal

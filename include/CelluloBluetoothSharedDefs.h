@@ -94,6 +94,7 @@
         CmdPacketTypeSetLocomotionInteractivityMode, /** Set the locomotion interactivity mode */ \
         CmdPacketTypeGestureEnable,                  /** Enable/disable querying and processing raw touch signals */ \
         CmdPacketTypeCasualBackdriveAssistEnable,    /** Enable/disable backdrive assist for just easy backdriving */ \
+        CmdPacketTypeHapticBackdriveAssist,          /** Backdrive assist for specific haptic feedback */ \
         CmdPacketTypeSetVisualEffect,                /** Set visual effect */ \
         CmdPacketTypeSetMotorOutput,                 /** Set output of one motor */ \
         CmdPacketTypeSetAllMotorOutputs,             /** Set output of all motors */ \
@@ -123,6 +124,7 @@
         "I", /** CmdPacketTypeSetLocomotionInteractivityMode */ \
         "U", /** CmdPacketTypeGestureEnable */ \
         "K", /** CmdPacketTypeCasualBackdriveAssistEnable */ \
+        "Y", /** CmdPacketTypeHapticBackdriveAssist */ \
         "E", /** CmdPacketTypeSetVisualEffect */ \
         "M", /** CmdPacketTypeSetMotorOutput */ \
         "A", /** CmdPacketTypeSetAllMotorOutputs */ \
@@ -151,6 +153,7 @@
         1,                 /** CmdPacketTypeSetLocomotionInteractivityMode: uint8 mode */ \
         1,                 /** CmdPacketTypeGestureEnable: uint8 bool */ \
         1,                 /** CmdPacketTypeCasualBackdriveAssistEnable: uint8 bool */ \
+        2 + 2,             /** CmdPacketTypeHapticBackdriveAssist: int16 xyassist, int16 thetaassist */ \
         1 + 1 + 1 + 1 + 1, /** CmdPacketTypeSetVisualEffect: uint8 effect, uint8 red, uint8 green, uint8 blue, uint8 value */ \
         1 + 2,             /** CmdPacketTypeSetMotorOutput: uint8 motorIndex, int16 output (-0xFFF to 0xFFF) */ \
         2 + 2 + 2,         /** CmdPacketTypeSetAllMotorOutputs: int16 m1Output, int16 m2Output, int16 m3Output (-0xFFF to 0xFFF) */ \
