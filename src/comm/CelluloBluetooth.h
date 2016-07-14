@@ -308,7 +308,7 @@ public slots:
      * @param iCoeff Vibration intensity with respect to the drive velocities
      * @param period Period of vibration in milliseconds, maximum is 0xFFFF
      */
-    //void vibrateOnMotion(float iCoeff, unsigned int period);
+    void vibrateOnMotion(float iCoeff, unsigned int period);
 
     /**
      * @brief Clears all haptic feedbacks

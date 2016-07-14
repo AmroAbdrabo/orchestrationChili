@@ -599,7 +599,25 @@ void CelluloBluetooth::simpleVibrate(float iX, float iY, float iTheta, unsigned 
     sendCommand();
 }
 
+void CelluloBluetooth::vibrateOnMotion(float iCoeff, unsigned int period){
+    iCoeff *= 100;
 
+    quint16 iCoeff_int;
+
+    if(iCoeff > (float)0xFFFF)
+        iCoeff_int = 0xFFFF;
+    else
+        iCoeff_int = (quint16)iCoeff;
+
+    if(period > 0xFFFF)
+        period = 0xFFFF;
+
+    sendPacket.clear();
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeVibrateOnMotion);
+    sendPacket.load(iCoeff_int);
+    sendPacket.load((qint16)period);
+    sendCommand();
+}
 
 void CelluloBluetooth::clearHapticFeedback(){
     sendPacket.clear();

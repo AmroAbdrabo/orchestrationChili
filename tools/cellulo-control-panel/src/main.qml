@@ -431,34 +431,34 @@ ApplicationWindow {
 
                     Column{
                         Label{
-                            text: "Vibration:"
+                            text: "Simple vibration:"
                         }
 
                         TextField{
-                            id: vibrationIX
+                            id: svibrationIX
                             placeholderText: "x intensity"
                         }
 
                         TextField{
-                            id: vibrationIY
+                            id: svibrationIY
                             placeholderText: "y intensity"
 
                         }
 
                         TextField{
-                            id: vibrationITheta
+                            id: svibrationITheta
                             placeholderText: "theta intensity"
 
                         }
 
                         TextField{
-                            id: vibrationPeriod
+                            id: svibrationPeriod
                             placeholderText: "period (ms)"
 
                         }
 
                         TextField{
-                            id: vibrationDuration
+                            id: svibrationDuration
                             placeholderText: "duration (ms)"
 
                         }
@@ -466,11 +466,36 @@ ApplicationWindow {
                         Button{
                             text: "Go"
                             onClicked: robotComm.simpleVibrate(
-                                           parseFloat(vibrationIX.text),
-                                           parseFloat(vibrationIY.text),
-                                           parseFloat(vibrationITheta.text),
-                                           parseInt(vibrationPeriod.text),
-                                           parseInt(vibrationDuration.text)
+                                           parseFloat(svibrationIX.text),
+                                           parseFloat(svibrationIY.text),
+                                           parseFloat(svibrationITheta.text),
+                                           parseInt(svibrationPeriod.text),
+                                           parseInt(svibrationDuration.text)
+                                           )
+                        }
+                    }
+
+                    Column{
+                        Label{
+                            text: "Vibration on motion:"
+                        }
+
+                        TextField{
+                            id: vibrationOnMotionICoeff
+                            placeholderText: "intensity coeff"
+                        }
+
+                        TextField{
+                            id: vibrationOnMotionPeriod
+                            placeholderText: "period (ms)"
+
+                        }
+
+                        Button{
+                            text: "Go"
+                            onClicked: robotComm.vibrateOnMotion(
+                                           parseFloat(vibrationOnMotionICoeff.text),
+                                           parseInt(vibrationOnMotionPeriod.text)
                                            )
                         }
                     }
