@@ -29,9 +29,7 @@
 
 QByteArray CelluloBluetooth::frameBuffer;
 
-CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) :
-    CelluloZoneClient(parent)
-{
+CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) : CelluloZoneClient(parent){
     connect(this, SIGNAL(poseChanged(qreal,qreal,qreal)), this, SIGNAL(poseChanged_inherited()));
 
     socket = NULL;
@@ -56,8 +54,7 @@ CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) :
     kidnapped = true;
 }
 
-CelluloBluetooth::~CelluloBluetooth(){
-}
+CelluloBluetooth::~CelluloBluetooth(){}
 
 void CelluloBluetooth::resetProperties(){
 
@@ -646,9 +643,9 @@ void CelluloBluetooth::setGestureEnabled(bool enabled){
     sendCommand();
 }
 
-void CelluloBluetooth::setAssistedBackdriveEnabled(bool enabled){
+void CelluloBluetooth::setCasualBackdriveAssistEnabled(bool enabled){
     sendPacket.clear();
-    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeAssistedBackdriveEnable);
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeCasualBackdriveAssistEnable);
     sendPacket.load((quint8)enabled);
     sendCommand();
 }

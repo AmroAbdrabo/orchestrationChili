@@ -425,8 +425,8 @@ ApplicationWindow {
 
                     CheckBox{
                         checked: false
-                        text: "Assisted\nbackdrive\nenabled"
-                        onCheckedChanged: robotComm.setAssistedBackdriveEnabled(checked)
+                        text: "Casual\nbackdrive\nassist\nenabled"
+                        onCheckedChanged: robotComm.setCasualBackdriveAssistEnabled(checked)
                     }
 
                     Column{

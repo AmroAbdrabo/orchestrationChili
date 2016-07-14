@@ -352,11 +352,11 @@ public slots:
     void setGestureEnabled(bool enabled);
 
     /**
-     * @brief Enables/disables assisted backdriving
+     * @brief Enables/disables assist for easy backdriving
      *
      * @param enabled Whether to enable
      */
-    void setAssistedBackdriveEnabled(bool enabled);
+    void setCasualBackdriveAssistEnabled(bool enabled);
 
     /**
      * @brief Sets the visual effect on the robot, changing LED illumination
