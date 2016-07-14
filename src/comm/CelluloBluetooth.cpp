@@ -54,10 +54,6 @@ CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) :
     lastTimestamp = 0;
     framerate = 0.0;
     kidnapped = true;
-
-    touchRawValues.reserve(6);
-    for(int i=0; i<6; i++)
-        touchRawValues.append(0);
 }
 
 CelluloBluetooth::~CelluloBluetooth(){
@@ -231,13 +227,6 @@ void CelluloBluetooth::processResponse(){
             int key = recvPacket.unloadUInt8();
             if(key >= 0 && key <= 5)
                 emit touchReleased(key);
-            break;
-        }
-
-        case CelluloBluetoothPacket::EventPacketTypeTouchRaw: {
-            for(int i=0; i<6; i++)
-                touchRawValues[i] = recvPacket.unloadInt16();
-            emit touchRawValuesUpdated();
             break;
         }
 
@@ -609,6 +598,8 @@ void CelluloBluetooth::simpleVibrate(float iX, float iY, float iTheta, unsigned 
     sendPacket.load((qint16)duration);
     sendCommand();
 }
+
+
 
 void CelluloBluetooth::clearHapticFeedback(){
     sendPacket.clear();

@@ -55,8 +55,6 @@ class CelluloBluetooth : public CelluloZoneClient {
     Q_PROPERTY(float theta READ getTheta NOTIFY poseChanged_inherited)
     Q_PROPERTY(bool kidnapped READ getKidnapped NOTIFY kidnappedChanged)
 
-    Q_PROPERTY(QList<int> touchRawValues READ getTouchRawValues NOTIFY touchRawValuesUpdated)
-
     Q_PROPERTY(bool timestampingEnabled WRITE setTimestampingEnabled READ getTimestampingEnabled)
     Q_PROPERTY(int lastTimestamp READ getLastTimestamp NOTIFY timestampChanged)
     Q_PROPERTY(float framerate READ getFramerate NOTIFY timestampChanged)
@@ -94,103 +92,77 @@ public:
      *
      * @return The current MAC address
      */
-    QString getMacAddr(){
-        return macAddr;
-    }
+    QString getMacAddr(){ return macAddr; }
 
     /**
      * @brief Gets current Bluetooth connection status
      *
      * @return Current Bluetooth connection status
      */
-    CelluloBluetoothEnums::ConnectionStatus getConnectionStatus(){
-        return connectionStatus;
-    }
+    CelluloBluetoothEnums::ConnectionStatus getConnectionStatus(){ return connectionStatus; }
 
     /**
      * @brief Gets whether timestamping along with pose is currently enabled
      *
      * @return Whether timestamping is enabled
      */
-    bool getTimestampingEnabled(){
-        return timestampingEnabled;
-    }
+    bool getTimestampingEnabled(){ return timestampingEnabled; }
 
     /**
      * @brief Gets the latest battery state
      *
      * @return Battery state
      */
-    CelluloBluetoothEnums::BatteryState getBatteryState(){
-        return batteryState;
-    }
+    CelluloBluetoothEnums::BatteryState getBatteryState(){ return batteryState; }
 
     /**
      * @brief Gets the latest x position
      *
      * @return Latest x position in mm
      */
-    float getX(){
-        return x;
-    }
+    float getX(){ return x; }
 
     /**
      * @brief Gets the latest y position
      *
      * @return Latest y position in mm
      */
-    float getY(){
-        return y;
-    }
+    float getY(){ return y; }
 
     /**
      * @brief Gets the latest orientation
      *
      * @return Latest orientation in degrees
      */
-    float getTheta(){
-        return theta;
-    }
+    float getTheta(){ return theta; }
 
     /**
      * @brief Gets the latest available timestamp
      *
      * @return The latest received timestamp in milliseconds
      */
-    int getLastTimestamp(){
-        return lastTimestamp;
-    }
+    int getLastTimestamp(){ return lastTimestamp; }
 
     /**
      * @brief Gets the localization framerate
      *
      * @return Localization framerate in milliseconds
      */
-    float getFramerate(){
-        return framerate;
-    }
+    float getFramerate(){ return framerate; }
 
     /**
      * @brief Gets the latest kidnapped state
      *
      * @return Whether kidnapped or on encoded paper
      */
-    bool getKidnapped(){
-        return kidnapped;
-    }
-
-    QList<int> getTouchRawValues() const{
-        return touchRawValues;
-    }
+    bool getKidnapped(){ return kidnapped; }
 
     /**
      * @brief Gets the camera image progress
      *
      * @return Between 0.0 and 1.0
      */
-    float getCameraImageProgress(){
-        return cameraImageProgress;
-    }
+    float getCameraImageProgress(){ return cameraImageProgress; }
 
 private slots:
 
@@ -331,6 +303,14 @@ public slots:
     void simpleVibrate(float iX, float iY, float iTheta, unsigned int period, unsigned int duration);
 
     /**
+     * @brief Enables vibration against motion
+     *
+     * @param iCoeff Vibration intensity with respect to the drive velocities
+     * @param period Period of vibration in milliseconds, maximum is 0xFFFF
+     */
+    //void vibrateOnMotion(float iCoeff, unsigned int period);
+
+    /**
      * @brief Clears all haptic feedbacks
      */
     void clearHapticFeedback();
@@ -463,11 +443,6 @@ signals:
     void kidnappedChanged();
 
     /**
-     * @brief Emitted when raw touch signal offsets are updated
-     */
-    void touchRawValuesUpdated();
-
-    /**
      * @brief Emitted when a new camera image line is received
      */
     void cameraImageProgressChanged();
@@ -497,8 +472,6 @@ private:
     float y;                                                  ///< Current y position in mm
     float theta;                                              ///< Current orientation in degrees
     bool kidnapped;                                           ///< Whether currently kidnapped
-
-    QList<int> touchRawValues;                                ///< Touch key raw offsets
 
     /**
      * @brief Resets properties of the robot to default

@@ -103,6 +103,7 @@
         CmdPacketTypeSetGoalOrientation,             /** Set goal orientation */ \
         CmdPacketTypeClearTracking,                  /** Clears goal pose/position/velocity */ \
         CmdPacketTypeSimpleVibrate,                  /** Simple vibration haptic feedback */ \
+        CmdPacketTypeVibrateOnMotion,                /** Vibration with intensity proportional to drive velocities*/ \
         CmdPacketTypeClearHapticFeedback,            /** Clears all haptic feedbacks */ \
         CmdPacketTypeReset,                          /** Request reset */ \
         CmdPacketTypeShutdown,                       /** Request shutdown */ \
@@ -131,6 +132,7 @@
         "O", /** CmdPacketTypeSetGoalOrientation */ \
         "X", /** CmdPacketTypeClearTracking */ \
         "V", /** CmdPacketTypeSimpleVibrate */ \
+        "Z", /** CmdPacketTypeVibrateOnMotion */ \
         "H", /** CmdPacketTypeClearHapticFeedback */ \
         "R", /** CmdPacketTypeReset */ \
         "S"  /** CmdPacketTypeShutdown */ \
@@ -158,6 +160,7 @@
         2 + 2,             /** CmdPacketTypeSetGoalOrientation: uint16 theta, uint16 wMax */ \
         0,                 /** CmdPacketTypeClearTracking */ \
         2 + 2 + 2 + 2 + 2, /** CmdPacketTypeSimpleVibrate: uint16 ix, uint16 iy, uint16 itheta, uint16 period, uint16 duration */ \
+        2 + 2,             /** CmdPacketTypeVibrateOnMotion: uint16 icoeff, uint16 period */ \
         0,                 /** CmdPacketTypeClearHapticFeedback */ \
         0,                 /** CmdPacketTypeReset */ \
         0                  /** CmdPacketTypeShutdown */ \
@@ -174,7 +177,6 @@
         EventPacketTypeTouchBegan,             /** Key was touched */ \
         EventPacketTypeTouchLongPressed,       /** Key was touched for a time */ \
         EventPacketTypeTouchReleased,          /** Key was released */ \
-        EventPacketTypeTouchRaw,               /** Raw key signal offsets broadcast */ \
         EventPacketTypePoseChanged,            /** Pose changed */ \
         EventPacketTypePoseChangedTimestamped, /** Pose changed, timestamp attached to message */ \
         EventPacketTypeKidnapChanged,          /** Kidnap state changed */ \
@@ -195,7 +197,6 @@
         "T", /** EventPacketTypeTouchBegan */ \
         "L", /** EventPacketTypeTouchLongPressed */ \
         "R", /** EventPacketTypeTouchReleased */ \
-        "H", /** EventPacketTypeTouchRaw */ \
         "P", /** EventPacketTypePoseChanged */ \
         "S", /** EventPacketTypePoseChangedTimestamped */ \
         "K", /** EventPacketTypeKidnapChanged */ \
@@ -215,7 +216,6 @@
         1,                    /** EventPacketTypeTouchBegan: uint8 keyIndex */ \
         1,                    /** EventPacketTypeTouchLongPressed: uint8 keyIndex */ \
         1,                    /** EventPacketTypeTouchReleased: uint8 keyIndex */ \
-        2*6,                  /** EventPacketTypeTouchRaw: int16 key0, int16 key1, int16 key2, int16 key3, int16 key4, int16 key5 */ \
         4 + 4 + 2,            /** EventPacketTypePoseChanged: uint32 x, uint32 y, uint16 theta */ \
         4 + 4 + 2 + 4,        /** EventPacketTypePoseChangedTimestamped uint32 x, uint32 y, uint16 theta, uint32 timestamp */ \
         1,                    /** EventPacketTypeKidnapChanged: uint8 kidnappedBool */ \
