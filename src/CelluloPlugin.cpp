@@ -37,6 +37,7 @@
 #include "zones/CelluloZoneLine.h"
 #include "zones/CelluloZoneCircle.h"
 #include "zones/CelluloZoneRectangle.h"
+#include "zones/CelluloZoneAngle.h"
 #include "zones/CelluloZoneEngine.h"
 #include "zones/CelluloZoneJsonHandler.h"
 #include "zones/CelluloZoneTypes.h"
@@ -75,6 +76,10 @@ void CelluloPlugin::registerTypes(const char *uri){
     qmlRegisterType<CelluloZoneRectangleInner>(uri, 1, 0, "CelluloZoneRectangleInner");
     qmlRegisterType<CelluloZoneRectangleBorder>(uri, 1, 0, "CelluloZoneRectangleBorder");
     qmlRegisterType<CelluloZoneRectangleDistance>(uri, 1, 0, "CelluloZoneRectangleDistance");
+
+    qmlRegisterType<CelluloZoneAngleInner>(uri, 1, 0, "CelluloZoneAngleInner");
+    qmlRegisterType<CelluloZoneAngleBorder>(uri, 1, 0, "CelluloZoneAngleBorder");
+    qmlRegisterType<CelluloZoneAngleDistance>(uri, 1, 0, "CelluloZoneAngleDistance");
 
     qmlRegisterType<CelluloZoneLineDistance>(uri, 1, 0, "CelluloZoneLineDistance");
 
