@@ -183,6 +183,7 @@
         EventPacketTypePoseChanged,            /** Pose changed */ \
         EventPacketTypePoseChangedTimestamped, /** Pose changed, timestamp attached to message */ \
         EventPacketTypeKidnapChanged,          /** Kidnap state changed */ \
+        EventPacketTypeTrackingGoalReached,    /** Pose/position/angle tracking goal reached */ \
         EventPacketTypeAcknowledged,           /** Acknowledged */ \
         EventPacketTypeFrameLine,              /** Camera frame line is sent */ \
         EventPacketTypeDebug,                  /** Debug message */ \
@@ -203,6 +204,7 @@
         "P", /** EventPacketTypePoseChanged */ \
         "S", /** EventPacketTypePoseChangedTimestamped */ \
         "K", /** EventPacketTypeKidnapChanged */ \
+        "G", /** EventPacketTypeTrackingGoalReached */ \
         "A", /** EventPacketTypeAcknowledged */ \
         "C", /** EventPacketTypeFrameLine */ \
         "E"  /** EventPacketTypeDebug */ \
@@ -222,6 +224,7 @@
         4 + 4 + 2,            /** EventPacketTypePoseChanged: uint32 x, uint32 y, uint16 theta */ \
         4 + 4 + 2 + 4,        /** EventPacketTypePoseChangedTimestamped uint32 x, uint32 y, uint16 theta, uint32 timestamp */ \
         1,                    /** EventPacketTypeKidnapChanged: uint8 kidnappedBool */ \
+        0,                    /** EventPacketTypeTrackingGoalReached */ \
         0,                    /** EventPacketTypeAcknowledged */ \
         2 + IMG_WIDTH_SHARED, /** EventPacketTypeFrameLine: uint16 currentLineIndex, IMG_WIDTH*uint8 grayscalePixel */ \
         12                     /** EventPacketTypeDebug */ \

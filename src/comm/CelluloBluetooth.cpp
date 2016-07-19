@@ -272,6 +272,10 @@ void CelluloBluetooth::processResponse(){
             break;
         }
 
+        case CelluloBluetoothPacket::EventPacketTypeTrackingGoalReached:
+            emit trackingGoalReached();
+            break;
+
         case CelluloBluetoothPacket::EventPacketTypeAcknowledged:
             qDebug() << "CelluloBluetooth::processResponse(): Robot acknowledged";
             break;

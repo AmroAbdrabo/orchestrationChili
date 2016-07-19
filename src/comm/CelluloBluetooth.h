@@ -454,6 +454,11 @@ signals:
     void kidnappedChanged();
 
     /**
+     * @brief Emitted when pose/position/orientation goal is reached
+     */
+    void trackingGoalReached();
+
+    /**
      * @brief Emitted when a new camera image line is received
      */
     void cameraImageProgressChanged();
