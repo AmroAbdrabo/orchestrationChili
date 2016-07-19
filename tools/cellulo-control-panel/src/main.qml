@@ -17,6 +17,8 @@ ApplicationWindow {
     width: gWidth
     height: mobile ? Screen.desktopAvailableHeight : 0.7*Screen.height
 
+    ToastManager{ id: toast }
+
     ScrollView {
         anchors.fill: parent
         horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
@@ -144,7 +146,7 @@ ApplicationWindow {
                     }
                     Button {
                         text: "Send"
-                        onClicked:robotComm.setVisualEffect(effect.currentIndex, "#FF" + redSlider.hexStr + greenSlider.hexStr + blueSlider.hexStr, effectValue.value);
+                        onClicked: robotComm.setVisualEffect(effect.currentIndex, "#FF" + redSlider.hexStr + greenSlider.hexStr + blueSlider.hexStr, effectValue.value);
                     }
                 }
             }
@@ -735,5 +737,10 @@ ApplicationWindow {
             }
         }
         onFrameReady: cameraImage.reload()
+
+        onTrackingGoalReached: toast.show("Tracking goal reached.")
+        onBootCompleted: toast.show("Boot completed.")
+        onShuttingDown: toast.show("Shutting down.")
+        onLowBattery: toast.show("Low battery.")
     }
 }

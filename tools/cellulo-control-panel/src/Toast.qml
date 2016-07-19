@@ -13,14 +13,18 @@ Rectangle{
      * @brief Shows this Toast
      *
      * @param {string} text Text to show
-     * @param {real} duration Duration to show in milliseconds
+     * @param {real} duration Duration to show in milliseconds, defaults to 3000
      */
     function show(text, duration){
         theText.text = text;
-        if(duration >= 2*fadeTime)
-            time = duration;
+        if(typeof duration !== "undefined"){
+            if(duration >= 2*fadeTime)
+                time = duration;
+            else
+                time = 2*fadeTime;
+            }
         else
-            time = 2*fadeTime;
+            time = defaultTime;
         anim.start();
     }
 
@@ -32,7 +36,8 @@ Rectangle{
 
     id: root
 
-    property real time: 3000
+    property real time: defaultTime
+    readonly property real defaultTime: 3000
     readonly property real fadeTime: 300
 
     property real margin: 10
@@ -41,7 +46,7 @@ Rectangle{
     height: childrenRect.height + 2*margin
     radius: margin
 
-    anchors.centerIn: parent
+    anchors.horizontalCenter: parent.horizontalCenter
 
     opacity: 0
     color: "white"
