@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>src/main.qml</file>
         <file>src/Button.qml</file>
+        <file>src/Toast.qml</file>
     </qresource>
 </RCC>
