@@ -38,6 +38,7 @@
 #include "zones/CelluloZoneCircle.h"
 #include "zones/CelluloZoneRectangle.h"
 #include "zones/CelluloZoneAngle.h"
+#include "zones/CelluloZoneAngleInterval.h"
 #include "zones/CelluloZoneEngine.h"
 #include "zones/CelluloZoneJsonHandler.h"
 #include "zones/CelluloZoneTypes.h"
@@ -77,9 +78,11 @@ void CelluloPlugin::registerTypes(const char *uri){
     qmlRegisterType<CelluloZoneRectangleBorder>(uri, 1, 0, "CelluloZoneRectangleBorder");
     qmlRegisterType<CelluloZoneRectangleDistance>(uri, 1, 0, "CelluloZoneRectangleDistance");
 
-    qmlRegisterType<CelluloZoneAngleInner>(uri, 1, 0, "CelluloZoneAngleInner");
-    qmlRegisterType<CelluloZoneAngleBorder>(uri, 1, 0, "CelluloZoneAngleBorder");
-    qmlRegisterType<CelluloZoneAngleDistance>(uri, 1, 0, "CelluloZoneAngleDistance");
+    qmlRegisterType<CelluloZoneAngleThreshold>(uri, 1, 0, "CelluloZoneAngleThreshold");
+
+    qmlRegisterType<CelluloZoneAngleIntervalInner>(uri, 1, 0, "CelluloZoneAngleIntervalInner");
+    qmlRegisterType<CelluloZoneAngleIntervalBorder>(uri, 1, 0, "CelluloZoneAngleIntervalBorder");
+    qmlRegisterType<CelluloZoneAngleIntervalDistance>(uri, 1, 0, "CelluloZoneAngleIntervalDistance");
 
     qmlRegisterType<CelluloZoneLineDistance>(uri, 1, 0, "CelluloZoneLineDistance");
 

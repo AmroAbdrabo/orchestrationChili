@@ -17,7 +17,7 @@
 
 /**
  * @file CelluloZoneAngle.cpp
- * @brief Source for angular zones
+ * @brief Source for single angle zones
  * @author Ayberk Özgür
  * @date 2018-07-18
  */
@@ -33,32 +33,18 @@
  */
 
 CelluloZoneAngle::CelluloZoneAngle() : CelluloZone(){
-    fromAngle = 0;
-    toAngle = 0;
+    angle = 0;
 }
 
-void CelluloZoneAngle::setFromAngle(float newFromAngle) {
-    while(newFromAngle < 0)
-        newFromAngle += 360;
-    while(newFromAngle >= 360)
-        newFromAngle -= 360;
+void CelluloZoneAngle::setAngle(float newAngle) {
+    while(newAngle < 0)
+        newAngle += 360;
+    while(newAngle >= 360)
+        newAngle -= 360;
 
-    if(newFromAngle != fromAngle){
-        fromAngle = newFromAngle;
-        emit(fromAngleChanged());
-        updatePaintedItem();
-    }
-}
-
-void CelluloZoneAngle::setToAngle(float newToAngle) {
-    while(newToAngle < 0)
-        newToAngle += 360;
-    while(newToAngle >= 360)
-        newToAngle -= 360;
-
-    if(newToAngle != toAngle){
-        toAngle = newToAngle;
-        emit(toAngleChanged());
+    if(newAngle != angle){
+        angle = newAngle;
+        emit(angleChanged());
         updatePaintedItem();
     }
 }
@@ -66,15 +52,13 @@ void CelluloZoneAngle::setToAngle(float newToAngle) {
 void CelluloZoneAngle::write(QJsonObject &json){
     CelluloZone::write(json);
 
-    json["fromAngle"] = fromAngle;
-    json["toAngle"] = toAngle;
+    json["angle"] = angle;
 }
 
 void CelluloZoneAngle::read(const QJsonObject &json){
     CelluloZone::read(json);
 
-    fromAngle = json["fromAngle"].toDouble();
-    toAngle = json["toAngle"].toDouble();
+    angle = json["angle"].toDouble();
 }
 
 void CelluloZoneAngle::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
@@ -87,14 +71,16 @@ void CelluloZoneAngle::paint(QPainter* painter, QColor color, qreal canvasWidth,
 }
 
 /**
- * CelluloZoneAngleInner
+ * CelluloZoneAngleThreshold
  */
 
-CelluloZoneAngleInner::CelluloZoneAngleInner() : CelluloZoneAngle(){
-    type = CelluloZoneTypes::ANGLEINNER;
+CelluloZoneAngleThreshold::CelluloZoneAngleThreshold() : CelluloZoneAngle(){
+    type = CelluloZoneTypes::ANGLETHRESHOLD;
+    currentValue = -1;
+    prevDiff = 0;
 }
 
-float CelluloZoneAngleInner::calculate(float xRobot, float yRobot, float thetaRobot){
+float CelluloZoneAngleThreshold::calculate(float xRobot, float yRobot, float thetaRobot){
     Q_UNUSED(xRobot);
     Q_UNUSED(yRobot);
 
@@ -103,142 +89,25 @@ float CelluloZoneAngleInner::calculate(float xRobot, float yRobot, float thetaRo
     while(thetaRobot >= 360)
         thetaRobot -= 360;
 
-    if(fromAngle < toAngle)
-        return (fromAngle <= thetaRobot && thetaRobot <= toAngle) ? 1 : 0;
-    else if(fromAngle > toAngle)
-        return !(toAngle < thetaRobot && thetaRobot < fromAngle) ? 1 : 0;
-    else
-        return 0;
+    qreal diff = angle - thetaRobot;
+    while(diff <= -180)
+        diff += 360;
+    while(diff > 180)
+        diff -= 360;
+
+    if(-90 <= diff && diff <= 90)
+        if((prevDiff > 0 && diff <= 0) || (prevDiff <= 0 && diff > 0))
+            currentValue = -currentValue;
+
+    prevDiff = diff;
+
+    return currentValue;
 }
 
-void CelluloZoneAngleInner::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+void CelluloZoneAngleThreshold::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
     CelluloZoneAngle::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
 
     painter->setBrush(QBrush(color));
-    painter->setPen(Qt::NoPen);
-
-    qreal horizontalScaleCoeff = canvasWidth/physicalWidth;
-    qreal verticalScaleCoeff = canvasHeight/physicalHeight;
-
-    //TODO: FIGURE THIS OUT
-    //painter->drawRect(x*horizontalScaleCoeff, y*verticalScaleCoeff, width*horizontalScaleCoeff, height*verticalScaleCoeff);
-}
-
-/**
- * CelluloZoneAngleBorder
- */
-
-CelluloZoneAngleBorder::CelluloZoneAngleBorder() : CelluloZoneAngle(){
-    type = CelluloZoneTypes::ANGLEBORDER;
-    borderThickness = 0;
-}
-
-void CelluloZoneAngleBorder::setBorderThickness(qreal newThickness){
-    if(borderThickness != newThickness){
-        borderThickness = newThickness;
-        emit borderThicknessChanged();
-        updatePaintedItem();
-    }
-}
-
-void CelluloZoneAngleBorder::write(QJsonObject &json){
-    CelluloZoneAngle::write(json);
-
-    json["borderThickness"] = borderThickness;
-}
-
-void CelluloZoneAngleBorder::read(const QJsonObject &json){
-    CelluloZoneAngle::read(json);
-
-    borderThickness = json["borderThickness"].toDouble();
-}
-
-float CelluloZoneAngleBorder::calculate(float xRobot, float yRobot, float thetaRobot){
-    Q_UNUSED(xRobot);
-    Q_UNUSED(yRobot);
-
-    while(thetaRobot < 0)
-        thetaRobot += 360;
-    while(thetaRobot >= 360)
-        thetaRobot -= 360;
-
-    qreal fromDiff = fromAngle - thetaRobot;
-    while(fromDiff <= -180)
-        fromDiff += 360;
-    while(fromDiff > 180)
-        fromDiff -= 360;
-    fromDiff = fabs(fromDiff);
-
-    qreal toDiff = toAngle - thetaRobot;
-    while(toDiff <= -180)
-        toDiff += 360;
-    while(toDiff > 180)
-        toDiff -= 360;
-    toDiff = fabs(toDiff);
-
-    return (fromDiff <= borderThickness || toDiff <= borderThickness) ? 1 : 0;
-}
-
-void CelluloZoneAngleBorder::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
-    CelluloZoneAngle::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
-
-    qreal horizontalScaleCoeff = canvasWidth/physicalWidth;
-    qreal verticalScaleCoeff = canvasHeight/physicalHeight;
-
-    painter->setBrush(Qt::NoBrush);
-    painter->setPen(QPen(QColor(color), borderThickness*(horizontalScaleCoeff + verticalScaleCoeff)/2, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin));
-
-    //TODO: FIGURE THIS OUT
-    //painter->drawRect(x*horizontalScaleCoeff, y*verticalScaleCoeff, width*horizontalScaleCoeff, height*verticalScaleCoeff);
-}
-
-/**
- * CelluloZoneAngleDistance
- */
-
-CelluloZoneAngleDistance::CelluloZoneAngleDistance() : CelluloZoneAngle(){
-    type = CelluloZoneTypes::ANGLEDISTANCE;
-}
-
-float CelluloZoneAngleDistance::calculate(float xRobot, float yRobot, float thetaRobot){
-    Q_UNUSED(xRobot);
-    Q_UNUSED(yRobot);
-
-    while(thetaRobot < 0)
-        thetaRobot += 360;
-    while(thetaRobot >= 360)
-        thetaRobot -= 360;
-
-    if(fromAngle < toAngle){
-        if(fromAngle <= thetaRobot && thetaRobot <= toAngle)
-            return 0;
-    }
-    else if(fromAngle > toAngle){
-        if(!(toAngle < thetaRobot && thetaRobot < fromAngle))
-            return 0;
-    }
-
-    qreal fromDiff = fromAngle - thetaRobot;
-    while(fromDiff <= -180)
-        fromDiff += 360;
-    while(fromDiff > 180)
-        fromDiff -= 360;
-    fromDiff = fabs(fromDiff);
-
-    qreal toDiff = toAngle - thetaRobot;
-    while(toDiff <= -180)
-        toDiff += 360;
-    while(toDiff > 180)
-        toDiff -= 360;
-    toDiff = fabs(toDiff);
-
-    return fmin(fromDiff, toDiff);
-}
-
-void CelluloZoneAngleDistance::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
-    CelluloZoneAngle::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
-
-    painter->setBrush(QBrush(color, Qt::Dense5Pattern));
     painter->setPen(Qt::NoPen);
 
     qreal horizontalScaleCoeff = canvasWidth/physicalWidth;

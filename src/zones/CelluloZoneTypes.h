@@ -44,9 +44,12 @@ public:
      * @brief List of possible zones
      */
     enum ZoneType {
-        ANGLEINNER = 0,
+        ANGLETHRESHOLD = 0,
         ANGLEBORDER,
         ANGLEDISTANCE,
+        ANGLEINTERVALINNER,
+        ANGLEINTERVALBORDER,
+        ANGLEINTERVALDISTANCE,
         CIRCLEINNER,
         CIRCLEBORDER,
         CIRCLEDISTANCE,

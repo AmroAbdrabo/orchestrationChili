@@ -24,17 +24,17 @@
 
 #include "CelluloZoneTypes.h"
 
+#include "CelluloZoneAngle.h"
+#include "CelluloZoneAngleInterval.h"
 #include "CelluloZoneCircle.h"
 #include "CelluloZoneRectangle.h"
 #include "CelluloZoneLine.h"
 #include "CelluloZonePoint.h"
 #include "CelluloZonePolygon.h"
 
-CelluloZoneTypes::CelluloZoneTypes(QObject* parent) : QObject(parent){
-}
+CelluloZoneTypes::CelluloZoneTypes(QObject* parent) : QObject(parent){}
 
-CelluloZoneTypes::~CelluloZoneTypes(){
-}
+CelluloZoneTypes::~CelluloZoneTypes(){}
 
 //TODO: PUT THIS IN CELLULO_ENUM_DECL
 CelluloZoneTypes::ZoneType CelluloZoneTypes::typeFromString(const QString &typeName){
@@ -47,6 +47,14 @@ CelluloZoneTypes::ZoneType CelluloZoneTypes::typeFromString(const QString &typeN
 
 CelluloZone* CelluloZoneTypes::newZoneFromType(ZoneType type){
     switch(type){
+        case ANGLETHRESHOLD:
+            return (CelluloZone*)(new CelluloZoneAngleThreshold());
+        case ANGLEINTERVALINNER:
+            return (CelluloZone*)(new CelluloZoneAngleIntervalInner());
+        case ANGLEINTERVALBORDER:
+            return (CelluloZone*)(new CelluloZoneAngleIntervalBorder());
+        case ANGLEINTERVALDISTANCE:
+            return (CelluloZone*)(new CelluloZoneAngleIntervalDistance());
         case CIRCLEINNER:
             return (CelluloZone*)(new CelluloZoneCircleInner());
         case CIRCLEBORDER:

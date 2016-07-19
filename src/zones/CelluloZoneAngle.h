@@ -17,7 +17,7 @@
 
 /**
  * @file CelluloZoneAngle.h
- * @brief Header for angular zones
+ * @brief Header for single angle zones
  * @author Ayberk Özgür
  * @date 2018-07-18
  */
@@ -28,17 +28,13 @@
 #include "CelluloZone.h"
 
 /**
- * @brief Describes an angular interval
- *
- * The zone is described by the limits fromAngle to toAngle, in that order; e.g if 330 and 30 are provided, the zone
- * interval includes 0 degrees and not 180 degrees.
+ * @brief Describes a single angle
  */
 class CelluloZoneAngle : public CelluloZone {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
-    Q_PROPERTY(float fromAngle WRITE setFromAngle READ getFromAngle NOTIFY fromAngleChanged)
-    Q_PROPERTY(float toAngle WRITE setToAngle READ getToAngle NOTIFY toAngleChanged)
+    Q_PROPERTY(float angle WRITE setAngle READ getAngle NOTIFY angleChanged)
 
 public:
 
@@ -48,28 +44,16 @@ public:
     CelluloZoneAngle();
 
     /**
-     * @brief Gets the first limit angle
-     * @return First limit angle
+     * @brief Gets the angle
+     * @return The angle
      */
-    float getFromAngle(){ return fromAngle; }
+    float getAngle(){ return angle; }
 
     /**
-     * @brief Sets the first limit angle
-     * @param newAngle1 First limit angle
+     * @brief Sets the angle
+     * @param newAngle New angle
      */
-    void setFromAngle(float newFromAngle);
-
-    /**
-     * @brief Gets the second limit angle
-     * @return Second limit angle
-     */
-    float getToAngle(){ return toAngle; }
-
-    /**
-     * @brief Sets the second limit angle
-     * @param newAngle1 Second limit angle
-     */
-    void setToAngle(float newToAngle);
+    void setAngle(float newAngle);
 
     /**
      * @brief Write the zone infos to the given json Object
@@ -97,43 +81,39 @@ public:
 
 protected:
 
-    qreal fromAngle;    ///< First limit angle
-    qreal toAngle;      ///< Second limit angle
+    qreal angle;    ///< The angle
 
 signals:
 
     /**
-     * @brief Emitted when the first limit angle changes
+     * @brief Emitted when the angle changes
      */
-    void fromAngleChanged();
-
-    /**
-     * @brief Emitted when the second limit angle changes
-     */
-    void toAngleChanged();
+    void angleChanged();
 
 };
 
 /**
- * @brief Describes an angular zone sensitive to the client angle being in/out of the interval
+ * @brief Describes an angular zone sensitive to the client angle crossing the zone angle
+ *
+ * This zone is stateful and produces undefined behavior when used with more than one client
  */
-class CelluloZoneAngleInner : public CelluloZoneAngle {
+class CelluloZoneAngleThreshold : public CelluloZoneAngle {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
 
 public:
 
-    CelluloZoneAngleInner();
+    CelluloZoneAngleThreshold();
 
     /**
-     * @brief Calculate whether the robot lies inside this angle zone
+     * @brief Calculate on which side the client currently is with respect to the zone
      *
      * @param xRobot UNUSED
      * @param yRobot UNUSED
-     * @param thetaRobot Orientation of the robot
+     * @param thetaRobot Orientation of the client
      *
-     * @return 1 if the robot is between the zone's angles, 0 otherwise
+     * @return 1 or -1, value changes when the client crosses the threshold angle; value does not necessarily indicate the specific side
      */
     Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) override;
 
@@ -148,120 +128,11 @@ public:
      * @param physicalHeight Physical height of the canvas in mm
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
-
-};
-
-/**
- * @brief Describes an angular zone sensitive to the client angle being on the border of the interval
- */
-class CelluloZoneAngleBorder : public CelluloZoneAngle {
-    /* *INDENT-OFF* */
-    Q_OBJECT
-    /* *INDENT-ON* */
-    Q_PROPERTY(qreal borderThickness WRITE setBorderThickness READ getBorderThickness NOTIFY borderThicknessChanged)
-
-public:
-
-    CelluloZoneAngleBorder();
-
-    /**
-     * @brief Gets the border thickness
-     *
-     * @return Border thickness in degrees
-     */
-    qreal getBorderThickness(){ return borderThickness; }
-
-    /**
-     * @brief Sets the new border thickness
-     *
-     * @param newThickness New thickness in degrees
-     */
-    void setBorderThickness(qreal newThickness);
-
-    /**
-     * @brief Write the zone infos to the given json Object
-     * @param QJsonObject json object to be written
-     */
-    virtual void write(QJsonObject &json) override;
-
-    /**
-     * @brief Read the zone infos from the given json Object
-     * @param json json object to be read
-     */
-    virtual void read(const QJsonObject &json) override;
-
-    /**
-     * @brief Calculate whether the robot lies on the border of this angular zone
-     *
-     * @param xRobot UNUSED
-     * @param yRobot UNUSED
-     * @param thetaRobot Orientation of the robot in degrees
-     *
-     * @return 1 if the robot is on the border of this angular zone, 0 otherwise
-     */
-    Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) override;
-
-    /**
-     * @brief Draws this zone onto the painter
-     *
-     * @param painter Object to draw onto
-     * @param color Color of the paint
-     * @param canvasWidth Screen width of the canvas in pixels
-     * @param canvasHeight Screen height of the canvas in pixels
-     * @param physicalWidth Physical width of the canvas in mm
-     * @param physicalHeight Physical height of the canvas in mm
-     */
-    virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
-
-signals:
-
-    /**
-     * @brief Emitted when border thickness changes
-     */
-    void borderThicknessChanged();
 
 private:
 
-    qreal borderThickness;  ///< The border thickness in degrees
-
-};
-
-/**
- * @brief Describes an angular zone sensitive to the client orientation distance to the interval
- *
- * Always calculates the shortest distance to the interval
- */
-class CelluloZoneAngleDistance : public CelluloZoneAngle {
-    /* *INDENT-OFF* */
-    Q_OBJECT
-    /* *INDENT-ON* */
-
-public:
-
-    CelluloZoneAngleDistance();
-
-    /**
-     * @brief Calculate the distance between the robot orientation and one of the zone limits
-     *
-     * @param xRobot UNUSED
-     * @param yRobot UNUSED
-     * @param thetaRobot Orientation of the robot
-     *
-     * @return The distance between the robot orientation and the limits of this zone; 0 if inside the zone
-     */
-    Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) override;
-
-    /**
-     * @brief Draws this zone onto the painter
-     *
-     * @param painter Object to draw onto
-     * @param color Color of the paint
-     * @param canvasWidth Screen width of the canvas in pixels
-     * @param canvasHeight Screen height of the canvas in pixels
-     * @param physicalWidth Physical width of the canvas in mm
-     * @param physicalHeight Physical height of the canvas in mm
-     */
-    virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
+    qreal prevDiff;     ///< Previous calculated difference
+    qreal currentValue; ///< Current calculated value, changes every time the client crosses the angle
 
 };
 

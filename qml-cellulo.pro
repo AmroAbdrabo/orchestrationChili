@@ -16,6 +16,7 @@ HEADERS += \
     src/zones/CelluloZone.h \
     src/zones/CelluloZoneRectangle.h \
     src/zones/CelluloZoneAngle.h \
+    src/zones/CelluloZoneAngleInterval.h \
     src/zones/CelluloZoneEngine.h \
     src/zones/CelluloZoneJsonHandler.h \
     src/zones/CelluloZoneTypes.h \
@@ -36,6 +37,7 @@ SOURCES += \
     src/zones/CelluloZone.cpp \
     src/zones/CelluloZoneRectangle.cpp \
     src/zones/CelluloZoneAngle.cpp \
+    src/zones/CelluloZoneAngleInterval.cpp \
     src/zones/CelluloZoneEngine.cpp \
     src/zones/CelluloZoneJsonHandler.cpp \
     src/zones/CelluloZoneTypes.cpp \
