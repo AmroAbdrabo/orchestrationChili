@@ -45,6 +45,13 @@ SOURCES += \
 INCLUDEPATH += \
     include/
 
+QML_SOURCES = \
+    src/util/ui/MacAddrSelector.qml \
+    src/util/ui/Toast.qml \
+    src/util/ui/ToastManager.qml
+
+JS_SOURCES =
+
 test{
     message(Configuring test build...)
 
@@ -72,9 +79,8 @@ else{
     #File installation
 
     qmldir.files = qmldir
-    javascript.files = src/cellulo-toolkit.js \
-    src/zones/cellulo-zonesdrawer.js
-    qml.files = src/CelluloRobot.qml src/comm/MacAddrSelector.qml
+    javascript.files = $$JS_SOURCES
+    qml.files = $$QML_SOURCES
 
     OTHER_FILES += qmldir.files javascript.files qml.files
 
