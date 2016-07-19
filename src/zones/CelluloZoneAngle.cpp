@@ -76,7 +76,7 @@ void CelluloZoneAngle::paint(QPainter* painter, QColor color, qreal canvasWidth,
 
 CelluloZoneAngleThreshold::CelluloZoneAngleThreshold() : CelluloZoneAngle(){
     type = CelluloZoneTypes::ANGLETHRESHOLD;
-    currentValue = -1;
+    currentValue = 0;
     prevDiff = 0;
 }
 
@@ -94,6 +94,11 @@ float CelluloZoneAngleThreshold::calculate(float xRobot, float yRobot, float the
         diff += 360;
     while(diff > 180)
         diff -= 360;
+
+    if(currentValue == 0){
+        prevDiff = diff;
+        currentValue = -1;
+    }
 
     if(-90 <= diff && diff <= 90)
         if((prevDiff > 0 && diff <= 0) || (prevDiff <= 0 && diff > 0))
