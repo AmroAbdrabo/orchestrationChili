@@ -93,27 +93,25 @@ signals:
 };
 
 /**
- * @brief Describes an angular zone sensitive to the client angle crossing the zone angle
- *
- * This zone is stateful and produces undefined behavior when used with more than one client
+ * @brief Describes an angular zone sensitive to the client angle difference
  */
-class CelluloZoneAngleThreshold : public CelluloZoneAngle {
+class CelluloZoneAngleDifference : public CelluloZoneAngle {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
 
 public:
 
-    CelluloZoneAngleThreshold();
+    CelluloZoneAngleDifference();
 
     /**
-     * @brief Calculate on which side the client currently is with respect to the zone
+     * @brief Calculate difference (signed) of the client angle
      *
      * @param xRobot UNUSED
      * @param yRobot UNUSED
      * @param thetaRobot Orientation of the client
      *
-     * @return 1 or -1, value changes when the client crosses the threshold angle; value does not necessarily indicate the specific side
+     * @return Difference between the client angle and this zone angle, between -180 (exclusive) and 180 (inclusive)
      */
     Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) override;
 
@@ -128,11 +126,6 @@ public:
      * @param physicalHeight Physical height of the canvas in mm
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
-
-private:
-
-    qreal prevDiff;     ///< Previous calculated difference
-    qreal currentValue; ///< Current calculated value, changes every time the client crosses the angle
 
 };
 

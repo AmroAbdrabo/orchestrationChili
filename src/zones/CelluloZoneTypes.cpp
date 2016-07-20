@@ -47,8 +47,8 @@ CelluloZoneTypes::ZoneType CelluloZoneTypes::typeFromString(const QString &typeN
 
 CelluloZone* CelluloZoneTypes::newZoneFromType(ZoneType type){
     switch(type){
-        case ANGLETHRESHOLD:
-            return (CelluloZone*)(new CelluloZoneAngleThreshold());
+        case ANGLEDIFFERENCE:
+            return (CelluloZone*)(new CelluloZoneAngleDifference());
         case ANGLEINTERVALINNER:
             return (CelluloZone*)(new CelluloZoneAngleIntervalInner());
         case ANGLEINTERVALBORDER:
