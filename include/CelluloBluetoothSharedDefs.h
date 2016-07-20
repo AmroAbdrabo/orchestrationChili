@@ -104,6 +104,8 @@
         CmdPacketTypeSetGoalXCoordinate,             /** Set goal x coordinate */ \
         CmdPacketTypeSetGoalYCoordinate,             /** Set goal y coordinate */ \
         CmdPacketTypeSetGoalOrientation,             /** Set goal orientation */ \
+        CmdPacketTypeSetGoalXThetaCoordinate,        /** Set goal x and theta coordinate */ \
+        CmdPacketTypeSetGoalYThetaCoordinate,        /** Set goal y and theta coordinate */ \
         CmdPacketTypeClearTracking,                  /** Clears goal pose/position/velocity */ \
         CmdPacketTypeSimpleVibrate,                  /** Simple vibration haptic feedback */ \
         CmdPacketTypeVibrateOnMotion,                /** Vibration with intensity proportional to drive velocities*/ \
@@ -136,6 +138,8 @@
         "-", /** CmdPacketTypeSetGoalXCoordinate */ \
         "|", /** CmdPacketTypeSetGoalYCoordinate */ \
         "O", /** CmdPacketTypeSetGoalOrientation */ \
+        "\\",/** CmdPacketTypeSetGoalXThetaCoordinate */ \
+        "/", /** CmdPacketTypeSetGoalYThetaCoordinate */ \
         "X", /** CmdPacketTypeClearTracking */ \
         "V", /** CmdPacketTypeSimpleVibrate */ \
         "Z", /** CmdPacketTypeVibrateOnMotion */ \
@@ -167,6 +171,8 @@
         4 + 2,             /** CmdPacketTypeSetGoalXCoordinate: uint32 x, uint16 vMax */ \
         4 + 2,             /** CmdPacketTypeSetGoalYCoordinate: uint32 y, uint16 vMax */ \
         2 + 2,             /** CmdPacketTypeSetGoalOrientation: uint16 theta, uint16 wMax */ \
+        4 + 2 + 2 + 2,     /** CmdPacketTypeSetGoalXThetaCoordinate: uint32 x, uint16 theta, uint16 vMax, uint6 wMax */ \
+        4 + 2 + 2 + 2,     /** CmdPacketTypeSetGoalYThetaCoordinate: uint32 y, uint16 theta, uint16 vMax, uint6 wMax */ \
         0,                 /** CmdPacketTypeClearTracking */ \
         2 + 2 + 2 + 2 + 2, /** CmdPacketTypeSimpleVibrate: uint16 ix, uint16 iy, uint16 itheta, uint16 period, uint16 duration */ \
         2 + 2,             /** CmdPacketTypeVibrateOnMotion: uint16 icoeff, uint16 period */ \

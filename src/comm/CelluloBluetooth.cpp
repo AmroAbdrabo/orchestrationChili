@@ -604,6 +604,82 @@ void CelluloBluetooth::setGoalOrientation(float theta, float w){
     sendCommand();
 }
 
+void CelluloBluetooth::setGoalXThetaCoordinate(float x, float theta, float v, float w){
+    x *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
+    theta *= GOAL_POSE_FACTOR_SHARED;
+    v *= GOAL_VEL_FACTOR_SHARED;
+    w *= GOAL_VEL_FACTOR_SHARED;
+
+    quint32 xi;
+    quint16 thetai, vi, wi;
+
+    if(x > (float)0xFFFFFFFF)
+        xi = 0xFFFFFFFF;
+    else
+        xi = (quint32)x;
+
+    if(theta > (float)0xFFFF)
+        thetai = 0xFFFF;
+    else
+        thetai = (quint16)theta;
+
+    if(v > (float)0xFFFF)
+        vi = 0xFFFF;
+    else
+        vi = (quint16)v;
+
+    if(w > (float)0xFFFF)
+        wi = 0xFFFF;
+    else
+        wi = (quint16)w;
+
+    sendPacket.clear();
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeSetGoalXThetaCoordinate);
+    sendPacket.load((quint32)xi);
+    sendPacket.load((quint16)thetai);
+    sendPacket.load((quint16)vi);
+    sendPacket.load((quint16)wi);
+    sendCommand();
+}
+
+void CelluloBluetooth::setGoalYThetaCoordinate(float y, float theta, float v, float w){
+    y *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
+    theta *= GOAL_POSE_FACTOR_SHARED;
+    v *= GOAL_VEL_FACTOR_SHARED;
+    w *= GOAL_VEL_FACTOR_SHARED;
+
+    quint32 yi;
+    quint16 thetai, vi, wi;
+
+    if(y > (float)0xFFFFFFFF)
+        yi = 0xFFFFFFFF;
+    else
+        yi = (quint32)y;
+
+    if(theta > (float)0xFFFF)
+        thetai = 0xFFFF;
+    else
+        thetai = (quint16)theta;
+
+    if(v > (float)0xFFFF)
+        vi = 0xFFFF;
+    else
+        vi = (quint16)v;
+
+    if(w > (float)0xFFFF)
+        wi = 0xFFFF;
+    else
+        wi = (quint16)w;
+
+    sendPacket.clear();
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeSetGoalYThetaCoordinate);
+    sendPacket.load((quint32)yi);
+    sendPacket.load((quint16)thetai);
+    sendPacket.load((quint16)vi);
+    sendPacket.load((quint16)wi);
+    sendCommand();
+}
+
 void CelluloBluetooth::clearTracking(){
     sendPacket.clear();
     sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeClearTracking);

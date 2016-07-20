@@ -292,120 +292,78 @@ ApplicationWindow {
                         spacing: 5
 
                         Column{
-                            Label{
-                                text: "Pose goal:"
-                            }
+                            Text{ text: "Goal coordinates" }
 
-                            TextField{
-                                id: goalPoseX
-                                placeholderText: "x (mm)"
-                            }
-
-                            TextField{
-                                id: goalPoseY
-                                placeholderText: "y (mm)"
-
-                            }
-
-                            TextField{
-                                id: goalPoseTheta
-                                placeholderText: "theta (degrees)"
-
-                            }
-
-                            TextField{
-                                id: goalPoseMaxV
-                                placeholderText: "v (mm/s)"
-
-                            }
-
-                            TextField{
-                                id: goalPoseMaxW
-                                placeholderText: "w (rad/s)"
-
-                            }
+                            TextField{ id: goalPoseX; placeholderText: "x (mm)" }
+                            TextField{ id: goalPoseY; placeholderText: "y (mm)" }
+                            TextField{ id: goalPoseTheta; placeholderText: "theta (degrees)"; }
+                            TextField{ id: goalPoseMaxV; placeholderText: "v (mm/s)" }
+                            TextField{ id: goalPoseMaxW; placeholderText: "w (rad/s)" }
 
                             Button{
-                                text: "Go"
-                                onClicked: robotComm.setGoalPose(parseFloat(goalPoseX.text), parseFloat(goalPoseY.text), parseFloat(goalPoseTheta.text),
-                                                                 parseFloat(goalPoseMaxV.text), parseFloat(goalPoseMaxW.text));
+                                text: "Track complete pose"
+                                onClicked: robotComm.setGoalPose(
+                                    parseFloat(goalPoseX.text),
+                                    parseFloat(goalPoseY.text),
+                                    parseFloat(goalPoseTheta.text),
+                                    parseFloat(goalPoseMaxV.text),
+                                    parseFloat(goalPoseMaxW.text)
+                                )
+                            }
+                            Button{
+                                text: "Track position"
+                                onClicked: robotComm.setGoalPosition(
+                                    parseFloat(goalPoseX.text),
+                                    parseFloat(goalPoseY.text),
+                                    parseFloat(goalPoseMaxV.text)
+                                )
+                            }
+                            Button{
+                                text: "Track orientation"
+                                onClicked: robotComm.setGoalOrientation(
+                                    parseFloat(goalPoseTheta.text),
+                                    parseFloat(goalPoseMaxW.text)
+                                )
+                            }
+                            Button{
+                                text: "Track X"
+                                onClicked: robotComm.setGoalXCoordinate(
+                                    parseFloat(goalPoseX.text),
+                                    parseFloat(goalPoseMaxV.text)
+                                )
+                            }
+                            Button{
+                                text: "Track Y"
+                                onClicked: robotComm.setGoalYCoordinate(
+                                    parseFloat(goalPoseY.text),
+                                    parseFloat(goalPoseMaxV.text)
+                                )
+                            }
+                            Button{
+                                text: "Track X and Theta"
+                                onClicked: robotComm.setGoalXThetaCoordinate(
+                                    parseFloat(goalPoseX.text),
+                                    parseFloat(goalPoseTheta.text),
+                                    parseFloat(goalPoseMaxV.text),
+                                    parseFloat(goalPoseMaxW.text)
+                                )
+                            }
+                            Button{
+                                text: "Track Y and Theta"
+                                onClicked: robotComm.setGoalYThetaCoordinate(
+                                    parseFloat(goalPoseY.text),
+                                    parseFloat(goalPoseTheta.text),
+                                    parseFloat(goalPoseMaxV.text),
+                                    parseFloat(goalPoseMaxW.text)
+                                )
                             }
                         }
 
                         Column{
-                            Label{ text: "Position goal:" }
-                            TextField{ id: goalPositionX; placeholderText: "x (mm)" }
-                            TextField{ id: goalPositionY; placeholderText: "y (mm)" }
-                            TextField{ id: goalPositionMaxV; placeholderText: "v (mm/s)" }
-                            Button{
-                                text: "Go"
-                                onClicked: robotComm.setGoalPosition(parseFloat(goalPositionX.text), parseFloat(goalPositionY.text), parseFloat(goalPositionMaxV.text));
-                            }
-                        }
-
-                        Column{
-                            Label{ text: "X coord. goal:" }
-                            TextField{ id: goalXCoordinate; placeholderText: "x (mm)" }
-                            TextField{ id: goalXCoordinateMaxV; placeholderText: "v (mm/s)" }
-                            Button{
-                                text: "Go"
-                                onClicked: robotComm.setGoalXCoordinate(parseFloat(goalXCoordinate.text), parseFloat(goalXCoordinateMaxV.text));
-                            }
-                        }
-
-                        Column{
-                            Label{ text: "Y coord. goal:" }
-                            TextField{ id: goalYCoordinate; placeholderText: "y (mm)" }
-                            TextField{ id: goalYCoordinateMaxV; placeholderText: "v (mm/s)" }
-                            Button{
-                                text: "Go"
-                                onClicked: robotComm.setGoalYCoordinate(parseFloat(goalYCoordinate.text), parseFloat(goalYCoordinateMaxV.text));
-                            }
-                        }
-
-                        Column{
-                            Label{
-                                text: "Orientation goal:"
-                            }
-
-                            TextField{
-                                id: goalOrientationTheta
-                                placeholderText: "theta (degrees)"
-
-                            }
-
-                            TextField{
-                                id: goalOrientationMaxW
-                                placeholderText: "w (rad/s)"
-                            }
-
-                            Button{
-                                text: "Go"
-                                onClicked: robotComm.setGoalOrientation(parseFloat(goalOrientationTheta.text), parseFloat(goalOrientationMaxW.text))
-                            }
-                        }
-
-                        Column{
-                            Label{
-                                text: "Goal velocity:"
-                            }
-
-                            TextField{
-                                id: goalVelX
-                                placeholderText: "vx (mm/s)"
-                            }
-
-                            TextField{
-                                id: goalVelY
-                                placeholderText: "vy (mm/s)"
-
-                            }
-
-                            TextField{
-                                id: goalW
-                                placeholderText: "w (rad/s)"
-
-                            }
+                            Label{ text: "Goal velocity:" }
+                            TextField{ id: goalVelX; placeholderText: "vx (mm/s)" }
+                            TextField{ id: goalVelY; placeholderText: "vy (mm/s)" }
+                            TextField{ id: goalW; placeholderText: "w (rad/s)" }
 
                             Button{
                                 text: "Set"

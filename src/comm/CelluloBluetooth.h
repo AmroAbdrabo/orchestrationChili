@@ -303,6 +303,26 @@ public slots:
     void setGoalOrientation(float theta, float w);
 
     /**
+     * @brief Sets an X and Theta goal at the same time
+     *
+     * @param x X goal in mm
+     * @param theta Theta goal in degrees
+     * @param v Maximum linear speed to track pose in mm/s
+     * @param w Maximum angular speed to track pose in rad/s
+     */
+    void setGoalXThetaCoordinate(float x, float theta, float v, float w);
+
+    /**
+     * @brief Sets a Y and Theta goal at the same time
+     *
+     * @param y Y goal in mm
+     * @param theta Theta goal in degrees
+     * @param v Maximum linear speed to track pose in mm/s
+     * @param w Maximum angular speed to track pose in rad/s
+     */
+    void setGoalYThetaCoordinate(float y, float theta, float v, float w);
+
+    /**
      * @brief Clears pose/position/velocity goals
      */
     void clearTracking();
