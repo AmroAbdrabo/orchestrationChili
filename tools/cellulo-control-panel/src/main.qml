@@ -168,7 +168,7 @@ ApplicationWindow {
                     }
 
                     CheckBox{
-                        checked: true
+                        checked: false
                         text: "Gesture enabled"
                         onCheckedChanged: robotComm.setGestureEnabled(checked)
                     }
