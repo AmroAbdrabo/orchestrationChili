@@ -101,6 +101,8 @@
         CmdPacketTypeSetGoalVelocity,                /** Set goal global velocity */ \
         CmdPacketTypeSetGoalPose,                    /** Set goal pose */ \
         CmdPacketTypeSetGoalPosition,                /** Set goal position */ \
+        CmdPacketTypeSetGoalXCoordinate,             /** Set goal x coordinate */ \
+        CmdPacketTypeSetGoalYCoordinate,             /** Set goal y coordinate */ \
         CmdPacketTypeSetGoalOrientation,             /** Set goal orientation */ \
         CmdPacketTypeClearTracking,                  /** Clears goal pose/position/velocity */ \
         CmdPacketTypeSimpleVibrate,                  /** Simple vibration haptic feedback */ \
@@ -131,6 +133,8 @@
         "C", /** CmdPacketTypeSetGoalVelocity */ \
         "G", /** CmdPacketTypeSetGoalPose */ \
         "N", /** CmdPacketTypeSetGoalPosition */ \
+        "-", /** CmdPacketTypeSetGoalXCoordinate */ \
+        "|", /** CmdPacketTypeSetGoalYCoordinate */ \
         "O", /** CmdPacketTypeSetGoalOrientation */ \
         "X", /** CmdPacketTypeClearTracking */ \
         "V", /** CmdPacketTypeSimpleVibrate */ \
@@ -160,6 +164,8 @@
         2 + 2 + 2,         /** CmdPacketTypeSetGoalVelocity: int16 vx, int16 vy, int16 w */ \
         4 + 4 + 2 + 2 + 2, /** CmdPacketTypeSetGoalPose: uint32 x, uint32 y, uint16 theta, uint16 vMax, uint6 wMax */ \
         4 + 4 + 2,         /** CmdPacketTypeSetGoalPosition: uint32 x, uint32 y, uint16 vMax */ \
+        4 + 2,             /** CmdPacketTypeSetGoalXCoordinate: uint32 x, uint16 vMax */ \
+        4 + 2,             /** CmdPacketTypeSetGoalYCoordinate: uint32 y, uint16 vMax */ \
         2 + 2,             /** CmdPacketTypeSetGoalOrientation: uint16 theta, uint16 wMax */ \
         0,                 /** CmdPacketTypeClearTracking */ \
         2 + 2 + 2 + 2 + 2, /** CmdPacketTypeSimpleVibrate: uint16 ix, uint16 iy, uint16 itheta, uint16 period, uint16 duration */ \

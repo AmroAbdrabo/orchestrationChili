@@ -534,6 +534,54 @@ void CelluloBluetooth::setGoalPosition(float x, float y, float v){
     sendCommand();
 }
 
+void CelluloBluetooth::setGoalXCoordinate(float x, float v){
+    x *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
+    v *= GOAL_VEL_FACTOR_SHARED;
+
+    quint32 xi;
+    quint16 vi;
+
+    if(x > (float)0xFFFFFFFF)
+        xi = 0xFFFFFFFF;
+    else
+        xi = (quint32)x;
+
+    if(v > (float)0xFFFF)
+        vi = 0xFFFF;
+    else
+        vi = (quint16)v;
+
+    sendPacket.clear();
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeSetGoalXCoordinate);
+    sendPacket.load((quint32)xi);
+    sendPacket.load((quint16)vi);
+    sendCommand();
+}
+
+void CelluloBluetooth::setGoalYCoordinate(float y, float v){
+    y *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
+    v *= GOAL_VEL_FACTOR_SHARED;
+
+    quint32 yi;
+    quint16 vi;
+
+    if(y > (float)0xFFFFFFFF)
+        yi = 0xFFFFFFFF;
+    else
+        yi = (quint32)y;
+
+    if(v > (float)0xFFFF)
+        vi = 0xFFFF;
+    else
+        vi = (quint16)v;
+
+    sendPacket.clear();
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeSetGoalYCoordinate);
+    sendPacket.load((quint32)yi);
+    sendPacket.load((quint16)vi);
+    sendCommand();
+}
+
 void CelluloBluetooth::setGoalOrientation(float theta, float w){
     theta *= GOAL_POSE_FACTOR_SHARED;
     w *= GOAL_VEL_FACTOR_SHARED;

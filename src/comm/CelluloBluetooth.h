@@ -279,6 +279,22 @@ public slots:
     void setGoalPosition(float x, float y, float v);
 
     /**
+     * @brief Sets an X coordinate to track
+     *
+     * @param x X goal in mm
+     * @param v Maximum linear speed to track pose in mm/s
+     */
+    void setGoalXCoordinate(float x, float v);
+
+    /**
+     * @brief Sets a Y coordinate to track
+     *
+     * @param y Y goal in mm
+     * @param v Maximum linear speed to track pose in mm/s
+     */
+    void setGoalYCoordinate(float y, float v);
+
+    /**
      * @brief Sets a position goal to track
      *
      * @param theta Theta goal in degrees

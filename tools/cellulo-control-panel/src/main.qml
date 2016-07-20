@@ -333,30 +333,33 @@ ApplicationWindow {
                         }
 
                         Column{
-                            Label{
-                                text: "Position goal:"
-                            }
-
-                            TextField{
-                                id: goalPositionX
-                                placeholderText: "x (mm)"
-                            }
-
-                            TextField{
-                                id: goalPositionY
-                                placeholderText: "y (mm)"
-
-                            }
-
-                            TextField{
-                                id: goalPositionMaxV
-                                placeholderText: "v (mm/s)"
-
-                            }
-
+                            Label{ text: "Position goal:" }
+                            TextField{ id: goalPositionX; placeholderText: "x (mm)" }
+                            TextField{ id: goalPositionY; placeholderText: "y (mm)" }
+                            TextField{ id: goalPositionMaxV; placeholderText: "v (mm/s)" }
                             Button{
                                 text: "Go"
                                 onClicked: robotComm.setGoalPosition(parseFloat(goalPositionX.text), parseFloat(goalPositionY.text), parseFloat(goalPositionMaxV.text));
+                            }
+                        }
+
+                        Column{
+                            Label{ text: "X coord. goal:" }
+                            TextField{ id: goalXCoordinate; placeholderText: "x (mm)" }
+                            TextField{ id: goalXCoordinateMaxV; placeholderText: "v (mm/s)" }
+                            Button{
+                                text: "Go"
+                                onClicked: robotComm.setGoalXCoordinate(parseFloat(goalXCoordinate.text), parseFloat(goalXCoordinateMaxV.text));
+                            }
+                        }
+
+                        Column{
+                            Label{ text: "Y coord. goal:" }
+                            TextField{ id: goalYCoordinate; placeholderText: "y (mm)" }
+                            TextField{ id: goalYCoordinateMaxV; placeholderText: "v (mm/s)" }
+                            Button{
+                                text: "Go"
+                                onClicked: robotComm.setGoalYCoordinate(parseFloat(goalYCoordinate.text), parseFloat(goalYCoordinateMaxV.text));
                             }
                         }
 
