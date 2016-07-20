@@ -43,6 +43,7 @@ class CelluloZoneEngine : public QQuickItem {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
+    Q_PROPERTY(bool active READ getActive WRITE setActive NOTIFY activeChanged)
 
 public:
 
@@ -97,6 +98,20 @@ public:
 public slots:
 
     /**
+     * @brief Gets whether currently active
+     *
+     * @return Whether currently active
+     */
+    bool getActive(){ return active; }
+
+    /**
+     * @brief Sets whether the engine is active
+     *
+     * @param newActive Whether the engine should be active
+     */
+    void setActive(bool newActive);
+
+    /**
      * @brief Adds a new client to the engine, binds to all existing zones
      *
      * @param newClient Client to add
@@ -115,10 +130,18 @@ public slots:
      */
     void clearZones();
 
+signals:
+
+    /**
+     * @brief Emitted when active changes
+     */
+    void activeChanged();
+
 private:
 
-    QSet<CelluloZoneClient*> clients;                   ///< All clients bound to this engine
-    QSet<CelluloZone*> zones;                           ///< All zones bound to this engine
+    bool active;                      ///< Whether clients' poseChanged events are connected to zones; true by default
+    QSet<CelluloZoneClient*> clients; ///< All clients bound to this engine
+    QSet<CelluloZone*> zones;         ///< All zones bound to this engine
 
     /**
      * @brief Binds client to zone
@@ -130,6 +153,16 @@ private:
      * @param zone Zone to be bound
      */
     void bindClientToZone(CelluloZoneClient* client, CelluloZone* zone);
+
+    /**
+     * @brief Unbinds client from zone
+     *
+     * Disconnects Client's poseChanged(real,real,real) signal from Zone's onClientPoseChanged(real,real,real) slot.
+     *
+     * @param client Client to be unbound
+     * @param zone Zone to be unbound
+     */
+    void unbindClientFromZone(CelluloZoneClient* client, CelluloZone* zone);
 
     /**
      * @brief Override; adds the added child to zones if it is a CelluloZone

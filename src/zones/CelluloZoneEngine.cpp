@@ -29,14 +29,36 @@
 #include "CelluloZoneEngine.h"
 
 CelluloZoneEngine::CelluloZoneEngine(QQuickItem* parent) : QQuickItem(parent){
+    active = true;
 }
 
 CelluloZoneEngine::~CelluloZoneEngine(){
     //TODO: FIGURE OUT HOW TO DELETE CLIENTS AND ZONES IN THE LISTS, THEY MAY HAVE BEEN CREATED IN QML BY STATIC CODE
 }
 
+void CelluloZoneEngine::setActive(bool newActive){
+    if(newActive != active){
+        active = newActive;
+
+        if(active)
+            for(auto zone : zones)
+                for(auto client : clients)
+                    bindClientToZone(client, zone);
+        else
+            for(auto zone : zones)
+                for(auto client : clients)
+                    unbindClientFromZone(client, zone);
+
+        emit activeChanged();
+    }
+}
+
 void CelluloZoneEngine::bindClientToZone(CelluloZoneClient* client, CelluloZone* zone){
     connect(client, SIGNAL(poseChanged(qreal,qreal,qreal)), zone, SLOT(onClientPoseChanged(qreal,qreal,qreal)));
+}
+
+void CelluloZoneEngine::unbindClientFromZone(CelluloZoneClient* client, CelluloZone* zone){
+    disconnect(client, SIGNAL(poseChanged(qreal,qreal,qreal)), zone, SLOT(onClientPoseChanged(qreal,qreal,qreal)));
 }
 
 void CelluloZoneEngine::addNewClient(CelluloZoneClient* newClient){
@@ -44,8 +66,9 @@ void CelluloZoneEngine::addNewClient(CelluloZoneClient* newClient){
         qDebug() << "CelluloZoneEngine::addNewClient(): Client already exists, not adding.";
     else{
         clients += newClient;
-        for(auto zone : zones)
-            bindClientToZone(newClient, zone);
+        if(active)
+            for(auto zone : zones)
+                bindClientToZone(newClient, zone);
     }
 }
 
@@ -54,8 +77,9 @@ void CelluloZoneEngine::addNewZone(CelluloZone* newZone){
         qDebug() << "CelluloZoneEngine::addNewZone(): Zone already exists, not adding.";
     else{
         zones += newZone;
-        for(auto client : clients)
-            bindClientToZone(client, newZone);
+        if(active)
+            for(auto client : clients)
+                bindClientToZone(client, newZone);
     }
 }
 
