@@ -289,10 +289,10 @@ ApplicationWindow {
                     }
 
                     Row{
-                        spacing: 5
+                        spacing: 15
 
                         Column{
-                            Text{ text: "Goal coordinates" }
+                            Text{ text: "Goal coordinates:" }
 
                             TextField{ id: goalPoseX; placeholderText: "x (mm)" }
                             TextField{ id: goalPoseY; placeholderText: "y (mm)" }
