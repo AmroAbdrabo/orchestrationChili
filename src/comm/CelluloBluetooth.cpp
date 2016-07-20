@@ -654,18 +654,26 @@ void CelluloBluetooth::setCasualBackdriveAssistEnabled(bool enabled){
     sendCommand();
 }
 
-void CelluloBluetooth::setHapticBackdriveAssist(float xyAssist, float thetaAssist){
-    xyAssist *= 100;
+void CelluloBluetooth::setHapticBackdriveAssist(float xAssist, float yAssist, float thetaAssist){
+    xAssist *= 100;
+    yAssist *= 100;
     thetaAssist *= 100;
 
-    qint16 xyAssist_int, thetaAssist_int;
+    qint16 xAssist_int, yAssist_int, thetaAssist_int;
 
-    if(xyAssist > (float)0x7FFF)
-        xyAssist_int = 0x7FFF;
-    else if(xyAssist < (float)(-0x7FFF))
-        xyAssist_int = -0x7FFF;
+    if(xAssist > (float)0x7FFF)
+        xAssist_int = 0x7FFF;
+    else if(xAssist < (float)(-0x7FFF))
+        xAssist_int = -0x7FFF;
     else
-        xyAssist_int = (qint16)xyAssist;
+        xAssist_int = (qint16)xAssist;
+
+    if(yAssist > (float)0x7FFF)
+        yAssist_int = 0x7FFF;
+    else if(yAssist < (float)(-0x7FFF))
+        yAssist_int = -0x7FFF;
+    else
+        yAssist_int = (qint16)yAssist;
 
     if(thetaAssist > (float)0x7FFF)
         thetaAssist_int = 0x7FFF;
@@ -676,7 +684,8 @@ void CelluloBluetooth::setHapticBackdriveAssist(float xyAssist, float thetaAssis
 
     sendPacket.clear();
     sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeHapticBackdriveAssist);
-    sendPacket.load(xyAssist_int);
+    sendPacket.load(xAssist_int);
+    sendPacket.load(yAssist_int);
     sendPacket.load(thetaAssist_int);
     sendCommand();
 }

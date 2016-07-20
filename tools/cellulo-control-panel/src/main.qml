@@ -440,8 +440,13 @@ ApplicationWindow {
                             }
 
                             TextField{
-                                id: hBdrvAssistXY
-                                placeholderText: "x,y coeff"
+                                id: hBdrvAssistX
+                                placeholderText: "x coeff"
+                            }
+
+                            TextField{
+                                id: hBdrvAssistY
+                                placeholderText: "y coeff"
                             }
 
                             TextField{
@@ -454,7 +459,8 @@ ApplicationWindow {
                                 text: "Go"
                                 onClicked: {
                                     robotComm.setHapticBackdriveAssist(
-                                        parseFloat(hBdrvAssistXY.text),
+                                        parseFloat(hBdrvAssistX.text),
+                                        parseFloat(hBdrvAssistY.text),
                                         parseFloat(hBdrvAssistTheta.text)
                                         );
                                     casualBdrvAssistCheckbox.checked = false;

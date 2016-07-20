@@ -153,7 +153,7 @@
         1,                 /** CmdPacketTypeSetLocomotionInteractivityMode: uint8 mode */ \
         1,                 /** CmdPacketTypeGestureEnable: uint8 bool */ \
         1,                 /** CmdPacketTypeCasualBackdriveAssistEnable: uint8 bool */ \
-        2 + 2,             /** CmdPacketTypeHapticBackdriveAssist: int16 xyassist, int16 thetaassist */ \
+        2 + 2 + 2,         /** CmdPacketTypeHapticBackdriveAssist: int16 xassist, int16 yassist, int16 thetaassist */ \
         1 + 1 + 1 + 1 + 1, /** CmdPacketTypeSetVisualEffect: uint8 effect, uint8 red, uint8 green, uint8 blue, uint8 value */ \
         1 + 2,             /** CmdPacketTypeSetMotorOutput: uint8 motorIndex, int16 output (-0xFFF to 0xFFF) */ \
         2 + 2 + 2,         /** CmdPacketTypeSetAllMotorOutputs: int16 m1Output, int16 m2Output, int16 m3Output (-0xFFF to 0xFFF) */ \

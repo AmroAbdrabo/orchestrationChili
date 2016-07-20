@@ -135,7 +135,7 @@ ApplicationWindow {
         onTriggered: {
             updateHaptics();
             log.append(currentHaptics.logText);
-            robotComm.setHapticBackdriveAssist(currentHaptics.xyAssist, currentHaptics.thetaAssist);
+            robotComm.setHapticBackdriveAssist(currentHaptics.xyAssist, currentHaptics.xyAssist, currentHaptics.thetaAssist);
             robotComm.vibrateOnMotion(currentHaptics.vibrateIntensity, 40);
 
             console.log(currentHaptics.xyAssist + " " + currentHaptics.thetaAssist + " " + currentHaptics.vibrateIntensity);
