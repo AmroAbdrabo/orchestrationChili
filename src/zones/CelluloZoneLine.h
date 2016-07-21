@@ -225,4 +225,81 @@ public:
 
 };
 
+/**
+ * @brief CelluloZone Specific Class for determining whether a point is within a distance to an infinite line
+ *
+ * The two points of CelluloZoneLine are taken as the two points that this infinite line passes through
+ */
+class CelluloZoneLineBorder : public CelluloZoneLine {
+    /* *INDENT-OFF* */
+    Q_OBJECT
+    /* *INDENT-ON* */
+    Q_PROPERTY(qreal borderThickness WRITE setBorderThickness READ getBorderThickness NOTIFY borderThicknessChanged)
+
+public:
+
+    CelluloZoneLineBorder();
+
+    /**
+     * @brief Gets the border thickness
+     *
+     * @return Border thickness in mm
+     */
+    qreal getBorderThickness(){ return borderThickness; }
+
+    /**
+     * @brief Sets the new border thickness
+     *
+     * @param newThickness New thickness in mm
+     */
+    void setBorderThickness(qreal newThickness);
+
+    /**
+     * @brief Write the zone infos to the given json Object
+     * @param QJsonObject json object to be written
+     */
+    virtual void write(QJsonObject &json) override;
+
+    /**
+     * @brief Read the zone infos from the given json Object
+     * @param json json object to be read
+     */
+    virtual void read(const QJsonObject &json) override;
+
+    /**
+     * @brief Calculate whether the distance between the robot position and line is below the border thickness
+     *
+     * @param xRobot x position of the robot
+     * @param yRobot y position of the robot
+     * @param thetaRobot theta position of the robot
+     *
+     * @return 1 if within border, 0 if outside
+     */
+    Q_INVOKABLE float calculate(float xRobot, float yRobot, float thetaRobot) override;
+
+    /**
+     * @brief Draws this zone onto the painter
+     *
+     * @param painter Object to draw onto
+     * @param color Color of the paint
+     * @param canvasWidth Screen width of the canvas in pixels
+     * @param canvasHeight Screen height of the canvas in pixels
+     * @param physicalWidth Physical width of the canvas in mm
+     * @param physicalHeight Physical height of the canvas in mm
+     */
+    virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
+
+signals:
+
+    /**
+     * @brief Emitted when border thickness changes
+     */
+    void borderThicknessChanged();
+
+private:
+
+        qreal borderThickness;  ///< The border thickness in mm
+
+};
+
 #endif // CELLULOZONELINE_H

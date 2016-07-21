@@ -24,6 +24,8 @@
 
 #include "CelluloZoneLine.h"
 
+#include <cmath>
+
 #include "../util/CelluloMathUtil.h"
 
 /**
@@ -142,5 +144,51 @@ void CelluloZoneLineDistanceSigned::paint(QPainter* painter, QColor color, qreal
     qreal verticalScaleCoeff = canvasHeight/physicalHeight;
 
     //TODO: PAINT INFINITE LINE
+    //painter->drawLine(QPointF(x1*horizontalScaleCoeff, y1*verticalScaleCoeff), QPointF(x2*horizontalScaleCoeff, y2*verticalScaleCoeff));
+}
+
+/**
+ * CelluloZoneLineBorder
+ */
+
+CelluloZoneLineBorder::CelluloZoneLineBorder() : CelluloZoneLine(){
+    type = CelluloZoneTypes::LINEBORDER;
+}
+
+void CelluloZoneLineBorder::setBorderThickness(qreal newThickness){
+    if(borderThickness != newThickness){
+        borderThickness = newThickness;
+        emit borderThicknessChanged();
+        updatePaintedItem();
+    }
+}
+
+void CelluloZoneLineBorder::write(QJsonObject &json){
+    CelluloZoneLine::write(json);
+
+    json["borderThickness"] = borderThickness;
+}
+
+void CelluloZoneLineBorder::read(const QJsonObject &json){
+    CelluloZoneLine::read(json);
+
+    borderThickness = json["borderThickness"].toDouble();
+}
+
+float CelluloZoneLineBorder::calculate(float xRobot, float yRobot, float thetaRobot){
+    Q_UNUSED(thetaRobot);
+    return fabs(CelluloMathUtil::pointToLineDistSigned(QVector2D(xRobot, yRobot), QVector2D(x1, y1), QVector2D(x2, y2))) <= borderThickness ? 1.0f : 0.0f;
+}
+
+void CelluloZoneLineBorder::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    CelluloZoneLine::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
+
+    painter->setBrush(Qt::NoBrush);
+    painter->setPen(QPen(QBrush(color), 2));
+
+    qreal horizontalScaleCoeff = canvasWidth/physicalWidth;
+    qreal verticalScaleCoeff = canvasHeight/physicalHeight;
+
+    //TODO: PAINT INFINITE LINE WITH BORDER
     //painter->drawLine(QPointF(x1*horizontalScaleCoeff, y1*verticalScaleCoeff), QPointF(x2*horizontalScaleCoeff, y2*verticalScaleCoeff));
 }

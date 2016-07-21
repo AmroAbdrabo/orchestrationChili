@@ -71,6 +71,8 @@ CelluloZone* CelluloZoneTypes::newZoneFromType(ZoneType type){
             return (CelluloZone*)(new CelluloZoneLineSegmentDistance());
         case LINEDISTANCESIGNED:
             return (CelluloZone*)(new CelluloZoneLineDistanceSigned());
+        case LINEBORDER:
+            return (CelluloZone*)(new CelluloZoneLineBorder());
         case POINTDISTANCE:
             return (CelluloZone*)(new CelluloZonePointDistance());
         case RPOLYGONINNER:
