@@ -43,7 +43,7 @@
 #include "zones/CelluloZoneJsonHandler.h"
 #include "zones/CelluloZoneTypes.h"
 #include "zones/CelluloZonePaintedItem.h"
-#include "util/CelluloMathUtil.h"
+#include "util/math/CelluloMathUtil.h"
 
 void CelluloPlugin::registerTypes(const char *uri){
     qmlRegisterType<CelluloBluetooth>(uri, 1, 0, "CelluloBluetooth");

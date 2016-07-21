@@ -26,7 +26,7 @@
 
 #include <cmath>
 
-#include "../util/CelluloMathUtil.h"
+#include "../util/math/CelluloMathUtil.h"
 
 /**
  * CelluloZoneAngleInterval

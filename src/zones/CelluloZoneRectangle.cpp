@@ -24,7 +24,7 @@
 
 #include "CelluloZoneRectangle.h"
 
-#include "../util/CelluloMathUtil.h"
+#include "../util/math/CelluloMathUtil.h"
 
 /**
  * CelluloZoneRectangle
