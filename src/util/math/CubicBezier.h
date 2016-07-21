@@ -57,6 +57,13 @@ public:
     void setControlPoints(const QVector2D& p0, const QVector2D& p1, const QVector2D& p2, const QVector2D& p3);
 
     /**
+     * @brief Gets a control point
+     *
+     * @param i Index: 0, 1, 2 or 3
+     */
+    QVector2D getControlPoint(unsigned char i);
+
+    /**
      * @brief Approximately calculates the shortest distance of the given point to this curve
      *
      * @param m Given point

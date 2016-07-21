@@ -39,6 +39,13 @@ void CubicBezier::setControlPoints(const QVector2D& p0, const QVector2D& p1, con
     buildEquidistantTLUT();
 }
 
+QVector2D CubicBezier::getControlPoint(unsigned char i){
+    if(i > 3)
+        return QVector2D();
+    else
+        return p[i];
+}
+
 QVector2D CubicBezier::getPoint(qreal t){
     if(t == 0)
         return p[0];
