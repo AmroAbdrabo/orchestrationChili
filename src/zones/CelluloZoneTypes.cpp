@@ -31,6 +31,7 @@
 #include "CelluloZoneLine.h"
 #include "CelluloZonePoint.h"
 #include "CelluloZonePolygon.h"
+#include "CelluloZonePolyBezier.h"
 
 CelluloZoneTypes::CelluloZoneTypes(QObject* parent) : QObject(parent){}
 
@@ -87,6 +88,8 @@ CelluloZone* CelluloZoneTypes::newZoneFromType(ZoneType type){
             return (CelluloZone*)(new CelluloZoneIrregularPolygonBorder());
         case IRPOLYGONDISTANCE:
             return (CelluloZone*)(new CelluloZoneIrregularPolygonDistance());
+        case POLYBEZIERINNER:
+            return (CelluloZone*)(new CelluloZonePolyBezierInner());
         default:
             qWarning() << "CelluloZoneTypes::newZoneFromType(): Unknown type.";
             return NULL;

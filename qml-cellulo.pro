@@ -13,6 +13,7 @@ HEADERS += \
     src/zones/CelluloZoneLine.h \
     src/zones/CelluloZoneCircle.h \
     src/zones/CelluloZonePolygon.h \
+    src/zones/CelluloZonePolyBezier.h \
     src/zones/CelluloZone.h \
     src/zones/CelluloZoneRectangle.h \
     src/zones/CelluloZoneAngle.h \
@@ -21,7 +22,8 @@ HEADERS += \
     src/zones/CelluloZoneJsonHandler.h \
     src/zones/CelluloZoneTypes.h \
     src/zones/CelluloZonePaintedItem.h \
-    src/util/math/CelluloMathUtil.h
+    src/util/math/CelluloMathUtil.h \
+    src/util/math/CubicBezier.h
 
 SOURCES += \
     src/CelluloPlugin.cpp \
@@ -34,6 +36,7 @@ SOURCES += \
     src/zones/CelluloZoneLine.cpp \
     src/zones/CelluloZoneCircle.cpp \
     src/zones/CelluloZonePolygon.cpp \
+    src/zones/CelluloZonePolyBezier.cpp \
     src/zones/CelluloZone.cpp \
     src/zones/CelluloZoneRectangle.cpp \
     src/zones/CelluloZoneAngle.cpp \
@@ -42,7 +45,8 @@ SOURCES += \
     src/zones/CelluloZoneJsonHandler.cpp \
     src/zones/CelluloZoneTypes.cpp \
     src/zones/CelluloZonePaintedItem.cpp \
-    src/util/math/CelluloMathUtil.cpp
+    src/util/math/CelluloMathUtil.cpp \
+    src/util/math/CubicBezier.cpp
 
 INCLUDEPATH += \
     include/

@@ -40,7 +40,7 @@ class CelluloZonePolyBezier : public CelluloZone {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
-    Q_PROPERTY(QList<QVector2D> controlPoints WRITE setControlPoints READ getControlPoints NOTIFY controlPointsChanged)
+    Q_PROPERTY(QVariantList controlPoints WRITE setControlPoints READ getControlPoints NOTIFY controlPointsChanged)
 
 public:
 
@@ -54,14 +54,14 @@ public:
      *
      * @return List of curve's control points, contains 3n+1 points where points at indices [3k, 3k+1, 3k+2, 3k+3] correspond to a Bézier curve
      */
-    QList<QVector2D> getControlPoints();
+    QVariantList getControlPoints();
 
     /**
      * @brief Sets the curve's control points
      *
      * @param newVertices List of curve's control points, must contain 3n+1 points where points at indices [3k, 3k+1, 3k+2, 3k+3] correspond to a Bézier curve
      */
-    void setControlPoints(const QList<QVector2D>& newControlPoints);
+    void setControlPoints(const QVariantList& newControlPoints);
 
     /**
      * @brief Draws this zone onto the painter
@@ -74,6 +74,18 @@ public:
      * @param physicalHeight Physical height of the canvas in mm
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
+
+    /**
+     * @brief Write the zone infos to the given json Object
+     * @param QJsonObject json object to be written
+     */
+    virtual void write(QJsonObject& json) override;
+
+    /**
+     * @brief Read the zone infos from the given json Object
+     * @param json json object to be read
+     */
+    virtual void read(const QJsonObject& json) override;
 
 signals:
 
@@ -105,6 +117,41 @@ protected:
 
 };
 
+/**
+ * @brief CelluloZone Specific Class for composite Bézier curve inner determination
+ */
+class CelluloZonePolyBezierInner : public CelluloZonePolyBezier {
+    /* *INDENT-OFF* */
+    Q_OBJECT
+    /* *INDENT-ON* */
 
+public:
+
+    CelluloZonePolyBezierInner();
+
+    /**
+     * @brief Calculate whether the robot lies inside this composite Bézier curve
+     *
+     * @param xRobot x position of the robot
+     * @param yRobot y position of the robot
+     * @param thetaRobot theta position of the robot
+     *
+     * @return 1 if the robot is inside this zone 0 otherwise
+     */
+    Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) override;
+
+    /**
+     * @brief Draws this zone onto the painter
+     *
+     * @param painter Object to draw onto
+     * @param color Color of the paint
+     * @param canvasWidth Screen width of the canvas in pixels
+     * @param canvasHeight Screen height of the canvas in pixels
+     * @param physicalWidth Physical width of the canvas in mm
+     * @param physicalHeight Physical height of the canvas in mm
+     */
+    virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
+
+};
 
 #endif // CELLULOZONEPOLYBEZIER_H

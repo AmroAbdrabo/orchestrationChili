@@ -32,6 +32,7 @@
 #include "comm/CameraFrameImageProvider.h"
 #include "zones/CelluloZone.h"
 #include "zones/CelluloZoneClient.h"
+#include "zones/CelluloZonePolyBezier.h"
 #include "zones/CelluloZonePolygon.h"
 #include "zones/CelluloZonePoint.h"
 #include "zones/CelluloZoneLine.h"
@@ -97,6 +98,8 @@ void CelluloPlugin::registerTypes(const char *uri){
     qmlRegisterType<CelluloZoneRegularPolygonInner>(uri, 1, 0, "CelluloZoneRegularPolygonInner");
     qmlRegisterType<CelluloZoneRegularPolygonBorder>(uri, 1, 0, "CelluloZoneRegularPolygonBorder");
     qmlRegisterType<CelluloZoneRegularPolygonDistance>(uri, 1, 0, "CelluloZoneRegularPolygonDistance");
+
+    qmlRegisterType<CelluloZonePolyBezierInner>(uri, 1, 0, "CelluloZonePolyBezierInner");
 
     qmlRegisterType<CelluloZonePaintedItem>(uri, 1, 0, "CelluloZonePaintedItem");
 

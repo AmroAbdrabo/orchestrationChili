@@ -64,6 +64,7 @@ public:
         IRPOLYGONINNER,
         IRPOLYGONBORDER,
         IRPOLYGONDISTANCE,
+        POLYBEZIERINNER,
         ZoneTypeNumElements
     };
     Q_ENUM(ZoneType)

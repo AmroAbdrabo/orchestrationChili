@@ -31,25 +31,22 @@ CelluloZonePolyBezier::CelluloZonePolyBezier() : CelluloZone(){
     minY = std::numeric_limits<qreal>::max();
 }
 
-QList<QVector2D> CelluloZonePolyBezier::getControlPoints(){
-    QList<QVector2D> points;
+QVariantList CelluloZonePolyBezier::getControlPoints(){
+    QVariantList points;
 
     if(segments.size() > 0){
-        points.push_back(segments[0].getControlPoint(0));
-        points.push_back(segments[0].getControlPoint(1));
-        points.push_back(segments[0].getControlPoint(2));
-        points.push_back(segments[0].getControlPoint(3));
-        for(int i=1;i<segments.size();i++){
-            points.push_back(segments[i].getControlPoint(1));
-            points.push_back(segments[i].getControlPoint(2));
-            points.push_back(segments[i].getControlPoint(3));
+        points.push_back(QVariant(segments[0].getControlPoint(0)));
+        for(int i=0;i<segments.size();i++){
+            points.push_back(QVariant(segments[i].getControlPoint(1)));
+            points.push_back(QVariant(segments[i].getControlPoint(2)));
+            points.push_back(QVariant(segments[i].getControlPoint(3)));
         }
     }
 
     return points;
 }
 
-void CelluloZonePolyBezier::setControlPoints(const QList<QVector2D>& newControlPoints){
+void CelluloZonePolyBezier::setControlPoints(const QVariantList& newControlPoints){
     int newSize = newControlPoints.size();
 
     if(newSize < 4){
@@ -65,7 +62,93 @@ void CelluloZonePolyBezier::setControlPoints(const QList<QVector2D>& newControlP
 
     segments.clear();
     for(int i=0;i+3<newSize;i+=3)
-        segments.push_back(CubicBezier(newControlPoints[i], newControlPoints[i + 1], newControlPoints[i + 2], newControlPoints[i + 3]));
+        segments.push_back(
+            CubicBezier(
+                newControlPoints[i].value<QVector2D>(),
+                newControlPoints[i + 1].value<QVector2D>(),
+                newControlPoints[i + 2].value<QVector2D>(),
+                newControlPoints[i + 3].value<QVector2D>()
+            )
+        );
 
     emit controlPointsChanged();
+}
+
+void CelluloZonePolyBezier::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    Q_UNUSED(color);
+    Q_UNUSED(canvasWidth);
+    Q_UNUSED(canvasHeight);
+    Q_UNUSED(physicalWidth);
+    Q_UNUSED(physicalHeight);
+    painter->setRenderHint(QPainter::Antialiasing);
+}
+
+void CelluloZonePolyBezier::write(QJsonObject& json){
+    CelluloZone::write(json);
+
+    QJsonArray controlPointsArray;
+        QJsonObject controlPointObj;
+        for(const QVariant& controlPoint : getControlPoints()){
+        controlPointObj["x"] = controlPoint.value<QVector2D>().x();
+        controlPointObj["y"] = controlPoint.value<QVector2D>().y();
+        controlPointsArray.append(controlPointObj);
+    }
+    json["controlPoints"] = controlPointsArray;
+}
+
+void CelluloZonePolyBezier::read(const QJsonObject &json){
+    CelluloZone::read(json);
+
+    QVariantList newControlPoints;
+    QJsonArray controlPointsArray = json["controlPoints"].toArray();
+    for(const QJsonValue& controlPointValue : controlPointsArray){
+        const QJsonObject& controlPointObj = controlPointValue.toObject();
+        newControlPoints.append(QVariant(QVector2D(controlPointObj["x"].toDouble(), controlPointObj["y"].toDouble())));
+    }
+    setControlPoints(newControlPoints);
+}
+
+/**
+ * CelluloZonePolyBezierInner
+ */
+
+CelluloZonePolyBezierInner::CelluloZonePolyBezierInner() : CelluloZonePolyBezier(){
+    type = CelluloZoneTypes::POLYBEZIERINNER;
+}
+
+float CelluloZonePolyBezierInner::calculate(float xRobot, float yRobot, float thetaRobot){
+    Q_UNUSED(thetaRobot);
+
+
+
+
+
+
+
+
+    return 0;
+}
+
+void CelluloZonePolyBezierInner::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    CelluloZonePolyBezier::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
+
+    painter->setBrush(QBrush(color));
+    painter->setPen(Qt::NoPen);
+
+    qreal horizontalScaleCoeff = canvasWidth/physicalWidth;
+    qreal verticalScaleCoeff = canvasHeight/physicalHeight;
+
+    if(segments.size() > 0){
+        QPainterPath path;
+
+        path.moveTo(segments[0].getControlPoint(0).x()*horizontalScaleCoeff, segments[0].getControlPoint(0).y()*verticalScaleCoeff);
+        for(auto segment : segments)
+            path.cubicTo(
+                segment.getControlPoint(1).x()*horizontalScaleCoeff, segment.getControlPoint(1).y()*verticalScaleCoeff,
+                segment.getControlPoint(2).x()*horizontalScaleCoeff, segment.getControlPoint(2).y()*verticalScaleCoeff,
+                segment.getControlPoint(3).x()*horizontalScaleCoeff, segment.getControlPoint(3).y()*verticalScaleCoeff
+            );
+
+        painter->drawPath(path);
+    }
 }
