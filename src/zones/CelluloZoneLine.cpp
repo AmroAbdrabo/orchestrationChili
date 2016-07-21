@@ -95,19 +95,19 @@ void CelluloZoneLine::paint(QPainter* painter, QColor color, qreal canvasWidth, 
 }
 
 /**
- * CelluloZoneLineDistance
+ * CelluloZoneLineSegmentDistance
  */
 
-CelluloZoneLineDistance::CelluloZoneLineDistance() : CelluloZoneLine(){
-    type = CelluloZoneTypes::LINEDISTANCE;
+CelluloZoneLineSegmentDistance::CelluloZoneLineSegmentDistance() : CelluloZoneLine(){
+    type = CelluloZoneTypes::LINESEGMENTDISTANCE;
 }
 
-float CelluloZoneLineDistance::calculate(float xRobot, float yRobot, float thetaRobot){
+float CelluloZoneLineSegmentDistance::calculate(float xRobot, float yRobot, float thetaRobot){
     Q_UNUSED(thetaRobot);
     return CelluloMathUtil::pointToSegmentDist(QVector2D(xRobot, yRobot), QVector2D(x1, y1), QVector2D(x2, y2));
 }
 
-void CelluloZoneLineDistance::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+void CelluloZoneLineSegmentDistance::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
     CelluloZoneLine::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
 
     painter->setBrush(Qt::NoBrush);
@@ -117,4 +117,30 @@ void CelluloZoneLineDistance::paint(QPainter* painter, QColor color, qreal canva
     qreal verticalScaleCoeff = canvasHeight/physicalHeight;
 
     painter->drawLine(QPointF(x1*horizontalScaleCoeff, y1*verticalScaleCoeff), QPointF(x2*horizontalScaleCoeff, y2*verticalScaleCoeff));
+}
+
+/**
+ * CelluloZoneLineSegmentDistance
+ */
+
+CelluloZoneLineDistanceSigned::CelluloZoneLineDistanceSigned() : CelluloZoneLine(){
+    type = CelluloZoneTypes::LINEDISTANCESIGNED;
+}
+
+float CelluloZoneLineDistanceSigned::calculate(float xRobot, float yRobot, float thetaRobot){
+    Q_UNUSED(thetaRobot);
+    return CelluloMathUtil::pointToLineDistSigned(QVector2D(xRobot, yRobot), QVector2D(x1, y1), QVector2D(x2, y2));
+}
+
+void CelluloZoneLineDistanceSigned::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    CelluloZoneLine::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
+
+    painter->setBrush(Qt::NoBrush);
+    painter->setPen(QPen(QBrush(color), 2));
+
+    qreal horizontalScaleCoeff = canvasWidth/physicalWidth;
+    qreal verticalScaleCoeff = canvasHeight/physicalHeight;
+
+    //TODO: PAINT INFINITE LINE
+    //painter->drawLine(QPointF(x1*horizontalScaleCoeff, y1*verticalScaleCoeff), QPointF(x2*horizontalScaleCoeff, y2*verticalScaleCoeff));
 }

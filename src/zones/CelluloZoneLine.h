@@ -40,63 +40,56 @@ class CelluloZoneLine : public CelluloZone {
     Q_PROPERTY(float y2 WRITE setY2 READ getY2 NOTIFY y2Changed)
 
 public:
+
     /**
      * @brief Creates a new Cellulo line zone
      */
     CelluloZoneLine();
 
     /**
-     * @brief Gets the x position of the first line's point
-     * @return X position of the first line's point
+     * @brief Gets the x position of the line's first point
+     * @return X position of the line's first point
      */
-    float getX1() {
-        return x1;
-    }
+    float getX1(){ return x1; }
 
     /**
-     * @brief Updates the x position of the line segment first endpoint
+     * @brief Updates the x position of the line first point
      * @param newx1 New x position in mm
      */
     void setX1(float newX1);
 
     /**
-     * @brief Gets the y position of the first line's point
-     * @return Y position of the first line's point
+     * @brief Gets the y position of the line's first point
+     * @return Y position of the line's first point
      */
-    float getY1() {
-        return y1;
-    }
+    float getY1(){ return y1; }
 
     /**
-     * @brief Updates the y position of the line segment first endpoint
+     * @brief Updates the y position of the line first point
      * @param newx1 New y position in mm
      */
     void setY1(float newY1);
 
     /**
-     * @brief Gets the x position of the second line's point
-     * @return X position of the second line's point
+     * @brief Gets the x position of the line's second point
+     * @return X position of the line's second point
      */
-    float getX2() {
-        return x2;
-    }
+    float getX2(){ return x2; }
 
     /**
-     * @brief Updates the x position of the line segment second endpoint
+     * @brief Updates the x position of the line second point
      * @param newX2 New x position in mm
      */
     void setX2(float newX2);
 
     /**
-     * @brief Gets the y position of the second line's point
-     * @return Y position of the second line's point
+     * @brief Gets the y position of the line's second point
+     * @return Y position of the line's second point
      */
-    float getY2() {
-        return y2;
-    }
+    float getY2(){ return y2; }
 
     /**
-     * @brief Updates the y position of the line segment second endpoint
+     * @brief Updates the y position of the line second point
      * @param newY1 New y position in mm
      */
     void setY2(float newY2);
@@ -127,55 +120,55 @@ public:
 
 protected:
 
-    float x1;   ///< X position of the first line's point
-    float y1;   ///< Y position of the first line's point
-    float x2;   ///< X position of the second line's point
-    float y2;   ///< Y position of the second line's point
+    float x1;   ///< X coordinate of the line's first point
+    float y1;   ///< Y coordinate of the line's first point
+    float x2;   ///< X coordinate of the line's second point
+    float y2;   ///< Y coordinate of the line's second point
 
 signals:
 
     /**
-     * @brief Emitted when the X position of the first line's point changes
+     * @brief Emitted when the X coordinate of the line's first point changes
      */
     void x1Changed();
 
     /**
-     * @brief Emitted when the Y position of the first line's point changes
+     * @brief Emitted when the Y coordinate of the line's first point changes
      */
     void y1Changed();
 
     /**
-     * @brief Emitted when the X position of the second line's point changes
+     * @brief Emitted when the X coordinate of the line's second point changes
      */
     void x2Changed();
 
     /**
-     * @brief Emitted when the Y position of the second line's point changes
+     * @brief Emitted when the Y coordinate of the line's second point changes
      */
     void y2Changed();
 
 };
 
 /**
- * @brief CelluloZone Specific Class for line zones distance determination
+ * @brief CelluloZone Specific Class for line segment distance determination
  */
-class CelluloZoneLineDistance : public CelluloZoneLine {
+class CelluloZoneLineSegmentDistance : public CelluloZoneLine {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
 
 public:
 
-    CelluloZoneLineDistance();
+    CelluloZoneLineSegmentDistance();
 
     /**
-     * @brief Calculate the distance between the robot position and this line zone
+     * @brief Calculate the distance between the robot position and this line segment
      *
      * @param xRobot x position of the robot
      * @param yRobot y position of the robot
      * @param thetaRobot theta position of the robot
      *
-     * @return the distance between the robot position and this line zone
+     * @return the distance between the robot position and this line segment
      */
     Q_INVOKABLE float calculate(float xRobot, float yRobot, float thetaRobot) override;
 
@@ -190,7 +183,46 @@ public:
      * @param physicalHeight Physical height of the canvas in mm
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
-    
+
+};
+
+/**
+ * @brief CelluloZone Specific Class for signed line distance determination
+ *
+ * The two points of CelluloZoneLine are taken as the two points that this infinite line passes through
+ */
+class CelluloZoneLineDistanceSigned : public CelluloZoneLine {
+    /* *INDENT-OFF* */
+    Q_OBJECT
+    /* *INDENT-ON* */
+
+public:
+
+    CelluloZoneLineDistanceSigned();
+
+    /**
+     * @brief Calculate the distance between the robot position and line
+     *
+     * @param xRobot x position of the robot
+     * @param yRobot y position of the robot
+     * @param thetaRobot theta position of the robot
+     *
+     * @return The distance between the robot position and this line, negative if point is below the line
+     */
+    Q_INVOKABLE float calculate(float xRobot, float yRobot, float thetaRobot) override;
+
+    /**
+     * @brief Draws this zone onto the painter
+     *
+     * @param painter Object to draw onto
+     * @param color Color of the paint
+     * @param canvasWidth Screen width of the canvas in pixels
+     * @param canvasHeight Screen height of the canvas in pixels
+     * @param physicalWidth Physical width of the canvas in mm
+     * @param physicalHeight Physical height of the canvas in mm
+     */
+    virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
+
 };
 
 #endif // CELLULOZONELINE_H

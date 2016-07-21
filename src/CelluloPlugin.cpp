@@ -84,7 +84,8 @@ void CelluloPlugin::registerTypes(const char *uri){
     qmlRegisterType<CelluloZoneAngleIntervalBorder>(uri, 1, 0, "CelluloZoneAngleIntervalBorder");
     qmlRegisterType<CelluloZoneAngleIntervalDistance>(uri, 1, 0, "CelluloZoneAngleIntervalDistance");
 
-    qmlRegisterType<CelluloZoneLineDistance>(uri, 1, 0, "CelluloZoneLineDistance");
+    qmlRegisterType<CelluloZoneLineSegmentDistance>(uri, 1, 0, "CelluloZoneLineSegmentDistance");
+    qmlRegisterType<CelluloZoneLineDistanceSigned>(uri, 1, 0, "CelluloZoneLineDistanceSigned");
 
     qmlRegisterType<CelluloZonePointDistance>(uri, 1, 0, "CelluloZonePointDistance");
 

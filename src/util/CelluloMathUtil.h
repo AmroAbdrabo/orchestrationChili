@@ -50,6 +50,16 @@ public:
     Q_INVOKABLE static qreal pointToSegmentDist(const QVector2D& p, const QVector2D& seg1, const QVector2D& seg2);
 
     /**
+     * @brief Calculates the signed distance of a point to a line in 2D
+     *
+     * @param p The point
+     * @param lp1 First point the line passes through
+     * @param lp2 Second point the line passes through
+     * @return Distance between the point and line segment, negative if point is below the line
+     */
+    Q_INVOKABLE static qreal pointToLineDistSigned(const QVector2D& p, const QVector2D& lp1, const QVector2D& lp2);
+
+    /**
      * @brief Calculates whether the given point is in the given polygon
      *
      * @param p The point
