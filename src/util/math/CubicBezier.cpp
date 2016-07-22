@@ -31,6 +31,7 @@ CubicBezier::CubicBezier(){}
 
 CubicBezier::CubicBezier(const QVector2D& p0, const QVector2D& p1, const QVector2D& p2, const QVector2D& p3){
     setControlPoints(p0, p1, p2, p3);
+    buildEquidistantTLUT();
 }
 
 void CubicBezier::setControlPoints(const QVector2D& p0, const QVector2D& p1, const QVector2D& p2, const QVector2D& p3){
@@ -38,8 +39,6 @@ void CubicBezier::setControlPoints(const QVector2D& p0, const QVector2D& p1, con
     p[1] = p1;
     p[2] = p2;
     p[3] = p3;
-
-    buildEquidistantTLUT();
 }
 
 QVector2D CubicBezier::getControlPoint(unsigned char i){
@@ -60,6 +59,17 @@ QVector2D CubicBezier::getPoint(qreal t){
         qreal t_squared = t*t;
         return one_minus_t_squared*(one_minus_t*p[0] + 3*t*p[1]) + t_squared*(3*one_minus_t*p[2] + t*p[3]);
     }
+}
+
+void CubicBezier::split(qreal t, CubicBezier& left, CubicBezier& right){
+    QVector2D p01 = (1 - t)*p[0] + t*p[1];
+    QVector2D p12 = (1 - t)*p[1] + t*p[2];
+    QVector2D p23 = (1 - t)*p[2] + t*p[3];
+    QVector2D p0112 = (1 - t)*p01 + t*p12;
+    QVector2D p1223 = (1 - t)*p12 + t*p23;
+    QVector2D p01121223 = (1 - t)*p0112 + t*p1223;
+    left.setControlPoints(p[0], p01, p0112, p01121223);
+    right.setControlPoints(p01121223, p1223, p23, p[3]);
 }
 
 void CubicBezier::buildEquidistantTLUT(){

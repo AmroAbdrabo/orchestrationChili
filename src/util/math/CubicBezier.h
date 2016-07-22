@@ -32,7 +32,7 @@ class CubicBezier {
 public:
 
     /**
-     * @brief Creates a new cubic Bézier curve with provided control points
+     * @brief Creates a new cubic Bézier curve with provided control points, calculates the lookup tables
      *
      * @param p0 First control point
      * @param p1 Second control point
@@ -47,7 +47,7 @@ public:
     CubicBezier();
 
     /**
-     * @brief Sets all control points, calculates the approximate equidistant t lookup table
+     * @brief Sets all control points
      *
      * @param p0 First control point
      * @param p1 Second control point
@@ -79,6 +79,15 @@ public:
      * @return Point corresponding to t
      */
     QVector2D getPoint(qreal t);
+
+    /**
+     * @brief Splits the curve into two parts which make up this curve
+     *
+     * @param t Split point, must be in [0,1]
+     * @param left [out] First part
+     * @param right [out] Second part
+     */
+    void split(qreal t, CubicBezier& left, CubicBezier& right);
 
 private:
 
