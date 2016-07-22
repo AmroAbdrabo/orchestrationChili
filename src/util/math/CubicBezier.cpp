@@ -24,6 +24,9 @@
 
 #include "CubicBezier.h"
 
+#include <QDebug>
+
+
 CubicBezier::CubicBezier(){}
 
 CubicBezier::CubicBezier(const QVector2D& p0, const QVector2D& p1, const QVector2D& p2, const QVector2D& p3){
@@ -62,27 +65,65 @@ QVector2D CubicBezier::getPoint(qreal t){
 void CubicBezier::buildEquidistantTLUT(){
     static const int numSteps = 100; //Number of discretization steps
     qreal distances[numSteps + 1];
+    QVector2D points[numSteps + 1];
 
     //First pass, calculate distances to equidistant t
     distances[0] = 0;
-    QVector2D prevP = getPoint(0);
+    points[0] = getPoint(0);
     for(int i=1;i<=numSteps;i++){
         qreal t = i/((qreal)numSteps);
-        QVector2D currentP = getPoint(t);
-        distances[i] = distances[i - 1] + currentP.distanceToPoint(prevP);
-        prevP = currentP;
+        points[i] = getPoint(t);
+        distances[i] = distances[i - 1] + points[i].distanceToPoint(points[i - 1]);
     }
-    qreal curveLength = distances[numSteps];
+    curveLength = distances[numSteps];
+    qreal lutDist = curveLength/((qreal)(T_LUT_SIZE - 1));
 
     //Second pass, pick t that are equidistant on the curve
     int ti = 0;
     for(int i=0;i<=numSteps;i++)
-        if(distances[i] >= ti*curveLength/((qreal)T_LUT_SIZE)){
-            equidistantTLUT[ti] = i/((qreal)numSteps);
+        if(distances[i] >= ti*lutDist){
+            equidistantTLut[ti] = i/((qreal)numSteps);
+            equidistantPointLut[ti] = points[i];
             ti++;
         }
 }
 
-qreal CubicBezier::getDistance(const QVector2D& m){
+void CubicBezier::getClosestPoint(const QVector2D& m, QVector2D& closestPoint, qreal& closestDist){
+    qreal closestT;
+    closestDist = std::numeric_limits<qreal>::max();
 
+    //Find closest point in lookup table
+    for(int i=0;i<T_LUT_SIZE;i++){
+        qreal currentDist = equidistantPointLut[i].distanceToPoint(m);
+        if(currentDist < closestDist){
+            closestT = equidistantTLut[i];
+            closestDist = currentDist;
+            closestPoint = equidistantPointLut[i];
+        }
+    }
+
+    //Check interval around for a closer point
+    qreal intervalSizeEpsilon = T_INTERVAL_EPSILON/curveLength;
+    qreal currentIntervalSize = T_INTERVAL_SIZE;
+    while(currentIntervalSize > intervalSizeEpsilon){
+        qreal leftT = closestT - currentIntervalSize;
+        qreal rightT = closestT + currentIntervalSize;
+        QVector2D leftPoint = leftT >= 0 ? getPoint(leftT) : QVector2D();
+        QVector2D rightPoint = rightT <= 1 ? getPoint(rightT) : QVector2D();
+        qreal leftDist = leftT >= 0 ? leftPoint.distanceToPoint(m) : std::numeric_limits<qreal>::max();
+        qreal rightDist = rightT <= 1 ? rightPoint.distanceToPoint(m) : std::numeric_limits<qreal>::max();
+
+        if(leftDist < closestDist && leftDist < rightDist){
+            closestT = leftT;
+            closestDist = leftDist;
+            closestPoint = leftPoint;
+        }
+        else if(rightDist < closestDist && rightDist < leftDist){
+            closestT = rightT;
+            closestDist = rightDist;
+            closestPoint = rightPoint;
+        }
+
+        currentIntervalSize /= 2;
+    }
 }

@@ -24,6 +24,8 @@
 
 #include "CelluloZonePolyBezier.h"
 
+#include<QPointF>
+
 CelluloZonePolyBezier::CelluloZonePolyBezier() : CelluloZone(){
     maxX = std::numeric_limits<qreal>::min();
     maxY = std::numeric_limits<qreal>::min();
@@ -71,6 +73,7 @@ void CelluloZonePolyBezier::setControlPoints(const QVariantList& newControlPoint
             )
         );
 
+    updatePaintedItem();
     emit controlPointsChanged();
 }
 
@@ -122,11 +125,20 @@ float CelluloZonePolyBezierInner::calculate(float xRobot, float yRobot, float th
 
 
 
+    qreal currentDist;
+    QVector2D currentPoint;
+    qreal closestDist = std::numeric_limits<qreal>::max();
+    for(auto segment : segments){
+        segment.getClosestPoint(QVector2D(xRobot, yRobot), currentPoint, currentDist);
+        if(currentDist < closestDist){
+            closestDist = currentDist;
+            closestPoint = currentPoint;
+        }
+    }
 
+    updatePaintedItem();
 
-
-
-    return 0;
+    return closestDist;
 }
 
 void CelluloZonePolyBezierInner::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
@@ -135,20 +147,28 @@ void CelluloZonePolyBezierInner::paint(QPainter* painter, QColor color, qreal ca
     painter->setBrush(QBrush(color));
     painter->setPen(Qt::NoPen);
 
-    qreal horizontalScaleCoeff = canvasWidth/physicalWidth;
-    qreal verticalScaleCoeff = canvasHeight/physicalHeight;
+    QVector2D scale(canvasWidth/physicalWidth, canvasHeight/physicalHeight);
 
     if(segments.size() > 0){
         QPainterPath path;
 
-        path.moveTo(segments[0].getControlPoint(0).x()*horizontalScaleCoeff, segments[0].getControlPoint(0).y()*verticalScaleCoeff);
+        path.moveTo((scale*segments[0].getControlPoint(0)).toPointF());
         for(auto segment : segments)
             path.cubicTo(
-                segment.getControlPoint(1).x()*horizontalScaleCoeff, segment.getControlPoint(1).y()*verticalScaleCoeff,
-                segment.getControlPoint(2).x()*horizontalScaleCoeff, segment.getControlPoint(2).y()*verticalScaleCoeff,
-                segment.getControlPoint(3).x()*horizontalScaleCoeff, segment.getControlPoint(3).y()*verticalScaleCoeff
+                (scale*segment.getControlPoint(1)).toPointF(),
+                (scale*segment.getControlPoint(2)).toPointF(),
+                (scale*segment.getControlPoint(3)).toPointF()
             );
 
         painter->drawPath(path);
+
+        painter->setPen(QPen(QBrush(QColor("green")), 15));
+        painter->drawPoint((scale*closestPoint).toPointF());
+
+        //for(auto segment : segments)
+            //for(int i=0;i<segment.T_LUT_SIZE;i++){
+                //QVector2D pt = segment.equidistantPointLut[i];
+                //painter->drawPoint(QPointF(pt.x()*horizontalScaleCoeff, pt.y()*verticalScaleCoeff));
+            //}
     }
 }

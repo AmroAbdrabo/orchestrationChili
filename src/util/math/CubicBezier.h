@@ -64,12 +64,13 @@ public:
     QVector2D getControlPoint(unsigned char i);
 
     /**
-     * @brief Approximately calculates the shortest distance of the given point to this curve
+     * @brief Gets the closest point on the curve to the given point
      *
      * @param m Given point
-     * @return Approximate shortest distance of given point to curve
+     * @param closestPoint Returns the closest point
+     * @param closestDist Returns the closest distance
      */
-    qreal getDistance(const QVector2D& m);
+    void getClosestPoint(const QVector2D& m, QVector2D& closestPoint, qreal& closestDist);
 
     /**
      * @brief Calculates the point on the curve corresponding to the given parameter
@@ -86,10 +87,13 @@ private:
      */
     void buildEquidistantTLUT();
 
-    QVector2D p[4];                     ///< Control points
-    static const int T_LUT_SIZE = 20;   ///< Approximate equidistant lookup table size
-    qreal equidistantTLUT[T_LUT_SIZE];  ///< List of t that are approximately equidistant to eachother on the curve
-
+    QVector2D p[4];                                                           ///< Control points
+    static const int T_LUT_SIZE = 20;                                         ///< Approximate equidistant lookup table size
+    static constexpr qreal T_INTERVAL_SIZE = (1/((qreal)(T_LUT_SIZE - 1)))/2; ///< Initial t interval size for closest point search
+    static constexpr qreal T_INTERVAL_EPSILON = 0.01;                         ///< Closest point search interval limit, in mm
+    qreal curveLength;                                                        ///< Approximate length of the curve
+    qreal equidistantTLut[T_LUT_SIZE];                                        ///< List of t that are approximately equidistant to eachother on the curve
+    QVector2D equidistantPointLut[T_LUT_SIZE];                                ///< List of points that correspond to equidistantTLut
 
 
 

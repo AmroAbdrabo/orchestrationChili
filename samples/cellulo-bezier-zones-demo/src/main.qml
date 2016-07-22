@@ -38,6 +38,7 @@ ApplicationWindow {
 
     CelluloBluetooth{
         id: robotComm
+        macAddr: "00:06:66:74:43:00"
 
         Component.onCompleted: zoneEngine.addNewClient(robotComm)
 
