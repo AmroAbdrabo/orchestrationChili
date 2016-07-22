@@ -24,7 +24,7 @@
 
 #include "CelluloZonePolyBezier.h"
 
-#include<QPointF>
+#include <QPointF>
 
 CelluloZonePolyBezier::CelluloZonePolyBezier() : CelluloZone(){
     maxX = std::numeric_limits<qreal>::min();
@@ -38,7 +38,7 @@ QVariantList CelluloZonePolyBezier::getControlPoints(){
 
     if(segments.size() > 0){
         points.push_back(QVariant(segments[0].getControlPoint(0)));
-        for(int i=0;i<segments.size();i++){
+        for(int i=0; i<segments.size(); i++){
             points.push_back(QVariant(segments[i].getControlPoint(1)));
             points.push_back(QVariant(segments[i].getControlPoint(2)));
             points.push_back(QVariant(segments[i].getControlPoint(3)));
@@ -63,16 +63,17 @@ void CelluloZonePolyBezier::setControlPoints(const QVariantList& newControlPoint
     }
 
     segments.clear();
-    for(int i=0;i+3<newSize;i+=3)
+    for(int i=0; i+3<newSize; i+=3)
         segments.push_back(
             CubicBezier(
                 newControlPoints[i].value<QVector2D>(),
                 newControlPoints[i + 1].value<QVector2D>(),
                 newControlPoints[i + 2].value<QVector2D>(),
                 newControlPoints[i + 3].value<QVector2D>()
-            )
-        );
+                )
+            );
 
+    calculateBoundingBox();
     updatePaintedItem();
     emit controlPointsChanged();
 }
@@ -90,8 +91,8 @@ void CelluloZonePolyBezier::write(QJsonObject& json){
     CelluloZone::write(json);
 
     QJsonArray controlPointsArray;
-        QJsonObject controlPointObj;
-        for(const QVariant& controlPoint : getControlPoints()){
+    QJsonObject controlPointObj;
+    for(const QVariant& controlPoint : getControlPoints()){
         controlPointObj["x"] = controlPoint.value<QVector2D>().x();
         controlPointObj["y"] = controlPoint.value<QVector2D>().y();
         controlPointsArray.append(controlPointObj);
@@ -109,6 +110,26 @@ void CelluloZonePolyBezier::read(const QJsonObject &json){
         newControlPoints.append(QVariant(QVector2D(controlPointObj["x"].toDouble(), controlPointObj["y"].toDouble())));
     }
     setControlPoints(newControlPoints);
+}
+
+void CelluloZonePolyBezier::calculateBoundingBox(){
+    minX = std::numeric_limits<qreal>::max();
+    maxX = std::numeric_limits<qreal>::min();
+    minY = std::numeric_limits<qreal>::max();
+    maxY = std::numeric_limits<qreal>::min();
+
+    qreal minXSeg, maxXSeg, minYSeg, maxYSeg;
+    for(auto segment : segments){
+        segment.getBoundingBox(minXSeg, maxXSeg, minYSeg, maxYSeg);
+        if(minXSeg < minX)
+            minX = minXSeg;
+        if(maxXSeg > maxX)
+            maxX = maxXSeg;
+        if(minYSeg < minY)
+            minY = minYSeg;
+        if(maxYSeg > maxY)
+            maxY = maxYSeg;
+    }
 }
 
 qreal CelluloZonePolyBezier::getClosestDistance(const QVector2D& m){
@@ -160,10 +181,13 @@ void CelluloZonePolyBezierDistance::paint(QPainter* painter, QColor color, qreal
                 (scale*segment.getControlPoint(1)).toPointF(),
                 (scale*segment.getControlPoint(2)).toPointF(),
                 (scale*segment.getControlPoint(3)).toPointF()
-            );
+                );
 
         painter->drawPath(path);
     }
+
+    painter->setPen(QPen(QBrush(QColor("green")), 2));
+    painter->drawRect(scale.x()*minX, scale.y()*minY, scale.x()*(maxX - minX), scale.y()*(maxY - minY));
 }
 
 
@@ -198,17 +222,16 @@ void CelluloZonePolyBezierInner::paint(QPainter* painter, QColor color, qreal ca
                 (scale*segment.getControlPoint(1)).toPointF(),
                 (scale*segment.getControlPoint(2)).toPointF(),
                 (scale*segment.getControlPoint(3)).toPointF()
-            );
+                );
 
         painter->drawPath(path);
 
-        painter->setPen(QPen(QBrush(QColor("green")), 15));
-        painter->drawPoint((scale*closestPoint).toPointF());
+
 
         //for(auto segment : segments)
-            //for(int i=0;i<segment.T_LUT_SIZE;i++){
-                //QVector2D pt = segment.equidistantPointLut[i];
-                //painter->drawPoint(QPointF(pt.x()*horizontalScaleCoeff, pt.y()*verticalScaleCoeff));
-            //}
+        //for(int i=0;i<segment.T_LUT_SIZE;i++){
+        //QVector2D pt = segment.equidistantPointLut[i];
+        //painter->drawPoint(QPointF(pt.x()*horizontalScaleCoeff, pt.y()*verticalScaleCoeff));
+        //}
     }
 }

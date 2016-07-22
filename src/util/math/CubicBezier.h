@@ -89,12 +89,74 @@ public:
      */
     void split(qreal t, CubicBezier& left, CubicBezier& right);
 
+    /**
+     * @brief Gets the coordinates of the bounding box
+     *
+     * @param minXOut [out] Left coordinate
+     * @param maxXOut [out] Right coordinate
+     * @param minYOut [out] Top coordinate
+     * @param maxYOut [out] Bottom coordinate
+     */
+    void getBoundingBox(qreal& minXOut, qreal& maxXOut, qreal& minYOut, qreal& maxYOut);
+
 private:
+
+    /**
+     * @brief Forces heavy calculations to be redone at a later time
+     */
+    void invalidateCalc();
 
     /**
      * @brief Calculates the equidistant t lookup table
      */
     void buildEquidistantTLUT();
+
+    /**
+     * @brief Calculates the x coordinate of the point on the curve corresponding to the given parameter
+     *
+     * @param t Curve parameter in [0,1]
+     * @return Point x coordinate corresponding to t
+     */
+    qreal getPointX(qreal t);
+
+    /**
+     * @brief Calculates the y coordinate of the point on the curve corresponding to the given parameter
+     *
+     * @param t Curve parameter in [0,1]
+     * @return Point y coordinate corresponding to t
+     */
+    qreal getPointY(qreal t);
+
+    /**
+     * @brief Sets the min/max X of the bounding box from the given value if value is less/greater than the min/max
+     *
+     * @param newX New value
+     */
+    void updateMinMaxX(qreal newX);
+
+    /**
+     * @brief Sets the min/max Y of the bounding box from the given value if value is less/greater than the min/max
+     *
+     * @param newY New value
+     */
+    void updateMinMaxY(qreal newY);
+
+    /**
+     * @brief Calculates the bounding box
+     */
+    void calculateBoundingBox();
+
+    /**
+     * @brief Calculates whether the bounding boxes of two cubic Bézier curves intersect
+     *
+     * @param curve1 First curve
+     * @param curve2 Second curve
+     * @return Whether the bounding box of the two curves intersect
+     */
+    static bool boundingBoxesIntersect(CubicBezier& curve1, CubicBezier& curve2);
+
+    bool boundingBoxCalculated = false;                                       ///< Whether the bounding box is calculated for this curve
+    bool equidistantTLutCalculated = false;                                   ///< Whether the equidistant t/point lookup table is calculated
 
     QVector2D p[4];                                                           ///< Control points
     static const int T_LUT_SIZE = 20;                                         ///< Approximate equidistant lookup table size
@@ -103,15 +165,9 @@ private:
     qreal curveLength;                                                        ///< Approximate length of the curve
     qreal equidistantTLut[T_LUT_SIZE];                                        ///< List of t that are approximately equidistant to eachother on the curve
     QVector2D equidistantPointLut[T_LUT_SIZE];                                ///< List of points that correspond to equidistantTLut
-
-
-
-
-
-
-    float minX;                 ///< Minimal x bound for the polygon
-    float maxX;                 ///< Maximum x bound for the polygon
-    float minY;                 ///< Minimum y bound for the polygon
-    float maxY;                 ///< Maximum y bound for the polygon
+    qreal minX = std::numeric_limits<qreal>::max();                           ///< Minimal x bound for the curve
+    qreal maxX = std::numeric_limits<qreal>::min();                           ///< Maximum x bound for the curve
+    qreal minY = std::numeric_limits<qreal>::max();                           ///< Minimum y bound for the curve
+    qreal maxY = std::numeric_limits<qreal>::min();                           ///< Maximum y bound for the curve
 
 };

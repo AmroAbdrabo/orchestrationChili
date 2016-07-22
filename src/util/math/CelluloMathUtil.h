@@ -77,6 +77,18 @@ public:
      */
     Q_INVOKABLE static qreal pointToPolyBorderDist(const QVector2D& p, const QList<QVector2D>& v);
 
+    /**
+     * @brief Calculates the roots of ax^2 + bx + c = 0
+     *
+     * @param a 2nd order coefficient
+     * @param b 1st order coefficient
+     * @param c Constant
+     * @param x1 [out] First root if real roots exist
+     * @param x2 [out] Second root if real roots exist
+     * @return Number of unique real roots, i.e 0, 1 or 2
+     */
+    static int solveQuadEq(qreal a, qreal b, qreal c, qreal& x1, qreal& x2);
+
 };
 
 #endif // CELLULOMATHUTIL_H

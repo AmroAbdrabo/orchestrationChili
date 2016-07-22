@@ -81,3 +81,19 @@ qreal CelluloMathUtil::pointToPolyBorderDist(const QVector2D& p, const QList<QVe
         minDist = tempDist;
     return minDist;
 }
+
+int CelluloMathUtil::solveQuadEq(qreal a, qreal b, qreal c, qreal& x1, qreal& x2){
+    qreal det = b*b - 4*a*c;
+    if(det < 0)
+        return 0;
+    else if(det == 0){
+        x1 = -b/(2*a);
+        x2 = x1;
+        return 1;
+    }
+    else{
+        x1 = (-b + sqrtf(det))/(2*a);
+        x2 = (-b - sqrtf(det))/(2*a);
+        return 2;
+    }
+}

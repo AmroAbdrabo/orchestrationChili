@@ -113,24 +113,16 @@ protected:
      */
     qreal getClosestDistance(const QVector2D& m, QVector2D& closestPoint);
 
-    QList<CubicBezier> segments; ///< Consecutive Bézier curve segments
-
-
-
-
-
-
-
-
     /**
      * @brief Updates the bounding rectangle from the new list of vertices
      */
-    void updateBounds();
+    void calculateBoundingBox();
 
-    float minX;                ///< Minimal x bound for the polygon
-    float maxX;                ///< Maximum x bound for the polygon
-    float minY;                ///< Minimum y bound for the polygon
-    float maxY;                ///< Maximum y bound for the polygon
+    QList<CubicBezier> segments;                    ///< Consecutive Bézier curve segments
+    qreal minX = std::numeric_limits<qreal>::max(); ///< Minimal x bound for the curve
+    qreal maxX = std::numeric_limits<qreal>::min(); ///< Maximum x bound for the curve
+    qreal minY = std::numeric_limits<qreal>::max(); ///< Minimum y bound for the curve
+    qreal maxY = std::numeric_limits<qreal>::min(); ///< Maximum y bound for the curve
 
 };
 
@@ -205,14 +197,6 @@ public:
      * @param physicalHeight Physical height of the canvas in mm
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
-
-
-
-
-
-
-
-    QVector2D closestPoint;
 
 };
 
