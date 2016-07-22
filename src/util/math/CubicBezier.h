@@ -69,8 +69,9 @@ public:
      * @param m Given point
      * @param closestPoint [out] Returns the closest point
      * @param closestDist [out] Returns the closest distance
+     * @param closestT [out] Returns the parameter t corresponding to the closest point
      */
-    void getClosestPoint(const QVector2D& m, QVector2D& closestPoint, qreal& closestDist);
+    void getClosestPoint(const QVector2D& m, QVector2D& closestPoint, qreal& closestDist, qreal& closestT);
 
     /**
      * @brief Calculates the point on the curve corresponding to the given parameter
@@ -79,6 +80,22 @@ public:
      * @return Point corresponding to t
      */
     QVector2D getPoint(qreal t);
+
+    /**
+     * @brief Calculates which side of the curve the given point is located
+     *
+     * @param m Given point
+     * @return True if the point is on the right (clockwise) false if the point is on the left (counter-clockwise)
+     */
+    bool side(const QVector2D& m);
+
+    /**
+     * @brief Calculates the direction vector of the tangent line to the curve at the given parameter
+     *
+     * @param t Parameter
+     * @return The direction vector of the tangent line to the curve
+     */
+    QVector2D getDerivative(qreal t);
 
     /**
      * @brief Splits the curve into two parts which make up this curve

@@ -138,11 +138,11 @@ qreal CelluloZonePolyBezier::getClosestDistance(const QVector2D& m){
 }
 
 qreal CelluloZonePolyBezier::getClosestDistance(const QVector2D& m, QVector2D& closestPoint){
-    qreal dist;
+    qreal dist, dummy;
     QVector2D point;
     qreal closestDist = std::numeric_limits<qreal>::max();
     for(auto segment : segments){
-        segment.getClosestPoint(m, point, dist);
+        segment.getClosestPoint(m, point, dist, dummy);
         if(dist < closestDist){
             closestDist = dist;
             closestPoint = point;
@@ -185,11 +185,7 @@ void CelluloZonePolyBezierDistance::paint(QPainter* painter, QColor color, qreal
 
         painter->drawPath(path);
     }
-
-    painter->setPen(QPen(QBrush(QColor("green")), 2));
-    painter->drawRect(scale.x()*minX, scale.y()*minY, scale.x()*(maxX - minX), scale.y()*(maxY - minY));
 }
-
 
 /**
  * CelluloZonePolyBezierInner
@@ -202,7 +198,20 @@ CelluloZonePolyBezierInner::CelluloZonePolyBezierInner() : CelluloZonePolyBezier
 float CelluloZonePolyBezierInner::calculate(float xRobot, float yRobot, float thetaRobot){
     Q_UNUSED(thetaRobot);
 
+    qreal dist, t;
+    QVector2D point;
+    qreal closestDist = std::numeric_limits<qreal>::max();
+    for(auto segment : segments){
+        segment.getClosestPoint(QVector2D(xRobot, yRobot), point, dist, t);
+        if(dist < closestDist){
+            closestDist = dist;
+            curvePt = point;
+            tangentVec = segment.getDerivative(t);
+        }
+    }
 
+    updatePaintedItem();
+    return 0;
 }
 
 void CelluloZonePolyBezierInner::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
@@ -234,4 +243,7 @@ void CelluloZonePolyBezierInner::paint(QPainter* painter, QColor color, qreal ca
         //painter->drawPoint(QPointF(pt.x()*horizontalScaleCoeff, pt.y()*verticalScaleCoeff));
         //}
     }
+
+    painter->setPen(QPen(QBrush("green"), 2));
+    painter->drawLine((scale*curvePt).toPointF(), (scale*(curvePt + tangentVec)).toPointF());
 }

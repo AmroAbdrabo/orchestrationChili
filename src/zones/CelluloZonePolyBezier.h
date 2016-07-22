@@ -198,6 +198,23 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    QVector2D curvePt;
+    QVector2D tangentVec;
+
 };
 
 #endif // CELLULOZONEPOLYBEZIER_H
