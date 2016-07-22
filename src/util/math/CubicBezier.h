@@ -67,8 +67,8 @@ public:
      * @brief Gets the closest point on the curve to the given point
      *
      * @param m Given point
-     * @param closestPoint Returns the closest point
-     * @param closestDist Returns the closest distance
+     * @param closestPoint [out] Returns the closest point
+     * @param closestDist [out] Returns the closest distance
      */
     void getClosestPoint(const QVector2D& m, QVector2D& closestPoint, qreal& closestDist);
 

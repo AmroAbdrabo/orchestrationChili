@@ -96,6 +96,23 @@ signals:
 
 protected:
 
+    /**
+     * @brief Gets the closest point on the curves to the given point
+     *
+     * @param m Given point
+     * @return Closest distance
+     */
+    qreal getClosestDistance(const QVector2D& m);
+
+    /**
+     * @brief Gets the closest point on the curves to the given point
+     *
+     * @param m Given point
+     * @param closestPoint [out] Returns the closest point
+     * @return Closest distance
+     */
+    qreal getClosestDistance(const QVector2D& m, QVector2D& closestPoint);
+
     QList<CubicBezier> segments; ///< Consecutive Bézier curve segments
 
 
@@ -114,6 +131,43 @@ protected:
     float maxX;                ///< Maximum x bound for the polygon
     float minY;                ///< Minimum y bound for the polygon
     float maxY;                ///< Maximum y bound for the polygon
+
+};
+
+/**
+ * @brief Calculates the distance to a composite Bézier curve
+ */
+class CelluloZonePolyBezierDistance : public CelluloZonePolyBezier {
+    /* *INDENT-OFF* */
+    Q_OBJECT
+    /* *INDENT-ON* */
+
+public:
+
+    CelluloZonePolyBezierDistance();
+
+    /**
+     * @brief Calculate the closest distance of the composite curve to the robot
+     *
+     * @param xRobot x position of the robot
+     * @param yRobot y position of the robot
+     * @param thetaRobot theta position of the robot
+     *
+     * @return Closest distance to any curve among the segments
+     */
+    Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) override;
+
+    /**
+     * @brief Draws this zone onto the painter
+     *
+     * @param painter Object to draw onto
+     * @param color Color of the paint
+     * @param canvasWidth Screen width of the canvas in pixels
+     * @param canvasHeight Screen height of the canvas in pixels
+     * @param physicalWidth Physical width of the canvas in mm
+     * @param physicalHeight Physical height of the canvas in mm
+     */
+    virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
 };
 

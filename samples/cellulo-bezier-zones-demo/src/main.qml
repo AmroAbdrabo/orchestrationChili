@@ -15,7 +15,7 @@ ApplicationWindow {
     CelluloZoneEngine{
         id: zoneEngine
 
-        CelluloZonePolyBezierInner{
+        CelluloZonePolyBezierDistance{
             id: staticZone
             name: "ZONE"
             controlPoints: [

@@ -111,6 +111,62 @@ void CelluloZonePolyBezier::read(const QJsonObject &json){
     setControlPoints(newControlPoints);
 }
 
+qreal CelluloZonePolyBezier::getClosestDistance(const QVector2D& m){
+    QVector2D dummy;
+    return getClosestDistance(m, dummy);
+}
+
+qreal CelluloZonePolyBezier::getClosestDistance(const QVector2D& m, QVector2D& closestPoint){
+    qreal dist;
+    QVector2D point;
+    qreal closestDist = std::numeric_limits<qreal>::max();
+    for(auto segment : segments){
+        segment.getClosestPoint(m, point, dist);
+        if(dist < closestDist){
+            closestDist = dist;
+            closestPoint = point;
+        }
+    }
+    return closestDist;
+}
+
+/**
+ * CelluloZonePolyBezierDistance
+ */
+
+CelluloZonePolyBezierDistance::CelluloZonePolyBezierDistance() : CelluloZonePolyBezier(){
+    type = CelluloZoneTypes::POLYBEZIERDISTANCE;
+}
+
+float CelluloZonePolyBezierDistance::calculate(float xRobot, float yRobot, float thetaRobot){
+    Q_UNUSED(thetaRobot);
+    return getClosestDistance(QVector2D(xRobot, yRobot));
+}
+
+void CelluloZonePolyBezierDistance::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    CelluloZonePolyBezier::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
+
+    painter->setBrush(Qt::NoBrush);
+    painter->setPen(QPen(QBrush(color), 2));
+
+    QVector2D scale(canvasWidth/physicalWidth, canvasHeight/physicalHeight);
+
+    if(segments.size() > 0){
+        QPainterPath path;
+
+        path.moveTo((scale*segments[0].getControlPoint(0)).toPointF());
+        for(auto segment : segments)
+            path.cubicTo(
+                (scale*segment.getControlPoint(1)).toPointF(),
+                (scale*segment.getControlPoint(2)).toPointF(),
+                (scale*segment.getControlPoint(3)).toPointF()
+            );
+
+        painter->drawPath(path);
+    }
+}
+
+
 /**
  * CelluloZonePolyBezierInner
  */
@@ -123,22 +179,6 @@ float CelluloZonePolyBezierInner::calculate(float xRobot, float yRobot, float th
     Q_UNUSED(thetaRobot);
 
 
-
-
-    qreal currentDist;
-    QVector2D currentPoint;
-    qreal closestDist = std::numeric_limits<qreal>::max();
-    for(auto segment : segments){
-        segment.getClosestPoint(QVector2D(xRobot, yRobot), currentPoint, currentDist);
-        if(currentDist < closestDist){
-            closestDist = currentDist;
-            closestPoint = currentPoint;
-        }
-    }
-
-    updatePaintedItem();
-
-    return closestDist;
 }
 
 void CelluloZonePolyBezierInner::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
