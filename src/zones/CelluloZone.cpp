@@ -96,6 +96,8 @@ void CelluloZone::setActive(float newActive){
 void CelluloZone::updatePaintedItem(){
     if(paintedItem)
         paintedItem->update();
+    else
+        qWarning() << "CelluloZone::updatePaintedItem(): Called when there is no paintedItem.";
 }
 
 CelluloZonePaintedItem* CelluloZone::createPaintedItem(QQuickItem* parent, QColor color, qreal physicalPlaygroundWidth, qreal physicalPlaygroundHeight){
@@ -106,4 +108,8 @@ CelluloZonePaintedItem* CelluloZone::createPaintedItem(QQuickItem* parent, QColo
     paintedItem->setPhysicalPlaygroundWidth(physicalPlaygroundWidth);
     paintedItem->setPhysicalPlaygroundHeight(physicalPlaygroundHeight);
     return paintedItem;
+}
+
+void CelluloZone::setPaintedItem(CelluloZonePaintedItem* newPaintedItem){
+    paintedItem = newPaintedItem;
 }

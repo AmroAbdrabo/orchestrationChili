@@ -76,6 +76,7 @@ void CelluloZonePaintedItem::setColor(QColor newColor){
 void CelluloZonePaintedItem::setAssociatedZone(CelluloZone* zone){
     if(associatedZone != zone){
         associatedZone = zone;
+        associatedZone->setPaintedItem(this);
         emit associatedZoneChanged();
         update();
     }

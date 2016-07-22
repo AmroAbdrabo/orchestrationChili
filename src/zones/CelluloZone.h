@@ -146,6 +146,13 @@ public:
      */
     Q_INVOKABLE CelluloZonePaintedItem* createPaintedItem(QQuickItem* parent, QColor color, qreal physicalPlaygroundWidth, qreal physicalPlaygroundHeight);
 
+    /**
+     * @brief Associates a painted item with this zone so that it can be redrawn if the zone changes
+     *
+     * @param newPaintedItem New painted item
+     */
+    Q_INVOKABLE void setPaintedItem(CelluloZonePaintedItem* newPaintedItem);
+
 public slots:
 
     /**
