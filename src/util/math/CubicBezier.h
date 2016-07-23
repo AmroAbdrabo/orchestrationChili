@@ -47,6 +47,13 @@ public:
     CubicBezier();
 
     /**
+     * @brief Creates a clone of this with just the control points with all lazy calculations invalidated
+     *
+     * @return New clone of this object, without the lazy calculations done
+     */
+    CubicBezier& dumbClone();
+
+    /**
      * @brief Sets all control points
      *
      * @param p0 First control point
@@ -62,6 +69,13 @@ public:
      * @param i Index: 0, 1, 2 or 3
      */
     QVector2D getControlPoint(unsigned char i);
+
+    /**
+     * @brief Translates the entire curve, i.e the control points, by t
+     *
+     * @param t Translation vector
+     */
+    void translate(const QVector2D& t);
 
     /**
      * @brief Gets the closest point on the curve to the given point
@@ -115,6 +129,14 @@ public:
      * @param maxYOut [out] Bottom coordinate
      */
     void getBoundingBox(qreal& minXOut, qreal& maxXOut, qreal& minYOut, qreal& maxYOut);
+
+    /**
+     * @brief Get how many times a horizontal ray from m to +infinity crosses this curve
+     *
+     * @param m The origin of the ray
+     * @return Number of times the ray crosses the curve
+     */
+    int getNumCrossings(const QVector2D& m);
 
 private:
 

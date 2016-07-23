@@ -37,12 +37,25 @@ CubicBezier::CubicBezier(const QVector2D& p0, const QVector2D& p1, const QVector
     calculateBoundingBox();
 }
 
+CubicBezier& CubicBezier::dumbClone(){
+    CubicBezier* newCurve = new CubicBezier();
+    newCurve->setControlPoints(p[0], p[1], p[2], p[3]);
+    return *newCurve;
+}
+
 void CubicBezier::setControlPoints(const QVector2D& p0, const QVector2D& p1, const QVector2D& p2, const QVector2D& p3){
     p[0] = p0;
     p[1] = p1;
     p[2] = p2;
     p[3] = p3;
     invalidateCalc();
+}
+
+void CubicBezier::translate(const QVector2D& t){
+    p[0] += t;
+    p[1] += t;
+    p[2] += t;
+    p[3] += t;
 }
 
 QVector2D CubicBezier::getControlPoint(unsigned char i){
@@ -278,4 +291,39 @@ bool CubicBezier::side(const QVector2D& m){
     //curveDirection and pointDirection are orthogonal by definition,
     //find whether pointDirection is located clockwise or counterclockwise with respect to curveDirection via cross product
     return curveDirection.x()*pointDirection.y() > curveDirection.y()*pointDirection.x();
+}
+
+int CubicBezier::getNumCrossings(const QVector2D& m){
+    int numCrossings = 0;
+
+    //Translate curve to m as origin
+    CubicBezier curveTrans = dumbClone();
+    curveTrans.translate(-m);
+    qreal Ay = curveTrans.getControlPoint(0).y();
+    qreal By = curveTrans.getControlPoint(1).y();
+    qreal Cy = curveTrans.getControlPoint(2).y();
+    qreal Dy = curveTrans.getControlPoint(3).y();
+
+    //Solve B(t).y = 0 to find points where the horizontal ray is crossed
+    qreal t1, t2, t3;
+    int numRoots = CelluloMathUtil::solveCubicEq(-Ay + 3*By - 3*Cy + Dy, 3*Ay - 6*By + 3*Cy, -3*Ay + 3*By, Ay, t1, t2, t3);
+
+    //One root, check t1 only
+    if(0 <= t1 && t1 <= 1)
+        if(curveTrans.getPointX(t1) > 0) //To the right of m
+            numCrossings++;
+
+    //Two roots, check t2 too
+    if(numRoots >= 2)
+        if(0 <= t2 && t2 <= 1)
+            if(curveTrans.getPointX(t2) > 0) //To the right of m
+                numCrossings++;
+
+    //Three roots, check t3 too
+    if(numRoots >= 3)
+        if(0 <= t3 && t3 <= 1)
+            if(curveTrans.getPointX(t3) > 0) //To the right of m
+                numCrossings++;
+
+    return numCrossings;
 }
