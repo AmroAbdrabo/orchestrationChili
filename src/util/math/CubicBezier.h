@@ -139,6 +139,14 @@ public:
     bool inBoundingBox(const QVector2D& m);
 
     /**
+     * @brief Calculates the distance to the bounding box of the given point
+     *
+     * @param m Given point
+     * @return Distance to bounding box, 0 if inside the bounding box
+     */
+    qreal getDistToBoundingBox(const QVector2D& m);
+
+    /**
      * @brief Get how many times a horizontal ray from m to +infinity crosses this curve
      *
      * @param m The origin of the ray

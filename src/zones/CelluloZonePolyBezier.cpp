@@ -152,13 +152,16 @@ qreal CelluloZonePolyBezier::getClosestDistance(const QVector2D& m, QVector2D& c
     qreal dist, dummy;
     QVector2D point;
     qreal closestDist = std::numeric_limits<qreal>::max();
-    for(auto segment : segments){
-        segment.getClosestPoint(m, point, dist, dummy);
-        if(dist < closestDist){
-            closestDist = dist;
-            closestPoint = point;
+    for(auto segment : segments)
+
+        //First, check distance to bounding box, if this rough distance is not good enough, actual curve distance won't be
+        if(segment.getDistToBoundingBox(m) < closestDist){
+            segment.getClosestPoint(m, point, dist, dummy);
+            if(dist < closestDist){
+                closestDist = dist;
+                closestPoint = point;
+            }
         }
-    }
     return closestDist;
 }
 

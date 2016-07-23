@@ -28,7 +28,6 @@
 
 #include <QDebug>
 
-
 CubicBezier::CubicBezier(){}
 
 CubicBezier::CubicBezier(const QVector2D& p0, const QVector2D& p1, const QVector2D& p2, const QVector2D& p3){
@@ -257,6 +256,13 @@ void CubicBezier::getBoundingBox(qreal& minXOut, qreal& maxXOut, qreal& minYOut,
 bool CubicBezier::inBoundingBox(const QVector2D& m){
     calculateBoundingBox();
     return minX <= m.x() && m.x() <= maxX && minY <= m.y() && m.y() <= maxY;
+}
+
+qreal CubicBezier::getDistToBoundingBox(const QVector2D& m){
+    //Taken from http://gamedev.stackexchange.com/a/44496
+    qreal dx = fmax(fabs(m.x() - (minX + maxX)/2) - (maxX - minX)/2, 0);
+    qreal dy = fmax(fabs(m.y() - (minY + maxY)/2) - (maxY - minY)/2, 0);
+    return sqrt(dx*dx + dy*dy);
 }
 
 bool CubicBezier::boundingBoxesIntersect(CubicBezier& curve1, CubicBezier& curve2){
