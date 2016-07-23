@@ -124,6 +124,15 @@ protected:
     qreal minY = std::numeric_limits<qreal>::max(); ///< Minimum y bound for the curve
     qreal maxY = std::numeric_limits<qreal>::min(); ///< Maximum y bound for the curve
 
+private:
+
+    /**
+     * @brief Forces heavy calculations to be redone at a later time
+     */
+    void invalidateCalc();
+
+    bool boundingBoxCalculated = false; ///< Whether the bounding box is calculated and ready
+
 };
 
 /**
@@ -197,23 +206,6 @@ public:
      * @param physicalHeight Physical height of the canvas in mm
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    QVector2D curvePt;
-    QVector2D tangentVec;
 
 };
 

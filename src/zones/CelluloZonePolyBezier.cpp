@@ -28,12 +28,7 @@
 
 #include <QPointF>
 
-CelluloZonePolyBezier::CelluloZonePolyBezier() : CelluloZone(){
-    maxX = std::numeric_limits<qreal>::min();
-    maxY = std::numeric_limits<qreal>::min();
-    minX = std::numeric_limits<qreal>::max();
-    minY = std::numeric_limits<qreal>::max();
-}
+CelluloZonePolyBezier::CelluloZonePolyBezier() : CelluloZone(){}
 
 QVariantList CelluloZonePolyBezier::getControlPoints(){
     QVariantList points;
@@ -75,7 +70,7 @@ void CelluloZonePolyBezier::setControlPoints(const QVariantList& newControlPoint
                 )
             );
 
-    calculateBoundingBox();
+    invalidateCalc();
     updatePaintedItem();
     emit controlPointsChanged();
 }
@@ -115,6 +110,9 @@ void CelluloZonePolyBezier::read(const QJsonObject &json){
 }
 
 void CelluloZonePolyBezier::calculateBoundingBox(){
+    if(boundingBoxCalculated)
+        return;
+
     minX = std::numeric_limits<qreal>::max();
     maxX = std::numeric_limits<qreal>::min();
     minY = std::numeric_limits<qreal>::max();
@@ -132,6 +130,12 @@ void CelluloZonePolyBezier::calculateBoundingBox(){
         if(maxYSeg > maxY)
             maxY = maxYSeg;
     }
+
+    boundingBoxCalculated = true;
+}
+
+void CelluloZonePolyBezier::invalidateCalc(){
+    boundingBoxCalculated = false;
 }
 
 qreal CelluloZonePolyBezier::getClosestDistance(const QVector2D& m){
@@ -200,12 +204,24 @@ CelluloZonePolyBezierInner::CelluloZonePolyBezierInner() : CelluloZonePolyBezier
 float CelluloZonePolyBezierInner::calculate(float xRobot, float yRobot, float thetaRobot){
     Q_UNUSED(thetaRobot);
 
-    for(auto segment : segments){
-        qDebug() << segment.side(QVector2D(xRobot, yRobot));
-    }
+    //Check if point is outside the bounding box
+    calculateBoundingBox();
+    if(xRobot < minX || xRobot > maxX || yRobot < minY || yRobot > maxY)
+        return 0.0f;
 
-    updatePaintedItem();
-    return 0;
+    QVector2D robotPos(xRobot, yRobot);
+
+    //Number of crossings on the Bézier segments
+    int numCrossings = 0;
+    for(auto segment : segments)
+        numCrossings += segment.getNumCrossings(robotPos);
+
+    //Check crossing with line segment that closes the curve
+    if(!segments.isEmpty())
+        if(CelluloMathUtil::hRayCrossesLineSeg(robotPos, segments.first().getControlPoint(0), segments.last().getControlPoint(3)))
+            numCrossings++;
+
+    return numCrossings % 2 == 1;
 }
 
 void CelluloZonePolyBezierInner::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
@@ -228,48 +244,5 @@ void CelluloZonePolyBezierInner::paint(QPainter* painter, QColor color, qreal ca
                 );
 
         painter->drawPath(path);
-
-
-
-        //for(auto segment : segments)
-        //for(int i=0;i<segment.T_LUT_SIZE;i++){
-        //QVector2D pt = segment.equidistantPointLut[i];
-        //painter->drawPoint(QPointF(pt.x()*horizontalScaleCoeff, pt.y()*verticalScaleCoeff));
-        //}
     }
-
-    painter->setPen(QPen(QBrush("green"), 2));
-    painter->drawLine((scale*curvePt).toPointF(), (scale*(curvePt + tangentVec)).toPointF());
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    qreal x1, x2, x3;
-    qreal num = CelluloMathUtil::solveCubicEq(1,1,0,-0.1,x1,x2,x3);
-    qDebug() << num << " " << x1 << " " << x2 << " " << x3;
 }
