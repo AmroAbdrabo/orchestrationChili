@@ -202,7 +202,6 @@ inline void CubicBezier::updateMinMaxX(qreal newX){
 }
 
 inline void CubicBezier::updateMinMaxY(qreal newY){
-    qDebug() << newY;
     if(newY < minY)
         minY = newY;
     if(newY > maxY)
@@ -253,6 +252,11 @@ void CubicBezier::getBoundingBox(qreal& minXOut, qreal& maxXOut, qreal& minYOut,
     maxXOut = maxX;
     minYOut = minY;
     maxYOut = maxY;
+}
+
+bool CubicBezier::inBoundingBox(const QVector2D& m){
+    calculateBoundingBox();
+    return minX <= m.x() && m.x() <= maxX && minY <= m.y() && m.y() <= maxY;
 }
 
 bool CubicBezier::boundingBoxesIntersect(CubicBezier& curve1, CubicBezier& curve2){

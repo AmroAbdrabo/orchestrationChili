@@ -15,7 +15,7 @@ ApplicationWindow {
     CelluloZoneEngine{
         id: zoneEngine
 
-        CelluloZonePolyBezierInner{
+        CelluloZonePolyBezierDistance{
             id: staticZone
             name: "ZONE"
             controlPoints: [
@@ -33,6 +33,8 @@ ApplicationWindow {
                 Qt.vector2d(0.28222222153533215923*0.81001263,0.28222222153533215923*736.4936),
                 Qt.vector2d(0.28222222153533215923*111.47905,0.28222222153533215923*541.78817)
             ]
+
+            property vector2d closestPoint: Qt.vector2d(0,0)
         }
     }
 
@@ -43,6 +45,8 @@ ApplicationWindow {
         Component.onCompleted: zoneEngine.addNewClient(robotComm)
 
         onZoneValueChanged: console.log(zone.name + " " + value)
+
+        onPoseChanged: staticZone.closestPoint = staticZone.getClosestPoint(Qt.vector2d(x,y))
     }
 
     //Visible items
@@ -114,6 +118,15 @@ ApplicationWindow {
                     physicalPlaygroundWidth: parent.physicalWidth
                     physicalPlaygroundHeight: parent.physicalHeight
                     associatedZone: staticZone
+                }
+
+                Rectangle{
+                    x: staticZone.closestPoint.x*parent.scaleCoeff - width/2
+                    y: staticZone.closestPoint.y*parent.scaleCoeff - height/2
+                    height: 5
+                    width: 5
+                    color: "green"
+                    radius: 2.5
                 }
 
                 Image{

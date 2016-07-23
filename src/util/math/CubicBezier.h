@@ -131,6 +131,14 @@ public:
     void getBoundingBox(qreal& minXOut, qreal& maxXOut, qreal& minYOut, qreal& maxYOut);
 
     /**
+     * @brief Calculates whether the given point is in the bounding box of this curve
+     *
+     * @param m The point to check
+     * @return Whether this point is in the bounding box
+     */
+    bool inBoundingBox(const QVector2D& m);
+
+    /**
      * @brief Get how many times a horizontal ray from m to +infinity crosses this curve
      *
      * @param m The origin of the ray

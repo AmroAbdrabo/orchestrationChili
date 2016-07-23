@@ -134,6 +134,11 @@ void CelluloZonePolyBezier::calculateBoundingBox(){
     boundingBoxCalculated = true;
 }
 
+bool CelluloZonePolyBezier::inBoundingBox(const QVector2D& m){
+    calculateBoundingBox();
+    return minX <= m.x() && m.x() <= maxX && minY <= m.y() && m.y() <= maxY;
+}
+
 void CelluloZonePolyBezier::invalidateCalc(){
     boundingBoxCalculated = false;
 }
@@ -163,6 +168,12 @@ qreal CelluloZonePolyBezier::getClosestDistance(const QVector2D& m, QVector2D& c
 
 CelluloZonePolyBezierDistance::CelluloZonePolyBezierDistance() : CelluloZonePolyBezier(){
     type = CelluloZoneTypes::POLYBEZIERDISTANCE;
+}
+
+QVector2D CelluloZonePolyBezierDistance::getClosestPoint(const QVector2D& m){
+    QVector2D closestPoint;
+    getClosestDistance(m, closestPoint);
+    return closestPoint;
 }
 
 float CelluloZonePolyBezierDistance::calculate(float xRobot, float yRobot, float thetaRobot){
@@ -204,12 +215,11 @@ CelluloZonePolyBezierInner::CelluloZonePolyBezierInner() : CelluloZonePolyBezier
 float CelluloZonePolyBezierInner::calculate(float xRobot, float yRobot, float thetaRobot){
     Q_UNUSED(thetaRobot);
 
-    //Check if point is outside the bounding box
-    calculateBoundingBox();
-    if(xRobot < minX || xRobot > maxX || yRobot < minY || yRobot > maxY)
-        return 0.0f;
-
     QVector2D robotPos(xRobot, yRobot);
+
+    //Check if point is outside the bounding box
+    if(!inBoundingBox(robotPos))
+        return 0.0f;
 
     //Number of crossings on the Bézier segments
     int numCrossings = 0;

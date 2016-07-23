@@ -97,7 +97,7 @@ signals:
 protected:
 
     /**
-     * @brief Gets the closest point on the curves to the given point
+     * @brief Gets the distance to the closest point on the curves to the given point
      *
      * @param m Given point
      * @return Closest distance
@@ -105,7 +105,7 @@ protected:
     qreal getClosestDistance(const QVector2D& m);
 
     /**
-     * @brief Gets the closest point on the curves to the given point
+     * @brief Gets the distance to the closest point on the curves to the given point
      *
      * @param m Given point
      * @param closestPoint [out] Returns the closest point
@@ -117,6 +117,14 @@ protected:
      * @brief Updates the bounding rectangle from the new list of vertices
      */
     void calculateBoundingBox();
+
+    /**
+     * @brief Calculates whether the given point is in the bounding box of this curve
+     *
+     * @param m The point to check
+     * @return Whether this point is in the bounding box
+     */
+    bool inBoundingBox(const QVector2D& m);
 
     QList<CubicBezier> segments;                    ///< Consecutive Bézier curve segments
     qreal minX = std::numeric_limits<qreal>::max(); ///< Minimal x bound for the curve
@@ -146,6 +154,14 @@ class CelluloZonePolyBezierDistance : public CelluloZonePolyBezier {
 public:
 
     CelluloZonePolyBezierDistance();
+
+    /**
+     * @brief Gets the closest point on the curves to the given point
+     *
+     * @param m Given point
+     * @return Closest point
+     */
+    Q_INVOKABLE QVector2D getClosestPoint(const QVector2D& m);
 
     /**
      * @brief Calculate the closest distance of the composite curve to the robot
