@@ -50,9 +50,7 @@ public:
      * @brief Gets the x position of upper left corner of the rectangle
      * @return X position of upper left corner of the rectangle
      */
-    float getX() {
-        return x;
-    }
+    float getX() { return x; }
 
     /**
      * @brief Updates the rectangle's left edge x position
@@ -64,9 +62,7 @@ public:
      * @brief Gets the y position of upper left corner of the rectangle
      * @return Y position of upper left corner of the rectangle
      */
-    float getY() {
-        return y;
-    }
+    float getY() { return y; }
 
     /**
      * @brief Updates the rectangle's top edge y position
@@ -78,9 +74,7 @@ public:
      * @brief Gets the height of the rectangle
      * @return Height of the rectangle
      */
-    float getHeight() {
-        return height;
-    }
+    float getHeight() { return height; }
 
     /**
      * @brief Updates the rectangle's height
@@ -92,9 +86,7 @@ public:
      * @brief Gets the width of the rectangle
      * @return Width of the rectangle
      */
-    float getWidth() {
-        return width;
-    }
+    float getWidth() { return width; }
 
     /**
      * @brief Updates the rectangle's width

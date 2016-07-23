@@ -100,6 +100,7 @@ void CelluloPlugin::registerTypes(const char *uri){
     qmlRegisterType<CelluloZoneRegularPolygonDistance>(uri, 1, 0, "CelluloZoneRegularPolygonDistance");
 
     qmlRegisterType<CelluloZonePolyBezierDistance>(uri, 1, 0, "CelluloZonePolyBezierDistance");
+    qmlRegisterType<CelluloZonePolyBezierBorder>(uri, 1, 0, "CelluloZonePolyBezierBorder");
     qmlRegisterType<CelluloZonePolyBezierInner>(uri, 1, 0, "CelluloZonePolyBezierInner");
 
     qmlRegisterType<CelluloZonePaintedItem>(uri, 1, 0, "CelluloZonePaintedItem");

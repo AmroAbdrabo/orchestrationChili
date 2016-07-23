@@ -188,7 +188,7 @@ void CelluloZonePolyBezierDistance::paint(QPainter* painter, QColor color, qreal
     CelluloZonePolyBezier::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
 
     painter->setBrush(Qt::NoBrush);
-    painter->setPen(QPen(QBrush(color), 2));
+    painter->setPen(QPen(QBrush(color), 2, Qt::DotLine));
 
     QVector2D scale(canvasWidth/physicalWidth, canvasHeight/physicalHeight);
 
@@ -203,6 +203,61 @@ void CelluloZonePolyBezierDistance::paint(QPainter* painter, QColor color, qreal
                 (scale*segment.getControlPoint(3)).toPointF()
                 );
 
+        painter->drawPath(path);
+    }
+}
+
+/**
+ * CelluloZonePolyBezierBorder
+ */
+
+CelluloZonePolyBezierBorder::CelluloZonePolyBezierBorder() : CelluloZonePolyBezier(){
+    type = CelluloZoneTypes::POLYBEZIERBORDER;
+    borderThickness = 0;
+}
+
+void CelluloZonePolyBezierBorder::setBorderThickness(qreal newThickness){
+    if(borderThickness != newThickness){
+        borderThickness = newThickness;
+        emit borderThicknessChanged();
+        updatePaintedItem();
+    }
+}
+
+void CelluloZonePolyBezierBorder::write(QJsonObject &json){
+    CelluloZonePolyBezier::write(json);
+
+    json["borderThickness"] = borderThickness;
+}
+
+void CelluloZonePolyBezierBorder::read(const QJsonObject &json){
+    CelluloZonePolyBezier::read(json);
+
+    borderThickness = json["borderThickness"].toDouble();
+}
+
+float CelluloZonePolyBezierBorder::calculate(float xRobot, float yRobot, float thetaRobot){
+    Q_UNUSED(thetaRobot);
+    return getClosestDistance(QVector2D(xRobot, yRobot)) <= borderThickness/2 ? 1.0f : 0.0f;
+}
+
+void CelluloZonePolyBezierBorder::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    CelluloZonePolyBezier::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
+
+    QVector2D scale(canvasWidth/physicalWidth, canvasHeight/physicalHeight);
+
+    painter->setBrush(Qt::NoBrush);
+    painter->setPen(QPen(QColor(color), borderThickness*(scale.x() + scale.y())/2, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
+
+    //Draw segments separately to ensure round caps
+    for(auto segment : segments){
+        QPainterPath path;
+        path.moveTo((scale*segment.getControlPoint(0)).toPointF());
+        path.cubicTo(
+            (scale*segment.getControlPoint(1)).toPointF(),
+            (scale*segment.getControlPoint(2)).toPointF(),
+            (scale*segment.getControlPoint(3)).toPointF()
+            );
         painter->drawPath(path);
     }
 }

@@ -65,6 +65,7 @@ public:
         IRPOLYGONBORDER,
         IRPOLYGONDISTANCE,
         POLYBEZIERDISTANCE,
+        POLYBEZIERBORDER,
         POLYBEZIERINNER,
         ZoneTypeNumElements
     };
