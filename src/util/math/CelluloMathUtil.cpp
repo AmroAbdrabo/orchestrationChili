@@ -97,3 +97,68 @@ int CelluloMathUtil::solveQuadEq(qreal a, qreal b, qreal c, qreal& x1, qreal& x2
         return 2;
     }
 }
+
+inline bool CelluloMathUtil::isZero(qreal val, qreal epsilon){
+    return -epsilon <= val && val <= epsilon;
+}
+
+int CelluloMathUtil::solveCubicEq(qreal a, qreal b, qreal c, qreal d, qreal& x1, qreal& x2, qreal& x3){
+    //Taken from http://read.pudn.com/downloads21/sourcecode/graph/71499/gems/Roots3And4.c__.htm
+
+    //Normal form: x^3 + Ax^2 + Bx + C = 0
+    qreal A = b/a;
+    qreal B = c/a;
+    qreal C = d/a;
+
+    //Substitute x = y - A/3 to eliminate quadric term: x^3 +px + q = 0 */
+    qreal Asquared = A*A;
+    qreal p = (-Asquared/3 + B)/3;
+    qreal q = (2*A*Asquared/27 - A*B/3 + C)/2;
+
+    //Use Cardano's formula
+    qreal pcubed = p*p*p;
+    qreal D = q*q + pcubed;
+
+    qreal sub = A/3;
+
+    if(isZero(D, SOLVE_CUBIC_EPSILON)){
+
+        //One triple solution
+        if(isZero(q, SOLVE_CUBIC_EPSILON)){
+            x1 = -sub;
+            x2 = x1;
+            x3 = x1;
+            return 1;
+        }
+
+        //One single and one double solution
+        else{
+            qreal u = cbrt(-q);
+            x1 = 2*u - sub;
+            x2 = -u - sub;
+            x3 = x2;
+            return 2;
+        }
+    }
+
+    //Casus irreducibilis: three real solutions
+    else if(D < 0){
+        qreal phi = acos(-q/sqrt(-pcubed))/3;
+        qreal t = 2*sqrt(-p);
+
+        x1 =  t*cos(phi) - sub;
+        x2 = -t*cos(phi + M_PI/3) - sub;
+        x3 = -t*cos(phi - M_PI/3) - sub;
+        return 3;
+    }
+
+    //One real solution
+    else{
+        qreal sqrt_D = sqrt(D);
+
+        x1 = cbrt(sqrt_D - q) - cbrt(sqrt_D + q) - sub;
+        x2 = x1;
+        x3 = x1;
+        return 1;
+    }
+}

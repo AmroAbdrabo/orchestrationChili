@@ -89,6 +89,33 @@ public:
      */
     static int solveQuadEq(qreal a, qreal b, qreal c, qreal& x1, qreal& x2);
 
+    /**
+     * @brief Calculates the roots of ax^3 + bx^2 + cx + d = 0
+     *
+     * @param a 3rd order coefficient, must be nonzero
+     * @param b 2nd order coefficient
+     * @param c 1st order coefficient
+     * @param d Constant
+     * @param x1 [out] First unique root if real roots exist
+     * @param x2 [out] Second unique root if real roots exist (will be equal to x3 if there are two roots, equal to x1 if there is only one root)
+     * @param x3 [out] Third unique root if real roots exist (will be equal to x2 if there are two roots, equal to x1 if there is only one root)
+     * @return Number of unique real roots, i.e 1, 2 or 3
+     */
+    static int solveCubicEq(qreal a, qreal b, qreal c, qreal d, qreal& x1, qreal& x2, qreal& x3);
+
+    /**
+     * @brief Checks whether the value is within -epsilon,+epsilon
+     *
+     * @param val The value
+     * @param epsilon The tolerance
+     * @return Whether the number is within -epsilon,+epsilon
+     */
+    static bool isZero(qreal val, qreal epsilon);
+
+private:
+
+    static constexpr qreal SOLVE_CUBIC_EPSILON = 1e-9; ///< Epsilon to use during isZero by the cubic equation solver
+
 };
 
 #endif // CELLULOMATHUTIL_H

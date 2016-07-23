@@ -24,6 +24,8 @@
 
 #include "CelluloZonePolyBezier.h"
 
+#include "../util/math/CelluloMathUtil.h"
+
 #include <QPointF>
 
 CelluloZonePolyBezier::CelluloZonePolyBezier() : CelluloZone(){
@@ -198,16 +200,8 @@ CelluloZonePolyBezierInner::CelluloZonePolyBezierInner() : CelluloZonePolyBezier
 float CelluloZonePolyBezierInner::calculate(float xRobot, float yRobot, float thetaRobot){
     Q_UNUSED(thetaRobot);
 
-    qreal dist, t;
-    QVector2D point;
-    qreal closestDist = std::numeric_limits<qreal>::max();
     for(auto segment : segments){
-        segment.getClosestPoint(QVector2D(xRobot, yRobot), point, dist, t);
-        if(dist < closestDist){
-            closestDist = dist;
-            curvePt = point;
-            tangentVec = segment.getDerivative(t);
-        }
+        qDebug() << segment.side(QVector2D(xRobot, yRobot));
     }
 
     updatePaintedItem();
@@ -246,4 +240,36 @@ void CelluloZonePolyBezierInner::paint(QPainter* painter, QColor color, qreal ca
 
     painter->setPen(QPen(QBrush("green"), 2));
     painter->drawLine((scale*curvePt).toPointF(), (scale*(curvePt + tangentVec)).toPointF());
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    qreal x1, x2, x3;
+    qreal num = CelluloMathUtil::solveCubicEq(1,1,0,-0.1,x1,x2,x3);
+    qDebug() << num << " " << x1 << " " << x2 << " " << x3;
 }

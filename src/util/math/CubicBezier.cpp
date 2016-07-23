@@ -277,6 +277,5 @@ bool CubicBezier::side(const QVector2D& m){
 
     //curveDirection and pointDirection are orthogonal by definition,
     //find whether pointDirection is located clockwise or counterclockwise with respect to curveDirection via cross product
-    qDebug() << (curveDirection.x()*pointDirection.y() > curveDirection.y()*pointDirection.x());
-    return false;
+    return curveDirection.x()*pointDirection.y() > curveDirection.y()*pointDirection.x();
 }
