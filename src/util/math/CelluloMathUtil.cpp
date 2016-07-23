@@ -162,3 +162,26 @@ int CelluloMathUtil::solveCubicEq(qreal a, qreal b, qreal c, qreal d, qreal& x1,
         return 1;
     }
 }
+
+bool CelluloMathUtil::hRayCrossesLineSeg(const QVector2D& r, const QVector2D& seg1, const QVector2D& seg2){
+
+    //Segment is degenerate
+    if(seg1.y() == seg2.y())
+        return false;
+
+    //Ray origin is to the right, bottom or top of the segment
+    if(
+        (r.x() > seg1.x() && r.x() > seg2.x()) ||
+        (r.y() > seg1.y() && r.y() > seg2.y()) ||
+        (r.y() < seg1.y() && r.y() < seg2.y())
+    )
+        return false;
+
+    //Ray origin is to the left of the segment, definitely crosses
+    if(r.x() < seg1.x() && r.x() < seg2.x())
+        return true;
+
+    //Ray origin is within the bounding box of the segment at this point, find intersection of ray
+    qreal q = (r.y() - seg2.y())/(seg1.y() - seg2.y());
+    return r.x() < q*seg1.x() + (1 - q)*seg2.x();
+}

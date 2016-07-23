@@ -112,6 +112,16 @@ public:
      */
     static bool isZero(qreal val, qreal epsilon);
 
+    /**
+     * @brief Calculates whether a horizontal ray starting from r and continuing towards +infinity crosses the line segment
+     *
+     * @param r Ray origin
+     * @param seg1 Line segment first endpoint
+     * @param seg2 Line segment second endpoint
+     * @return Whether the ray crosses the line segment
+     */
+    Q_INVOKABLE static bool hRayCrossesLineSeg(const QVector2D& r, const QVector2D& seg1, const QVector2D& seg2);
+
 private:
 
     static constexpr qreal SOLVE_CUBIC_EPSILON = 1e-9; ///< Epsilon to use during isZero by the cubic equation solver
