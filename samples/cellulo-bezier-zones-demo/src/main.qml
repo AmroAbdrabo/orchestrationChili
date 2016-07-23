@@ -7,34 +7,48 @@ import QtBluetooth 5.2
 import Cellulo 1.0
 
 ApplicationWindow {
-    id: window
+    id: root
     visible: true
     minimumHeight: 100
     minimumWidth: 200
 
+    property variant polybezierPoints: [
+        Qt.vector2d(0.28222222153533215923*95.871981,0.28222222153533215923*254.17223),
+        Qt.vector2d(0.28222222153533215923*409.27877,0.28222222153533215923*586.84713),
+        Qt.vector2d(0.28222222153533215923*532.31703,0.28222222153533215923*310.85683),
+        Qt.vector2d(0.28222222153533215923*405.78373,0.28222222153533215923*111.47905),
+        Qt.vector2d(0.28222222153533215923*124.79607,0.28222222153533215923*331.89509),
+        Qt.vector2d(0.28222222153533215923*487.78562,0.28222222153533215923*391.96053),
+        Qt.vector2d(0.28222222153533215923*662.18554,0.28222222153533215923*443.68661),
+        Qt.vector2d(0.28222222153533215923*-243.45612,0.28222222153533215923*873.17654),
+        Qt.vector2d(0.28222222153533215923*604.95321,0.28222222153533215923*1099.8482),
+        Qt.vector2d(0.28222222153533215923*216.26935,0.28222222153533215923*717.92507),
+        Qt.vector2d(0.28222222153533215923*-72.325208,0.28222222153533215923*1075.5105),
+        Qt.vector2d(0.28222222153533215923*290.65553,0.28222222153533215923*502.3876),
+        Qt.vector2d(0.28222222153533215923*111.47905,0.28222222153533215923*541.78817)
+    ]
+
     CelluloZoneEngine{
         id: zoneEngine
 
-        CelluloZonePolyBezierDistance{
-            id: staticZone
-            name: "ZONE"
-            controlPoints: [
-                Qt.vector2d(0.28222222153533215923*95.871981,0.28222222153533215923*254.17223),
-                Qt.vector2d(0.28222222153533215923*409.27877,0.28222222153533215923*586.84713),
-                Qt.vector2d(0.28222222153533215923*240.24193,0.28222222153533215923*23.240894),
-                Qt.vector2d(0.28222222153533215923*405.78373,0.28222222153533215923*300.47905),
-                Qt.vector2d(0.28222222153533215923*608.61513,0.28222222153533215923*151.29903),
-                Qt.vector2d(0.28222222153533215923*454.34191,0.28222222153533215923*467.76628),
-                Qt.vector2d(0.28222222153533215923*628.74183,0.28222222153533215923*519.49236),
-                Qt.vector2d(0.28222222153533215923*-80.696715,0.28222222153533215923*915.53858),
-                Qt.vector2d(0.28222222153533215923*379.76554,0.28222222153533215923*1066.4045),
-                Qt.vector2d(0.28222222153533215923*182.82564,0.28222222153533215923*793.73082),
-                Qt.vector2d(0.28222222153533215923*177.38786,0.28222222153533215923*533.72232),
-                Qt.vector2d(0.28222222153533215923*0.81001263,0.28222222153533215923*736.4936),
-                Qt.vector2d(0.28222222153533215923*111.47905,0.28222222153533215923*541.78817)
-            ]
+        CelluloZonePolyBezierInner{
+            id: zoneInner
+            name: "ZONE_INNER"
+            controlPoints: root.polybezierPoints
+        }
 
+        CelluloZonePolyBezierDistance{
+            id: zoneDistance
+            name: "ZONE_DISTANCE"
+            controlPoints: root.polybezierPoints
             property vector2d closestPoint: Qt.vector2d(0,0)
+        }
+
+        CelluloZonePolyBezierBorder{
+            id: zoneBorder
+            name: "ZONE_BORDER"
+            controlPoints: root.polybezierPoints
+            borderThickness: 10
         }
     }
 
@@ -42,11 +56,48 @@ ApplicationWindow {
         id: robotComm
         macAddr: "00:06:66:74:43:00"
 
+        property bool inInner: false
+        property bool inBorder: false
+
         Component.onCompleted: zoneEngine.addNewClient(robotComm)
 
-        onZoneValueChanged: console.log(zone.name + " " + value)
+        onConnectionStatusChanged: {
+            if(connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected){
+                setCasualBackdriveAssistEnabled(true);
+                setPoseBcastPeriod(0);
+            }
+        }
 
-        onPoseChanged: staticZone.closestPoint = staticZone.getClosestPoint(Qt.vector2d(x,y))
+        onPoseChanged: zoneDistance.closestPoint = zoneDistance.getClosestPoint(Qt.vector2d(x,y))
+
+        onZoneValueChanged: {
+            switch(zone.name){
+            case "ZONE_INNER":
+                inInner = value;
+                updateColors();
+                break;
+            case "ZONE_BORDER":
+                inBorder = value;
+                updateColors();
+                break;
+            case "ZONE_DISTANCE":
+                distText.text = "Distance: " + value.toFixed(6) + "mm"
+                break;
+            default:
+                break;
+            }
+        }
+
+        function updateColors(){
+            if(inInner && inBorder)
+                setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "#FF00FF", 0);
+            else if(inInner)
+                setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "#FF0000", 0);
+            else if(inBorder)
+                setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "#0000FF", 0);
+            else
+                setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "#FFFFFF", 0);
+        }
     }
 
     //Visible items
@@ -114,19 +165,33 @@ ApplicationWindow {
                 radius: 5
 
                 CelluloZonePaintedItem{
-                    color: "red"
+                    color: "#80FF0000"
                     physicalPlaygroundWidth: parent.physicalWidth
                     physicalPlaygroundHeight: parent.physicalHeight
-                    associatedZone: staticZone
+                    associatedZone: zoneInner
+                }
+
+                CelluloZonePaintedItem{
+                    color: "#800000FF"
+                    physicalPlaygroundWidth: parent.physicalWidth
+                    physicalPlaygroundHeight: parent.physicalHeight
+                    associatedZone: zoneBorder
+                }
+
+                CelluloZonePaintedItem{
+                    color: "#8000FF00"
+                    physicalPlaygroundWidth: parent.physicalWidth
+                    physicalPlaygroundHeight: parent.physicalHeight
+                    associatedZone: zoneDistance
                 }
 
                 Rectangle{
-                    x: staticZone.closestPoint.x*parent.scaleCoeff - width/2
-                    y: staticZone.closestPoint.y*parent.scaleCoeff - height/2
-                    height: 5
-                    width: 5
-                    color: "green"
-                    radius: 2.5
+                    x: zoneDistance.closestPoint.x*parent.scaleCoeff - width/2
+                    y: zoneDistance.closestPoint.y*parent.scaleCoeff - height/2
+                    height: 10
+                    width: 10
+                    color: "#80FFFFFF"
+                    radius: 5
                 }
 
                 Image{
@@ -150,5 +215,10 @@ ApplicationWindow {
                 }
             }
         }
+    }
+
+    Text{
+        id: distText
+        anchors.top: playgroundBox.bottom
     }
 }
