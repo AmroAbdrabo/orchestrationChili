@@ -150,6 +150,13 @@ public:
     void load(qint8 num);
 
     /**
+     * @brief Appends the given number in binary form to the payload
+     *
+     * @param num The number to append
+     */
+    void load(float num);
+
+    /**
      * @brief Constructs the message to be sent
      *
      * @return Message to be sent
@@ -169,9 +176,7 @@ public:
      *
      * @return The received packet type
      */
-    EventPacketType getReceivePacketType(){
-        return receivePacketType;
-    }
+    EventPacketType getReceivePacketType(){ return receivePacketType; }
 
     /**
      * @brief Attempts to unload a 32-bit unsigned integer
@@ -228,6 +233,13 @@ public:
      * @return Unloaded value if successful
      */
     qint8 unloadInt8();
+
+    /**
+     * @brief Attempts to unload a 32-bit floating point number
+     *
+     * @return Unloaded value if successful
+     */
+    float unloadFloat();
 
 private:
 

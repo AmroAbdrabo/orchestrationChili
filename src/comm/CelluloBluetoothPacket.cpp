@@ -155,6 +155,16 @@ void CelluloBluetoothPacket::load(qint8 num){
     payload.append(*((char*)&num));
 }
 
+void CelluloBluetoothPacket::load(float num){
+
+    //Convert to big endian
+    char* p = ((char*)&num);
+    payload.append(p[3]);
+    payload.append(p[2]);
+    payload.append(p[1]);
+    payload.append(p[0]);
+}
+
 QByteArray CelluloBluetoothPacket::getSendData(){
     QByteArray data;
 
@@ -335,5 +345,20 @@ qint8 CelluloBluetoothPacket::unloadInt8(){
         qint8 result = (qint8)(*((char*)payload.data() + unloadIndex));
         unloadIndex++;
         return result;
+    }
+}
+
+float CelluloBluetoothPacket::unloadFloat(){
+    if(unloadIndex + 4 > payload.length()){
+        qDebug() << "CelluloBluetoothPacket::unloadFloat(): Unload index out of bounds";
+        return 0;
+    }
+    else{
+
+        //Decode from big endian
+        unsigned char* p = (unsigned char*)payload.data() + unloadIndex;
+        unloadIndex += 4;
+        quint32 unum = (quint32)((p[0] << 24) | (p[1] << 16) | (p[2] << 8) | (p[3] << 0));
+        return *((float*)(&unum));
     }
 }
