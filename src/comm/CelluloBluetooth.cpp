@@ -850,6 +850,20 @@ void CelluloBluetooth::polyBezierAppend(const QVector2D& point1, const QVector2D
     sendCommand();
 }
 
+void CelluloBluetooth::setGoalPolyBezier(float v){
+    int v_ = (int)(v*GOAL_VEL_FACTOR_SHARED);
+
+    if(v_ < -0x7FFF)
+        v_ = -0x7FFF;
+    else if(v_ > 0x7FFF)
+        v_ = 0x7FFF;
+
+    sendPacket.clear();
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeSetGoalPolyBezier);
+    sendPacket.load((qint16)v_);
+    sendCommand();
+}
+
 void CelluloBluetooth::reset(){
     sendPacket.clear();
     sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeReset);

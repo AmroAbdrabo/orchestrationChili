@@ -434,6 +434,13 @@ public slots:
     void polyBezierAppend(const QVector2D& point1, const QVector2D& point2, const QVector2D& point3);
 
     /**
+     * @brief Starts tracking the previously set composite Bézier curve
+     *
+     * @param v Linear velocity
+     */
+    void setGoalPolyBezier(float v);
+
+    /**
      * @brief Initiates a software reset on the robot
      */
     void reset();
