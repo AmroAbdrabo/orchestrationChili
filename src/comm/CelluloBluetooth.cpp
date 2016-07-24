@@ -830,6 +830,26 @@ void CelluloBluetooth::setVisualEffect(CelluloBluetoothEnums::VisualEffect effec
     sendCommand();
 }
 
+void CelluloBluetooth::polyBezierInit(const QVector2D& point0){
+    sendPacket.clear();
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypePolyBezierInit);
+    sendPacket.load((float)point0.x());
+    sendPacket.load((float)point0.y());
+    sendCommand();
+}
+
+void CelluloBluetooth::polyBezierAppend(const QVector2D& point1, const QVector2D& point2, const QVector2D& point3){
+    sendPacket.clear();
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypePolyBezierAppend);
+    sendPacket.load((float)point1.x());
+    sendPacket.load((float)point1.y());
+    sendPacket.load((float)point2.x());
+    sendPacket.load((float)point2.y());
+    sendPacket.load((float)point3.x());
+    sendPacket.load((float)point3.y());
+    sendCommand();
+}
+
 void CelluloBluetooth::reset(){
     sendPacket.clear();
     sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeReset);

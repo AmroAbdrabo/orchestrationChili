@@ -416,6 +416,24 @@ public slots:
     void setVisualEffect(CelluloBluetoothEnums::VisualEffect effect, QColor color, int value);
 
     /**
+     * @brief Sends the first control point of the composite Bézier curve for motion tracking
+     *
+     * @param point0 The initial point, i.e the first control point of the first segment
+     */
+    void polyBezierInit(const QVector2D& point0);
+
+    /**
+     * @brief Adds a segment to the composite Bézier curve for motion tracking; polyBezierInit() must be called before
+     *
+     * The first control point is the last control point of the previously added segment or the initial point.
+     *
+     * @param point1 The second control point for the curve
+     * @param point2 The third control point for the curve
+     * @param point3 The fourth control point for the curve
+     */
+    void polyBezierAppend(const QVector2D& point1, const QVector2D& point2, const QVector2D& point3);
+
+    /**
      * @brief Initiates a software reset on the robot
      */
     void reset();

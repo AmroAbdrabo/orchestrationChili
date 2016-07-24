@@ -110,6 +110,8 @@
         CmdPacketTypeSimpleVibrate,                  /** Simple vibration haptic feedback */ \
         CmdPacketTypeVibrateOnMotion,                /** Vibration with intensity proportional to drive velocities*/ \
         CmdPacketTypeClearHapticFeedback,            /** Clears all haptic feedbacks */ \
+        CmdPacketTypePolyBezierInit,                 /** Sets the first control point of the composite Bézier curve for tracking */ \
+        CmdPacketTypePolyBezierAppend,               /** Appends 3 control points to the composite Bézier curve for tracking */ \
         CmdPacketTypeReset,                          /** Request reset */ \
         CmdPacketTypeShutdown,                       /** Request shutdown */ \
         CmdPacketTypeNumElements, \
@@ -144,6 +146,8 @@
         "V", /** CmdPacketTypeSimpleVibrate */ \
         "Z", /** CmdPacketTypeVibrateOnMotion */ \
         "H", /** CmdPacketTypeClearHapticFeedback */ \
+        ".", /** CmdPacketTypePolyBezierInit */ \
+        "~", /** CmdPacketTypePolyBezierAppend */ \
         "R", /** CmdPacketTypeReset */ \
         "S"  /** CmdPacketTypeShutdown */ \
 }
@@ -177,6 +181,8 @@
         2 + 2 + 2 + 2 + 2, /** CmdPacketTypeSimpleVibrate: uint16 ix, uint16 iy, uint16 itheta, uint16 period, uint16 duration */ \
         2 + 2,             /** CmdPacketTypeVibrateOnMotion: uint16 icoeff, uint16 period */ \
         0,                 /** CmdPacketTypeClearHapticFeedback */ \
+        4 + 4,             /** CmdPacketTypePolyBezierInit: float x0, float y0 */ \
+        3*(4 + 4),         /** CmdPacketTypePolyBezierAppend: float x1, float y1, float x2, float y2, float x3, float y3 */ \
         0,                 /** CmdPacketTypeReset */ \
         0                  /** CmdPacketTypeShutdown */ \
 }
