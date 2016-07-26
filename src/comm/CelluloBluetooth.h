@@ -450,6 +450,15 @@ public slots:
     void setGoalPolyBezier(float v, float w);
 
     /**
+     * @brief Starts tracking the previously set composite Bézier curve while keeping orientation aligned to the curve
+     *
+     * @param v Linear velocity tangent to the curve
+     * @param theta Orientation to track with respect to the curve tangent orientation, in degrees
+     * @param w Maximum angular velocity while tracking orientation, in rad/s
+     */
+    void setGoalPolyBezierAligned(float v, float theta, float w);
+
+    /**
      * @brief Initiates a software reset on the robot
      */
     void reset();

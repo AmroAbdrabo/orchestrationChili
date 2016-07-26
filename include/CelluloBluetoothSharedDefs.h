@@ -113,6 +113,7 @@
         CmdPacketTypePolyBezierInit,                 /** Sets the first control point of the composite Bézier curve for tracking */ \
         CmdPacketTypePolyBezierAppend,               /** Appends 3 control points to the composite Bézier curve for tracking */ \
         CmdPacketTypeSetGoalPolyBezier,              /** Starts tracking the previously set composite Bézier curve */ \
+        CmdPacketTypeSetGoalPolyBezierAligned,       /** Same as CmdPacketTypeSetGoalPolyBezier while keeping orientation aligned to curve */ \
         CmdPacketTypeReset,                          /** Request reset */ \
         CmdPacketTypeShutdown,                       /** Request shutdown */ \
         CmdPacketTypeNumElements, \
@@ -150,6 +151,7 @@
         ".", /** CmdPacketTypePolyBezierInit */ \
         "~", /** CmdPacketTypePolyBezierAppend */ \
         "J", /** CmdPacketTypeSetGoalPolyBezier */ \
+        "Q", /** CmdPacketTypeSetGoalPolyBezierAligned */ \
         "R", /** CmdPacketTypeReset */ \
         "S"  /** CmdPacketTypeShutdown */ \
 }
@@ -185,7 +187,8 @@
         0,                 /** CmdPacketTypeClearHapticFeedback */ \
         4 + 4,             /** CmdPacketTypePolyBezierInit: float x0, float y0 */ \
         3*(4 + 4),         /** CmdPacketTypePolyBezierAppend: float x1, float y1, float x2, float y2, float x3, float y3 */ \
-        2 + 2,             /** CmdPacketTypeSetGoalPolyBezier: uint16 v, uint16 w */ \
+        2 + 2,             /** CmdPacketTypeSetGoalPolyBezier: uint16 v, int16 w */ \
+        2 + 2 + 2,         /** CmdPacketTypeSetGoalPolyBezierAligned: uint16 v, uint16 theta, uint16 w */ \
         0,                 /** CmdPacketTypeReset */ \
         0                  /** CmdPacketTypeShutdown */ \
 }

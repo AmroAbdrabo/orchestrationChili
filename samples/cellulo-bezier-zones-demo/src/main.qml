@@ -211,12 +211,26 @@ ApplicationWindow {
             placeholderText: "w (rad/s)"
         }
 
+        TextField{
+            id: theta
+            placeholderText: "Aligned theta (°)"
+        }
+
         Button{
             text: "Follow the path"
             onClicked: {
                 robotComm.setCasualBackdriveAssistEnabled(false);
                 robotComm.polyBezierSetFromZone(zoneEngine.zoneDistance);
                 robotComm.setGoalPolyBezier(parseFloat(vel.text), parseFloat(w.text));
+            }
+        }
+
+        Button{
+            text: "Follow the path (aligned)"
+            onClicked: {
+                robotComm.setCasualBackdriveAssistEnabled(false);
+                robotComm.polyBezierSetFromZone(zoneEngine.zoneDistance);
+                robotComm.setGoalPolyBezierAligned(parseFloat(vel.text), parseFloat(theta.text), parseFloat(w.text));
             }
         }
     }

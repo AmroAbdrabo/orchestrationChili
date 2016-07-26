@@ -853,13 +853,15 @@ void CelluloBluetooth::polyBezierSetFromZone(CelluloZone* zone){
 }
 
 void CelluloBluetooth::setGoalPolyBezier(float v, float w){
-    int v_ = (int)(v*GOAL_VEL_FACTOR_SHARED);
+    v *= GOAL_VEL_FACTOR_SHARED;
     int w_ = (int)(w*GOAL_VEL_FACTOR_SHARED);
 
-    if(v_ < -0x7FFF)
-        v_ = -0x7FFF;
-    else if(v_ > 0x7FFF)
-        v_ = 0x7FFF;
+    quint16 vi;
+
+    if(v > (float)0xFFFF)
+        vi = 0xFFFF;
+    else
+        vi = (quint16)v;
 
     if(w_ < -0x7FFF)
         w_ = -0x7FFF;
@@ -868,8 +870,38 @@ void CelluloBluetooth::setGoalPolyBezier(float v, float w){
 
     sendPacket.clear();
     sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeSetGoalPolyBezier);
-    sendPacket.load((qint16)v_);
+    sendPacket.load(vi);
     sendPacket.load((qint16)w_);
+    sendCommand();
+}
+
+void CelluloBluetooth::setGoalPolyBezierAligned(float v, float theta, float w){
+    v *= GOAL_VEL_FACTOR_SHARED;
+    theta *= GOAL_POSE_FACTOR_SHARED;
+    w *= GOAL_VEL_FACTOR_SHARED;
+
+    quint16 vi, thetai, wi;
+
+    if(v > (float)0xFFFF)
+        vi = 0xFFFF;
+    else
+        vi = (quint16)v;
+
+    if(theta > (float)0xFFFF)
+        thetai = 0xFFFF;
+    else
+        thetai = (quint16)theta;
+
+    if(w > (float)0xFFFF)
+        wi = 0xFFFF;
+    else
+        wi = (quint16)w;
+
+    sendPacket.clear();
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeSetGoalPolyBezierAligned);
+    sendPacket.load(vi);
+    sendPacket.load(thetai);
+    sendPacket.load(wi);
     sendCommand();
 }
 
