@@ -141,77 +141,114 @@ ApplicationWindow {
         title: "Playground"
         anchors.top: addressBox.bottom
 
-        Item{
-            width: page.width + page.physicalRobotWidth*page.scaleCoeff
-            height: page.height + page.physicalRobotWidth*page.scaleCoeff
+        Row{
+            spacing: 5
 
-            Rectangle{
-                id: page
-
-                anchors.centerIn: parent
-
-                property real physicalWidth: 210        ///< Physical paper width in mm
-                property real physicalHeight: 297       ///< Physical paper height in mm
-                property real physicalRobotWidth: 75    ///< Physical robot width in mm
-
-                width: height*physicalWidth/physicalHeight
-                height: Screen.height/2
-
-                property real scaleCoeff: width/physicalWidth
-
-                color: "#EEEEEE"
-                border.color: "black"
-                border.width: 2
-                radius: 5
-
-                CelluloZonePaintedItem{
-                    color: "#80FF0000"
-                    physicalPlaygroundWidth: parent.physicalWidth
-                    physicalPlaygroundHeight: parent.physicalHeight
-                    associatedZone: zoneInner
-                }
-
-                CelluloZonePaintedItem{
-                    color: "#800000FF"
-                    physicalPlaygroundWidth: parent.physicalWidth
-                    physicalPlaygroundHeight: parent.physicalHeight
-                    associatedZone: zoneBorder
-                }
-
-                CelluloZonePaintedItem{
-                    color: "#8000FF00"
-                    physicalPlaygroundWidth: parent.physicalWidth
-                    physicalPlaygroundHeight: parent.physicalHeight
-                    associatedZone: zoneDistance
-                }
+            Item{
+                width: page.width + page.physicalRobotWidth*page.scaleCoeff
+                height: page.height + page.physicalRobotWidth*page.scaleCoeff
 
                 Rectangle{
-                    x: zoneDistance.closestPoint.x*parent.scaleCoeff - width/2
-                    y: zoneDistance.closestPoint.y*parent.scaleCoeff - height/2
-                    height: 10
-                    width: 10
-                    color: "#80FFFFFF"
-                    radius: 5
-                }
+                    id: page
 
-                Image{
-                    source: robotComm.kidnapped ? "../assets/redHexagon.svg" : "../assets/greenHexagon.svg"
-                    rotation: robotComm.theta
-                    x: robotComm.x*parent.scaleCoeff - width/2
-                    y: robotComm.y*parent.scaleCoeff - height/2
-                    width: parent.physicalRobotWidth*parent.scaleCoeff
-                    fillMode: Image.PreserveAspectFit
+                    anchors.centerIn: parent
+
+                    property real physicalWidth: 210        ///< Physical paper width in mm
+                    property real physicalHeight: 297       ///< Physical paper height in mm
+                    property real physicalRobotWidth: 75    ///< Physical robot width in mm
+
+                    width: height*physicalWidth/physicalHeight
+                    height: Screen.height/2
+
+                    property real scaleCoeff: width/physicalWidth
+
+                    color: "#EEEEEE"
+                    border.color: "black"
+                    border.width: 2
+                    radius: 5
+
+                    CelluloZonePaintedItem{
+                        color: "#80FF0000"
+                        physicalPlaygroundWidth: parent.physicalWidth
+                        physicalPlaygroundHeight: parent.physicalHeight
+                        associatedZone: zoneInner
+                    }
+
+                    CelluloZonePaintedItem{
+                        color: "#800000FF"
+                        physicalPlaygroundWidth: parent.physicalWidth
+                        physicalPlaygroundHeight: parent.physicalHeight
+                        associatedZone: zoneBorder
+                    }
+
+                    CelluloZonePaintedItem{
+                        color: "#8000FF00"
+                        physicalPlaygroundWidth: parent.physicalWidth
+                        physicalPlaygroundHeight: parent.physicalHeight
+                        associatedZone: zoneDistance
+                    }
 
                     Rectangle{
-                        x: parent.width/2 - width/2
-                        y: parent.height/2 - height/2
-                        height: 5
-                        width: 5
-                        color: "black"
-                        border.color: "black"
-                        border.width: 1
-                        radius: 2.5
+                        x: zoneDistance.closestPoint.x*parent.scaleCoeff - width/2
+                        y: zoneDistance.closestPoint.y*parent.scaleCoeff - height/2
+                        height: 10
+                        width: 10
+                        color: "#80FFFFFF"
+                        radius: 5
                     }
+
+                    Image{
+                        source: robotComm.kidnapped ? "../assets/redHexagon.svg" : "../assets/greenHexagon.svg"
+                        rotation: robotComm.theta
+                        x: robotComm.x*parent.scaleCoeff - width/2
+                        y: robotComm.y*parent.scaleCoeff - height/2
+                        width: parent.physicalRobotWidth*parent.scaleCoeff
+                        fillMode: Image.PreserveAspectFit
+
+                        Rectangle{
+                            x: parent.width/2 - width/2
+                            y: parent.height/2 - height/2
+                            height: 5
+                            width: 5
+                            color: "black"
+                            border.color: "black"
+                            border.width: 1
+                            radius: 2.5
+                        }
+                    }
+                }
+            }
+
+            Item{
+                width: jsonpage.width + jsonpage.physicalRobotWidth*jsonpage.scaleCoeff
+                height: jsonpage.height + jsonpage.physicalRobotWidth*jsonpage.scaleCoeff
+
+                Rectangle{
+                    id: jsonpage
+
+                    anchors.centerIn: parent
+
+                    property real physicalWidth: 210        ///< Physical paper width in mm
+                    property real physicalHeight: 297       ///< Physical paper height in mm
+                    property real physicalRobotWidth: 75    ///< Physical robot width in mm
+
+                    width: height*physicalWidth/physicalHeight
+                    height: Screen.height/2
+
+                    property real scaleCoeff: width/physicalWidth
+
+                    color: "#EEEEEE"
+                    border.color: "black"
+                    border.width: 2
+                    radius: 5
+
+                    Text{ x:5; y:5; text: "Zones loaded from JSON (not used)" }
+                }
+
+                Component.onCompleted: {
+                    var zones = CelluloZoneJsonHandler.loadZonesQML(":/assets/zones.json");
+                    for(var i=0;i<zones.length;i++)
+                        zones[i].createPaintedItem(jsonpage, "black", jsonpage.physicalWidth, jsonpage.physicalHeight);
                 }
             }
         }
