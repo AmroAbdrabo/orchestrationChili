@@ -1,0 +1,3 @@
+[submodule "src/util/svg/nanosvg"]
+	path = src/util/svg/nanosvg
+	url = git@github.com:memononen/nanosvg.git

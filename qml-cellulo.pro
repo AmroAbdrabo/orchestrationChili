@@ -23,7 +23,8 @@ HEADERS += \
     src/zones/CelluloZoneTypes.h \
     src/zones/CelluloZonePaintedItem.h \
     src/util/math/CelluloMathUtil.h \
-    src/util/math/CubicBezier.h
+    src/util/math/CubicBezier.h \
+    src/util/svg/CelluloSVGUtil.h
 
 SOURCES += \
     src/CelluloPlugin.cpp \
@@ -46,7 +47,8 @@ SOURCES += \
     src/zones/CelluloZoneTypes.cpp \
     src/zones/CelluloZonePaintedItem.cpp \
     src/util/math/CelluloMathUtil.cpp \
-    src/util/math/CubicBezier.cpp
+    src/util/math/CubicBezier.cpp \
+    src/util/svg/CelluloSVGUtil.cpp
 
 INCLUDEPATH += \
     include/

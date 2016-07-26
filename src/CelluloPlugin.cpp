@@ -45,6 +45,7 @@
 #include "zones/CelluloZoneTypes.h"
 #include "zones/CelluloZonePaintedItem.h"
 #include "util/math/CelluloMathUtil.h"
+#include "util/svg/CelluloSVGUtil.h"
 
 void CelluloPlugin::registerTypes(const char *uri){
     qmlRegisterType<CelluloBluetooth>(uri, 1, 0, "CelluloBluetooth");
@@ -59,17 +60,17 @@ void CelluloPlugin::registerTypes(const char *uri){
     qmlRegisterType<CelluloZoneClient>(uri, 1, 0, "CelluloZoneClient");
     qmlRegisterType<CelluloZoneEngine>(uri, 1, 0, "CelluloZoneEngine");
     qmlRegisterSingletonType<CelluloZoneJsonHandler>(uri, 1, 0, "CelluloZoneJsonHandler",
-                                                    [] (QQmlEngine* qmlEngine, QJSEngine* jsEngine)->QObject* {
-                                                        Q_UNUSED(qmlEngine)
-                                                        Q_UNUSED(jsEngine)
-                                                        return new CelluloZoneJsonHandler();
-                                                    });
+                                                     [] (QQmlEngine* qmlEngine, QJSEngine* jsEngine)->QObject* {
+                                                         Q_UNUSED(qmlEngine)
+                                                         Q_UNUSED(jsEngine)
+                                                         return new CelluloZoneJsonHandler();
+                                                     });
     qmlRegisterSingletonType<CelluloZoneTypes>(uri, 1, 0, "CelluloZoneTypes",
-                                                    [] (QQmlEngine* qmlEngine, QJSEngine* jsEngine)->QObject* {
-                                                        Q_UNUSED(qmlEngine)
-                                                        Q_UNUSED(jsEngine)
-                                                        return new CelluloZoneTypes();
-                                                    });
+                                               [] (QQmlEngine* qmlEngine, QJSEngine* jsEngine)->QObject* {
+                                                   Q_UNUSED(qmlEngine)
+                                                   Q_UNUSED(jsEngine)
+                                                   return new CelluloZoneTypes();
+                                               });
 
     qmlRegisterType<CelluloZoneCircleInner>(uri, 1, 0, "CelluloZoneCircleInner");
     qmlRegisterType<CelluloZoneCircleBorder>(uri, 1, 0, "CelluloZoneCircleBorder");
@@ -106,11 +107,18 @@ void CelluloPlugin::registerTypes(const char *uri){
     qmlRegisterType<CelluloZonePaintedItem>(uri, 1, 0, "CelluloZonePaintedItem");
 
     qmlRegisterSingletonType<CelluloMathUtil>(uri, 1, 0, "CelluloMathUtil",
-                                                    [] (QQmlEngine* qmlEngine, QJSEngine* jsEngine)->QObject* {
-                                                        Q_UNUSED(qmlEngine)
-                                                        Q_UNUSED(jsEngine)
-                                                        return new CelluloMathUtil();
-                                                    });
+                                              [] (QQmlEngine* qmlEngine, QJSEngine* jsEngine)->QObject* {
+                                                  Q_UNUSED(qmlEngine)
+                                                  Q_UNUSED(jsEngine)
+                                                  return new CelluloMathUtil();
+                                              });
+
+    qmlRegisterSingletonType<CelluloSVGUtil>(uri, 1, 0, "CelluloSVGUtil",
+                                             [] (QQmlEngine* qmlEngine, QJSEngine* jsEngine)->QObject* {
+                                                 Q_UNUSED(qmlEngine)
+                                                 Q_UNUSED(jsEngine)
+                                                 return new CelluloSVGUtil();
+                                             });
 }
 
 void CelluloPlugin::initializeEngine(QQmlEngine *engine, const char *uri){
