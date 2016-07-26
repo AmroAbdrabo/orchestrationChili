@@ -35,7 +35,7 @@ ApplicationWindow {
 
         Button{
             text: "Go"
-            onClicked: CelluloSVGUtil.dumpAllPathsToJSON(inFile.text, outFile.text, parseFloat(dpi.text))
+            onClicked: console.log(CelluloSVGUtil.dumpAllPathsToJSON(inFile.text, outFile.text, parseFloat(dpi.text)))
         }
     }
 

@@ -24,10 +24,15 @@
 
 #include "CelluloSVGUtil.h"
 
-#include <QDebug>
-#include <stdio.h>
-#include <string.h>
-#include <math.h>
+#include "../../zones/CelluloZoneTypes.h"
+
+#include <QFile>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <cstdio>
+#include <cstring>
+#include <cmath>
 #define NANOSVG_IMPLEMENTATION
 #include "nanosvg/src/nanosvg.h"
 
@@ -35,20 +40,43 @@ CelluloSVGUtil::CelluloSVGUtil(QObject* parent) : QObject(parent){}
 
 CelluloSVGUtil::~CelluloSVGUtil(){}
 
-void CelluloSVGUtil::dumpAllPathsToJSON(const QString& inSVGFile, const QString& outJSONFile, float dpi){
+QString CelluloSVGUtil::dumpAllPathsToJSON(const QString& inSVGFile, const QString& outJSONFile, float dpi){
     struct NSVGimage* image = nsvgParseFromFile(inSVGFile.toLatin1(), "mm", dpi);
     if(!image)
-        qWarning() << "CelluloSVGUtil::dumpAllPathsToJSON(): Input file cannot be opened.";
+        return "CelluloSVGUtil::dumpAllPathsToJSON(): Couldn't open input file.";
     else{
-        qDebug() << "CelluloSVGUtil::dumpAllPathsToJSON():" << image->width << " " << image->height;
+        QFile saveFile(outJSONFile);
+        if(!saveFile.open(QIODevice::WriteOnly))
+            return "CelluloSVGUtil::dumpAllPathsToJSON(): Couldn't write to output file.";
 
-        for(NSVGshape* shape = image->shapes; shape != NULL; shape = shape->next){
+        QJsonArray jsonZones;
+        int numZone = 0;
+        for(NSVGshape* shape = image->shapes; shape != NULL; shape = shape->next)
             for(NSVGpath* path = shape->paths; path != NULL; path = path->next){
-                for(int i=0; i<2*path->npts; i++){
-                    qDebug() << path->pts[i];
+
+                //Dump each path as one zone
+                QJsonObject zoneObj;
+                zoneObj["type"] = "POLYBEZIERBORDER";
+                zoneObj["name"] = "SVG_DUMP_ZONE_" + QString::number(numZone);
+
+                QJsonArray controlPointsArray;
+                QJsonObject controlPointObj;
+                for(int i=0; i<2*path->npts; i+=2){
+                    controlPointObj["x"] = path->pts[i];
+                    controlPointObj["y"] = path->pts[i + 1];
+                    controlPointsArray.append(controlPointObj);
                 }
+                zoneObj["controlPoints"] = controlPointsArray;
+
+                jsonZones.append(zoneObj);
+
+                numZone++;
             }
-        }
+
         nsvgDelete(image);
+
+        saveFile.write(QJsonDocument(jsonZones).toJson());
+
+        return "CelluloSVGUtil::dumpAllPathsToJSON(): Dumped " + QString::number(numZone) + " zones.";
     }
 }
