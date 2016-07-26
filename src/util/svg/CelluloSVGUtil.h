@@ -43,8 +43,9 @@ public:
      *
      * @param inSVGFile Full path to the SVG file
      * @param outJSONFile Full path to the JSON file, it will be overwritten
+     * @param dpi Dots Per Inch to be used during conversion to millimeters
      */
-    Q_INVOKABLE static void dumpAllPathsToJSON(const QString& inSVGFile, const QString& outJSONFile);
+    Q_INVOKABLE static void dumpAllPathsToJSON(const QString& inSVGFile, const QString& outJSONFile, float dpi);
 
 };
 

@@ -24,8 +24,31 @@
 
 #include "CelluloSVGUtil.h"
 
-#include <cmath>
+#include <QDebug>
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#define NANOSVG_IMPLEMENTATION
+#include "nanosvg/src/nanosvg.h"
 
 CelluloSVGUtil::CelluloSVGUtil(QObject* parent) : QObject(parent){}
 
 CelluloSVGUtil::~CelluloSVGUtil(){}
+
+void CelluloSVGUtil::dumpAllPathsToJSON(const QString& inSVGFile, const QString& outJSONFile, float dpi){
+    struct NSVGimage* image = nsvgParseFromFile(inSVGFile.toLatin1(), "mm", dpi);
+    if(!image)
+        qWarning() << "CelluloSVGUtil::dumpAllPathsToJSON(): Input file cannot be opened.";
+    else{
+        qDebug() << "CelluloSVGUtil::dumpAllPathsToJSON():" << image->width << " " << image->height;
+
+        for(NSVGshape* shape = image->shapes; shape != NULL; shape = shape->next){
+            for(NSVGpath* path = shape->paths; path != NULL; path = path->next){
+                for(int i=0; i<2*path->npts; i++){
+                    qDebug() << path->pts[i];
+                }
+            }
+        }
+        nsvgDelete(image);
+    }
+}
