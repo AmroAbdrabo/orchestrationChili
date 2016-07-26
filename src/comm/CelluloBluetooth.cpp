@@ -312,12 +312,6 @@ void CelluloBluetooth::processResponse(){
 
         case CelluloBluetoothPacket::EventPacketTypeDebug: {
             //qDebug() << "CelluloBluetoothPacket::processResponse(): Debug event received";
-            char s[64];
-            int a = recvPacket.unloadInt32();
-            int b = recvPacket.unloadInt32();
-            int c = recvPacket.unloadInt32();
-            sprintf(s, "%6d %6d %6d", a, b, c);
-            qDebug() << s;
             break;
         }
         default:
@@ -848,6 +842,14 @@ void CelluloBluetooth::polyBezierAppend(const QVector2D& point1, const QVector2D
     sendPacket.load((float)point3.x());
     sendPacket.load((float)point3.y());
     sendCommand();
+}
+
+void CelluloBluetooth::polyBezierSetFromZone(CelluloZone* zone){
+    CelluloZonePolyBezier* bzone = qobject_cast<CelluloZonePolyBezier*>(zone);
+    if(bzone)
+        bzone->sendPathToRobot(this);
+    else
+        qWarning() << "CelluloBluetooth::polyBezierSetFromZone(): zone must be castable to CelluloZonePolyBezier.";
 }
 
 void CelluloBluetooth::setGoalPolyBezier(float v){

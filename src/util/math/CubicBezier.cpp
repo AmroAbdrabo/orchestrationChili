@@ -57,7 +57,7 @@ void CubicBezier::translate(const QVector2D& t){
     p[3] += t;
 }
 
-QVector2D CubicBezier::getControlPoint(unsigned char i){
+QVector2D CubicBezier::getControlPoint(unsigned char i) const {
     if(i > 3)
         return QVector2D();
     else

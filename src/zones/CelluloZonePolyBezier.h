@@ -27,6 +27,9 @@
 
 #include "CelluloZone.h"
 #include "../util/math/CubicBezier.h"
+#include "../comm/CelluloBluetooth.h"
+
+class CelluloBluetooth;
 
 /**
  * @brief CelluloZone Base class for composite cubic Bézier curve
@@ -86,6 +89,15 @@ public:
      * @param json json object to be read
      */
     virtual void read(const QJsonObject& json) override;
+
+public slots:
+
+    /**
+     * @brief Sends this path to the given robot in order to be followed
+     *
+     * @param robot The robot to send the path to
+     */
+    void sendPathToRobot(CelluloBluetooth* robot) const;
 
 signals:
 

@@ -303,59 +303,59 @@ ApplicationWindow {
                             Button{
                                 text: "Track complete pose"
                                 onClicked: robotComm.setGoalPose(
-                                    parseFloat(goalPoseX.text),
-                                    parseFloat(goalPoseY.text),
-                                    parseFloat(goalPoseTheta.text),
-                                    parseFloat(goalPoseMaxV.text),
-                                    parseFloat(goalPoseMaxW.text)
-                                )
+                                               parseFloat(goalPoseX.text),
+                                               parseFloat(goalPoseY.text),
+                                               parseFloat(goalPoseTheta.text),
+                                               parseFloat(goalPoseMaxV.text),
+                                               parseFloat(goalPoseMaxW.text)
+                                               )
                             }
                             Button{
                                 text: "Track position"
                                 onClicked: robotComm.setGoalPosition(
-                                    parseFloat(goalPoseX.text),
-                                    parseFloat(goalPoseY.text),
-                                    parseFloat(goalPoseMaxV.text)
-                                )
+                                               parseFloat(goalPoseX.text),
+                                               parseFloat(goalPoseY.text),
+                                               parseFloat(goalPoseMaxV.text)
+                                               )
                             }
                             Button{
                                 text: "Track orientation"
                                 onClicked: robotComm.setGoalOrientation(
-                                    parseFloat(goalPoseTheta.text),
-                                    parseFloat(goalPoseMaxW.text)
-                                )
+                                               parseFloat(goalPoseTheta.text),
+                                               parseFloat(goalPoseMaxW.text)
+                                               )
                             }
                             Button{
                                 text: "Track X"
                                 onClicked: robotComm.setGoalXCoordinate(
-                                    parseFloat(goalPoseX.text),
-                                    parseFloat(goalPoseMaxV.text)
-                                )
+                                               parseFloat(goalPoseX.text),
+                                               parseFloat(goalPoseMaxV.text)
+                                               )
                             }
                             Button{
                                 text: "Track Y"
                                 onClicked: robotComm.setGoalYCoordinate(
-                                    parseFloat(goalPoseY.text),
-                                    parseFloat(goalPoseMaxV.text)
-                                )
+                                               parseFloat(goalPoseY.text),
+                                               parseFloat(goalPoseMaxV.text)
+                                               )
                             }
                             Button{
                                 text: "Track X and Theta"
                                 onClicked: robotComm.setGoalXThetaCoordinate(
-                                    parseFloat(goalPoseX.text),
-                                    parseFloat(goalPoseTheta.text),
-                                    parseFloat(goalPoseMaxV.text),
-                                    parseFloat(goalPoseMaxW.text)
-                                )
+                                               parseFloat(goalPoseX.text),
+                                               parseFloat(goalPoseTheta.text),
+                                               parseFloat(goalPoseMaxV.text),
+                                               parseFloat(goalPoseMaxW.text)
+                                               )
                             }
                             Button{
                                 text: "Track Y and Theta"
                                 onClicked: robotComm.setGoalYThetaCoordinate(
-                                    parseFloat(goalPoseY.text),
-                                    parseFloat(goalPoseTheta.text),
-                                    parseFloat(goalPoseMaxV.text),
-                                    parseFloat(goalPoseMaxW.text)
-                                )
+                                               parseFloat(goalPoseY.text),
+                                               parseFloat(goalPoseTheta.text),
+                                               parseFloat(goalPoseMaxV.text),
+                                               parseFloat(goalPoseMaxW.text)
+                                               )
                             }
                         }
 
@@ -420,10 +420,10 @@ ApplicationWindow {
                                 text: "Go"
                                 onClicked: {
                                     robotComm.setHapticBackdriveAssist(
-                                        parseFloat(hBdrvAssistX.text),
-                                        parseFloat(hBdrvAssistY.text),
-                                        parseFloat(hBdrvAssistTheta.text)
-                                        );
+                                                parseFloat(hBdrvAssistX.text),
+                                                parseFloat(hBdrvAssistY.text),
+                                                parseFloat(hBdrvAssistTheta.text)
+                                                );
                                     casualBdrvAssistCheckbox.checked = false;
                                 }
                             }

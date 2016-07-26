@@ -248,7 +248,7 @@
         0,                    /** EventPacketTypeTrackingGoalReached */ \
         0,                    /** EventPacketTypeAcknowledged */ \
         2 + IMG_WIDTH_SHARED, /** EventPacketTypeFrameLine: uint16 currentLineIndex, IMG_WIDTH*uint8 grayscalePixel */ \
-        12                     /** EventPacketTypeDebug */ \
+        4                     /** EventPacketTypeDebug */ \
 }
 
 #endif // CELLULOBLUETOOTHSHAREDDEFS_H

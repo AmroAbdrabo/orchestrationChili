@@ -68,7 +68,7 @@ public:
      *
      * @param i Index: 0, 1, 2 or 3
      */
-    QVector2D getControlPoint(unsigned char i);
+    QVector2D getControlPoint(unsigned char i) const;
 
     /**
      * @brief Translates the entire curve, i.e the control points, by t

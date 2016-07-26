@@ -36,6 +36,7 @@
 #include "CelluloBluetoothEnums.h"
 #include "CelluloBluetoothPacket.h"
 #include "../zones/CelluloZoneClient.h"
+#include "../zones/CelluloZonePolyBezier.h"
 
 /**
  * @brief Bluetooth communicator for a Cellulo robot
@@ -432,6 +433,13 @@ public slots:
      * @param point3 The fourth control point for the curve
      */
     void polyBezierAppend(const QVector2D& point1, const QVector2D& point2, const QVector2D& point3);
+
+    /**
+     * @brief Sends the composite Bézier curve in the zone to the robot
+     *
+     * @param zone The zone that contains the composite Bézier curve path
+     */
+    void polyBezierSetFromZone(CelluloZone* zone);
 
     /**
      * @brief Starts tracking the previously set composite Bézier curve

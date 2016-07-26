@@ -27,6 +27,7 @@
 #include "../util/math/CelluloMathUtil.h"
 
 #include <QPointF>
+#include <QDebug>
 
 CelluloZonePolyBezier::CelluloZonePolyBezier() : CelluloZone(){}
 
@@ -107,6 +108,16 @@ void CelluloZonePolyBezier::read(const QJsonObject &json){
         newControlPoints.append(QVariant(QVector2D(controlPointObj["x"].toDouble(), controlPointObj["y"].toDouble())));
     }
     setControlPoints(newControlPoints);
+}
+
+void CelluloZonePolyBezier::sendPathToRobot(CelluloBluetooth* robot) const {
+    if(segments.isEmpty())
+        qDebug() << "CelluloZonePolyBezier::sendPathToRobot(): Path is empty.";
+    else{
+        robot->polyBezierInit(segments[0].getControlPoint(0));
+        for(auto segment : segments)
+            robot->polyBezierAppend(segment.getControlPoint(1), segment.getControlPoint(2), segment.getControlPoint(3));
+    }
 }
 
 void CelluloZonePolyBezier::calculateBoundingBox(){
