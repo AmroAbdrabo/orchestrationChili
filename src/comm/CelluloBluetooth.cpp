@@ -852,17 +852,24 @@ void CelluloBluetooth::polyBezierSetFromZone(CelluloZone* zone){
         qWarning() << "CelluloBluetooth::polyBezierSetFromZone(): zone must be castable to CelluloZonePolyBezier.";
 }
 
-void CelluloBluetooth::setGoalPolyBezier(float v){
+void CelluloBluetooth::setGoalPolyBezier(float v, float w){
     int v_ = (int)(v*GOAL_VEL_FACTOR_SHARED);
+    int w_ = (int)(w*GOAL_VEL_FACTOR_SHARED);
 
     if(v_ < -0x7FFF)
         v_ = -0x7FFF;
     else if(v_ > 0x7FFF)
         v_ = 0x7FFF;
 
+    if(w_ < -0x7FFF)
+        w_ = -0x7FFF;
+    else if(w_ > 0x7FFF)
+        w_ = 0x7FFF;
+
     sendPacket.clear();
     sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeSetGoalPolyBezier);
     sendPacket.load((qint16)v_);
+    sendPacket.load((qint16)w_);
     sendCommand();
 }
 

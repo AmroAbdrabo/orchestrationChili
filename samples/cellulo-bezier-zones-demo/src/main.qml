@@ -206,12 +206,17 @@ ApplicationWindow {
             placeholderText: "Velocity (mm/s)"
         }
 
+        TextField{
+            id: w
+            placeholderText: "w (rad/s)"
+        }
+
         Button{
             text: "Follow the path"
             onClicked: {
                 robotComm.setCasualBackdriveAssistEnabled(false);
                 robotComm.polyBezierSetFromZone(zoneEngine.zoneDistance);
-                robotComm.setGoalPolyBezier(parseFloat(vel.text));
+                robotComm.setGoalPolyBezier(parseFloat(vel.text), parseFloat(w.text));
             }
         }
     }

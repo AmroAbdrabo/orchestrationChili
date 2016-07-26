@@ -444,9 +444,10 @@ public slots:
     /**
      * @brief Starts tracking the previously set composite Bézier curve
      *
-     * @param v Linear velocity
+     * @param v Linear velocity tangent to the curve
+     * @param w Angular velocity throughout the traversal
      */
-    void setGoalPolyBezier(float v);
+    void setGoalPolyBezier(float v, float w);
 
     /**
      * @brief Initiates a software reset on the robot

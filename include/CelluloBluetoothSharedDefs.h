@@ -185,7 +185,7 @@
         0,                 /** CmdPacketTypeClearHapticFeedback */ \
         4 + 4,             /** CmdPacketTypePolyBezierInit: float x0, float y0 */ \
         3*(4 + 4),         /** CmdPacketTypePolyBezierAppend: float x1, float y1, float x2, float y2, float x3, float y3 */ \
-        2,                 /** CmdPacketTypeSetGoalPolyBezier: uint16 v */ \
+        2 + 2,             /** CmdPacketTypeSetGoalPolyBezier: uint16 v, uint16 w */ \
         0,                 /** CmdPacketTypeReset */ \
         0                  /** CmdPacketTypeShutdown */ \
 }
