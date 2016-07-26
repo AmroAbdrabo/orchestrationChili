@@ -41,12 +41,12 @@ public:
     /**
      * @brief Parses the given SVG file and dumps all paths into the given JSON file in the CelluloZonePolyBezier format
      *
-     * @param inSVGFile Full path to the SVG file
-     * @param outJSONFile Full path to the JSON file, it will be overwritten
-     * @param dpi Dots Per Inch to be used during conversion to millimeters
+     * @param inSVGFile Full path to the local SVG file, can be in QUrl form
+     * @param outJSONFile Full path to the local JSON file, will be overwritten, can be in QUrl form
+     * @param dpi Dots Per Inch to be used during conversion to millimeters (90 is the default for inkscape)
      * @return Human readable result message
      */
-    Q_INVOKABLE static QString dumpAllPathsToJSON(const QString& inSVGFile, const QString& outJSONFile, float dpi);
+    Q_INVOKABLE static QString dumpAllPathsToJSON(const QString& inSVGFile, const QString& outJSONFile, float dpi = 90.0f);
 
 };
 

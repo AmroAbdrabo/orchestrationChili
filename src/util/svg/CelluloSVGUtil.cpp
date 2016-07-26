@@ -15,17 +15,19 @@
  * along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
- /**
-  * @file CelluloSVGUtil.h
-  * @brief Source for SVG file parsing and dumping utils
-  * @author Ayberk Özgür
-  * @date 2016-07-26
-  */
+/**
+ * @file CelluloSVGUtil.h
+ * @brief Source for SVG file parsing and dumping utils
+ * @author Ayberk Özgür
+ * @date 2016-07-26
+ */
 
 #include "CelluloSVGUtil.h"
 
 #include "../../zones/CelluloZoneTypes.h"
 
+#include <QDebug>
+#include <QUrl>
 #include <QFile>
 #include <QJsonObject>
 #include <QJsonDocument>
@@ -41,13 +43,20 @@ CelluloSVGUtil::CelluloSVGUtil(QObject* parent) : QObject(parent){}
 CelluloSVGUtil::~CelluloSVGUtil(){}
 
 QString CelluloSVGUtil::dumpAllPathsToJSON(const QString& inSVGFile, const QString& outJSONFile, float dpi){
-    struct NSVGimage* image = nsvgParseFromFile(inSVGFile.toLatin1(), "mm", dpi);
+    QString inFilePath = QUrl(inSVGFile).toLocalFile();
+    if(inFilePath.isEmpty())
+        inFilePath = inSVGFile;
+    QString outFilePath = QUrl(outJSONFile).toLocalFile();
+    if(outFilePath.isEmpty())
+        outFilePath = outJSONFile;
+
+    struct NSVGimage* image = nsvgParseFromFile(inFilePath.toLatin1(), "mm", dpi);
     if(!image)
         return "CelluloSVGUtil::dumpAllPathsToJSON(): Couldn't open input file.";
     else{
-        QFile saveFile(outJSONFile);
+        QFile saveFile(outFilePath);
         if(!saveFile.open(QIODevice::WriteOnly))
-            return "CelluloSVGUtil::dumpAllPathsToJSON(): Couldn't write to output file.";
+            return "CelluloSVGUtil::dumpAllPathsToJSON(): Couldn't open output file.";
 
         QJsonArray jsonZones;
         int numZone = 0;
