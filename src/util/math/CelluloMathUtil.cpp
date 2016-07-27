@@ -29,6 +29,8 @@
 #include <cstdlib>
 #include <ctime>
 
+#include <QDebug>
+
 CelluloMathUtil::CelluloMathUtil(QObject* parent) : QObject(parent){
     c_srand(time(NULL));
 }
@@ -87,7 +89,7 @@ qreal CelluloMathUtil::pointToPolyBorderDist(const QVector2D& p, const QList<QVe
 int CelluloMathUtil::solveLinearEq(qreal a, qreal b, qreal& x){
 
     //Treat constant line as having zero root even if b = 0
-    if(isZero(a, SOLVE_CUBIC_EPSILON))
+    if(a == 0)
         return 0;
     else{
         x = -b/a;
@@ -96,25 +98,30 @@ int CelluloMathUtil::solveLinearEq(qreal a, qreal b, qreal& x){
 }
 
 int CelluloMathUtil::solveQuadEq(qreal a, qreal b, qreal c, qreal& x1, qreal& x2){
+    //Taken from http://read.pudn.com/downloads21/sourcecode/graph/71499/gems/Roots3And4.c__.htm
 
-    //Most significant coeff is zero, treat as a linear equation
-    if(isZero(a, SOLVE_CUBIC_EPSILON)){
-        int numRoots = solveLinearEq(b,c,x1);
+    if(isZero(a, SOLVE_QUAD_EPSILON)){
+        int numRoots = solveLinearEq(b, c, x1);
         x2 = x1;
         return numRoots;
     }
 
-    qreal det = b*b - 4*a*c;
-    if(det < 0)
-        return 0;
-    else if(det == 0){
-        x1 = -b/(2*a);
+    //Normal form: x^2 + px + q = 0
+    qreal p = b/(2*a);
+    qreal q = c/a;
+    qreal D = p*p - q;
+
+    if(isZero(D, SOLVE_CUBIC_EPSILON)){
+        x1 = -p;
         x2 = x1;
         return 1;
     }
+    else if(D < 0)
+        return 0;
     else{
-        x1 = (-b + sqrtf(det))/(2*a);
-        x2 = (-b - sqrtf(det))/(2*a);
+        qreal sqrt_D = sqrtf(D);
+        x1 = sqrt_D - p;
+        x2 = -sqrt_D - p;
         return 2;
     }
 }
@@ -211,6 +218,10 @@ bool CelluloMathUtil::hRayCrossesLineSeg(const QVector2D& r, const QVector2D& se
     //Ray origin is within the bounding box of the segment at this point, find intersection of ray
     qreal q = (r.y() - seg2.y())/(seg1.y() - seg2.y());
     return r.x() < q*seg1.x() + (1 - q)*seg2.x();
+}
+
+bool CelluloMathUtil::collinear(const QVector2D& a, const QVector2D& b, const QVector2D& c){
+    return fabsf(a.x()*(b.y() - c.y()) + b.x()*(c.y() - a.y()) + c.x()*(a.y() - b.y())) < COLLINEAR_EPSILON;
 }
 
 void CelluloMathUtil::c_srand(unsigned int seed){

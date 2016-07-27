@@ -149,9 +149,21 @@ public:
      */
     Q_INVOKABLE static int c_rand(unsigned int max);
 
+    /**
+     * @brief Gets whether the given points are collinear enough
+     *
+     * @param a Point 1
+     * @param b Point 2
+     * @param c Point 3
+     * @return Whether the three points are collinear enough
+     */
+    Q_INVOKABLE static bool collinear(const QVector2D& a, const QVector2D& b, const QVector2D& c);
+
 private:
 
+    static constexpr qreal COLLINEAR_EPSILON = 1e-2;   ///< Epsilon to use during collinear check
     static constexpr qreal SOLVE_CUBIC_EPSILON = 1e-9; ///< Epsilon to use during isZero by the cubic equation solver
+    static constexpr qreal SOLVE_QUAD_EPSILON = 1e-4;  ///< Epsilon to use during isZero by the quadratic equation solver
 
 };
 
