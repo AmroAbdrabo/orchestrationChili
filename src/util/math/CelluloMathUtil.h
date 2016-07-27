@@ -122,6 +122,23 @@ public:
      */
     Q_INVOKABLE static bool hRayCrossesLineSeg(const QVector2D& r, const QVector2D& seg1, const QVector2D& seg2);
 
+    /**
+     * @brief Initializes c's random number generator seed
+     *
+     * This will be called with time(NULL) at CelluloMathUtil creation time.
+     *
+     * @param seed The seed
+     */
+    Q_INVOKABLE static void c_srand(unsigned int seed);
+
+    /**
+     * @brief Calls c's random number generator
+     *
+     * @param max Interval size
+     * @return Random integer in [0, max-1]
+     */
+    Q_INVOKABLE static int c_rand(unsigned int max);
+
 private:
 
     static constexpr qreal SOLVE_CUBIC_EPSILON = 1e-9; ///< Epsilon to use during isZero by the cubic equation solver

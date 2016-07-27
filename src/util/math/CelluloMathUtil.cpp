@@ -26,12 +26,14 @@
 #include "CelluloMathUtil.h"
 
 #include <cmath>
+#include <cstdlib>
+#include <ctime>
 
 CelluloMathUtil::CelluloMathUtil(QObject* parent) : QObject(parent){
+    c_srand(time(NULL));
 }
 
-CelluloMathUtil::~CelluloMathUtil(){
-}
+CelluloMathUtil::~CelluloMathUtil(){}
 
 qreal CelluloMathUtil::pointToSegmentDist(const QVector2D& p, const QVector2D& seg1, const QVector2D& seg2){
     //Taken from http://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment
@@ -184,4 +186,12 @@ bool CelluloMathUtil::hRayCrossesLineSeg(const QVector2D& r, const QVector2D& se
     //Ray origin is within the bounding box of the segment at this point, find intersection of ray
     qreal q = (r.y() - seg2.y())/(seg1.y() - seg2.y());
     return r.x() < q*seg1.x() + (1 - q)*seg2.x();
+}
+
+void CelluloMathUtil::c_srand(unsigned int seed){
+    srand(seed);
+}
+
+int CelluloMathUtil::c_rand(unsigned int max){
+    return rand() % max;
 }
