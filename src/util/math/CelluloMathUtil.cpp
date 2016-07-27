@@ -29,8 +29,6 @@
 #include <cstdlib>
 #include <ctime>
 
-#include <QDebug>
-
 CelluloMathUtil::CelluloMathUtil(QObject* parent) : QObject(parent){
     c_srand(time(NULL));
 }

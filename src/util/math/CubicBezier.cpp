@@ -26,8 +26,6 @@
 
 #include "CelluloMathUtil.h"
 
-#include <QDebug>
-
 CubicBezier::CubicBezier(){}
 
 CubicBezier::CubicBezier(const QVector2D& p0, const QVector2D& p1, const QVector2D& p2, const QVector2D& p3){
@@ -47,6 +45,8 @@ void CubicBezier::setControlPoints(const QVector2D& p0, const QVector2D& p1, con
     p[1] = p1;
     p[2] = p2;
     p[3] = p3;
+    isDegenerate = CelluloMathUtil::collinear(p0, p1, p3) && CelluloMathUtil::collinear(p0, p2, p3);
+
     invalidateCalc();
 }
 
@@ -304,36 +304,38 @@ bool CubicBezier::side(const QVector2D& m){
 }
 
 int CubicBezier::getNumCrossings(const QVector2D& m){
-    int numCrossings = 0;
+    if(isDegenerate)
+        return CelluloMathUtil::hRayCrossesLineSeg(m, p[0], p[3]) ? 1 : 0;
+    else{
+        int numCrossings = 0;
 
-    //Translate curve to m as origin
-    CubicBezier curveTrans = dumbClone();
-    curveTrans.translate(-m);
-    qreal Ay = curveTrans.getControlPoint(0).y();
-    qreal By = curveTrans.getControlPoint(1).y();
-    qreal Cy = curveTrans.getControlPoint(2).y();
-    qreal Dy = curveTrans.getControlPoint(3).y();
+        //Translate curve to m as origin
+        qreal Ay = p[0].y() - m.y();
+        qreal By = p[1].y() - m.y();
+        qreal Cy = p[2].y() - m.y();
+        qreal Dy = p[3].y() - m.y();
 
-    //Solve B(t).y = 0 to find points where the horizontal ray is crossed
-    qreal t1, t2, t3;
-    int numRoots = CelluloMathUtil::solveCubicEq(-Ay + 3*By - 3*Cy + Dy, 3*Ay - 6*By + 3*Cy, -3*Ay + 3*By, Ay, t1, t2, t3);
+        //Solve B(t).y = 0 to find points where the horizontal ray is crossed
+        qreal t1, t2, t3;
+        int numRoots = CelluloMathUtil::solveCubicEq(-Ay + 3*By - 3*Cy + Dy, 3*Ay - 6*By + 3*Cy, -3*Ay + 3*By, Ay, t1, t2, t3);
 
-    //One root, check t1 only
-    if(0 <= t1 && t1 <= 1)
-        if(curveTrans.getPointX(t1) > 0) //To the right of m
-            numCrossings++;
-
-    //Two roots, check t2 too
-    if(numRoots >= 2)
-        if(0 <= t2 && t2 <= 1)
-            if(curveTrans.getPointX(t2) > 0) //To the right of m
+        //One root, check t1 only
+        if(0 <= t1 && t1 <= 1)
+            if(getPointX(t1) - m.x() > 0) //To the right of m
                 numCrossings++;
 
-    //Three roots, check t3 too
-    if(numRoots >= 3)
-        if(0 <= t3 && t3 <= 1)
-            if(curveTrans.getPointX(t3) > 0) //To the right of m
-                numCrossings++;
+        //Two roots, check t2 too
+        if(numRoots >= 2)
+            if(0 <= t2 && t2 <= 1)
+                if(getPointX(t2) - m.x() > 0) //To the right of m
+                    numCrossings++;
 
-    return numCrossings;
+        //Three roots, check t3 too
+        if(numRoots >= 3)
+            if(0 <= t3 && t3 <= 1)
+                if(getPointX(t3) - m.x() > 0) //To the right of m
+                    numCrossings++;
+
+        return numCrossings;
+    }
 }

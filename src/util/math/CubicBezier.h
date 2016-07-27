@@ -213,6 +213,7 @@ private:
     bool boundingBoxCalculated = false;                                       ///< Whether the bounding box is calculated for this curve
     bool equidistantTLutCalculated = false;                                   ///< Whether the equidistant t/point lookup table is calculated
 
+    bool isDegenerate = false;                                                ///< Whether this curve is an approximation of a line
     QVector2D p[4];                                                           ///< Control points
     static const int T_LUT_SIZE = 20;                                         ///< Approximate equidistant lookup table size
     static constexpr qreal T_INTERVAL_SIZE = (1/((qreal)(T_LUT_SIZE - 1)))/2; ///< Initial t interval size for closest point search
