@@ -41,28 +41,24 @@ void CelluloZone::onClientPoseChanged(qreal x, qreal y, qreal theta){
 
     if(client){
 
-        //TODO: REPLACE ACTIVE WITH ENABLED
-        if(active){
+        //Calculate the new value associated with the client whose pose has changed
+        qreal newVal = calculate(x, y, theta);
 
-            //Calculate the new value associated with the client whose pose has changed
-            qreal newVal = calculate(x, y, theta);
+        //We already have a previous value for this client
+        if(clientsLastValues.contains(client)){
 
-            //We already have a previous value for this client
-            if(clientsLastValues.contains(client)){
-
-                //If the value of this zone changed, alert the client
-                qreal& oldValRef = clientsLastValues[client];
-                if(oldValRef != newVal){
-                    emit client->zoneValueChanged(this, newVal);
-                    oldValRef = newVal;
-                }
+            //If the value of this zone changed, alert the client
+            qreal& oldValRef = clientsLastValues[client];
+            if(oldValRef != newVal){
+                emit client->zoneValueChanged(this, newVal);
+                oldValRef = newVal;
             }
+        }
 
-            //We don't have a previous value for this client, simply create it and alert the client
-            else{
-                client->zoneValueChanged(this, newVal);
-                clientsLastValues[client] = newVal;
-            }
+        //We don't have a previous value for this client, simply create it and alert the client
+        else{
+            client->zoneValueChanged(this, newVal);
+            clientsLastValues[client] = newVal;
         }
     }
     else
@@ -87,7 +83,7 @@ void CelluloZone::setName(QString newName){
 }
 
 void CelluloZone::setActive(float newActive){
-    if(newActive!=active){
+    if(newActive != active){
         active = newActive;
         emit(activeChanged());
     }

@@ -137,6 +137,13 @@ signals:
      */
     void activeChanged();
 
+private slots:
+
+    /**
+     * @brief Called when a bound zone's active status changes
+     */
+    void zoneActiveChanged();
+
 private:
 
     bool active;                      ///< Whether clients' poseChanged events are connected to zones; true by default

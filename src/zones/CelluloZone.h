@@ -63,36 +63,35 @@ public:
 
     /**
      * @brief Get the type of the zone
+     *
      * @return Type of the zone
      */
-    CelluloZoneTypes::ZoneType getType() {
-        return type;
-    }
+    CelluloZoneTypes::ZoneType getType(){ return type; }
 
     /**
      * @brief Get the name of the zone
+     *
      * @return Name of the zone
      */
-    QString getName() {
-        return name;
-    }
+    QString getName(){ return name; }
 
     /**
      * @brief Set the name of the zone
+     *
      * @param newName new name for the zone
      */
     void setName(QString newName);
 
     /**
      * @brief Return if the zone is active or not
+     *
      * @return Active state
      */
-    float isActive() {
-        return active;
-    }
+    float isActive(){ return active; }
 
     /**
      * @brief Sets active state
+     *
      * @param newActive new active state
      */
     void setActive(float newActive);
@@ -168,9 +167,8 @@ public slots:
 
 protected:
 
-    QString name;                               ///< name of the zone
-    CelluloZoneTypes::ZoneType type;            ///< type of the zone
-    bool active;                                ///< true if zone is active false otherwise
+    QString name;                               ///< Name of the zone
+    CelluloZoneTypes::ZoneType type;            ///< Type of the zone
 
     /**
      * @brief Repaints the associated PaintedItem (if any)
@@ -198,6 +196,7 @@ private:
 
     QHash<CelluloZoneClient*, qreal> clientsLastValues;  ///< Stores the most recent values calculated for clients
     CelluloZonePaintedItem* paintedItem;                 ///< The PaintedItem associated with this zone
+    bool active;                                         ///< Whether the zone is active
 
 };
 

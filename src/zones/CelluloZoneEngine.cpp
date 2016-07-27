@@ -40,10 +40,12 @@ void CelluloZoneEngine::setActive(bool newActive){
     if(newActive != active){
         active = newActive;
 
-        if(active)
+        if(active){
             for(auto zone : zones)
-                for(auto client : clients)
-                    bindClientToZone(client, zone);
+                if(zone->isActive())
+                    for(auto client : clients)
+                        bindClientToZone(client, zone);
+        }
         else
             for(auto zone : zones)
                 for(auto client : clients)
@@ -68,7 +70,8 @@ void CelluloZoneEngine::addNewClient(CelluloZoneClient* newClient){
         clients += newClient;
         if(active)
             for(auto zone : zones)
-                bindClientToZone(newClient, zone);
+                if(zone->isActive())
+                    bindClientToZone(newClient, zone);
     }
 }
 
@@ -77,10 +80,25 @@ void CelluloZoneEngine::addNewZone(CelluloZone* newZone){
         qDebug() << "CelluloZoneEngine::addNewZone(): Zone already exists, not adding.";
     else{
         zones += newZone;
-        if(active)
+        connect(newZone, SIGNAL(activeChanged()), this, SLOT(zoneActiveChanged()));
+        if(active && newZone->isActive())
             for(auto client : clients)
                 bindClientToZone(client, newZone);
     }
+}
+
+void CelluloZoneEngine::zoneActiveChanged(){
+    CelluloZone* zone = qobject_cast<CelluloZone*>(QObject::sender());
+    if(zone){
+        if(zone->isActive())
+            for(auto client : clients)
+                bindClientToZone(client, zone);
+        else
+            for(auto client : clients)
+                unbindClientFromZone(client, zone);
+    }
+    else
+        qWarning() << "CelluloZoneEngine::zoneActiveChanged(): Non-CelluloZone connected to the slot.";
 }
 
 void CelluloZoneEngine::clearZones(){
