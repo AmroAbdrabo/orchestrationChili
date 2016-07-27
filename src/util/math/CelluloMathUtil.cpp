@@ -84,7 +84,26 @@ qreal CelluloMathUtil::pointToPolyBorderDist(const QVector2D& p, const QList<QVe
     return minDist;
 }
 
+int CelluloMathUtil::solveLinearEq(qreal a, qreal b, qreal& x){
+
+    //Treat constant line as having zero root even if b = 0
+    if(isZero(a, SOLVE_CUBIC_EPSILON))
+        return 0;
+    else{
+        x = -b/a;
+        return 1;
+    }
+}
+
 int CelluloMathUtil::solveQuadEq(qreal a, qreal b, qreal c, qreal& x1, qreal& x2){
+
+    //Most significant coeff is zero, treat as a linear equation
+    if(isZero(a, SOLVE_CUBIC_EPSILON)){
+        int numRoots = solveLinearEq(b,c,x1);
+        x2 = x1;
+        return numRoots;
+    }
+
     qreal det = b*b - 4*a*c;
     if(det < 0)
         return 0;
@@ -106,6 +125,13 @@ inline bool CelluloMathUtil::isZero(qreal val, qreal epsilon){
 
 int CelluloMathUtil::solveCubicEq(qreal a, qreal b, qreal c, qreal d, qreal& x1, qreal& x2, qreal& x3){
     //Taken from http://read.pudn.com/downloads21/sourcecode/graph/71499/gems/Roots3And4.c__.htm
+
+    //Most significant coeff is zero, treat as a quadratic equation
+    if(isZero(a, SOLVE_CUBIC_EPSILON)){
+        int numRoots = solveQuadEq(b, c, d, x1, x2);
+        x3 = x2;
+        return numRoots;
+    }
 
     //Normal form: x^3 + Ax^2 + Bx + C = 0
     qreal A = b/a;
@@ -147,7 +173,6 @@ int CelluloMathUtil::solveCubicEq(qreal a, qreal b, qreal c, qreal d, qreal& x1,
     else if(D < 0){
         qreal phi = acos(-q/sqrt(-pcubed))/3;
         qreal t = 2*sqrt(-p);
-
         x1 =  t*cos(phi) - sub;
         x2 = -t*cos(phi + M_PI/3) - sub;
         x3 = -t*cos(phi - M_PI/3) - sub;

@@ -78,6 +78,16 @@ public:
     Q_INVOKABLE static qreal pointToPolyBorderDist(const QVector2D& p, const QList<QVector2D>& v);
 
     /**
+     * @brief Calculates the roots of ax + b = 0
+     *
+     * @param a 1st order coefficient
+     * @param b Constant
+     * @param x [out] Root if exists
+     * @return Number of unique real roots, i.e 0 or 1
+     */
+    static int solveLinearEq(qreal a, qreal b, qreal& x);
+
+    /**
      * @brief Calculates the roots of ax^2 + bx + c = 0
      *
      * @param a 2nd order coefficient
