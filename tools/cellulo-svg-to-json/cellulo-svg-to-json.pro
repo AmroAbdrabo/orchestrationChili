@@ -1,7 +1,17 @@
 TEMPLATE = app
 
-QT += qml quick bluetooth
+QT += core
 
-SOURCES += src/main.cpp
+SOURCES += \
+    src/main.cpp \
+    ../../src/util/svg/CelluloSVGUtil.cpp
 
-RESOURCES += qml.qrc
+HEADERS += \
+    ../../src/util/svg/CelluloSVGUtil.h
+
+INCLUDEPATH += ../../src/util/svg/
+
+unix{
+    target.path = /usr/local/bin/
+    INSTALLS += target
+}
