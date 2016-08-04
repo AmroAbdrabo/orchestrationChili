@@ -90,6 +90,10 @@ CelluloZone* CelluloZoneTypes::newZoneFromType(ZoneType type){
             return (CelluloZone*)(new CelluloZoneIrregularPolygonDistance());
         case POLYBEZIERCLOSESTT:
             return (CelluloZone*)(new CelluloZonePolyBezierClosestT());
+        case POLYBEZIERXT:
+            return (CelluloZone*)(new CelluloZonePolyBezierXT());
+        case POLYBEZIERYT:
+            return (CelluloZone*)(new CelluloZonePolyBezierYT());
         case POLYBEZIERDISTANCE:
             return (CelluloZone*)(new CelluloZonePolyBezierDistance());
         case POLYBEZIERBORDER:

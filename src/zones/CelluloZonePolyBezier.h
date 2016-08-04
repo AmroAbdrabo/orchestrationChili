@@ -123,16 +123,6 @@ public slots:
      */
     QVector2D getNormal(qreal t);
 
-    /**
-     * @brief Gets the tangent on the curve at the point who has the given x coordinate
-     *
-     * Assumes the curve has a single point with the given x coordinate, i.e it is a function y = f(t).
-     *
-     * @param x Given x goordinate
-     * @return Tangent at given x
-     */
-    //Q_INVOKABLE QVector2D getTangentWithX(qreal x);
-
 signals:
 
     /**
@@ -161,15 +151,6 @@ protected:
     qreal getClosest(const QVector2D& m, QVector2D& closestPoint, qreal& closestDist);
 
     /**
-     * @brief Gets the t whose corresponding point has the given x coordinate
-     *
-     * Assumes the curve has a single point with the given x coordinate, i.e it is a function y = f(t).
-     *
-     * @return t in [0,numSegments]
-     */
-    //qreal getTWithX(qreal x);
-
-    /**
      * @brief Updates the bounding rectangle from the new list of vertices
      */
     void calculateBoundingBox();
@@ -196,8 +177,6 @@ private:
     void invalidateCalc();
 
     bool boundingBoxCalculated = false;          ///< Whether the bounding box is calculated and ready
-    static constexpr qreal GET_T_EPSILON = 0.01; ///< Get t from x/y calculation sensitivity, in mm
-    static constexpr qreal GET_T_LIM_T = 0.001;  ///< Get t from x/y calculation t interval limit
 };
 
 /**
@@ -235,12 +214,99 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+protected:
+
+    static constexpr qreal GET_T_EPSILON = 0.01; ///< Get t from x/y calculation sensitivity, in mm
+    static constexpr qreal GET_T_LIM_T = 0.001;  ///< Get t from x/y calculation t interval limit
+
+};
+
+/**
+ * @brief Calculates the parameter t of the point on the composite Bézier curve with the same x coordinate as the client
+ *
+ * Assumes that the curve is 1-to-1 along the x axis, i.e it is of the form y = f(t).
+ */
+class CelluloZonePolyBezierXT : public CelluloZonePolyBezierClosestT {
+    /* *INDENT-OFF* */
+    Q_OBJECT
+    /* *INDENT-ON* */
+
+public:
+
+    CelluloZonePolyBezierXT();
+
+    /**
+     * @brief Calculates the parameter t of the point on the composite curve with the same x coordinate as the client
+     *
+     * Assumes that the curve is 1-to-1 along the x axis, i.e it is of the form y = f(t).
+     *
+     * @param xRobot x position of the robot
+     * @param yRobot UNUSED
+     * @param thetaRobot UNUSED
+     *
+     * @return Parameter t in [0,numSegments]
+     */
+    Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) override;
+
+    /**
+     * @brief Draws this zone onto the painter
+     *
+     * @param painter Object to draw onto
+     * @param color Color of the paint
+     * @param canvasWidth Screen width of the canvas in pixels
+     * @param canvasHeight Screen height of the canvas in pixels
+     * @param physicalWidth Physical width of the canvas in mm
+     * @param physicalHeight Physical height of the canvas in mm
+     */
+    virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
+
+};
+
+/**
+ * @brief Calculates the parameter t of the point on the composite Bézier curve with the same y coordinate as the client
+ *
+ * Assumes that the curve is 1-to-1 along the y axis, i.e it is of the form x = f(t).
+ */
+class CelluloZonePolyBezierYT : public CelluloZonePolyBezierClosestT {
+    /* *INDENT-OFF* */
+    Q_OBJECT
+    /* *INDENT-ON* */
+
+public:
+
+    CelluloZonePolyBezierYT();
+
+    /**
+     * @brief Calculates the parameter t of the point on the composite curve with the same y coordinate as the client
+     *
+     * Assumes that the curve is 1-to-1 along the y axis, i.e it is of the form x = f(t).
+     *
+     * @param xRobot UNUSED
+     * @param yRobot y position of the robot
+     * @param thetaRobot UNUSED
+     *
+     * @return Parameter t in [0,numSegments]
+     */
+    Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) override;
+
+    /**
+     * @brief Draws this zone onto the painter
+     *
+     * @param painter Object to draw onto
+     * @param color Color of the paint
+     * @param canvasWidth Screen width of the canvas in pixels
+     * @param canvasHeight Screen height of the canvas in pixels
+     * @param physicalWidth Physical width of the canvas in mm
+     * @param physicalHeight Physical height of the canvas in mm
+     */
+    virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
+
 };
 
 /**
  * @brief Calculates the distance to a composite Bézier curve
  */
-class CelluloZonePolyBezierDistance : public CelluloZonePolyBezier {
+class CelluloZonePolyBezierDistance : public CelluloZonePolyBezierClosestT {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */

@@ -207,37 +207,6 @@ QVector2D CelluloZonePolyBezier::getNormal(qreal t){
     return QVector2D(-tangent.y(), tangent.x());
 }
 
-/*qreal CelluloZonePolyBezier::getTWithX(qreal x){
-    qreal t = (qreal)segments.size()/2;
-    qreal intervalSize = (qreal)segments.size()/4;
-
-    //Assumption that curve is 1-to-1 on the x/y axes, i.e is a function of the form y = f(t), allows us to give an increasing/decreasing direction
-    qreal incDecCoeff = segments.last().getPointX(1) >= segments.first().getPointX(0) ? 1 : -1;
-
-    //Binary search for t that gives x
-    while(intervalSize >= GET_T_LIM_T){
-        int i = (int)t;
-        qreal currentX = segments[i].getPointX(t - i);
-
-        if(currentX > x){
-            if(currentX - x <= GET_T_EPSILON)
-                break;
-            else
-                t -= incDecCoeff*intervalSize;
-        }
-        else{
-            if(x - currentX <= GET_T_EPSILON)
-                break;
-            else
-                t += incDecCoeff*intervalSize;
-        }
-
-        intervalSize /= 2;
-    }
-
-    return t;
-}*/
-
 /**
  * CelluloZonePolyBezierClosestT
  */
@@ -277,18 +246,134 @@ void CelluloZonePolyBezierClosestT::paint(QPainter* painter, QColor color, qreal
 }
 
 /**
+ * CelluloZonePolyBezierXT
+ */
+
+CelluloZonePolyBezierXT::CelluloZonePolyBezierXT() : CelluloZonePolyBezierClosestT(){
+    type = CelluloZoneTypes::POLYBEZIERXT;
+}
+
+float CelluloZonePolyBezierXT::calculate(float xRobot, float yRobot, float thetaRobot){
+    Q_UNUSED(yRobot);
+    Q_UNUSED(thetaRobot);
+
+    qreal t = (qreal)segments.size()/2;
+    qreal intervalSize = (qreal)segments.size()/4;
+
+    //Assumption that curve is 1-to-1 on the x/y axes, i.e is a function of the form y = f(t), allows us to give an increasing/decreasing direction
+    qreal incDecCoeff = segments.last().getPointX(1) >= segments.first().getPointX(0) ? 1 : -1;
+
+    //Outside curve cases
+    if(incDecCoeff > 0){
+        if(xRobot >= segments.last().getPointX(1))
+            return segments.size();
+        else if(xRobot <= segments.first().getPointX(0))
+            return 0;
+    }
+    else{
+        if(xRobot <= segments.last().getPointX(1))
+            return segments.size();
+        else if(xRobot >= segments.first().getPointX(0))
+            return 0;
+    }
+
+    //Binary search for t that gives x
+    while(intervalSize >= GET_T_LIM_T){
+        qreal localT = t;
+        int i = getSegmentIndex(localT);
+        qreal currentX = segments[i].getPointX(localT);
+
+        if(currentX > xRobot){
+            if(currentX - xRobot <= GET_T_EPSILON)
+                break;
+            else
+                t -= incDecCoeff*intervalSize;
+        }
+        else{
+            if(xRobot - currentX <= GET_T_EPSILON)
+                break;
+            else
+                t += incDecCoeff*intervalSize;
+        }
+
+        intervalSize /= 2;
+    }
+
+    return t;
+}
+
+void CelluloZonePolyBezierXT::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    CelluloZonePolyBezierClosestT::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
+}
+
+/**
+ * CelluloZonePolyBezierYT
+ */
+
+CelluloZonePolyBezierYT::CelluloZonePolyBezierYT() : CelluloZonePolyBezierClosestT(){
+    type = CelluloZoneTypes::POLYBEZIERYT;
+}
+
+float CelluloZonePolyBezierYT::calculate(float xRobot, float yRobot, float thetaRobot){
+    Q_UNUSED(xRobot);
+    Q_UNUSED(thetaRobot);
+
+    qreal t = (qreal)segments.size()/2;
+    qreal intervalSize = (qreal)segments.size()/4;
+
+    //Assumption that curve is 1-to-1 on the x/y axes, i.e is a function of the form y = f(t), allows us to give an increasing/decreasing direction
+    qreal incDecCoeff = segments.last().getPointY(1) >= segments.first().getPointY(0) ? 1 : -1;
+
+    //Outside curve cases
+    if(incDecCoeff > 0){
+        if(yRobot >= segments.last().getPointY(1))
+            return segments.size();
+        else if(yRobot <= segments.first().getPointY(0))
+            return 0;
+    }
+    else{
+        if(yRobot <= segments.last().getPointY(1))
+            return segments.size();
+        else if(yRobot >= segments.first().getPointY(0))
+            return 0;
+    }
+
+    //Binary search for t that gives x
+    while(intervalSize >= GET_T_LIM_T){
+        qreal localT = t;
+        int i = getSegmentIndex(localT);
+        qreal currentY = segments[i].getPointY(localT);
+
+        if(currentY > xRobot){
+            if(currentY - yRobot <= GET_T_EPSILON)
+                break;
+            else
+                t -= incDecCoeff*intervalSize;
+        }
+        else{
+            if(yRobot - currentY <= GET_T_EPSILON)
+                break;
+            else
+                t += incDecCoeff*intervalSize;
+        }
+
+        intervalSize /= 2;
+    }
+
+    return t;
+}
+
+void CelluloZonePolyBezierYT::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    CelluloZonePolyBezierClosestT::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
+}
+
+/**
  * CelluloZonePolyBezierDistance
  */
 
-CelluloZonePolyBezierDistance::CelluloZonePolyBezierDistance() : CelluloZonePolyBezier(){
+CelluloZonePolyBezierDistance::CelluloZonePolyBezierDistance() : CelluloZonePolyBezierClosestT(){
     type = CelluloZoneTypes::POLYBEZIERDISTANCE;
 }
-
-/*QVector2D CelluloZonePolyBezierDistance::getTangentWithX(qreal x){
-    qreal t = getTWithX(x);
-    int i = getSegmentIndex(t);
-    return segments[i].getDerivative(t);
-}*/
 
 float CelluloZonePolyBezierDistance::calculate(float xRobot, float yRobot, float thetaRobot){
     Q_UNUSED(thetaRobot);
@@ -299,26 +384,7 @@ float CelluloZonePolyBezierDistance::calculate(float xRobot, float yRobot, float
 }
 
 void CelluloZonePolyBezierDistance::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
-    CelluloZonePolyBezier::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
-
-    painter->setBrush(Qt::NoBrush);
-    painter->setPen(QPen(QBrush(color), 2, Qt::DotLine));
-
-    QVector2D scale(canvasWidth/physicalWidth, canvasHeight/physicalHeight);
-
-    if(segments.size() > 0){
-        QPainterPath path;
-
-        path.moveTo((scale*segments[0].getControlPoint(0)).toPointF());
-        for(auto segment : segments)
-            path.cubicTo(
-                (scale*segment.getControlPoint(1)).toPointF(),
-                (scale*segment.getControlPoint(2)).toPointF(),
-                (scale*segment.getControlPoint(3)).toPointF()
-                );
-
-        painter->drawPath(path);
-    }
+    CelluloZonePolyBezierClosestT::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
 }
 
 /**
