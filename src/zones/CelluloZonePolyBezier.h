@@ -143,6 +143,14 @@ signals:
 protected:
 
     /**
+     * @brief Gets the segment index from the given parameter t, pulls t to [0,1]
+     *
+     * @param t [in/out] Parameter t in [0,numSegments], changes to segment parameter that is in [0,1]
+     * @return Segment index
+     */
+    int getSegmentIndex(qreal& t);
+
+    /**
      * @brief Gets the closest point on the curve to the given point
      *
      * @param m Given point

@@ -15,28 +15,30 @@ ApplicationWindow {
     CelluloZoneEngine{
         id: zoneEngine
 
-        property var zoneDistance: null
+        property var zoneClosestT: null
         property vector2d closestPoint: Qt.vector2d(0,0)
+        property vector2d closestPointTangent: Qt.vector2d(0,0)
+        property vector2d closestPointNormal: Qt.vector2d(0,0)
 
         Component.onCompleted: {
             var zones = CelluloZoneJsonHandler.loadZonesQML(":/assets/zones.json");
             for(var i=0;i<zones.length;i++){
-                var color;
                 switch(zones[i].name){
                 case "ZONE_INNER":
-                    color = "#80FF0000";
+                    zones[i].createPaintedItem(page, "#80FF0000", page.physicalWidth, page.physicalHeight);
                     break;
                 case "ZONE_BORDER":
-                    color = "#800000FF";
+                    zones[i].createPaintedItem(page, "#800000FF", page.physicalWidth, page.physicalHeight);
                     break;
                 case "ZONE_DISTANCE":
-                    color = "#8000FF00";
-                    zoneDistance = zones[i];
+                    zones[i].createPaintedItem(page, "#8000FF00", page.physicalWidth, page.physicalHeight);
+                    break;
+                case "ZONE_CLOSEST_T":
+                    zoneClosestT = zones[i];
                     break;
                 default:
                     break;
                 }
-                zones[i].createPaintedItem(page, color, page.physicalWidth, page.physicalHeight);
             }
             addNewZones(zones);
         }
@@ -58,8 +60,6 @@ ApplicationWindow {
             }
         }
 
-        onPoseChanged: zoneEngine.closestPoint = zoneEngine.zoneDistance.getClosestPoint(Qt.vector2d(x,y))
-
         onTrackingGoalReached: {
             setCasualBackdriveAssistEnabled(true);
             clearTracking();
@@ -77,6 +77,11 @@ ApplicationWindow {
                 break;
             case "ZONE_DISTANCE":
                 distText.text = "Distance: " + value.toFixed(6) + "mm"
+                break;
+            case "ZONE_CLOSEST_T":
+                zoneEngine.closestPoint = zoneEngine.zoneClosestT.getPoint(value);
+                zoneEngine.closestPointNormal = zoneEngine.zoneClosestT.getNormal(value);
+                zoneEngine.closestPointTangent = zoneEngine.zoneClosestT.getTangent(value);
                 break;
             default:
                 break;
@@ -160,12 +165,35 @@ ApplicationWindow {
                     radius: 5
 
                     Rectangle{
+                        x: zoneEngine.closestPoint.x*parent.scaleCoeff
+                        y: zoneEngine.closestPoint.y*parent.scaleCoeff
+                        height: 3*parent.scaleCoeff
+                        width: 30*parent.scaleCoeff
+                        transformOrigin: Item.TopLeft
+                        rotation: Math.atan2(zoneEngine.closestPointTangent.y, zoneEngine.closestPointTangent.x)/Math.PI*180
+                        color: "#800000FF"
+                        radius: 5
+                        z: 1
+                    }
+
+                    Rectangle{
+                        x: zoneEngine.closestPoint.x*parent.scaleCoeff
+                        y: zoneEngine.closestPoint.y*parent.scaleCoeff
+                        height: 3*parent.scaleCoeff
+                        width: 30*parent.scaleCoeff
+                        transformOrigin: Item.TopLeft
+                        rotation: Math.atan2(zoneEngine.closestPointNormal.y, zoneEngine.closestPointNormal.x)/Math.PI*180
+                        color: "#80FF0000"
+                        z: 1
+                    }
+
+                    Rectangle{
                         x: zoneEngine.closestPoint.x*parent.scaleCoeff - width/2
                         y: zoneEngine.closestPoint.y*parent.scaleCoeff - height/2
-                        height: 10
-                        width: 10
-                        color: "#80FFFFFF"
-                        radius: 5
+                        height: parent.scaleCoeff*zoneEngine.closestPointTangent.length
+                        rotation: Math.atan2(zoneEngine.closestPointTangent.y, zoneEngine.closestPointTangent.x)/Math.PI*180
+                        width: 3
+                        color: "#800000FF"
                         z: 1
                     }
 
