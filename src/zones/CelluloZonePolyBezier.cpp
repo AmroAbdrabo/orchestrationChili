@@ -154,35 +154,40 @@ void CelluloZonePolyBezier::invalidateCalc(){
     boundingBoxCalculated = false;
 }
 
-qreal CelluloZonePolyBezier::getClosestDistance(const QVector2D& m){
-    QVector2D dummy;
-    return getClosestDistance(m, dummy);
-}
-
-qreal CelluloZonePolyBezier::getClosestDistance(const QVector2D& m, QVector2D& closestPoint){
-    QVector2D dummy;
-    return getClosestTangent(m, closestPoint, dummy);
-}
-
-qreal CelluloZonePolyBezier::getClosestTangent(const QVector2D& m, QVector2D& closestPoint, QVector2D& tangentDir){
-    qreal dist, t;
+qreal CelluloZonePolyBezier::getClosest(const QVector2D& m, QVector2D& closestPoint, qreal& closestDist){
+    qreal dist, t, closestT;
     QVector2D point;
-    qreal closestDist = std::numeric_limits<qreal>::max();
+    closestDist = std::numeric_limits<qreal>::max();
     for(auto segment : segments)
 
         //First, check distance to bounding box, if this rough distance is not good enough, actual curve distance won't be
         if(segment.getDistToBoundingBox(m) < closestDist){
-            segment.getClosestPoint(m, point, dist, t);
+            t = segment.getClosest(m, point, dist);
             if(dist < closestDist){
-                closestDist = dist;
                 closestPoint = point;
-                tangentDir = segment.getDerivative(t);
+                closestDist = dist;
+                closestT = t;
             }
         }
-    return closestDist;
+    return closestT;
 }
 
-qreal CelluloZonePolyBezier::getTWithX(qreal x){
+QVector2D CelluloZonePolyBezier::getPoint(qreal t){
+    int i = (int)t;
+    return segments[i].getPoint(t - i);
+}
+
+QVector2D CelluloZonePolyBezier::getTangent(qreal t){
+    int i = (int)t;
+    return segments[i].getDerivative(t - i);
+}
+
+QVector2D CelluloZonePolyBezier::getNormal(qreal t){
+    QVector2D tangent = getTangent(t);
+    return QVector2D(-tangent.y(), tangent.x());
+}
+
+/*qreal CelluloZonePolyBezier::getTWithX(qreal x){
     qreal t = (qreal)segments.size()/2;
     qreal intervalSize = (qreal)segments.size()/4;
 
@@ -211,6 +216,44 @@ qreal CelluloZonePolyBezier::getTWithX(qreal x){
     }
 
     return t;
+}*/
+
+/**
+ * CelluloZonePolyBezierClosestT
+ */
+
+CelluloZonePolyBezierClosestT::CelluloZonePolyBezierClosestT() : CelluloZonePolyBezier(){
+    type = CelluloZoneTypes::POLYBEZIERCLOSESTT;
+}
+
+float CelluloZonePolyBezierClosestT::calculate(float xRobot, float yRobot, float thetaRobot){
+    Q_UNUSED(thetaRobot);
+    QVector2D dummyv;
+    qreal dummyf;
+    return getClosest(QVector2D(xRobot, yRobot), dummyv, dummyf);
+}
+
+void CelluloZonePolyBezierClosestT::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    CelluloZonePolyBezier::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
+
+    painter->setBrush(Qt::NoBrush);
+    painter->setPen(QPen(QBrush(color), 2, Qt::DotLine));
+
+    QVector2D scale(canvasWidth/physicalWidth, canvasHeight/physicalHeight);
+
+    if(segments.size() > 0){
+        QPainterPath path;
+
+        path.moveTo((scale*segments[0].getControlPoint(0)).toPointF());
+        for(auto segment : segments)
+            path.cubicTo(
+                (scale*segment.getControlPoint(1)).toPointF(),
+                (scale*segment.getControlPoint(2)).toPointF(),
+                (scale*segment.getControlPoint(3)).toPointF()
+                );
+
+        painter->drawPath(path);
+    }
 }
 
 /**
@@ -221,33 +264,18 @@ CelluloZonePolyBezierDistance::CelluloZonePolyBezierDistance() : CelluloZonePoly
     type = CelluloZoneTypes::POLYBEZIERDISTANCE;
 }
 
-QVector2D CelluloZonePolyBezierDistance::getClosestPoint(const QVector2D& m){
-    QVector2D closestPoint;
-    getClosestDistance(m, closestPoint);
-    return closestPoint;
-}
-
-QVector2D CelluloZonePolyBezierDistance::getClosestTangent(const QVector2D& m){
-    QVector2D dummy, closestTangent;
-    CelluloZonePolyBezier::getClosestTangent(m, dummy, closestTangent);
-    return closestTangent;
-}
-
-QVector2D CelluloZonePolyBezierDistance::getClosestNormal(const QVector2D& m){
-    QVector2D dummy, closestTangent;
-    CelluloZonePolyBezier::getClosestTangent(m, dummy, closestTangent);
-    return QVector2D(-closestTangent.y(), closestTangent.x());
-}
-
-QVector2D CelluloZonePolyBezierDistance::getTangentWithX(qreal x){
+/*QVector2D CelluloZonePolyBezierDistance::getTangentWithX(qreal x){
     qreal t = getTWithX(x);
     int i = (int)t;
     return segments[i].getDerivative(t - i);
-}
+}*/
 
 float CelluloZonePolyBezierDistance::calculate(float xRobot, float yRobot, float thetaRobot){
     Q_UNUSED(thetaRobot);
-    return getClosestDistance(QVector2D(xRobot, yRobot));
+    QVector2D dummy;
+    qreal dist;
+    getClosest(QVector2D(xRobot, yRobot), dummy, dist);
+    return dist;
 }
 
 void CelluloZonePolyBezierDistance::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
@@ -304,7 +332,10 @@ void CelluloZonePolyBezierBorder::read(const QJsonObject &json){
 
 float CelluloZonePolyBezierBorder::calculate(float xRobot, float yRobot, float thetaRobot){
     Q_UNUSED(thetaRobot);
-    return getClosestDistance(QVector2D(xRobot, yRobot)) <= borderThickness/2 ? 1.0f : 0.0f;
+    QVector2D dummy;
+    qreal dist;
+    getClosest(QVector2D(xRobot, yRobot), dummy, dist);
+    return dist <= borderThickness/2 ? 1.0f : 0.0f;
 }
 
 void CelluloZonePolyBezierBorder::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){

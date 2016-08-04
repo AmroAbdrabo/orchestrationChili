@@ -99,6 +99,40 @@ public slots:
      */
     void sendPathToRobot(CelluloBluetooth* robot) const;
 
+    /**
+     * @brief Gets the point on the curve corresponding to the given parameter
+     *
+     * @param t Given parameter t in [0,numSegments]
+     * @return Point on curve corresponding to t
+     */
+    QVector2D getPoint(qreal t);
+
+    /**
+     * @brief Gets the tangent direction of point on the curve corresponding to the given parameter
+     *
+     * @param m Given parameter t in [0,numSegments]
+     * @return Tangent direction of the point on curve corresponding to t
+     */
+    QVector2D getTangent(qreal t);
+
+    /**
+     * @brief Gets the normal direction of point on the curve corresponding to the given parameter
+     *
+     * @param m Given parameter t in [0,numSegments]
+     * @return Normal direction of the point on curve corresponding to t
+     */
+    QVector2D getNormal(qreal t);
+
+    /**
+     * @brief Gets the tangent on the curve at the point who has the given x coordinate
+     *
+     * Assumes the curve has a single point with the given x coordinate, i.e it is a function y = f(t).
+     *
+     * @param x Given x goordinate
+     * @return Tangent at given x
+     */
+    //Q_INVOKABLE QVector2D getTangentWithX(qreal x);
+
 signals:
 
     /**
@@ -109,31 +143,14 @@ signals:
 protected:
 
     /**
-     * @brief Gets the distance to the closest point on the curves to the given point
-     *
-     * @param m Given point
-     * @return Closest distance
-     */
-    qreal getClosestDistance(const QVector2D& m);
-
-    /**
-     * @brief Gets the distance to the closest point on the curves to the given point
+     * @brief Gets the closest point on the curve to the given point
      *
      * @param m Given point
      * @param closestPoint [out] Returns the closest point
-     * @return Closest distance
+     * @param closestDist [out] Returns the closest distance
+     * @return Returns the parameter t corresponding to the closest point
      */
-    qreal getClosestDistance(const QVector2D& m, QVector2D& closestPoint);
-
-    /**
-     * @brief Gets the closest point and tangent direction on that point on the curve to the given point
-     *
-     * @param m Given point
-     * @param closestPoint [out] Returns the closest point to m
-     * @param tangentDir [out] Returns the tangent direction on closestPoint
-     * @return Distance of m to closestPoint
-     */
-    qreal getClosestTangent(const QVector2D& m, QVector2D& closestPoint, QVector2D& tangentDir);
+    qreal getClosest(const QVector2D& m, QVector2D& closestPoint, qreal& closestDist);
 
     /**
      * @brief Gets the t whose corresponding point has the given x coordinate
@@ -142,7 +159,7 @@ protected:
      *
      * @return t in [0,numSegments]
      */
-    qreal getTWithX(qreal x);
+    //qreal getTWithX(qreal x);
 
     /**
      * @brief Updates the bounding rectangle from the new list of vertices
@@ -176,6 +193,43 @@ private:
 };
 
 /**
+ * @brief Calculates the parameter t of the closest point on a composite Bézier curve
+ */
+class CelluloZonePolyBezierClosestT : public CelluloZonePolyBezier {
+    /* *INDENT-OFF* */
+    Q_OBJECT
+    /* *INDENT-ON* */
+
+public:
+
+    CelluloZonePolyBezierClosestT();
+
+    /**
+     * @brief Calculate the parameter t of the closest point on the composite curve to the robot
+     *
+     * @param xRobot x position of the robot
+     * @param yRobot y position of the robot
+     * @param thetaRobot theta position of the robot
+     *
+     * @return Parameter t in [0,numSegments]
+     */
+    Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) override;
+
+    /**
+     * @brief Draws this zone onto the painter
+     *
+     * @param painter Object to draw onto
+     * @param color Color of the paint
+     * @param canvasWidth Screen width of the canvas in pixels
+     * @param canvasHeight Screen height of the canvas in pixels
+     * @param physicalWidth Physical width of the canvas in mm
+     * @param physicalHeight Physical height of the canvas in mm
+     */
+    virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
+
+};
+
+/**
  * @brief Calculates the distance to a composite Bézier curve
  */
 class CelluloZonePolyBezierDistance : public CelluloZonePolyBezier {
@@ -186,40 +240,6 @@ class CelluloZonePolyBezierDistance : public CelluloZonePolyBezier {
 public:
 
     CelluloZonePolyBezierDistance();
-
-    /**
-     * @brief Gets the closest point on the curves to the given point
-     *
-     * @param m Given point
-     * @return Closest point
-     */
-    Q_INVOKABLE QVector2D getClosestPoint(const QVector2D& m);
-
-    /**
-     * @brief Gets the tangent direction of closest point on the curves to the given point
-     *
-     * @param m Given point
-     * @return Tangent direction on the closest point to m
-     */
-    Q_INVOKABLE QVector2D getClosestTangent(const QVector2D& m);
-
-    /**
-     * @brief Gets the normal to the curve on the closest point on the curves to the given point
-     *
-     * @param m Given point
-     * @return Normal direction on the closest point to m
-     */
-    Q_INVOKABLE QVector2D getClosestNormal(const QVector2D& m);
-
-    /**
-     * @brief Gets the tangent on the curve at the point who has the given x coordinate
-     *
-     * Assumes the curve has a single point with the given x coordinate, i.e it is a function y = f(t).
-     *
-     * @param x Given x goordinate
-     * @return Tangent at given x
-     */
-    Q_INVOKABLE QVector2D getTangentWithX(qreal x);
 
     /**
      * @brief Calculate the closest distance of the composite curve to the robot
@@ -320,7 +340,6 @@ private:
     qreal borderThickness;      ///< The border thickness in mm
 
 };
-
 
 /**
  * @brief Calculates whether the client is within the composite Bézier curve

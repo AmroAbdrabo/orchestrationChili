@@ -119,7 +119,8 @@ void CubicBezier::split(qreal t, CubicBezier& left, CubicBezier& right){
     right.setControlPoints(p01121223, p1223, p23, p[3]);
 }
 
-void CubicBezier::getClosestPoint(const QVector2D& m, QVector2D& closestPoint, qreal& closestDist, qreal& closestT){
+qreal CubicBezier::getClosest(const QVector2D& m, QVector2D& closestPoint, qreal& closestDist){
+    qreal closestT;
 
     //Calculate equidistant t/point lookup table if not already calculated
     buildEquidistantTLUT();
@@ -160,6 +161,8 @@ void CubicBezier::getClosestPoint(const QVector2D& m, QVector2D& closestPoint, q
 
         currentIntervalSize /= 2;
     }
+
+    return closestT;
 }
 
 void CubicBezier::buildEquidistantTLUT(){
@@ -288,9 +291,9 @@ QVector2D CubicBezier::getDerivative(qreal t){
 bool CubicBezier::side(const QVector2D& m){
 
     //Get the closest point on the curve
-    qreal curveT, dummy;
+    qreal dummy;
     QVector2D curvePoint;
-    getClosestPoint(m, curvePoint, dummy, curveT);
+    qreal curveT = getClosest(m, curvePoint, dummy);
 
     //Get the direction vector of the tangent line to the curve on the closest point
     QVector2D curveDirection = getDerivative(curveT);
