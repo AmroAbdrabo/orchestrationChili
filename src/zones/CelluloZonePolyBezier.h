@@ -126,6 +126,25 @@ protected:
     qreal getClosestDistance(const QVector2D& m, QVector2D& closestPoint);
 
     /**
+     * @brief Gets the closest point and tangent direction on that point on the curve to the given point
+     *
+     * @param m Given point
+     * @param closestPoint [out] Returns the closest point to m
+     * @param tangentDir [out] Returns the tangent direction on closestPoint
+     * @return Distance of m to closestPoint
+     */
+    qreal getClosestTangent(const QVector2D& m, QVector2D& closestPoint, QVector2D& tangentDir);
+
+    /**
+     * @brief Gets the t whose corresponding point has the given x coordinate
+     *
+     * Assumes the curve has a single point with the given x coordinate, i.e it is a function y = f(t).
+     *
+     * @return t in [0,numSegments]
+     */
+    qreal getTWithX(qreal x);
+
+    /**
      * @brief Updates the bounding rectangle from the new list of vertices
      */
     void calculateBoundingBox();
@@ -151,8 +170,9 @@ private:
      */
     void invalidateCalc();
 
-    bool boundingBoxCalculated = false; ///< Whether the bounding box is calculated and ready
-
+    bool boundingBoxCalculated = false;          ///< Whether the bounding box is calculated and ready
+    static constexpr qreal GET_T_EPSILON = 0.01; ///< Get t from x/y calculation sensitivity, in mm
+    static constexpr qreal GET_T_LIM_T = 0.001;  ///< Get t from x/y calculation t interval limit
 };
 
 /**
@@ -174,6 +194,32 @@ public:
      * @return Closest point
      */
     Q_INVOKABLE QVector2D getClosestPoint(const QVector2D& m);
+
+    /**
+     * @brief Gets the tangent direction of closest point on the curves to the given point
+     *
+     * @param m Given point
+     * @return Tangent direction on the closest point to m
+     */
+    Q_INVOKABLE QVector2D getClosestTangent(const QVector2D& m);
+
+    /**
+     * @brief Gets the normal to the curve on the closest point on the curves to the given point
+     *
+     * @param m Given point
+     * @return Normal direction on the closest point to m
+     */
+    Q_INVOKABLE QVector2D getClosestNormal(const QVector2D& m);
+
+    /**
+     * @brief Gets the tangent on the curve at the point who has the given x coordinate
+     *
+     * Assumes the curve has a single point with the given x coordinate, i.e it is a function y = f(t).
+     *
+     * @param x Given x goordinate
+     * @return Tangent at given x
+     */
+    Q_INVOKABLE QVector2D getTangentWithX(qreal x);
 
     /**
      * @brief Calculate the closest distance of the composite curve to the robot

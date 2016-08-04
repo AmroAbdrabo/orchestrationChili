@@ -96,6 +96,22 @@ public:
     QVector2D getPoint(qreal t);
 
     /**
+     * @brief Calculates the x coordinate of the point on the curve corresponding to the given parameter
+     *
+     * @param t Curve parameter in [0,1]
+     * @return Point x coordinate corresponding to t
+     */
+    qreal getPointX(qreal t);
+
+    /**
+     * @brief Calculates the y coordinate of the point on the curve corresponding to the given parameter
+     *
+     * @param t Curve parameter in [0,1]
+     * @return Point y coordinate corresponding to t
+     */
+    qreal getPointY(qreal t);
+
+    /**
      * @brief Calculates which side of the curve the given point is located
      *
      * @param m Given point
@@ -165,22 +181,6 @@ private:
      * @brief Calculates the equidistant t lookup table
      */
     void buildEquidistantTLUT();
-
-    /**
-     * @brief Calculates the x coordinate of the point on the curve corresponding to the given parameter
-     *
-     * @param t Curve parameter in [0,1]
-     * @return Point x coordinate corresponding to t
-     */
-    qreal getPointX(qreal t);
-
-    /**
-     * @brief Calculates the y coordinate of the point on the curve corresponding to the given parameter
-     *
-     * @param t Curve parameter in [0,1]
-     * @return Point y coordinate corresponding to t
-     */
-    qreal getPointY(qreal t);
 
     /**
      * @brief Sets the min/max X of the bounding box from the given value if value is less/greater than the min/max
