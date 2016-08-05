@@ -25,6 +25,7 @@
 
 #include "CelluloMathUtil.h"
 
+#include <algorithm>
 #include <cmath>
 #include <cstdlib>
 #include <ctime>
@@ -228,4 +229,10 @@ void CelluloMathUtil::c_srand(unsigned int seed){
 
 int CelluloMathUtil::c_rand(unsigned int max){
     return rand() % max;
+}
+
+QVariantList CelluloMathUtil::shuffle(const QVariantList& list){
+    QVariantList shuffled = list;
+    std::random_shuffle(shuffled.begin(), shuffled.end());
+    return shuffled;
 }

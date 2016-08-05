@@ -28,6 +28,7 @@
 
 #include <QObject>
 #include <QVector2D>
+#include <QVariantList>
 
 class CelluloMathUtil : public QObject {
     /* *INDENT-OFF* */
@@ -158,6 +159,14 @@ public:
      * @return Whether the three points are collinear enough
      */
     Q_INVOKABLE static bool collinear(const QVector2D& a, const QVector2D& b, const QVector2D& c);
+
+    /**
+     * @brief std::random_shuffles a list
+     *
+     * @param list The list to shuffle
+     * @return Shuffled list
+     */
+    Q_INVOKABLE static QVariantList shuffle(const QVariantList& list);
 
 private:
 
