@@ -363,6 +363,15 @@ public slots:
     void requestFrame();
 
     /**
+     * @brief Sets the exposure time for super-fast unkidnap detection for uniform and known paper colors known or enables autoexposure
+     *
+     * 460 pixels for the latest white plastic frame and white paper is a good value.
+     *
+     * @param pixels Exposure time in pixels, must be larger than 260; 0 is a special value that enables autoexposure
+     */
+    void setExposureTime(int pixels);
+
+    /**
      * @brief Sends a battery state query
      */
     void queryBatteryState();

@@ -664,6 +664,17 @@ ApplicationWindow {
                             value: robotComm.cameraImageProgress
                             width: gWidth*0.6 - 10
                         }
+
+                        Row{
+                            TextField{
+                                id: exposureTime
+                                placeholderText: "Exp. time (pixels)"
+                            }
+                            Button{
+                                text: "Set (0 for autoexposure)"
+                                onClicked: robotComm.setExposureTime(parseInt(exposureTime.text))
+                            }
+                        }
                     }
                 }
             }

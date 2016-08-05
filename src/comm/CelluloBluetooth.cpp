@@ -311,6 +311,7 @@ void CelluloBluetooth::processResponse(){
         }
 
         case CelluloBluetoothPacket::EventPacketTypeDebug: {
+            qDebug("%6u %6u\n",recvPacket.unloadUInt32(),recvPacket.unloadUInt32());
             //qDebug() << "CelluloBluetoothPacket::processResponse(): Debug event received";
             break;
         }
@@ -363,6 +364,16 @@ void CelluloBluetooth::requestFrame(){
 
     sendPacket.clear();
     sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeFrameRequest);
+    sendCommand();
+}
+
+void CelluloBluetooth::setExposureTime(int pixels){
+    if(pixels != 0 && pixels < 260)
+        pixels = 260;
+
+    sendPacket.clear();
+    sendPacket.setSendPacketType(CelluloBluetoothPacket::CmdPacketTypeSetExposureTime);
+    sendPacket.load((quint32)pixels);
     sendCommand();
 }
 

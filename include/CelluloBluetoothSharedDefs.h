@@ -89,6 +89,7 @@
         CmdPacketTypeSetBcastPeriod,                 /** Set pose broadcast period */ \
         CmdPacketTypeTimestampEnable,                /** Enable/disable sending timestamp along with pose */ \
         CmdPacketTypeFrameRequest,                   /** Request a camera image frame */ \
+        CmdPacketTypeSetExposureTime,                /** Sets exposure time or enables autoexposure */ \
         CmdPacketTypeBatteryStateRequest,            /** Request battery state */ \
         CmdPacketTypeSetLEDResponseMode,             /** Set LED response mode */ \
         CmdPacketTypeSetLocomotionInteractivityMode, /** Set the locomotion interactivity mode */ \
@@ -127,6 +128,7 @@
         "D", /** CmdPacketTypeSetBcastPeriod */ \
         "T", /** CmdPacketTypeTimestampEnable */ \
         "F", /** CmdPacketTypeFrameRequest */ \
+        "*", /** CmdPacketTypeSetExposureTime */ \
         "B", /** CmdPacketTypeBatteryStateRequest */ \
         "L", /** CmdPacketTypeSetLEDResponseMode */ \
         "I", /** CmdPacketTypeSetLocomotionInteractivityMode */ \
@@ -164,6 +166,7 @@
         2,                 /** CmdPacketTypeSetBcastPeriod: uint16 periodMillis */ \
         1,                 /** CmdPacketTypeTimestampEnable: uint8 bool */ \
         0,                 /** CmdPacketTypeFrameRequest */ \
+        4,                 /** CmdPacketTypeSetExposureTime: uint32 pixels */ \
         0,                 /** CmdPacketTypeBatteryStateRequest */ \
         1,                 /** CmdPacketTypeSetLEDResponseMode: uint8 mode */ \
         1,                 /** CmdPacketTypeSetLocomotionInteractivityMode: uint8 mode */ \
@@ -251,7 +254,7 @@
         0,                    /** EventPacketTypeTrackingGoalReached */ \
         0,                    /** EventPacketTypeAcknowledged */ \
         2 + IMG_WIDTH_SHARED, /** EventPacketTypeFrameLine: uint16 currentLineIndex, IMG_WIDTH*uint8 grayscalePixel */ \
-        4                     /** EventPacketTypeDebug */ \
+        8                     /** EventPacketTypeDebug */ \
 }
 
 #endif // CELLULOBLUETOOTHSHAREDDEFS_H
