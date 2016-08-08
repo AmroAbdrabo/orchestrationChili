@@ -76,6 +76,8 @@ void CelluloBluetooth::resetProperties(){
     emit kidnappedChanged();
     for(int i=0; i<6; i++)
         emit touchReleased(i);
+    gesture = CelluloBluetoothEnums::GestureNone;
+    emit gestureChanged();
 }
 
 QVariantList CelluloBluetooth::getFrame() const {
