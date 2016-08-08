@@ -82,6 +82,13 @@ public:
     VISUAL_EFFECT_ENUM_SHARED;
     Q_ENUM(VisualEffect)
     CELLULO_ENUM_DECL(VisualEffect)
+
+    /**
+     * @brief List of possible getures
+     */
+    GESTURE_ENUM_SHARED;
+    Q_ENUM(Gesture)
+    CELLULO_ENUM_DECL(Gesture)
 };
 
 Q_DECLARE_METATYPE(CelluloBluetoothEnums::ConnectionStatus)
@@ -89,5 +96,6 @@ Q_DECLARE_METATYPE(CelluloBluetoothEnums::BatteryState)
 Q_DECLARE_METATYPE(CelluloBluetoothEnums::LEDResponseMode)
 Q_DECLARE_METATYPE(CelluloBluetoothEnums::LocomotionInteractivityMode)
 Q_DECLARE_METATYPE(CelluloBluetoothEnums::VisualEffect)
+Q_DECLARE_METATYPE(CelluloBluetoothEnums::Gesture)
 
 #endif // CELLULOBLUETOOTHENUMS_H

@@ -56,6 +56,8 @@ class CelluloBluetooth : public CelluloZoneClient {
     Q_PROPERTY(float theta READ getTheta NOTIFY poseChanged_inherited)
     Q_PROPERTY(bool kidnapped READ getKidnapped NOTIFY kidnappedChanged)
 
+    Q_PROPERTY(CelluloBluetoothEnums::Gesture gesture READ getGesture NOTIFY gestureChanged)
+
     Q_PROPERTY(bool timestampingEnabled WRITE setTimestampingEnabled READ getTimestampingEnabled)
     Q_PROPERTY(int lastTimestamp READ getLastTimestamp NOTIFY timestampChanged)
     Q_PROPERTY(float framerate READ getFramerate NOTIFY timestampChanged)
@@ -157,6 +159,13 @@ public:
      * @return Whether kidnapped or on encoded paper
      */
     bool getKidnapped(){ return kidnapped; }
+
+    /**
+     * @brief Gets the current gesture
+     *
+     * @return Current gesture
+     */
+    CelluloBluetoothEnums::Gesture getGesture(){ return gesture; }
 
     /**
      * @brief Gets the camera image progress
@@ -526,6 +535,11 @@ signals:
     void touchReleased(int key);
 
     /**
+     * @brief Emitted when the gesture on the robot changes
+     */
+    void gestureChanged();
+
+    /**
      * @brief DO NOT USE EXPLICITLY
      *
      * Emitted when the base class emits poseChanged() since NOTIFY cannot be used with inherited signals
@@ -577,6 +591,8 @@ private:
     float y;                                                  ///< Current y position in mm
     float theta;                                              ///< Current orientation in degrees
     bool kidnapped;                                           ///< Whether currently kidnapped
+
+    CelluloBluetoothEnums::Gesture gesture;                   ///< Current gesture
 
     /**
      * @brief Resets properties of the robot to default

@@ -82,6 +82,15 @@
 }
 
 /**
+ * @brief Gesture types
+ */
+#define GESTURE_ENUM_SHARED enum Gesture { \
+        GestureNone = 0, /** No gesture */ \
+        GestureHold = 1, /** Robot is held */ \
+        GestureNumElements \
+}
+
+/**
  * @brief App to robot message types
  */
 #define COMMAND_PACKET_TYPE_ENUM_SHARED enum CmdPacketType { \
@@ -124,38 +133,38 @@
  * @brief App to robot message identifiers
  */
 #define COMMAND_PACKET_STR_SHARED { \
-        "P", /** CmdPacketTypePing */ \
-        "D", /** CmdPacketTypeSetBcastPeriod */ \
-        "T", /** CmdPacketTypeTimestampEnable */ \
-        "F", /** CmdPacketTypeFrameRequest */ \
-        "*", /** CmdPacketTypeSetExposureTime */ \
-        "B", /** CmdPacketTypeBatteryStateRequest */ \
-        "L", /** CmdPacketTypeSetLEDResponseMode */ \
-        "I", /** CmdPacketTypeSetLocomotionInteractivityMode */ \
-        "U", /** CmdPacketTypeGestureEnable */ \
-        "K", /** CmdPacketTypeCasualBackdriveAssistEnable */ \
-        "Y", /** CmdPacketTypeHapticBackdriveAssist */ \
-        "E", /** CmdPacketTypeSetVisualEffect */ \
-        "M", /** CmdPacketTypeSetMotorOutput */ \
-        "A", /** CmdPacketTypeSetAllMotorOutputs */ \
-        "C", /** CmdPacketTypeSetGoalVelocity */ \
-        "G", /** CmdPacketTypeSetGoalPose */ \
-        "N", /** CmdPacketTypeSetGoalPosition */ \
-        "-", /** CmdPacketTypeSetGoalXCoordinate */ \
-        "|", /** CmdPacketTypeSetGoalYCoordinate */ \
-        "O", /** CmdPacketTypeSetGoalOrientation */ \
-        "\\",/** CmdPacketTypeSetGoalXThetaCoordinate */ \
-        "/", /** CmdPacketTypeSetGoalYThetaCoordinate */ \
-        "X", /** CmdPacketTypeClearTracking */ \
-        "V", /** CmdPacketTypeSimpleVibrate */ \
-        "Z", /** CmdPacketTypeVibrateOnMotion */ \
-        "H", /** CmdPacketTypeClearHapticFeedback */ \
-        ".", /** CmdPacketTypePolyBezierInit */ \
-        "~", /** CmdPacketTypePolyBezierAppend */ \
-        "J", /** CmdPacketTypeSetGoalPolyBezier */ \
-        "Q", /** CmdPacketTypeSetGoalPolyBezierAligned */ \
-        "R", /** CmdPacketTypeReset */ \
-        "S"  /** CmdPacketTypeShutdown */ \
+        "P",  /** CmdPacketTypePing */ \
+        "D",  /** CmdPacketTypeSetBcastPeriod */ \
+        "T",  /** CmdPacketTypeTimestampEnable */ \
+        "F",  /** CmdPacketTypeFrameRequest */ \
+        "*",  /** CmdPacketTypeSetExposureTime */ \
+        "B",  /** CmdPacketTypeBatteryStateRequest */ \
+        "L",  /** CmdPacketTypeSetLEDResponseMode */ \
+        "I",  /** CmdPacketTypeSetLocomotionInteractivityMode */ \
+        "U",  /** CmdPacketTypeGestureEnable */ \
+        "K",  /** CmdPacketTypeCasualBackdriveAssistEnable */ \
+        "Y",  /** CmdPacketTypeHapticBackdriveAssist */ \
+        "E",  /** CmdPacketTypeSetVisualEffect */ \
+        "M",  /** CmdPacketTypeSetMotorOutput */ \
+        "A",  /** CmdPacketTypeSetAllMotorOutputs */ \
+        "C",  /** CmdPacketTypeSetGoalVelocity */ \
+        "G",  /** CmdPacketTypeSetGoalPose */ \
+        "N",  /** CmdPacketTypeSetGoalPosition */ \
+        "-",  /** CmdPacketTypeSetGoalXCoordinate */ \
+        "|",  /** CmdPacketTypeSetGoalYCoordinate */ \
+        "O",  /** CmdPacketTypeSetGoalOrientation */ \
+        "\\", /** CmdPacketTypeSetGoalXThetaCoordinate */ \
+        "/",  /** CmdPacketTypeSetGoalYThetaCoordinate */ \
+        "X",  /** CmdPacketTypeClearTracking */ \
+        "V",  /** CmdPacketTypeSimpleVibrate */ \
+        "Z",  /** CmdPacketTypeVibrateOnMotion */ \
+        "H",  /** CmdPacketTypeClearHapticFeedback */ \
+        ".",  /** CmdPacketTypePolyBezierInit */ \
+        "~",  /** CmdPacketTypePolyBezierAppend */ \
+        "J",  /** CmdPacketTypeSetGoalPolyBezier */ \
+        "Q",  /** CmdPacketTypeSetGoalPolyBezierAligned */ \
+        "R",  /** CmdPacketTypeReset */ \
+        "S"   /** CmdPacketTypeShutdown */ \
 }
 
 /*
@@ -207,6 +216,7 @@
         EventPacketTypeTouchBegan,             /** Key was touched */ \
         EventPacketTypeTouchLongPressed,       /** Key was touched for a time */ \
         EventPacketTypeTouchReleased,          /** Key was released */ \
+        EventPacketTypeGestureChanged,         /** Robot was held/released (only works when gesture detection is enabled) */ \
         EventPacketTypePoseChanged,            /** Pose changed */ \
         EventPacketTypePoseChangedTimestamped, /** Pose changed, timestamp attached to message */ \
         EventPacketTypeKidnapChanged,          /** Kidnap state changed */ \
@@ -228,6 +238,7 @@
         "T", /** EventPacketTypeTouchBegan */ \
         "L", /** EventPacketTypeTouchLongPressed */ \
         "R", /** EventPacketTypeTouchReleased */ \
+        "H", /** EventPacketTypeGestureChanged */ \
         "P", /** EventPacketTypePoseChanged */ \
         "S", /** EventPacketTypePoseChangedTimestamped */ \
         "K", /** EventPacketTypeKidnapChanged */ \
@@ -248,6 +259,7 @@
         1,                    /** EventPacketTypeTouchBegan: uint8 keyIndex */ \
         1,                    /** EventPacketTypeTouchLongPressed: uint8 keyIndex */ \
         1,                    /** EventPacketTypeTouchReleased: uint8 keyIndex */ \
+        1,                    /** EventPacketTypeGestureChanged: uint8 gesture */ \
         4 + 4 + 2,            /** EventPacketTypePoseChanged: uint32 x, uint32 y, uint16 theta */ \
         4 + 4 + 2 + 4,        /** EventPacketTypePoseChangedTimestamped uint32 x, uint32 y, uint16 theta, uint32 timestamp */ \
         1,                    /** EventPacketTypeKidnapChanged: uint8 kidnappedBool */ \

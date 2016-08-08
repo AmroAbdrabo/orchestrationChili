@@ -152,30 +152,6 @@ ApplicationWindow {
             }
 
             GroupBox {
-                title: "Robot Modes"
-                width: gWidth
-
-                Column{
-                    spacing: 5
-
-                    ComboBox {
-                        model: CelluloBluetoothEnums.LocomotionInteractivityModeStrings
-                        currentIndex: 0
-                        onCurrentIndexChanged: {
-                            if(robotComm != null)
-                                robotComm.setLocomotionInteractivityMode(currentIndex)
-                        }
-                    }
-
-                    CheckBox{
-                        checked: false
-                        text: "Gesture enabled"
-                        onCheckedChanged: robotComm.setGestureEnabled(checked)
-                    }
-                }
-            }
-
-            GroupBox {
                 title: "Power"
                 width: gWidth
 
@@ -514,6 +490,32 @@ ApplicationWindow {
                         text: "Clear haptic feedbacks"
                         onClicked: robotComm.clearHapticFeedback()
                     }
+                }
+            }
+
+            GroupBox {
+                title: "Gesture"
+                width: gWidth
+
+                Column{
+                    spacing: 5
+
+                    ComboBox {
+                        model: CelluloBluetoothEnums.LocomotionInteractivityModeStrings
+                        currentIndex: 0
+                        onCurrentIndexChanged: {
+                            if(robotComm != null)
+                                robotComm.setLocomotionInteractivityMode(currentIndex)
+                        }
+                    }
+
+                    CheckBox{
+                        checked: false
+                        text: "Gesture enabled"
+                        onCheckedChanged: robotComm.setGestureEnabled(checked)
+                    }
+
+                    Text{ text: "Current gesture: " + CelluloBluetoothEnums.GestureString(robotComm.gesture) }
                 }
             }
 

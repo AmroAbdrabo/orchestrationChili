@@ -24,8 +24,6 @@
 
 #include "CelluloBluetoothEnums.h"
 
-CelluloBluetoothEnums::CelluloBluetoothEnums(QObject* parent) : QObject(parent){
-}
+CelluloBluetoothEnums::CelluloBluetoothEnums(QObject* parent) : QObject(parent){}
 
-CelluloBluetoothEnums::~CelluloBluetoothEnums(){
-}
+CelluloBluetoothEnums::~CelluloBluetoothEnums(){}

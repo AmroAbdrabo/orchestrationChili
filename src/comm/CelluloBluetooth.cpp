@@ -52,6 +52,7 @@ CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) : CelluloZoneClient(paren
     lastTimestamp = 0;
     framerate = 0.0;
     kidnapped = true;
+    gesture = CelluloBluetoothEnums::GestureNone;
 }
 
 CelluloBluetooth::~CelluloBluetooth(){}
@@ -269,6 +270,15 @@ void CelluloBluetooth::processResponse(){
                     kidnapped = (bool)newKidnapped;
                     emit kidnappedChanged();
                 }
+            break;
+        }
+
+        case CelluloBluetoothPacket::EventPacketTypeGestureChanged: {
+            CelluloBluetoothEnums::Gesture newGesture = (CelluloBluetoothEnums::Gesture)recvPacket.unloadUInt8();
+            if(gesture != newGesture){
+                gesture = newGesture;
+                emit gestureChanged();
+            }
             break;
         }
 
