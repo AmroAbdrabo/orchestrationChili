@@ -9,7 +9,8 @@ SOURCES += \
 HEADERS += \
     ../../src/util/svg/CelluloSVGUtil.h
 
-INCLUDEPATH += ../../src/util/svg/
+INCLUDEPATH += \
+    ../../src/util/svg/
 
 unix{
     target.path = /usr/local/bin/

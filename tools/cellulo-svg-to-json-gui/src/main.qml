@@ -62,6 +62,38 @@ ApplicationWindow{
                 spacing: 5
 
                 Text{
+                    text: "Type:"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+                TextField{
+                    id: type
+                    width: 500
+                    anchors.verticalCenter: parent.verticalCenter
+                    placeholderText: "Type for all zones (must be one of POLYBEZIER types)"
+                    text: "POLYBEZIERCLOSESTT"
+                }
+            }
+
+            Row{
+                spacing: 5
+
+                Text{
+                    text: "Name:"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+                TextField{
+                    id: name
+                    width: 500
+                    anchors.verticalCenter: parent.verticalCenter
+                    placeholderText: "Prefix for all zone names"
+                    text: "SVG_DUMP_ZONE"
+                }
+            }
+
+            Row{
+                spacing: 5
+
+                Text{
                     text: "DPI:"
                     anchors.verticalCenter: parent.verticalCenter
                 }
@@ -75,10 +107,9 @@ ApplicationWindow{
                 }
             }
 
-
             Button{
                 text: "Go"
-                onClicked: toast.show(CelluloSVGUtil.dumpAllPathsToJSON(inFile.text, outFile.text, parseFloat(dpi.text)))
+                onClicked: toast.show(CelluloSVGUtil.dumpAllPathsToJSON(inFile.text, outFile.text, type.text, name.text, parseFloat(dpi.text)))
             }
         }
 

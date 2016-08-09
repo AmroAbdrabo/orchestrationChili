@@ -43,10 +43,18 @@ public:
      *
      * @param inSVGFile Full path to the local SVG file, can be in QUrl form
      * @param outJSONFile Full path to the local JSON file, will be overwritten, can be in QUrl form
+     * @param type Zone type for all extracted zones, must be one of PolyBezier zones
+     * @param name Name prefix for all zones
      * @param dpi Dots Per Inch to be used during conversion to millimeters (90 is the default for inkscape)
      * @return Human readable result message
      */
-    Q_INVOKABLE static QString dumpAllPathsToJSON(const QString& inSVGFile, const QString& outJSONFile, float dpi = 90.0f);
+    Q_INVOKABLE static QString dumpAllPathsToJSON(
+        const QString& inSVGFile,
+        const QString& outJSONFile,
+        const QString& type = "POLYBEZIERCLOSESTT",
+        const QString& name = "SVG_DUMP_ZONE",
+        float dpi = 90.0f
+    );
 
 };
 

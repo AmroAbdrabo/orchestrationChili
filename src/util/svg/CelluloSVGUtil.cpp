@@ -24,8 +24,6 @@
 
 #include "CelluloSVGUtil.h"
 
-#include "../../zones/CelluloZoneTypes.h"
-
 #include <QDebug>
 #include <QUrl>
 #include <QFile>
@@ -42,50 +40,55 @@ CelluloSVGUtil::CelluloSVGUtil(QObject* parent) : QObject(parent){}
 
 CelluloSVGUtil::~CelluloSVGUtil(){}
 
-QString CelluloSVGUtil::dumpAllPathsToJSON(const QString& inSVGFile, const QString& outJSONFile, float dpi){
+QString CelluloSVGUtil::dumpAllPathsToJSON(const QString& inSVGFile, const QString& outJSONFile, const QString& type, const QString& name, float dpi){
+
+    //Input file
     QString inFilePath = QUrl(inSVGFile).toLocalFile();
     if(inFilePath.isEmpty())
         inFilePath = inSVGFile;
-    QString outFilePath = QUrl(outJSONFile).toLocalFile();
-    if(outFilePath.isEmpty())
-        outFilePath = outJSONFile;
-
     struct NSVGimage* image = nsvgParseFromFile(inFilePath.toLatin1(), "mm", dpi);
     if(!image)
         return "CelluloSVGUtil::dumpAllPathsToJSON(): Couldn't open input file.";
-    else{
-        QFile saveFile(outFilePath);
-        if(!saveFile.open(QIODevice::WriteOnly))
-            return "CelluloSVGUtil::dumpAllPathsToJSON(): Couldn't open output file.";
 
-        QJsonArray jsonZones;
-        int numZone = 0;
-        for(NSVGshape* shape = image->shapes; shape != NULL; shape = shape->next)
-            for(NSVGpath* path = shape->paths; path != NULL; path = path->next){
+    //Output file
+    QString outFilePath = QUrl(outJSONFile).toLocalFile();
+    if(outFilePath.isEmpty())
+        outFilePath = outJSONFile;
+    QFile saveFile(outFilePath);
+    if(!saveFile.open(QIODevice::WriteOnly))
+        return "CelluloSVGUtil::dumpAllPathsToJSON(): Couldn't open output file.";
 
-                //Dump each path as one zone
-                QJsonObject zoneObj;
-                zoneObj["type"] = "POLYBEZIERBORDER";
-                zoneObj["name"] = "SVG_DUMP_ZONE_" + QString::number(numZone);
+    //Type check
+    if(!type.startsWith("POLYBEZIER"))
+        return "CelluloSVGUtil::dumpAllPathsToJSON(): Type must be one of POLYBEZIER types.";
 
-                QJsonArray controlPointsArray;
-                QJsonObject controlPointObj;
-                for(int i=0; i<2*path->npts; i+=2){
-                    controlPointObj["x"] = path->pts[i];
-                    controlPointObj["y"] = path->pts[i + 1];
-                    controlPointsArray.append(controlPointObj);
-                }
-                zoneObj["controlPoints"] = controlPointsArray;
+    QJsonArray jsonZones;
+    int numZone = 0;
+    for(NSVGshape* shape = image->shapes; shape != NULL; shape = shape->next)
+        for(NSVGpath* path = shape->paths; path != NULL; path = path->next){
 
-                jsonZones.append(zoneObj);
+            //Dump each path as one zone
+            QJsonObject zoneObj;
+            zoneObj["type"] = type;
+            zoneObj["name"] = numZone == 0 ? name : (name + "_" + QString::number(numZone));
 
-                numZone++;
+            QJsonArray controlPointsArray;
+            QJsonObject controlPointObj;
+            for(int i=0; i<2*path->npts; i+=2){
+                controlPointObj["x"] = path->pts[i];
+                controlPointObj["y"] = path->pts[i + 1];
+                controlPointsArray.append(controlPointObj);
             }
+            zoneObj["controlPoints"] = controlPointsArray;
 
-        nsvgDelete(image);
+            jsonZones.append(zoneObj);
 
-        saveFile.write(QJsonDocument(jsonZones).toJson());
+            numZone++;
+        }
 
-        return "CelluloSVGUtil::dumpAllPathsToJSON(): Dumped " + QString::number(numZone) + " zones.";
-    }
+    nsvgDelete(image);
+
+    saveFile.write(QJsonDocument(jsonZones).toJson());
+
+    return "CelluloSVGUtil::dumpAllPathsToJSON(): Dumped " + QString::number(numZone) + " zones.";
 }
