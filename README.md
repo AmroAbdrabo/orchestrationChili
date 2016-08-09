@@ -5,6 +5,13 @@ This is a qml module for communicating with Cellulo robots over bluetooth or
 simulated robots over web sockets for debugging purposes. It supports desktop
 and Android and was tested with Qt 5.4.2.
 
+Dependencies
+-------------
+- For the haptics-dev branch : 
+nanosvg : https://github.com/memononen/nanosvg
+Need to copy the src directory of nanosvg into cellulo-qml-plugin/src/util/svg/
+
+
 Desktop build
 -------------
 
