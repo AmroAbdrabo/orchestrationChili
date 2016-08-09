@@ -7,10 +7,8 @@ and Android and was tested with Qt 5.4.2.
 
 Dependencies
 -------------
-- For the haptics-dev branch : 
-nanosvg : https://github.com/memononen/nanosvg
-Need to copy the src directory of nanosvg into cellulo-qml-plugin/src/util/svg/
 
+Depends on `nanosvg`, run `git submodule init && git submodule update` on the root directory to obtain it.
 
 Desktop build
 -------------
