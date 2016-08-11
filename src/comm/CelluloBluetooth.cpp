@@ -91,7 +91,10 @@ QVariantList CelluloBluetooth::getFrame() const {
 
 void CelluloBluetooth::setMacAddr(QString macAddr){
     disconnectFromServer();
-    this->macAddr = macAddr;
+    if(this->macAddr != macAddr){
+        this->macAddr = macAddr;
+        emit macAddrChanged();
+    }
     connectToServer();
 }
 

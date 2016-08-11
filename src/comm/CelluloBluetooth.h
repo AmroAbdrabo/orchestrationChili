@@ -46,7 +46,7 @@ class CelluloBluetooth : public CelluloZoneClient {
     Q_OBJECT
     /* *INDENT-ON* */
 
-    Q_PROPERTY(QString macAddr WRITE setMacAddr READ getMacAddr)
+    Q_PROPERTY(QString macAddr WRITE setMacAddr READ getMacAddr NOTIFY macAddrChanged)
     Q_PROPERTY(CelluloBluetoothEnums::ConnectionStatus connectionStatus READ getConnectionStatus NOTIFY connectionStatusChanged)
 
     Q_PROPERTY(CelluloBluetoothEnums::BatteryState batteryState READ getBatteryState NOTIFY batteryStateChanged)
@@ -487,6 +487,11 @@ public slots:
     void shutdown();
 
 signals:
+
+    /**
+     * @brief Emitted when the MAC address changes
+     */
+    void macAddrChanged();
 
     /**
      * @brief Emitted when Bluetooth connection status changes
