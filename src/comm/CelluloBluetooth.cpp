@@ -95,7 +95,8 @@ void CelluloBluetooth::setMacAddr(QString macAddr){
         this->macAddr = macAddr;
         emit macAddrChanged();
     }
-    connectToServer();
+    if(!macAddr.isEmpty())
+        connectToServer();
 }
 
 void CelluloBluetooth::refreshConnection(){
