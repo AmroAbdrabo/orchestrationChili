@@ -46,6 +46,7 @@
 #include "zones/CelluloZonePaintedItem.h"
 #include "util/math/CelluloMathUtil.h"
 #include "util/svg/CelluloSVGUtil.h"
+#include "util/lang/TranslationTool.h"
 
 void CelluloPlugin::registerTypes(const char *uri){
     qmlRegisterType<CelluloBluetooth>(uri, 1, 0, "CelluloBluetooth");
@@ -119,6 +120,8 @@ void CelluloPlugin::registerTypes(const char *uri){
                                                  Q_UNUSED(jsEngine)
                                                  return new CelluloSVGUtil();
                                              });
+
+    qmlRegisterType<TranslationTool>(uri, 1, 0, "TranslationTool");
 }
 
 void CelluloPlugin::initializeEngine(QQmlEngine *engine, const char *uri){
