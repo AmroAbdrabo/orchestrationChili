@@ -149,6 +149,20 @@ ApplicationWindow {
             y: 260
             name: "ZONE_RECTANGLE_INNER_STATIC2"
         }
+
+        CelluloZoneIrregularPolygonInner{
+            id: staticZone3
+
+            name: "ZONE_IRREGULAR_POLYGON_INNER"
+
+            vertices: [
+                Qt.vector2d(174.93809509277344,166.49652099609375),
+                Qt.vector2d(156.08729553222656,152.49432373046875),
+                Qt.vector2d(176.5538787841797,135.7993927001953),
+                Qt.vector2d(178.708251953125,146.5703125),
+                Qt.vector2d(180.0547332763672,154.37921142578125)
+            ]
+        }
     }
 
     CelluloBluetooth{
@@ -317,6 +331,13 @@ ApplicationWindow {
                     physicalPlaygroundWidth: parent.physicalWidth
                     physicalPlaygroundHeight: parent.physicalHeight
                     associatedZone: staticZone2
+                }
+
+                CelluloZonePaintedItem{
+                    color: colorRpoly
+                    physicalPlaygroundWidth: parent.physicalWidth
+                    physicalPlaygroundHeight: parent.physicalHeight
+                    associatedZone: staticZone3
                 }
 
                 Image{

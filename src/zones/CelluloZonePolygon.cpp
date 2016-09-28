@@ -53,6 +53,15 @@ void CelluloZonePolygon::updateBounds(){
     }
 }
 
+QList<QVector2D> CelluloZonePolygon::convertQVariantToQVector2D(QList<QVariant> newVerticesAsVariants){
+    QList<QVector2D> newVertices;
+    for (int i = 0; i < newVerticesAsVariants.size(); ++i) {
+        QVector2D newVertice = qvariant_cast<QVector2D>(newVerticesAsVariants.at(i));
+        newVertices.append(newVertice);
+    }
+    return newVertices;
+}
+
 void CelluloZonePolygon::setVertices(const QList<QVector2D> &newVertices){
     if(newVertices != vertices){
         vertices = newVertices;

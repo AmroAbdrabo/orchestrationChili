@@ -35,7 +35,8 @@ class CelluloZonePolygon : public CelluloZone {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
-    Q_PROPERTY(QList<QVector2D> vertices WRITE setVertices READ getVertices NOTIFY verticesChanged)
+    Q_PROPERTY(QList<QVariant> vertices WRITE setVerticesAsVariants READ getVerticesAsVariants NOTIFY verticesChanged)
+
 
 public:
 
@@ -43,6 +44,28 @@ public:
      * @brief Creates a new Cellulo polygonal zone
      */
     CelluloZonePolygon();
+
+    /**
+     * @brief Gets the polygon's vertices in their QVariant representation
+     *
+     * @return List of polygon's vertices in their QVariant representation
+     */
+    QList<QVariant> getVerticesAsVariants() {
+        QList<QVariant> newVerticesAsVariants;
+        for (int i = 0; i < vertices.size(); ++i) {
+            newVerticesAsVariants.append(QVariant::fromValue(vertices.at(i)));
+        }
+        return newVerticesAsVariants;
+    }
+
+    /**
+     * @brief Sets the polygon's vertices in their QVariant representation
+     *
+     * @param newVertices List of new vertices in their QVariant representation
+     */
+    Q_INVOKABLE void setVerticesAsVariants(QList<QVariant> newVerticesAsVariants) {
+        setVertices(convertQVariantToQVector2D(newVerticesAsVariants));
+    }
 
     /**
      * @brief Gets the polygon's vertices
@@ -85,6 +108,12 @@ protected:
      * @brief Updates the bounding rectangle from the new list of vertices
      */
     void updateBounds();
+
+    /**
+     * @brief Convert QVariant vertices to QVector2D vertices
+     */
+    QList<QVector2D> convertQVariantToQVector2D(QList<QVariant> newVerticesAsVariants);
+
 
     QList<QVector2D> vertices; ///< Vertices of the polygon
     float minX;                ///< Minimal x bound for the polygon
