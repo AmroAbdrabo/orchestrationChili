@@ -29,6 +29,7 @@ ApplicationWindow {
                     "00:06:66:74:40:E4",
                     "00:06:66:74:40:EC",
                     "00:06:66:74:40:EE",
+                    "00:06:66:74:41:03",
                     "00:06:66:74:41:04",
                     "00:06:66:74:41:14",
                     "00:06:66:74:41:4C",
@@ -71,7 +72,7 @@ ApplicationWindow {
                 }
                 TextField{
                     id: xGoalField
-                    text: "207"
+                    text: "105"
                     placeholderText: "X Goal"
                 }
             }
@@ -82,7 +83,7 @@ ApplicationWindow {
                 }
                 TextField{
                     id: yGoalField
-                    text: "292"
+                    text: "148.5"
                     placeholderText: "Y Goal"
                 }
             }
