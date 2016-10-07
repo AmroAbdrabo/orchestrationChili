@@ -5,7 +5,10 @@ import QtQuick.Controls 1.2
 import QtQuick.Controls.Private 1.0
 import QtQuick.Controls.Styles 1.3
 import QtBluetooth 5.3
+
 import Cellulo 1.0
+
+import "BlastType.js" as BlastType
 
 ApplicationWindow {
     id: window
@@ -16,119 +19,132 @@ ApplicationWindow {
     width: gWidth
     height: mobile ? Screen.desktopAvailableHeight : 0.7*Screen.height
 
+    property int blastType: BlastType.None
+
     ToastManager{ id: toast }
 
-    ScrollView{
-        anchors.fill: parent
-        horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
-        verticalScrollBarPolicy: mobile ? Qt.ScrollBarAsNeeded : Qt.ScrollBarAlwaysOff
+    Column{
+        id: itemsCol
 
-        Column{
-            id: itemsCol
+        Row{
+            spacing: 10
 
-            Row{
-                spacing: 10
+            ExclusiveGroup{ id: actionGroup }
 
-                ExclusiveGroup{ id: actionGroup }
-
-                RadioButton{
-                    text: "No Action"
-                    checked: true
-                    exclusiveGroup: actionGroup
+            RadioButton{
+                text: "No Action"
+                checked: true
+                exclusiveGroup: actionGroup
+                onCheckedChanged: {
+                    if(checked)
+                        blastType = BlastType.None;
                 }
-                RadioButton{
-                    text: "Reset Blast"
-                    exclusiveGroup: actionGroup
+            }
+            RadioButton{
+                text: "Reset Blast"
+                exclusiveGroup: actionGroup
+                onCheckedChanged: {
+                    if(checked)
+                        blastType = BlastType.BlastReset;
                 }
-                RadioButton{
-                    text: "Shutdown Blast"
-                    exclusiveGroup: actionGroup
+            }
+            RadioButton{
+                text: "Shutdown Blast"
+                exclusiveGroup: actionGroup
+                onCheckedChanged: {
+                    if(checked)
+                        blastType = BlastType.BlastShutdown;
+                }
+            }
+        }
+
+        CheckBox{
+            id: continuousCheckbox
+            text: "Blast continuously"
+            checked: false
+        }
+
+        Row{
+            spacing: 5
+
+            GroupBox {
+                title: "Robots Found:"
+
+                ListView{
+                    width: window.width/3
+                    height: window.height*2/3
+
+                    model: emp.macAddrToBlast
+                    delegate: Text { text: modelData }
                 }
             }
 
-            Row{
-                spacing: 5
+            GroupBox {
+                title: "Robots Blasted:"
 
-                GroupBox {
-                    title: "Robots Found:"
+                ListView{
+                    width: window.width/3
+                    height: window.height*2/3
 
-                    ListView{
-                        width: window.width/3
-                        height: window.height*2/3
-
-                        model: foundModel
-                        delegate: Text { text: macAddr }
-                    }
-                }
-
-                GroupBox {
-                    title: "Robots Blasted:"
-
-                    ListView{
-                        width: window.width/3
-                        height: window.height*2/3
-
-                        model: doneModel
-                        delegate: Text { text: macAddr }
-                    }
+                    model: emp.macAddrBlasted
+                    delegate: Text { text: modelData }
                 }
             }
         }
     }
 
-    ListModel{
-        id: foundModel
-
-        function removeMacAddr(macAddrToRemove){
-            for(var i=0;i<count;i++)
-                if(get(i).macAddr === macAddrToRemove){
-                    remove(i);
-                    break;
-                }
+    onBlastTypeChanged: {
+        switch(blastType){
+        case BlastType.None:
+            discoverer.running = false;
+            emp.clear();
+            break;
+        case BlastType.BlastReset:
+        case BlastType.BlastShutdown:
+            discoverer.running = true;
+            break;
+        default:
+            break;
         }
     }
-    ListModel{
-        id: doneModel
 
-        function removeMacAddr(macAddrToRemove){
-            for(var i=0;i<count;i++)
-                if(get(i).macAddr === macAddrToRemove){
-                    remove(i);
-                    break;
-                }
-        }
+    CelluloBluetoothEMP{
+        id: emp
+        continuous: continuousCheckbox.checked
     }
 
     BluetoothDiscoveryModel{
         id: discoverer
 
         property string macAddrPrefix: "00:06:66:74"
-
         running: false
         discoveryMode: BluetoothDiscoveryModel.DeviceDiscovery
 
+        onRunningChanged: {
+            if(!running)
+                switch(blastType){
+                case BlastType.BlastReset:
+                case BlastType.BlastShutdown:
+                    running = true;
+                    break;
+                default:
+                    break;
+                }
+        }
+
         onDeviceDiscovered: {
             if(device.indexOf(macAddrPrefix) === 0){
-                foundModel.append({macAddr: device});
-                console.log("New device: " + device)
+                switch(blastType){
+                case BlastType.BlastReset:
+                    emp.resetLater(device);
+                    break;
+                case BlastType.BlastShutdown:
+                    emp.shutdownLater(device);
+                    break;
+                default:
+                    break;
+                }
             }
         }
-    }
-
-    property var celluloBluetoothComponent: null
-    property var celluloBluetooths: []
-
-    Component.onCompleted: {
-        celluloBluetoothComponent = Qt.createComponent("CelluloBluetooth.qml");
-        discoverer.running = true;
-    }
-
-    CelluloBluetooth{
-        id: robotComm
-
-
-        onBootCompleted: toast.show("Boot completed.")
-        onShuttingDown: toast.show("Shutting down.")
-
     }
 }
