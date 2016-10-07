@@ -21,8 +21,6 @@ ApplicationWindow {
 
     property int blastType: BlastType.None
 
-    ToastManager{ id: toast }
-
     Column{
         id: itemsCol
 
