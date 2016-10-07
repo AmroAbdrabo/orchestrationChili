@@ -28,6 +28,7 @@
 #include <qqml.h>
 
 #include "comm/CelluloBluetooth.h"
+#include "comm/CelluloBluetoothEMP.h"
 #include "comm/CelluloBluetoothEnums.h"
 #include "comm/CameraFrameImageProvider.h"
 #include "zones/CelluloZone.h"
@@ -50,6 +51,7 @@
 
 void CelluloPlugin::registerTypes(const char *uri){
     qmlRegisterType<CelluloBluetooth>(uri, 1, 0, "CelluloBluetooth");
+    qmlRegisterType<CelluloBluetoothEMP>(uri, 1, 0, "CelluloBluetoothEMP");
 
     qmlRegisterSingletonType<CelluloBluetoothEnums>(uri, 1, 0, "CelluloBluetoothEnums",
                                                     [] (QQmlEngine* qmlEngine, QJSEngine* jsEngine)->QObject* {
