@@ -46,6 +46,7 @@ class CelluloBluetooth : public CelluloZoneClient {
     Q_OBJECT
     /* *INDENT-ON* */
 
+    Q_PROPERTY(bool autoConnect WRITE setAutoConnect READ getAutoConnect NOTIFY autoConnectChanged)
     Q_PROPERTY(QString macAddr WRITE setMacAddr READ getMacAddr NOTIFY macAddrChanged)
     Q_PROPERTY(CelluloBluetoothEnums::ConnectionStatus connectionStatus READ getConnectionStatus NOTIFY connectionStatusChanged)
 
@@ -82,6 +83,13 @@ public:
      * @brief Destroys this Cellulo robot communicator
      */
     virtual ~CelluloBluetooth();
+
+    /**
+     * @brief Gets whether the socket tries to reconnect when it drops, connects when mac address is set
+     *
+     * @return Whether the socket tries to reconnect when it drops, connects when mac address is set
+     */
+    bool getAutoConnect(){ return autoConnect; }
 
     /**
      * @brief Gets the latest camera frame
@@ -197,6 +205,13 @@ private slots:
     void refreshConnection();
 
 public slots:
+
+    /**
+     * @brief Sets whether the socket will try to reconnect when it drops, connects when mac address is set
+     *
+     * @param autoReconnect Whether the socket will try to reconnect when it drops, connects when mac address is set
+     */
+    void setAutoConnect(bool autoConnect);
 
     /**
      * @brief Sets the MAC address of the server and immediately connects to it
@@ -489,6 +504,11 @@ public slots:
 signals:
 
     /**
+     * @brief Auto connect strategy changed
+     */
+    void autoConnectChanged();
+
+    /**
      * @brief Emitted when the MAC address changes
      */
     void macAddrChanged();
@@ -577,6 +597,8 @@ signals:
     void frameReady();
 
 private:
+
+    bool autoConnect;                                         ///< Whether the socket will try to reconnect every time it drops, will connect when mac address is set
 
     CelluloBluetoothPacket sendPacket;                        ///< Outgoing packet
     CelluloBluetoothPacket recvPacket;                        ///< Incoming packet

@@ -32,6 +32,7 @@ QByteArray CelluloBluetooth::frameBuffer;
 CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) : CelluloZoneClient(parent){
     connect(this, SIGNAL(poseChanged(qreal,qreal,qreal)), this, SIGNAL(poseChanged_inherited()));
 
+    autoConnect = true;
     socket = NULL;
 
     btConnectTimeoutTimer.setSingleShot(true);
@@ -55,7 +56,9 @@ CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) : CelluloZoneClient(paren
     gesture = CelluloBluetoothEnums::GestureNone;
 }
 
-CelluloBluetooth::~CelluloBluetooth(){}
+CelluloBluetooth::~CelluloBluetooth(){
+    disconnectFromServer();
+}
 
 void CelluloBluetooth::resetProperties(){
 
@@ -95,8 +98,15 @@ void CelluloBluetooth::setMacAddr(QString macAddr){
         this->macAddr = macAddr;
         emit macAddrChanged();
     }
-    if(!macAddr.isEmpty())
+    if(!macAddr.isEmpty() && autoConnect)
         connectToServer();
+}
+
+void CelluloBluetooth::setAutoConnect(bool autoConnect){
+    if(this->autoConnect != autoConnect){
+        this->autoConnect = autoConnect;
+        emit autoConnectChanged();
+    }
 }
 
 void CelluloBluetooth::refreshConnection(){
@@ -172,12 +182,13 @@ void CelluloBluetooth::socketConnected(){
 }
 
 void CelluloBluetooth::socketDisconnected(){
-    qDebug() << "CelluloBluetooth::socketDisconnected(): " << macAddr << ", will try to reconnect.";
+    qDebug() << "CelluloBluetooth::socketDisconnected(): " << macAddr;
     if(connectionStatus != CelluloBluetoothEnums::ConnectionStatusDisconnected){
         connectionStatus = CelluloBluetoothEnums::ConnectionStatusDisconnected;
         emit connectionStatusChanged();
     }
-    openSocket();
+    if(autoConnect)
+        openSocket();
 }
 
 void CelluloBluetooth::socketDataArrived(){
