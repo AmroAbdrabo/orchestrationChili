@@ -27,6 +27,13 @@
 
 #include <QObject>
 #include <QString>
+#include "../../zones/CelluloZone.h"
+#include "../../zones/CelluloZonePoint.h"
+#include "../../zones/CelluloZoneLine.h"
+#include "../../zones/CelluloZoneRectangle.h"
+#include "../../zones/CelluloZonePolygon.h"
+#include "../../zones/CelluloZoneCircle.h"
+#include "../../zones/CelluloZonePolyBezier.h"
 
 class CelluloSVGUtil : public QObject {
     /* *INDENT-OFF* */
@@ -38,12 +45,15 @@ public:
     CelluloSVGUtil(QObject* parent = 0);
     ~CelluloSVGUtil();
 
+    //TODO remove choice of type for polybezier or tell also other types
+
     /**
      * @brief Parses the given SVG file and dumps all paths into the given JSON file in the CelluloZonePolyBezier format
+     * if it cannot be parsed into a more accurate shape, otherwise get the distance type of the more accurately parsed zone
      *
      * @param inSVGFile Full path to the local SVG file, can be in QUrl form
      * @param outJSONFile Full path to the local JSON file, will be overwritten, can be in QUrl form
-     * @param type Zone type for all extracted zones, must be one of PolyBezier zones
+     * @param type Zone type for all bezier extracted zones, must be one of PolyBezier zones
      * @param name Name prefix for all zones
      * @param dpi Dots Per Inch to be used during conversion to millimeters (90 is the default for inkscape)
      * @return Human readable result message
@@ -56,6 +66,151 @@ public:
         float dpi = 90.0f
     );
 
+    /**
+     * @brief Parses the given SVG file into zones
+     *
+     * @param inSVGFile Full path to the local SVG file, can be in QUrl form
+     * @param name Name prefix for all zones
+     * @param dpi Dots Per Inch to be used during conversion to millimeters (90 is the default for inkscape)
+     * @return Parsed zones (QML-compatible)
+     */
+    Q_INVOKABLE static QVariantList loadZonesQML(
+            const QString& inSVGFile,
+            const QString& name,
+            float dpi = 90.0f
+        );
+
+    /**
+     * @brief Parses the given SVG file into zones
+     *
+     * @param inSVGFile Full path to the local SVG file, can be in QUrl form
+     * @param name Name prefix for all zones
+     * @param dpi Dots Per Inch to be used during conversion to millimeters (90 is the default for inkscape)
+     * @return Parsed zones (QML-compatible)
+     */
+    Q_INVOKABLE static QList<CelluloZone*> loadZonesCPP(
+        const QString& inSVGFile,
+        const QString& name,
+        float dpi = 90.0f
+    );
+
+private:
+    /**
+     * @brief Get most accurate zone from given control points
+     *
+     * @param controlPoints controlPoints of the Bezier shape
+     * @return Extracted zone
+     */
+    static CelluloZone* getMoreAccurateTypeFromBezier(QList<QVector2D> controlPoints);
+
+    /**
+     * @brief Get polygonal points of the Bezier shape
+     *
+     * @param controlPoints controlPoints of the polygonal Bezier shape (if not polygonal, lose information in the process)
+     * @return Points of the polygon
+     */
+    static QList<QVector2D> getPolyPointsFromBezier(QList<QVector2D> controlPoints);
+
+    /**
+     * @brief Gets whether Bezier shape can be considered as a polygonal shape
+     *
+     * @param controlPoints controlPoints of the Bezier shape
+     * @return Whether Bezier shape can be considered as a polygonal shape
+     */
+    static bool bezierIsPoly(QList<QVector2D> controlPoints);
+    /**
+     * @brief Gets whether polygon is small enough to be considered as a point
+     *
+     * @param controlPoints controlPoints of the Bezier shape
+     * @return Whether polygon is small enough to be considered as a point
+     */
+    static bool polyIsSmallEnoughToBeAPoint(QList<QVector2D> polyPoints);
+
+    /**
+     * @brief Gets whether polygon can be considered as a point
+     *
+     * @param polyPoints points of the polygon
+     * @return Whether polygon can be considered as a point
+     */
+    static bool polyIsPoint(QList<QVector2D> polyPoints);
+    /**
+     * @brief Gets whether polygon can be considered as a line
+     *
+     * @param polyPoints points of the polygon
+     * @return Whether polygon can be considered as a line
+     */
+    static bool polyIsLine(QList<QVector2D> polyPoints);
+    /**
+     * @brief Gets whether polygon can be considered as a rectangle
+     *
+     * @param polyPoints points of the polygon
+     * @return Whether polygon can be considered as a rectangle
+     */
+    static bool polyIsRectangle(QList<QVector2D> polyPoints);
+    /**
+     * @brief Gets whether polygon can be considered as a circle
+     *
+     * @param polyPoints points of the polygon
+     * @return Whether polygon can be considered as a circle
+     */
+    static bool polyIsCircle(QList<QVector2D> polyPoints);
+    /**
+     * @brief Gets whether polygon can be considered as a regular polygon
+     *
+     * @param polyPoints points of the polygon
+     * @return Whether polygon can be considered as a regular polygon
+     */
+    static bool polyIsRegular(QList<QVector2D> polyPoints);
+
+    /**
+     * @brief Construct point zone from the polygon points
+     *
+     * @param polyPoints points of the polygon
+     * @return Constructed point zone
+     */
+    static CelluloZonePointDistance* getPointFromPolyPoints(QList<QVector2D> polyPoints);
+    /**
+     * @brief Construct line zone from the polygon points
+     *
+     * @param polyPoints points of the polygon
+     * @return Constructed line zone
+     */
+    static CelluloZoneLineSegmentDistance* getLineFromPolyPoints(QList<QVector2D> polyPoints);
+    /**
+     * @brief Construct rectangle zone from the polygon points
+     *
+     * @param polyPoints points of the polygon
+     * @return Constructed rectangle zone
+     */
+    static CelluloZoneRectangleDistance* getRectangleFromPolyPoints(QList<QVector2D> polyPoints);
+    /**
+     * @brief Construct circle zone from the polygon points
+     *
+     * @param polyPoints points of the polygon
+     * @return Constructed circle zone
+     */
+    static CelluloZoneCircleDistance* getCircleFromPolyPoints(QList<QVector2D> polyPoints);
+    /**
+     * @brief Construct regular polygon zone from the polygon points
+     *
+     * @param polyPoints points of the polygon
+     * @return Constructed regular polygon zone
+     */
+    static CelluloZoneRegularPolygonDistance* getRegularPolygonFromPolyPoints(QList<QVector2D> polyPoints);
+    /**
+     * @brief Construct point irregular polygon from the polygon points
+     *
+     * @param polyPoints points of the polygon
+     * @return Constructed irregular polygon  zone
+     */
+    static CelluloZoneIrregularPolygonDistance* getIrregularPolygonFromPolyPoints(QList<QVector2D> polyPoints);
+    /**
+     * @brief Construct bezier zone from the control points
+     *
+     * @param controlPoints controlPoints of the Bezier shape
+     * @return Constructed bezier zone
+     */
+    static CelluloZonePolyBezierDistance* getBezierFromControlPoints(QList<QVector2D> controlPoints);
 };
 
 #endif // CELLULOSVGUTIL_H
