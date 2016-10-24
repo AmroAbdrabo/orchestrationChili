@@ -27,6 +27,7 @@
 #include <cmath>
 
 #include "../util/math/CelluloMathUtil.h"
+#include <math.h>
 
 /**
  * CelluloZoneLine
@@ -94,6 +95,37 @@ void CelluloZoneLine::paint(QPainter* painter, QColor color, qreal canvasWidth, 
     Q_UNUSED(physicalWidth);
     Q_UNUSED(physicalHeight);
     painter->setRenderHint(QPainter::Antialiasing);
+}
+
+bool CelluloZoneLine::isMouseInside(QVector2D  mousePosition, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    //TODO put the thresold as an argument or as a final value somewhere
+    float mouseX = mousePosition.x()/canvasWidth*physicalWidth;
+    float mouseY = mousePosition.y()/canvasHeight*physicalHeight;
+    float rectangleWidth = 5/canvasWidth*physicalWidth;
+    QList<QVector2D> list;
+
+    float dx = x2-x1;
+    float dy = y2-y1;
+    float norm = sqrt(dy*dy + dx*dx);
+
+    float v1x = -dy/norm * rectangleWidth;
+    float v1y = dx/norm * rectangleWidth;
+
+    float v2x = dy/norm * rectangleWidth;
+    float v2y = -dx/norm * rectangleWidth;
+
+    list.append(QVector2D(x1+v1x, y1+v1y));
+    list.append(QVector2D(x2+v1x, y2+v1y));
+    list.append(QVector2D(x2+v2x, y2+v2y));
+    list.append(QVector2D(x1+v2x, y1+v2y));
+
+    float i, j, c = 0;
+    for (i = 0, j = 4-1; i < 4; j = i++) {
+        if ( ((list.at(i).y()>mouseY) != (list.at(j).y()>mouseY)) &&
+                (mouseX < (list.at(j).x()-list.at(i).x()) * (mouseY-list.at(i).y()) / (list.at(j).y()-list.at(i).y()) + list.at(i).x()))
+            c = !c;
+    }
+    return c? 1:0;
 }
 
 /**

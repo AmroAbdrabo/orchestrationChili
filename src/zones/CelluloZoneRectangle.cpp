@@ -96,6 +96,16 @@ void CelluloZoneRectangle::paint(QPainter* painter, QColor color, qreal canvasWi
     painter->setRenderHint(QPainter::Antialiasing);
 }
 
+bool CelluloZoneRectangle::isMouseInside(QVector2D  mousePosition, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    float mouseX = mousePosition.x()/canvasWidth*physicalWidth;
+    float mouseY = mousePosition.y()/canvasHeight*physicalHeight;
+    return isPointInside(mouseX,mouseY);
+}
+
+bool CelluloZoneRectangle::isPointInside(float pointX, float pointY){
+    return x <= pointX && x + width >= pointX && y <= pointY && y + height >= pointY ? true : false;
+}
+
 /**
  * CelluloZoneRectangleInner
  */
@@ -106,7 +116,7 @@ CelluloZoneRectangleInner::CelluloZoneRectangleInner() : CelluloZoneRectangle(){
 
 float CelluloZoneRectangleInner::calculate(float xRobot, float yRobot, float thetaRobot){
     Q_UNUSED(thetaRobot);
-    return x <= xRobot && x + width >= xRobot && y <= yRobot && y + height >= yRobot ? 1 : 0;
+    return isPointInside(xRobot, yRobot) ? 1 : 0;
 }
 
 void CelluloZoneRectangleInner::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){

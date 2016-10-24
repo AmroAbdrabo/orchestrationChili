@@ -80,6 +80,19 @@ void CelluloZonePolygon::paint(QPainter* painter, QColor color, qreal canvasWidt
     painter->setRenderHint(QPainter::Antialiasing);
 }
 
+bool CelluloZonePolygon::isMouseInside(QVector2D  mousePosition, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    float mouseX = mousePosition.x()/canvasWidth*physicalWidth;
+    float mouseY = mousePosition.y()/canvasHeight*physicalHeight;
+    return isPointInside(mouseX,mouseY);
+}
+
+bool CelluloZonePolygon::isPointInside(float pointX, float pointY){
+    if(minX <= pointX && pointX <= maxX && minY <= pointY && pointY <= maxY)
+        return CelluloMathUtil::pointInPoly(QVector2D(pointX, pointY), vertices) ? 1 : 0;
+    else
+        return 0;
+}
+
 /**
  * CelluloZoneIrregularPolygon
  */
@@ -124,10 +137,7 @@ CelluloZoneIrregularPolygonInner::CelluloZoneIrregularPolygonInner() : CelluloZo
 float CelluloZoneIrregularPolygonInner::calculate(float xRobot, float yRobot, float thetaRobot){
     Q_UNUSED(thetaRobot);
 
-    if(minX <= xRobot && xRobot <= maxX && minY <= yRobot && yRobot <= maxY)
-        return CelluloMathUtil::pointInPoly(QVector2D(xRobot, yRobot), vertices) ? 1 : 0;
-    else
-        return 0;
+    return isPointInside(xRobot, yRobot) ? 1 : 0;
 }
 
 void CelluloZoneIrregularPolygonInner::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
@@ -318,18 +328,6 @@ void CelluloZoneRegularPolygon::updateVerticesFromRegularPolyParams(){
 
 void CelluloZoneRegularPolygon::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
     CelluloZonePolygon::paint(painter, color, canvasWidth, canvasHeight, physicalWidth, physicalHeight);
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
 /**
@@ -343,10 +341,7 @@ CelluloZoneRegularPolygonInner::CelluloZoneRegularPolygonInner() : CelluloZoneRe
 float CelluloZoneRegularPolygonInner::calculate(float xRobot, float yRobot, float thetaRobot){
     Q_UNUSED(thetaRobot);
 
-    if(minX <= xRobot && xRobot <= maxX && minY <= yRobot && yRobot <= maxY)
-        return CelluloMathUtil::pointInPoly(QVector2D(xRobot, yRobot), vertices) ? 1 : 0;
-    else
-        return 0;
+    return isPointInside(xRobot, yRobot) ? 1 : 0;
 }
 
 void CelluloZoneRegularPolygonInner::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){

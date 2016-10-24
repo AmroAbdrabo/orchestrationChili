@@ -58,6 +58,16 @@ void CelluloZoneCircle::paint(QPainter* painter, QColor color, qreal canvasWidth
     painter->setRenderHint(QPainter::Antialiasing);
 }
 
+bool CelluloZoneCircle::isMouseInside(QVector2D  mousePosition, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    float mouseX = mousePosition.x()/canvasWidth*physicalWidth;
+    float mouseY = mousePosition.y()/canvasHeight*physicalHeight;
+    return isPointInside(mouseX,mouseY);
+}
+
+bool CelluloZoneCircle::isPointInside(float pointX, float pointY){
+    return ((pointX-x)*(pointX-x) + (pointY -y)*(pointY -y) <= r*r) ? 1 : 0;
+}
+
 void CelluloZoneCircle::setX(float newX){
     if(newX != x){
         x = newX;
@@ -92,7 +102,7 @@ CelluloZoneCircleInner::CelluloZoneCircleInner() : CelluloZoneCircle(){
 
 float CelluloZoneCircleInner::calculate(float xRobot, float yRobot, float thetaRobot){
     Q_UNUSED(thetaRobot);
-    return ((xRobot-x)*(xRobot-x) + (yRobot -y)*(yRobot -y) <= r*r) ? 1 : 0;
+    return isPointInside(xRobot, yRobot) ? 1 : 0;
 }
 
 void CelluloZoneCircleInner::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){

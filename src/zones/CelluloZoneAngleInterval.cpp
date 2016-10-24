@@ -86,6 +86,11 @@ void CelluloZoneAngleInterval::paint(QPainter* painter, QColor color, qreal canv
     painter->setRenderHint(QPainter::Antialiasing);
 }
 
+bool CelluloZoneAngleInterval::isMouseInside(QVector2D  mousePosition, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    //TODO implement
+    return false;
+}
+
 /**
  * CelluloZoneAngleIntervalInner
  */

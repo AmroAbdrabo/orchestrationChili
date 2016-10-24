@@ -79,6 +79,19 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /**
+     * @brief Get if the mouse position is inside the zone or not
+     *
+     * @param mousePosition (x,y) coordinates of the mouse in pixels
+     * @param canvasWidth Screen width of the canvas in pixels
+     * @param canvasHeight Screen height of the canvas in pixels
+     * @param physicalWidth Physical width of the canvas in mm
+     * @param physicalHeight Physical height of the canvas in mm
+     *
+     * @return Whether the mouse position is inside the zone or not
+     */
+    Q_INVOKABLE virtual bool isMouseInside(QVector2D  mousePosition, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
+
 protected:
 
     qreal angle;    ///< The angle

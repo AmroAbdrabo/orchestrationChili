@@ -70,6 +70,14 @@ void CelluloZonePoint::paint(QPainter* painter, QColor color, qreal canvasWidth,
     painter->setRenderHint(QPainter::Antialiasing);
 }
 
+bool CelluloZonePoint::isMouseInside(QVector2D  mousePosition, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    //TODO put the thresold as an argument or as a final value somewhere
+    float little_r = 5/canvasWidth*physicalWidth;
+    float mouseX = mousePosition.x()/canvasWidth*physicalWidth;
+    float mouseY = mousePosition.y()/canvasHeight*physicalHeight;
+    return ((mouseX-x)*(mouseX-x) + (mouseY -y)*(mouseY -y) <= little_r*little_r) ? 1 : 0;
+}
+
 /**
  * CelluloZonePointDistance
  */

@@ -85,6 +85,32 @@ void CelluloZonePolyBezier::paint(QPainter* painter, QColor color, qreal canvasW
     painter->setRenderHint(QPainter::Antialiasing);
 }
 
+bool CelluloZonePolyBezier::isMouseInside(QVector2D  mousePosition, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    float mouseX = mousePosition.x()/canvasWidth*physicalWidth;
+    float mouseY = mousePosition.y()/canvasHeight*physicalHeight;
+    return isPointInside(mouseX,mouseY);
+}
+
+bool CelluloZonePolyBezier::isPointInside(float pointX, float pointY){
+    QVector2D robotPos(pointX, pointY);
+
+    //Check if point is outside the bounding box
+    if(!inBoundingBox(robotPos))
+        return 0.0f;
+
+    //Number of crossings on the Bézier segments
+    int numCrossings = 0;
+    for(auto segment : segments)
+        numCrossings += segment.getNumCrossings(robotPos);
+
+    //Check crossing with line segment that closes the curve
+    if(!segments.isEmpty())
+        if(CelluloMathUtil::hRayCrossesLineSeg(robotPos, segments.first().getControlPoint(0), segments.last().getControlPoint(3)))
+            numCrossings++;
+
+    return numCrossings % 2 == 1;
+}
+
 void CelluloZonePolyBezier::write(QJsonObject& json){
     CelluloZone::write(json);
 
@@ -456,23 +482,7 @@ CelluloZonePolyBezierInner::CelluloZonePolyBezierInner() : CelluloZonePolyBezier
 float CelluloZonePolyBezierInner::calculate(float xRobot, float yRobot, float thetaRobot){
     Q_UNUSED(thetaRobot);
 
-    QVector2D robotPos(xRobot, yRobot);
-
-    //Check if point is outside the bounding box
-    if(!inBoundingBox(robotPos))
-        return 0.0f;
-
-    //Number of crossings on the Bézier segments
-    int numCrossings = 0;
-    for(auto segment : segments)
-        numCrossings += segment.getNumCrossings(robotPos);
-
-    //Check crossing with line segment that closes the curve
-    if(!segments.isEmpty())
-        if(CelluloMathUtil::hRayCrossesLineSeg(robotPos, segments.first().getControlPoint(0), segments.last().getControlPoint(3)))
-            numCrossings++;
-
-    return numCrossings % 2 == 1;
+    return isPointInside(xRobot, yRobot) ? 1 : 0;
 }
 
 void CelluloZonePolyBezierInner::paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){

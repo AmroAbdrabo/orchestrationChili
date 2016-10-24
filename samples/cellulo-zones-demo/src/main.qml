@@ -120,7 +120,11 @@ ApplicationWindow {
             distances[zone.name] = value;
             robot.zoneDistances = distances;
             break;
-
+        case "ZONE_POLYBEZIER_DISTANCE":
+            var distances = robot.zoneDistances;
+            distances[zone.name] = value;
+            robot.zoneDistances = distances;
+            break;
         default:
             console.log("Unknown zone change");
             break;
@@ -153,7 +157,7 @@ ApplicationWindow {
         CelluloZoneIrregularPolygonInner{
             id: staticZone3
 
-            name: "ZONE_IRREGULAR_POLYGON_INNER"
+            name: "ZONE_IRREGULAR_POLYGON_INNER_STATIC3"
 
             vertices: [
                 Qt.vector2d(174.93809509277344,166.49652099609375),
@@ -319,6 +323,26 @@ ApplicationWindow {
                 border.width: 2
                 radius: 5
 
+                MouseArea{
+                    id: mouseZones
+                    anchors.fill: parent
+
+                    property variant isMouseInZone: []
+
+                    onClicked: {
+                        var zones = zoneEngine.getZonesList()
+                        for(var i=0;i<zones.length;i++){
+                            var isMouseInZoneCopy = isMouseInZone
+                            var isInside = zones[i].isMouseInside(Qt.vector2d(mouseX, mouseY), parent.width, parent.height, parent.physicalWidth, parent.physicalHeight)
+                            isMouseInZoneCopy[zones[i].name] = isInside
+                            isMouseInZone = isMouseInZoneCopy
+                        }
+
+                    }
+
+                }
+
+
                 CelluloZonePaintedItem{
                     color: colorRect
                     physicalPlaygroundWidth: parent.physicalWidth
@@ -396,6 +420,7 @@ ApplicationWindow {
             Text{ text: "Robot1 distance to ZONE_POINT_DISTANCE is " +              robotComm1.zoneDistances["ZONE_POINT_DISTANCE"] }
             Text{ text: "Robot1 distance to ZONE_REGULAR_POLYGON_DISTANCE is " +    robotComm1.zoneDistances["ZONE_REGULAR_POLYGON_DISTANCE"] }
             Text{ text: "Robot1 distance to ZONE_IRREGULAR_POLYGON_DISTANCE is " +  robotComm1.zoneDistances["ZONE_IRREGULAR_POLYGON_DISTANCE"] }
+            Text{ text: "Robot1 distance to ZONE_POLYBEZIER_DISTANCE is " +         robotComm1.zoneDistances["ZONE_POLYBEZIER_DISTANCE"] }
 
             Item{ height: 25; width: 1}
 
@@ -405,6 +430,24 @@ ApplicationWindow {
             Text{ text: "Robot2 distance to ZONE_POINT_DISTANCE is " +              robotComm2.zoneDistances["ZONE_POINT_DISTANCE"] }
             Text{ text: "Robot2 distance to ZONE_REGULAR_POLYGON_DISTANCE is " +    robotComm2.zoneDistances["ZONE_REGULAR_POLYGON_DISTANCE"] }
             Text{ text: "Robot2 distance to ZONE_IRREGULAR_POLYGON_DISTANCE is " +  robotComm2.zoneDistances["ZONE_IRREGULAR_POLYGON_DISTANCE"] }
+            Text{ text: "Robot2 distance to ZONE_POLYBEZIER_DISTANCE is " +         robotComm2.zoneDistances["ZONE_POLYBEZIER_DISTANCE"] }
+
+        }
+    }
+    GroupBox{
+        id: mouseInsideInfoBox
+        title: "Mouse click inside zones"
+        anchors.top: distanceInfoBox.bottom
+        anchors.left: playgroundBox.right
+
+        Column{
+            Text{ text: "Mouse is inside ZONE_CIRCLE_INNER is " +                       mouseZones.isMouseInZone["ZONE_CIRCLE_DISTANCE"] }
+            Text{ text: "Mouse is inside ZONE_RECTANGLE_DISTANCE is " +                 mouseZones.isMouseInZone["ZONE_RECTANGLE_DISTANCE"] }
+            Text{ text: "Mouse is inside ZONE_LINE_DISTANCE is " +                      mouseZones.isMouseInZone["ZONE_LINE_DISTANCE"] }
+            Text{ text: "Mouse is inside ZONE_POINT_DISTANCE is " +                     mouseZones.isMouseInZone["ZONE_POINT_DISTANCE"] }
+            Text{ text: "Mouse is inside ZONE_REGULAR_POLYGON_DISTANCE is " +           mouseZones.isMouseInZone["ZONE_REGULAR_POLYGON_DISTANCE"] }
+            Text{ text: "Mouse is inside ZONE_IRREGULAR_POLYGON_DISTANCE is " +         mouseZones.isMouseInZone["ZONE_IRREGULAR_POLYGON_DISTANCE"] }
+            Text{ text: "Mouse is inside ZONE_POLYBEZIER_DISTANCE is " +                mouseZones.isMouseInZone["ZONE_POLYBEZIER_DISTANCE"] }
         }
     }
 }
