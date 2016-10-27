@@ -1,23 +1,47 @@
 import QtQuick 2.2
-import QtQuick.Window 2.1
-import QtQuick.Layouts 1.1
 import QtQuick.Controls 1.2
 import QtQuick.Controls.Private 1.0
-import QtQuick.Controls.Styles 1.3
-import QtQuick.Dialogs 1.2
+
 import Cellulo 1.0
 
-Row {
+/**
+ * @brief MAC address selection GUI
+ *
+ * TODO: Replace selectedAddress, connectionStatus, connectRequested() and disconnectRequested() with property CelluloBluetooth robot: null
+ */
+Row{
+
+    /*
+     * Public
+     */
+
+    property var addresses: []                                                      ///< List of possible MAC addresses, set by the user
+    readonly property string selectedAddress: selectionBox.currentText              ///< Currently selected addresses
+    property var connectionStatus: CelluloBluetooth.ConnectionStatusDisconnected    ///< Current connection status to display, set by the user
+
+    /**
+     * @brief Selects the given address if it exists in the list of addresses
+     *
+     * @param {string} address Address to look for in the list of addresses
+     */
+    function selectAddress(address){
+        for(var i=0;i<addresses.length;i++)
+            if(addresses[i] === address){
+                selectionBox.currentIndex = i;
+                return;
+            }
+    }
+
+    signal connectRequested()                                                       ///< Emitted when the connect button is pressed
+    signal disconnectRequested()                                                    ///< Emitted when the disconnect button is pressed
+
+    /*
+     * Private
+     */
+
     spacing: 5
 
     function em(x){ return Math.round(x*TextSingleton.font.pixelSize); }
-
-    property variant addresses: []
-    property string selectedAddress: selectionBox.currentText
-    property var connectionStatus: CelluloBluetooth.ConnectionStatusDisconnected
-
-    signal connectRequested()
-    signal disconnectRequested()
 
     ComboBox{
         id: selectionBox
