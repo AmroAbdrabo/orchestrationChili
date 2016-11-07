@@ -106,6 +106,8 @@ ApplicationWindow {
         }
     }
 
+    BluetoothLocalDevice{ Component.onCompleted: powerOn() } //Doesn't work on Linux
+
     CelluloBluetoothEMP{
         id: emp
         continuous: continuousCheckbox.checked

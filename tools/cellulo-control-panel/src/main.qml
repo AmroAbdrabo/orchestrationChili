@@ -685,6 +685,8 @@ ApplicationWindow {
         }
     }
 
+    BluetoothLocalDevice{ Component.onCompleted: powerOn() } //Doesn't work on Linux
+
     CelluloBluetooth{
         id: robotComm
         timestampingEnabled: timestampingCheckbox.checked
