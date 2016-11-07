@@ -44,9 +44,11 @@
     } \
     Q_PROPERTY(QVariantList ENUMNAME ## Strings READ get ## ENUMNAME ## Strings() CONSTANT) \
     QVariantList static get ## ENUMNAME ## Strings(){ \
+        static QMetaEnum ENUMNAME ## _MetaEnum = QMetaEnum::fromType<ENUMNAME>(); \
+        static int ENUMNAME ## _NumElements = (ENUMNAME ## _MetaEnum).keyCount(); \
         QVariantList list; \
-        for(int i = 0; i < ENUMNAME ## NumElements; i++) \
-            list << ENUMNAME ## String((ENUMNAME)i); \
+        for(int i = 0; i < (ENUMNAME ## _NumElements); i++) \
+            list << ENUMNAME ## String((ENUMNAME)(ENUMNAME ## _MetaEnum).value(i)); \
         return list; \
     }
 

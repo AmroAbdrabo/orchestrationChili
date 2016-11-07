@@ -4,6 +4,8 @@ CONFIG += qt plugin c++11 nostrip
 
 HEADERS += \
     src/CelluloPlugin.h \
+    src/comm/BluetoothLocalDevice.h \
+    src/comm/BluetoothLocalDeviceEnums.h \
     src/comm/CelluloBluetooth.h \
     src/comm/CelluloBluetoothEMP.h \
     src/comm/CelluloBluetoothEnums.h \
@@ -30,6 +32,8 @@ HEADERS += \
 
 SOURCES += \
     src/CelluloPlugin.cpp \
+    src/comm/BluetoothLocalDevice.cpp \
+    src/comm/BluetoothLocalDeviceEnums.cpp \
     src/comm/CelluloBluetooth.cpp \
     src/comm/CelluloBluetoothEMP.cpp \
     src/comm/CelluloBluetoothEnums.cpp \
