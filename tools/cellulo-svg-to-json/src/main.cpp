@@ -35,26 +35,38 @@ void showHelp(){
     qPrint() << "Usage: cellulo-svg-to-json [OPTIONS]\n";
     qPrint() << "    -i FILE        Name of the input SVG\n";
     qPrint() << "    -o FILE        Name of the output JSON (default is zones.json)\n";
-    qPrint() << "    -t TYPE        Zone type, must be one of POLYBEZIER types (default is POLYBEZIERCLOSESTT)\n";
+    qPrint() << "    -z BOOL        Whether to try to optimize into more accurate zones (default is true)\n";
     qPrint() << "    -n NAME        Name prefix to all dumped zones (default is SVG_DUMP_ZONE)\n";
     qPrint() << "    -d FLOAT_NUM   DPI to use when converting to millimeters (default is 90, which is the Inkscape default)\n";
     qPrint() << "    -h,--help      Shows this help\n";
 }
 
 int main(int argc, char** argv){
-    QString type("POLYBEZIERCLOSESTT");
     QString name("SVG_DUMP_ZONE");
     float dpi = 90.0f;
     QString inputFile("");
     QString outputFile("zones.json");
+    bool optimize = true;
 
     for(int i=1; i<argc; i++){
         if(QString(argv[i]) == "-i")
             inputFile = argv[i + 1];
         else if(QString(argv[i]) == "-o")
             outputFile = argv[i + 1];
-        else if(QString(argv[i]) == "-t")
-            type = argv[i + 1];
+        else if(QString(argv[i]) == "-z"){
+            QString optimizeStr(argv[i + 1]);
+            optimizeStr = optimizeStr.toLower();
+            if(optimizeStr == "true")
+                optimize = true;
+            else if(optimizeStr == "false")
+                optimize = false;
+            else{
+                bool ok;
+                int optimizeInt = (bool)optimizeStr.toInt(&ok);
+                if(ok)
+                    optimize = (bool)optimizeInt;
+            }
+        }
         else if(QString(argv[i]) == "-n")
             name = argv[i + 1];
         else if(QString(argv[i]) == "-d")
@@ -67,11 +79,11 @@ int main(int argc, char** argv){
 
     qPrint() << "Input file: " << inputFile << "\n";
     qPrint() << "Output file: " << outputFile << "\n";
-    qPrint() << "Zone type: " << type << "\n";
+    qPrint() << "Optimize: " << optimize << "\n";
     qPrint() << "Zone name prefix: " << name << "\n";
     qPrint() << "DPI: " << dpi << "\n";
 
-    QString returnMessage = CelluloSVGUtil::dumpAllPathsToJSON(inputFile, outputFile, type, name, dpi);
+    QString returnMessage = CelluloSVGUtil::dumpAllPathsToJSON(inputFile, outputFile, "POLYBEZIERCLOSESTT", name, dpi, optimize);
     qPrint() << returnMessage.toLatin1().constData() << "\n";
     return 0;
 }
