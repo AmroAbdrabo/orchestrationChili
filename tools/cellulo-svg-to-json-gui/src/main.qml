@@ -62,22 +62,6 @@ ApplicationWindow{
                 spacing: 5
 
                 Text{
-                    text: "Type:"
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-                TextField{
-                    id: type
-                    width: 500
-                    anchors.verticalCenter: parent.verticalCenter
-                    placeholderText: "Type for all zones (must be one of POLYBEZIER types)"
-                    text: "POLYBEZIERCLOSESTT"
-                }
-            }
-
-            Row{
-                spacing: 5
-
-                Text{
                     text: "Name:"
                     anchors.verticalCenter: parent.verticalCenter
                 }
@@ -107,9 +91,20 @@ ApplicationWindow{
                 }
             }
 
+            Row{
+                spacing: 5
+
+                CheckBox{
+                    id: optimize
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: "Optimize, i.e try to extract as lines, circles (TODO), points (TODO), rectangles and polygons?"
+                    checked: true
+                }
+            }
+
             Button{
                 text: "Go"
-                onClicked: toast.show(CelluloSVGUtil.dumpAllPathsToJSON(inFile.text, outFile.text, type.text, name.text, parseFloat(dpi.text)))
+                onClicked: toast.show(CelluloSVGUtil.dumpAllPathsToJSON(inFile.text, outFile.text, "POLYBEZIERCLOSESTT", name.text, parseFloat(dpi.text), optimize.checked))
             }
         }
 

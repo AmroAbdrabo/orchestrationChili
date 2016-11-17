@@ -42,13 +42,11 @@ CelluloSVGUtil::CelluloSVGUtil(QObject* parent) : QObject(parent){}
 
 CelluloSVGUtil::~CelluloSVGUtil(){}
 
-QString CelluloSVGUtil::dumpAllPathsToJSON(const QString& inSVGFile, const QString& outJSONFile, const QString& type, const QString& name, float dpi){
-    //Type check
-    if(!type.startsWith("POLYBEZIER"))
-        return "CelluloSVGUtil::dumpAllPathsToJSON(): Type must be one of POLYBEZIER types.";
+QString CelluloSVGUtil::dumpAllPathsToJSON(const QString& inSVGFile, const QString& outJSONFile, const QString& type, const QString& name, float dpi, bool optimize){
+    Q_UNUSED(type);
 
     //Get Zones from SVG
-    QList<CelluloZone*> zones = loadZonesCPP(inSVGFile, name, dpi);
+    QList<CelluloZone*> zones = loadZonesCPP(inSVGFile, name, dpi, optimize);
 
     //Output file
     QString outFilePath = QUrl(outJSONFile).toLocalFile();
@@ -61,15 +59,15 @@ QString CelluloSVGUtil::dumpAllPathsToJSON(const QString& inSVGFile, const QStri
     return "CelluloSVGUtil::dumpAllPathsToJSON(): Dumped " + QString::number(zones.size()) + " zones.";
 }
 
-QVariantList CelluloSVGUtil::loadZonesQML(const QString& inSVGFile, const QString& name, float dpi){
-    QList<CelluloZone*> zonesList = loadZonesCPP(inSVGFile, name, dpi);
+QVariantList CelluloSVGUtil::loadZonesQML(const QString& inSVGFile, const QString& name, float dpi, bool optimize){
+    QList<CelluloZone*> zonesList = loadZonesCPP(inSVGFile, name, dpi, optimize);
     QVariantList zonesListVariant;
     for(const auto& zone : zonesList)
         zonesListVariant.append(QVariant::fromValue(zone));
     return zonesListVariant;
 }
 
-QList<CelluloZone*> CelluloSVGUtil::loadZonesCPP(const QString& inSVGFile, const QString& name, float dpi){
+QList<CelluloZone*> CelluloSVGUtil::loadZonesCPP(const QString& inSVGFile, const QString& name, float dpi, bool optimize){
     //Input file
     QString inFilePath = QUrl(inSVGFile).toLocalFile();
     if(inFilePath.isEmpty())
@@ -99,18 +97,20 @@ QList<CelluloZone*> CelluloSVGUtil::loadZonesCPP(const QString& inSVGFile, const
             }
 
             //Get zone
-            newZone = getMoreAccurateTypeFromBezier(controlPoints);
+            if(optimize)
+                newZone = getMoreAccurateTypeFromBezier(controlPoints);
+            else
+                newZone = getBezierFromControlPoints(controlPoints);
 
             //Name zone
             if(newZone){
                 newZone->setName(name +  QString::number(numZone));
                 numZone++;
                 zones.append(newZone);
+                qDebug() << "Extracted zone of type " << newZone->getType() << " named " << newZone->getName();
             }
-            qDebug() << "Extracted zone of type " << newZone->getType() << " named " << newZone->getName();
-
-
-
+            else
+                qDebug() << "Failed extracting zone";
         }
 
     nsvgDelete(image);
@@ -239,9 +239,8 @@ CelluloZoneIrregularPolygonDistance* CelluloSVGUtil::getIrregularPolygonFromPoly
     return newZoneIrPolygon;
 }
 
-
-CelluloZonePolyBezierDistance* CelluloSVGUtil::getBezierFromControlPoints(QList<QVector2D> controlPoints){
-    CelluloZonePolyBezierDistance* newZonePolyBezier = new CelluloZonePolyBezierDistance();
+CelluloZonePolyBezierClosestT* CelluloSVGUtil::getBezierFromControlPoints(QList<QVector2D> controlPoints){
+    CelluloZonePolyBezierClosestT* newZonePolyBezier = new CelluloZonePolyBezierClosestT();
     QList<QVariant> variantControlPoints;
     for(QVector2D controlPoint: controlPoints){
         variantControlPoints.append(QVariant::fromValue(controlPoint));
@@ -249,4 +248,3 @@ CelluloZonePolyBezierDistance* CelluloSVGUtil::getBezierFromControlPoints(QList<
     newZonePolyBezier->setControlPoints(variantControlPoints);
     return newZonePolyBezier;
 }
-
