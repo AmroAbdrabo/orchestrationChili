@@ -165,7 +165,7 @@ void CelluloBluetoothPacket::load(float num){
     payload.append(p[0]);
 }
 
-QByteArray CelluloBluetoothPacket::getCmdSendData(){
+QByteArray CelluloBluetoothPacket::getCmdSendData() const{
     QByteArray data;
 
     data.append(PACKET_START_CHAR_SHARED);
@@ -195,6 +195,64 @@ bool CelluloBluetoothPacket::loadEventByte(char c){
             //Valid packet type
             if(eventPacketType != EventPacketTypeNumElements){
                 receiveBytesRemaining = eventPacketPayloadLen[(int)eventPacketType];
+                if(receiveBytesRemaining <= 0){
+                    receiveStatus = ReceiveStatus::EndOfPacket;
+                    return true;
+                }
+                else{
+                    receiveStatus = ReceiveStatus::PayloadReceiving;
+                    return false;
+                }
+            }
+
+            //Invalid packet type, reset packet
+            else{
+                clear();
+                return false;
+            }
+
+        case ReceiveStatus::PayloadReceiving:
+            payload.append(c);
+            receiveBytesRemaining--;
+            if(receiveBytesRemaining <= 0){
+                receiveStatus = ReceiveStatus::EndOfPacket;
+                return true;
+            }
+            else
+                return false;
+
+        case ReceiveStatus::EndOfPacket:
+            if(c == PACKET_START_CHAR_SHARED){
+                clear();
+                receiveStatus = ReceiveStatus::WaitingForType;
+            }
+            return false;
+
+        default:
+            return false;
+    }
+}
+
+bool CelluloBluetoothPacket::loadCmdByte(char c){
+    switch(receiveStatus){
+        case ReceiveStatus::NotReceiving:
+            if(c == PACKET_START_CHAR_SHARED)
+                receiveStatus = ReceiveStatus::WaitingForType;
+            return false;
+
+        case ReceiveStatus::WaitingForType:
+
+            //Determine type
+            cmdPacketType = CmdPacketTypeNumElements;
+            for(int i=0; i<(int)CmdPacketTypeNumElements; i++)
+                if(cmdPacketTypeStr[i][0] == c){
+                    cmdPacketType = (CmdPacketType)i;
+                    break;
+                }
+
+            //Valid packet type
+            if(cmdPacketType != CmdPacketTypeNumElements){
+                receiveBytesRemaining = cmdPacketPayloadLen[(int)cmdPacketType];
                 if(receiveBytesRemaining <= 0){
                     receiveStatus = ReceiveStatus::EndOfPacket;
                     return true;

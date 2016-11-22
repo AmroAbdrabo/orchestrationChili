@@ -150,7 +150,7 @@ public:
      *
      * @return Command message to be sent
      */
-    QByteArray getCmdSendData();
+    QByteArray getCmdSendData() const;
 
     /**
      * @brief Processes incoming byte belonging to an event packet, determines type if byte is relevant
@@ -161,12 +161,12 @@ public:
     bool loadEventByte(char c);
 
     /**
-     * @brief Processes incoming byte belonging to an event packet, determines type if byte is relevant
+     * @brief Processes incoming byte belonging to an command packet, determines type if byte is relevant
      *
      * @param c Incoming command packet byte
      * @return Whether the packet is completely received
      */
-    //bool loadCmdByte(char c);
+    bool loadCmdByte(char c);
 
     /**
      * @brief Gets the received event packet type if any
@@ -174,6 +174,13 @@ public:
      * @return The received event packet type
      */
     EventPacketType getEventPacketType(){ return eventPacketType; }
+
+    /**
+     * @brief Gets the received command packet type if any
+     *
+     * @return The received command packet type
+     */
+    CmdPacketType getCmdPacketType(){ return cmdPacketType; }
 
     /**
      * @brief Attempts to unload a 32-bit unsigned integer
