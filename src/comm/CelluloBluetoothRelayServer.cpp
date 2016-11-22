@@ -17,7 +17,7 @@
 
 /**
  * @file CelluloBluetoothRelayServer.cpp
- * @brief Relays packets to/from clients/robots
+ * @brief Relays packets between a client and robots
  * @author Ayberk Özgür
  * @date 2016-11-18
  */
@@ -30,14 +30,17 @@ CelluloBluetoothRelayServer::CelluloBluetoothRelayServer(QQuickItem* parent):
     QQuickItem(parent),
     server(QBluetoothServiceInfo::RfcommProtocol, this)
 {
+    currentRobot = -1;
+    clientSocket = NULL;
     uuid = "{00001101-0000-1000-8000-00805F9B34FB}";
     name = "Cellulo Bluetooth Relay Server";
-    connect(&server, SIGNAL(newConnection()), this, SLOT(publishConnections()));
+    connect(&server, SIGNAL(newConnection()), this, SLOT(addClient()));
 }
 
 CelluloBluetoothRelayServer::~CelluloBluetoothRelayServer(){
     service.unregisterService();
     server.close();
+    disconnectClient();
 }
 
 bool CelluloBluetoothRelayServer::isListening() const{
@@ -48,9 +51,13 @@ void CelluloBluetoothRelayServer::setListening(bool enable){
     bool wasListening = server.isListening();
 
     if(enable){
-        service = server.listen(QBluetoothUuid(uuid), name);
-        if(!service.isValid())
-            qWarning() << "BluetoothServer::setListening(): Couldn't start listening: " << server.error();
+        if(clientSocket != NULL)
+            qWarning() << "BluetoothServer::setListening(): Can't start listening while client is connected, only one client is allowed.";
+        else{
+            service = server.listen(QBluetoothUuid(uuid), name);
+            if(!service.isValid())
+                qWarning() << "BluetoothServer::setListening(): Couldn't start listening: " << server.error();
+        }
     }
     else{
         service.unregisterService();
@@ -61,9 +68,96 @@ void CelluloBluetoothRelayServer::setListening(bool enable){
         emit listeningChanged();
 }
 
-void CelluloBluetoothRelayServer::addClients(){
-    while(server.hasPendingConnections()){
-        //emit newConnection(new BluetoothSocketExtended(server.nextPendingConnection(), this));
+void CelluloBluetoothRelayServer::addRobot(CelluloBluetooth* robot){
+    if(!robots.contains(robot))
+        robots.append(robot);
+}
 
+void CelluloBluetoothRelayServer::addClient(){
+    if(clientSocket == NULL && server.hasPendingConnections()){
+        clientSocket = server.nextPendingConnection();
+
+        connect(clientSocket, SIGNAL(readyRead()), this, SLOT(incomingClientData()));
+        connect(clientSocket, SIGNAL(disconnected()), this, SLOT(deleteClient()));
+        connect(clientSocket, static_cast<void (QBluetoothSocket::*)(QBluetoothSocket::SocketError)>(&QBluetoothSocket::error),
+                [=](QBluetoothSocket::SocketError error){ qDebug() << "CelluloBluetoothRelayServer clientSocket error: " << error; });
+
+        setListening(false);
+        emit clientConnected();
     }
+
+    //Discard rest of the connections
+    while(server.hasPendingConnections()){
+        QBluetoothSocket* trash = server.nextPendingConnection();
+        connect(trash, SIGNAL(disconnected()), trash, SLOT(deleteLater()));
+        trash->close();
+    }
+}
+
+void CelluloBluetoothRelayServer::deleteClient(){
+    if(clientSocket != NULL){
+        disconnect(clientSocket, SIGNAL(readyRead()), this, SLOT(incomingClientData()));
+        disconnect(clientSocket, SIGNAL(disconnected()), this, SLOT(deleteClient()));
+
+        clientSocket->deleteLater();
+        clientSocket = NULL;
+        emit clientDisconnected();
+    }
+}
+
+void CelluloBluetoothRelayServer::disconnectClient(){
+    if(clientSocket != NULL){
+        disconnect(clientSocket, SIGNAL(readyRead()), this, SLOT(incomingClientData()));
+        disconnect(clientSocket, SIGNAL(disconnected()), this, SLOT(deleteClient()));
+
+        connect(clientSocket, SIGNAL(disconnected()), clientSocket, SLOT(deleteLater()));
+        clientSocket->close();
+        clientSocket = NULL;
+        emit clientDisconnected();
+    }
+}
+
+void CelluloBluetoothRelayServer::incomingClientData(){
+    QByteArray message = clientSocket->readAll();
+
+    for(int i=0; i<message.length(); i++)
+
+        //Load byte as part of a command message and check end of packet
+        if(clientPacket.loadCmdByte(message[i]))
+            processClientPacket();
+}
+
+void CelluloBluetoothRelayServer::processClientPacket(){
+
+    //Set target robot command
+    if(clientPacket.getCmdPacketType() == CelluloBluetoothPacket::CmdPacketTypeSetAddress){
+        quint8 fifthOctet = clientPacket.unloadUInt8();
+        quint8 sixthOctet = clientPacket.unloadUInt8();
+        QString suffix = QString::number(fifthOctet, 16) + ":" + QString::number(sixthOctet, 16);
+
+        int newRobot = -1;
+        for(int i=0;i<robots.size();i++)
+            if(robots[i]->getMacAddr().endsWith(suffix, Qt::CaseInsensitive)){
+                newRobot = i;
+                break;
+            }
+
+        if(newRobot < 0)
+            qWarning() << "CelluloBluetoothRelayServer::processClientPacket(): Received CmdPacketTypeSetAddress with address suffix " << suffix << ", but no such robot is known to the server.";
+        else
+            currentRobot = newRobot;
+    }
+
+    //Some other command but no robot selected yet
+    else if(currentRobot < 0)
+        qWarning() << "CelluloBluetoothRelayServer::processClientPacket(): Received command packet but no robot is chosen yet, CmdPacketTypeSetAddress must be sent first. Dropping this packet.";
+
+    //Some other command and there is already a target robot
+    else{
+        //QUEUE OR IMMEDIATE SEND
+
+        robots[currentRobot]->sendCommand(clientPacket);
+    }
+
+    clientPacket.clear();
 }

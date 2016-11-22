@@ -17,7 +17,7 @@
 
 /**
  * @file CelluloBluetoothRelayServer.h
- * @brief Relays packets to/from clients/robots
+ * @brief Relays packets between a client and robots
  * @author Ayberk Özgür
  * @date 2016-11-18
  */
@@ -27,6 +27,9 @@
 
 #include <QQuickItem>
 #include <QBluetoothServer>
+
+#include "CelluloBluetoothPacket.h"
+#include "CelluloBluetooth.h"
 
 class CelluloBluetoothRelayServer : public QQuickItem {
     /* *INDENT-OFF* */
@@ -70,19 +73,66 @@ signals:
      */
     void listeningChanged();
 
+    /**
+     * @brief Emitted when a new client connects
+     */
+    void clientConnected();
+
+    /**
+     * @brief Emitted when the client disconnects
+     */
+    void clientDisconnected();
+
+public slots:
+
+    /**
+     * @brief Adds robot to the robots list
+     *
+     * @param robot New robot
+     */
+    void addRobot(CelluloBluetooth* robot);
+
+    /**
+     * @brief Closes the client's socket
+     */
+    void disconnectClient();
+
 private slots:
 
     /**
      * @brief Gets the incoming connections and adds them to the client list
      */
-    void addClients();
+    void addClient();
+
+    /**
+     * @brief Directly deletes the client socket because it was closed remotely
+     */
+    void deleteClient();
+
+    /**
+     * @brief Load client message into a packet to be processed
+     */
+    void incomingClientData();
 
 private:
 
-    QString uuid;                   ///< Service uuid, e.g "{00001101-0000-1000-8000-00805F9B34FB}"
-    QString name;                   ///< Service name
-    QBluetoothServer server;        ///< The QBluetoothServer object to wrap
-    QBluetoothServiceInfo service;  ///< Service that is opened by listen()
+    /**
+     * @brief Relays the packet from the client to the robot, or queues for relay, or sets target robot
+     */
+    void processClientPacket();
+
+    QString uuid;                                           ///< Service uuid, e.g "{00001101-0000-1000-8000-00805F9B34FB}"
+    QString name;                                           ///< Service name
+    QBluetoothServer server;                                ///< The QBluetoothServer object to wrap
+    QBluetoothServiceInfo service;                          ///< Service that is opened by listen()
+
+    QBluetoothSocket* clientSocket;                         ///< Bluetooth socket connected to the client
+    CelluloBluetoothPacket clientPacket;                    ///< Client's incoming packet
+
+    int currentRobot;                                       ///< Current robot index to relay messages to, set by a CmdPacketTypeSetAddress
+    QList<CelluloBluetooth*> robots;                        ///< List of robots to relay to/from
+    //QList<QQueue<CelluloBluetoothPacket> > robotPackets;    ///< Packets to send to all robots
+    //QList<QQueue<CelluloBluetoothPacket> > clientPackets;   ///< Packets coming from all robots
 
 };
 
