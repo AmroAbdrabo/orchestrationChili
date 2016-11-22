@@ -126,6 +126,7 @@
         CmdPacketTypeSetGoalPolyBezierAligned,       /** Same as CmdPacketTypeSetGoalPolyBezier while keeping orientation aligned to curve */ \
         CmdPacketTypeReset,                          /** Request reset */ \
         CmdPacketTypeShutdown,                       /** Request shutdown */ \
+        CmdPacketTypeSetAddress,                     /** Set address of all following packets (only last 2 octets are sent) */ \
         CmdPacketTypeNumElements, \
 }
 
@@ -164,7 +165,8 @@
         "J",  /** CmdPacketTypeSetGoalPolyBezier */ \
         "Q",  /** CmdPacketTypeSetGoalPolyBezierAligned */ \
         "R",  /** CmdPacketTypeReset */ \
-        "S"   /** CmdPacketTypeShutdown */ \
+        "S",  /** CmdPacketTypeShutdown */ \
+        "@"   /** CmdPacketTypeSetAddress */ \
 }
 
 /*
@@ -202,7 +204,8 @@
         2 + 2,             /** CmdPacketTypeSetGoalPolyBezier: uint16 v, int16 w */ \
         2 + 2 + 2,         /** CmdPacketTypeSetGoalPolyBezierAligned: uint16 v, uint16 theta, uint16 w */ \
         0,                 /** CmdPacketTypeReset */ \
-        0                  /** CmdPacketTypeShutdown */ \
+        0,                 /** CmdPacketTypeShutdown */ \
+        1 + 1              /** CmdPacketTypeSetAddress: uint8 fifthOctet, uint8 sixthOctet */ \
 }
 
 /**
@@ -224,6 +227,7 @@
         EventPacketTypeAcknowledged,           /** Acknowledged */ \
         EventPacketTypeFrameLine,              /** Camera frame line is sent */ \
         EventPacketTypeDebug,                  /** Debug message */ \
+        EventPacketTypeSetAddress,             /** Specify address of all following packets (only last 2 octets are sent) */ \
         EventPacketTypeNumElements \
 }
 
@@ -245,7 +249,8 @@
         "G", /** EventPacketTypeTrackingGoalReached */ \
         "A", /** EventPacketTypeAcknowledged */ \
         "C", /** EventPacketTypeFrameLine */ \
-        "E"  /** EventPacketTypeDebug */ \
+        "E", /** EventPacketTypeDebug */ \
+        "@"  /** EventPacketTypeSetAddress */ \
 }
 
 /**
@@ -266,7 +271,8 @@
         0,                    /** EventPacketTypeTrackingGoalReached */ \
         0,                    /** EventPacketTypeAcknowledged */ \
         2 + IMG_WIDTH_SHARED, /** EventPacketTypeFrameLine: uint16 currentLineIndex, IMG_WIDTH*uint8 grayscalePixel */ \
-        8                     /** EventPacketTypeDebug */ \
+        8,                    /** EventPacketTypeDebug */ \
+        1 + 1                 /** EventPacketTypeSetAddress */ \
 }
 
 #endif // CELLULOBLUETOOTHSHAREDDEFS_H
