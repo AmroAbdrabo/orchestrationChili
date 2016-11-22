@@ -65,6 +65,8 @@ class CelluloBluetooth : public CelluloZoneClient {
 
     Q_PROPERTY(float cameraImageProgress READ getCameraImageProgress NOTIFY cameraImageProgressChanged)
 
+friend class CelluloBluetoothRelayServer;
+
 public:
 
     static const int BT_CONNECT_TIMEOUT_MILLIS     = 30000;  ///< Will try to reconnect after this much time
@@ -643,6 +645,13 @@ private:
      * @brief Sends the already built packet over Bluetooth
      */
     void sendCommand();
+
+    /**
+     * @brief Sends the command packet that is found in the external packet over Bluetooth
+     *
+     * @param externalPacket External packet, must be already built
+     */
+    void sendCommand(CelluloBluetoothPacket const& externalPacket);
 
     /**
      * @brief Processes the response in the receive buffer if possible

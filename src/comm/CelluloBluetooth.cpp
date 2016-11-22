@@ -363,6 +363,11 @@ void CelluloBluetooth::sendCommand(){
         socket->write(sendPacket.getCmdSendData());
 }
 
+void CelluloBluetooth::sendCommand(CelluloBluetoothPacket const& externalPacket){
+    if(socket != NULL)
+        socket->write(externalPacket.getCmdSendData());
+}
+
 /*
  * Robot commands
  */
