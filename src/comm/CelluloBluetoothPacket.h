@@ -43,22 +43,11 @@ public:
     COMMAND_PACKET_TYPE_ENUM_SHARED;
     EVENT_PACKET_TYPE_ENUM_SHARED;
 
-    /**
-     * @brief Describes the status of the packet while it's being received
-     */
-    enum class ReceiveStatus {
-        NotReceiving = 0,
-        WaitingForType,
-        PayloadReceiving,
-        EndOfPacket,
-        NumElements
-    };
+    static const char* cmdPacketTypeStr[];    ///< Strings sent over Bluetooth to give commands
+    static const char* eventPacketTypeStr[];  ///< Strings received over Bluetooth as response or event
 
-    static const char* sendPacketTypeStr[];                       ///< Strings sent over Bluetooth to give commands
-    static const char* receivePacketTypeStr[];                    ///< Strings received over Bluetooth as response or event
-
-    static const int sendPacketPayloadLen[];                      ///< Total lengths of packets sent over Bluetooth
-    static const int receivePacketPayloadLen[];                   ///< Total lengths of packets received over Bluetooth
+    static const int cmdPacketPayloadLen[];   ///< Total lengths of packets sent over Bluetooth
+    static const int eventPacketPayloadLen[]; ///< Total lengths of packets received over Bluetooth
 
     /**
      * @brief Creates a new Cellulo Bluetooth message
@@ -78,11 +67,11 @@ public:
     operator QString() const;
 
     /**
-     * @brief Sets the outgoing message type
+     * @brief Sets the outgoing command message type
      *
      * @param type Outgoing message type
      */
-    void setSendPacketType(CmdPacketType type);
+    void setCmdPacketType(CmdPacketType type);
 
     /**
      * @brief Clears the payload
@@ -157,26 +146,34 @@ public:
     void load(float num);
 
     /**
-     * @brief Constructs the message to be sent
+     * @brief Constructs the command message to be sent
      *
-     * @return Message to be sent
+     * @return Command message to be sent
      */
-    QByteArray getSendData();
+    QByteArray getCmdSendData();
 
     /**
-     * @brief Processes incoming byte, determines type if byte is relevant
+     * @brief Processes incoming byte belonging to an event packet, determines type if byte is relevant
      *
-     * @param c Incoming byte
+     * @param c Incoming event packet byte
      * @return Whether the packet is completely received
      */
-    bool loadReceivedByte(char c);
+    bool loadEventByte(char c);
 
     /**
-     * @brief Gets the received packet type if any
+     * @brief Processes incoming byte belonging to an event packet, determines type if byte is relevant
      *
-     * @return The received packet type
+     * @param c Incoming command packet byte
+     * @return Whether the packet is completely received
      */
-    EventPacketType getReceivePacketType(){ return receivePacketType; }
+    //bool loadCmdByte(char c);
+
+    /**
+     * @brief Gets the received event packet type if any
+     *
+     * @return The received event packet type
+     */
+    EventPacketType getEventPacketType(){ return eventPacketType; }
 
     /**
      * @brief Attempts to unload a 32-bit unsigned integer
@@ -243,14 +240,25 @@ public:
 
 private:
 
-    CmdPacketType sendPacketType;           ///< Packet type if outgoing packet
-    EventPacketType receivePacketType;      ///< Packet type if incoming packet
+    /**
+     * @brief Describes the status of the packet while it's being received
+     */
+    enum class ReceiveStatus {
+        NotReceiving = 0,
+        WaitingForType,
+        PayloadReceiving,
+        EndOfPacket,
+        NumElements
+    };
+
+    CmdPacketType cmdPacketType;           ///< Packet type if command packet
+    EventPacketType eventPacketType;       ///< Packet type if event packet
 
     ReceiveStatus receiveStatus;           ///< Current status if receiving packet
-    int receiveBytesRemaining;              ///< Number of bytes left to receive
+    int receiveBytesRemaining;             ///< Number of bytes left to receive
 
-    QByteArray payload;                     ///< Payload of the actual packet
-    int unloadIndex;                        ///< Current index to unload from the payload
+    QByteArray payload;                    ///< Payload of the actual packet
+    int unloadIndex;                       ///< Current index to unload from the payload
 };
 
 #endif // CELLULOBLUETOOTHPACKET_H

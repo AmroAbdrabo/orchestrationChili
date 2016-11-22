@@ -26,25 +26,25 @@
 #include <QMetaObject>
 #include <QMetaEnum>
 
-const char* CelluloBluetoothPacket::sendPacketTypeStr[] = COMMAND_PACKET_STR_SHARED;
-const int CelluloBluetoothPacket::sendPacketPayloadLen[] = COMMAND_PACKET_PAYLOAD_LEN_SHARED;
-const char* CelluloBluetoothPacket::receivePacketTypeStr[] = EVENT_PACKET_STR_SHARED;
-const int CelluloBluetoothPacket::receivePacketPayloadLen[] = EVENT_PACKET_PAYLOAD_LEN_SHARED;
+const char* CelluloBluetoothPacket::cmdPacketTypeStr[] = COMMAND_PACKET_STR_SHARED;
+const int CelluloBluetoothPacket::cmdPacketPayloadLen[] = COMMAND_PACKET_PAYLOAD_LEN_SHARED;
+const char* CelluloBluetoothPacket::eventPacketTypeStr[] = EVENT_PACKET_STR_SHARED;
+const int CelluloBluetoothPacket::eventPacketPayloadLen[] = EVENT_PACKET_PAYLOAD_LEN_SHARED;
 
 CelluloBluetoothPacket::operator QString() const {
     QString str;
     const QMetaObject& metaObject = CelluloBluetoothPacket::staticMetaObject;
     QMetaEnum metaEnum;
 
-    metaEnum = metaObject.enumerator(metaObject.indexOfEnumerator("SEND_PACKET_TYPE"));
+    metaEnum = metaObject.enumerator(metaObject.indexOfEnumerator("CmdPacketType"));
     str += "sendPacketType: ";
-    str += metaEnum.valueToKey((int)sendPacketType);
+    str += metaEnum.valueToKey((int)cmdPacketType);
 
-    metaEnum = metaObject.enumerator(metaObject.indexOfEnumerator("RECEIVE_PACKET_TYPE"));
+    metaEnum = metaObject.enumerator(metaObject.indexOfEnumerator("EventPacketType"));
     str += "; receivePacketType: ";
-    str += metaEnum.valueToKey((int)receivePacketType);
+    str += metaEnum.valueToKey((int)eventPacketType);
 
-    metaEnum = metaObject.enumerator(metaObject.indexOfEnumerator("RECEIVE_STATUS"));
+    metaEnum = metaObject.enumerator(metaObject.indexOfEnumerator("ReceiveStatus"));
     str += "; receiveStatus: ";
     str += metaEnum.valueToKey((int)receiveStatus);
 
@@ -66,13 +66,13 @@ CelluloBluetoothPacket::CelluloBluetoothPacket(){
 CelluloBluetoothPacket::~CelluloBluetoothPacket(){
 }
 
-void CelluloBluetoothPacket::setSendPacketType(CmdPacketType type){
-    sendPacketType = type;
+void CelluloBluetoothPacket::setCmdPacketType(CmdPacketType type){
+    cmdPacketType = type;
 }
 
 void CelluloBluetoothPacket::clear(){
-    sendPacketType = CmdPacketTypeNumElements;
-    receivePacketType = EventPacketTypeNumElements;
+    cmdPacketType = CmdPacketTypeNumElements;
+    eventPacketType = EventPacketTypeNumElements;
 
     receiveStatus = ReceiveStatus::NotReceiving;
     receiveBytesRemaining = -1;
@@ -165,17 +165,17 @@ void CelluloBluetoothPacket::load(float num){
     payload.append(p[0]);
 }
 
-QByteArray CelluloBluetoothPacket::getSendData(){
+QByteArray CelluloBluetoothPacket::getCmdSendData(){
     QByteArray data;
 
     data.append(PACKET_START_CHAR_SHARED);
-    data.append(sendPacketTypeStr[(int)sendPacketType]);
+    data.append(cmdPacketTypeStr[(int)cmdPacketType]);
     data.append(payload);
 
     return data;
 }
 
-bool CelluloBluetoothPacket::loadReceivedByte(char c){
+bool CelluloBluetoothPacket::loadEventByte(char c){
     switch(receiveStatus){
         case ReceiveStatus::NotReceiving:
             if(c == PACKET_START_CHAR_SHARED)
@@ -185,16 +185,16 @@ bool CelluloBluetoothPacket::loadReceivedByte(char c){
         case ReceiveStatus::WaitingForType:
 
             //Determine type
-            receivePacketType = EventPacketTypeNumElements;
+            eventPacketType = EventPacketTypeNumElements;
             for(int i=0; i<(int)EventPacketTypeNumElements; i++)
-                if(receivePacketTypeStr[i][0] == c){
-                    receivePacketType = (EventPacketType)i;
+                if(eventPacketTypeStr[i][0] == c){
+                    eventPacketType = (EventPacketType)i;
                     break;
                 }
 
             //Valid packet type
-            if(receivePacketType != EventPacketTypeNumElements){
-                receiveBytesRemaining = receivePacketPayloadLen[(int)receivePacketType];
+            if(eventPacketType != EventPacketTypeNumElements){
+                receiveBytesRemaining = eventPacketPayloadLen[(int)eventPacketType];
                 if(receiveBytesRemaining <= 0){
                     receiveStatus = ReceiveStatus::EndOfPacket;
                     return true;
