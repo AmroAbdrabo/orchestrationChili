@@ -39,8 +39,8 @@ class BluetoothLocalDevice : public QQuickItem {
     /* *INDENT-ON* */
 
     Q_PROPERTY(BluetoothLocalDeviceEnums::HostMode hostMode READ getHostMode NOTIFY hostModeChanged)
-    Q_PROPERTY(QString name READ getName)
-    Q_PROPERTY(QString address READ getAddress)
+    Q_PROPERTY(QString name READ getName CONSTANT)
+    Q_PROPERTY(QString address READ getAddress CONSTANT)
 
 public:
 

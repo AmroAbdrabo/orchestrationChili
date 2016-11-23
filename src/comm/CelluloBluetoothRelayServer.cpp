@@ -96,6 +96,13 @@ void CelluloBluetoothRelayServer::addClient(){
     }
 }
 
+QString CelluloBluetoothRelayServer::getClientAddress(){
+    if(clientSocket == NULL)
+        return "";
+    else
+        return clientSocket->peerAddress().toString();
+}
+
 void CelluloBluetoothRelayServer::deleteClient(){
     if(clientSocket != NULL){
         disconnect(clientSocket, SIGNAL(readyRead()), this, SLOT(incomingClientData()));

@@ -97,6 +97,13 @@ public slots:
     void addRobot(CelluloBluetooth* robot);
 
     /**
+     * @brief Gets the client MAC address
+     *
+     * @return The client MAC address, empty string if not connected
+     */
+    QString getClientAddress();
+
+    /**
      * @brief Closes the client's socket
      */
     void disconnectClient();
