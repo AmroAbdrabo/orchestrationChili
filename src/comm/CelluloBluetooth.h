@@ -35,8 +35,13 @@
 
 #include "CelluloBluetoothEnums.h"
 #include "CelluloBluetoothPacket.h"
+#include "CelluloBluetoothRelayClient.h"
+#include "CelluloBluetoothRelayServer.h"
 #include "../zones/CelluloZoneClient.h"
 #include "../zones/CelluloZonePolyBezier.h"
+
+class CelluloBluetoothRelayClient;
+class CelluloBluetoothRelayServer;
 
 /**
  * @brief Bluetooth communicator for a Cellulo robot
@@ -611,6 +616,9 @@ private:
     QString macAddr;                                          ///< Bluetooth MAC address of the server
     CelluloBluetoothEnums::ConnectionStatus connectionStatus; ///< Bluetooth connection status
 
+    CelluloBluetoothRelayClient* relayClient;                 ///< Client to route all command packets to
+    CelluloBluetoothRelayServer* relayServer;                 ///< Server to route all event packets to
+
     bool timestampingEnabled;                                 ///< Whether timestamping along with pose is enabled and idling disabled
     int lastTimestamp;                                        ///< Latest received onboard timestamp (in milliseconds)
     float framerate;                                          ///< Framerate calculated over time
@@ -628,6 +636,25 @@ private:
      * @brief Resets properties of the robot to default
      */
     void resetProperties();
+
+    /**
+     * @brief Sets the relay client
+     *
+     * All command packets from now on will be sent through the client instead of a direct Bluetooth connection to a physical robot.
+     * Essentially makes this CelluloBluetooth a virtual robot.
+     *
+     * @param relayClient The relay client
+     */
+    void setRelayClient(CelluloBluetoothRelayClient* relayClient);
+
+    /**
+     * @brief Sets the relay server
+     *
+     * All event packets that arrive from the robot from now on will be sent through the server instead of being emitted.
+     *
+     * @param relayServer The relay server
+     */
+    void setRelayServer(CelluloBluetoothRelayServer* relayServer);
 
     /**
      * @brief Connects or reconnects to the service on the server if not already connected

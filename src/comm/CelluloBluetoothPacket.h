@@ -74,6 +74,13 @@ public:
     void setCmdPacketType(CmdPacketType type);
 
     /**
+     * @brief Sets the outgoing event message type
+     *
+     * @param type Outgoing event message type
+     */
+    void setEventPacketType(EventPacketType type);
+
+    /**
      * @brief Clears the payload
      */
     void clear();
@@ -151,6 +158,13 @@ public:
      * @return Command message to be sent
      */
     QByteArray getCmdSendData() const;
+
+    /**
+     * @brief Constructs the event message to be sent
+     *
+     * @return Event message to be sent
+     */
+    QByteArray getEventSendData() const;
 
     /**
      * @brief Processes incoming byte belonging to an event packet, determines type if byte is relevant

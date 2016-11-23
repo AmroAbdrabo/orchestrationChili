@@ -25,12 +25,14 @@
 #ifndef CELLULOBLUETOOTHRELAYCLIENT_H
 #define CELLULOBLUETOOTHRELAYCLIENT_H
 
-#include "CelluloBluetoothPacket.h"
-#include "CelluloBluetooth.h"
-
 #include <QQuickItem>
 #include <QBluetoothSocket>
 #include <QList>
+
+#include "CelluloBluetoothPacket.h"
+#include "CelluloBluetooth.h"
+
+class CelluloBluetooth;
 
 class CelluloBluetoothRelayClient : public QQuickItem {
     /* *INDENT-OFF* */
@@ -39,6 +41,8 @@ class CelluloBluetoothRelayClient : public QQuickItem {
 
     Q_PROPERTY(QString serverAddress READ getServerAddress WRITE setServerAddress NOTIFY serverAddressChanged)
     Q_PROPERTY(QString uuid READ getUuid WRITE setUuid NOTIFY uuidChanged)
+
+friend class CelluloBluetooth;
 
 public:
 
@@ -94,6 +98,13 @@ public slots:
      */
     void disconnectFromServer();
 
+    /**
+     * @brief Adds the robot to the robots list, sets the robot's relay client to this object
+     *
+     * @param robot New robot
+     */
+    void addRobot(CelluloBluetooth* robot);
+
 signals:
 
     /**
@@ -119,7 +130,7 @@ signals:
 private slots:
 
     /**
-     * @brief
+     * @brief Load the server data into a packet to be processed
      */
     void incomingServerData();
 
@@ -130,13 +141,24 @@ private:
      */
     void processServerPacket();
 
-    QBluetoothSocket* serverSocket;      ///< The low level socket
-    CelluloBluetoothPacket serverPacket; ///< Server's incoming packet
+    /**
+     * @brief Relays the packet from the robot to the server, or queues for relay
+     *
+     * @param macAddr Full MAC address of the target robot on the server
+     * @param packet The packet to relay
+     */
+    void sendToServer(QString macAddr, CelluloBluetoothPacket const& packet);
+
     QString serverAddress;               ///< Server's MAC address
     QString uuid;                        ///< Service uuid to connect to on the server
 
+    QBluetoothSocket serverSocket;       ///< The low level socket
+    CelluloBluetoothPacket serverPacket; ///< Server's incoming packet
+
     int currentRobot;                    ///< Current robot index to relay messages to, set by a CmdPacketTypeSetAddress
     QList<CelluloBluetooth*> robots;     ///< List of robots to relay to/from
+
+    //QList<QQueue<CelluloBluetoothPacket> > serverPackets;    ///< Packets going to all robots, to send to the server
 
 };
 

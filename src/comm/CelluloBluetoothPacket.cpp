@@ -70,6 +70,10 @@ void CelluloBluetoothPacket::setCmdPacketType(CmdPacketType type){
     cmdPacketType = type;
 }
 
+void CelluloBluetoothPacket::setEventPacketType(EventPacketType type){
+    eventPacketType = type;
+}
+
 void CelluloBluetoothPacket::clear(){
     cmdPacketType = CmdPacketTypeNumElements;
     eventPacketType = EventPacketTypeNumElements;
@@ -170,6 +174,16 @@ QByteArray CelluloBluetoothPacket::getCmdSendData() const{
 
     data.append(PACKET_START_CHAR_SHARED);
     data.append(cmdPacketTypeStr[(int)cmdPacketType]);
+    data.append(payload);
+
+    return data;
+}
+
+QByteArray CelluloBluetoothPacket::getEventSendData() const{
+    QByteArray data;
+
+    data.append(PACKET_START_CHAR_SHARED);
+    data.append(eventPacketTypeStr[(int)eventPacketType]);
     data.append(payload);
 
     return data;

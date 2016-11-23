@@ -69,8 +69,10 @@ void CelluloBluetoothRelayServer::setListening(bool enable){
 }
 
 void CelluloBluetoothRelayServer::addRobot(CelluloBluetooth* robot){
-    if(!robots.contains(robot))
+    if(!robots.contains(robot)){
         robots.append(robot);
+        robot->setRelayServer(this);
+    }
 }
 
 void CelluloBluetoothRelayServer::addClient(){
@@ -160,4 +162,29 @@ void CelluloBluetoothRelayServer::processClientPacket(){
     }
 
     clientPacket.clear();
+}
+
+void CelluloBluetoothRelayServer::sendToClient(QString macAddr, CelluloBluetoothPacket const& packet){
+
+    //IMMEDIATE SEND FOR NOW
+    if(clientSocket != NULL){
+        QStringList octets = macAddr.split(':');
+        if(octets.size() < 2){
+            qWarning() << "CelluloBluetoothRelayServer::sendToClient(): Provided MAC address is in the wrong format.";
+            return;
+        }
+
+        quint8 fifthOctet = (quint8)(octets[octets.size() - 2].toUInt(NULL, 16));
+        quint8 sixthOctet = (quint8)(octets[octets.size() - 1].toUInt(NULL, 16));
+
+        CelluloBluetoothPacket setAddressPacket;
+        setAddressPacket.setEventPacketType(CelluloBluetoothPacket::EventPacketTypeSetAddress);
+        setAddressPacket.load(fifthOctet);
+        setAddressPacket.load(sixthOctet);
+        clientSocket->write(setAddressPacket.getEventSendData());
+
+        clientSocket->write(packet.getEventSendData());
+    }
+    else
+        qWarning() << "CelluloBluetoothRelayServer::sendToClient(): Trying to relay packet but no client connected yet.";
 }

@@ -25,28 +25,27 @@
 #include "CelluloBluetoothRelayClient.h"
 
 CelluloBluetoothRelayClient::CelluloBluetoothRelayClient(QQuickItem* parent):
-    QQuickItem(parent)
+    QQuickItem(parent),
+    serverSocket(QBluetoothServiceInfo::RfcommProtocol, this)
 {
     currentRobot = -1;
-    serverSocket = new QBluetoothSocket(QBluetoothServiceInfo::RfcommProtocol, this);
     serverAddress = "00:00:00:00:00:00";
     uuid = "{00000000-0000-0000-0000-000000000000}";
 
-    connect(serverSocket, SIGNAL(connected()), this, SIGNAL(connected()));
-    connect(serverSocket, SIGNAL(disconnected()), this, SIGNAL(disconnected()));
-    connect(serverSocket, static_cast<void (QBluetoothSocket::*)(QBluetoothSocket::SocketError)>(&QBluetoothSocket::error),
+    connect(&serverSocket, SIGNAL(connected()), this, SIGNAL(connected()));
+    connect(&serverSocket, SIGNAL(disconnected()), this, SIGNAL(disconnected()));
+    connect(&serverSocket, static_cast<void (QBluetoothSocket::*)(QBluetoothSocket::SocketError)>(&QBluetoothSocket::error),
             [=](QBluetoothSocket::SocketError error){ qDebug() << "CelluloBluetoothRelayClient serverSocket error: " << error; });
-    connect(serverSocket, SIGNAL(readyRead()), this, SLOT(incomingServerData()));
+    connect(&serverSocket, SIGNAL(readyRead()), this, SLOT(incomingServerData()));
 }
 
 CelluloBluetoothRelayClient::~CelluloBluetoothRelayClient(){
-    serverSocket->close();
-    serverSocket->deleteLater();
+    serverSocket.close();
 }
 
 void CelluloBluetoothRelayClient::setServerAddress(QString serverAddress){
     if(serverAddress != this->serverAddress){
-        if(serverSocket->state() != QBluetoothSocket::UnconnectedState)
+        if(serverSocket.state() != QBluetoothSocket::UnconnectedState)
             qWarning() << "CelluloBluetoothRelayClient::setServerAddress(): Can only set server address while disconnected.";
         else{
             this->serverAddress = serverAddress;
@@ -57,7 +56,7 @@ void CelluloBluetoothRelayClient::setServerAddress(QString serverAddress){
 
 void CelluloBluetoothRelayClient::setUuid(QString uuid){
     if(uuid != this->uuid){
-        if(serverSocket->state() != QBluetoothSocket::UnconnectedState)
+        if(serverSocket.state() != QBluetoothSocket::UnconnectedState)
             qWarning() << "CelluloBluetoothRelayClient::setUuid(QString): Can only set uuid while disconnected.";
         else if(QBluetoothUuid(uuid) == QBluetoothUuid(QString("{00000000-0000-0000-0000-000000000000}")))
             qWarning() << "CelluloBluetoothRelayClient::setUuid(QString): Invalid uuid. ";
@@ -69,15 +68,22 @@ void CelluloBluetoothRelayClient::setUuid(QString uuid){
 }
 
 void CelluloBluetoothRelayClient::connectToServer(){
-    serverSocket->connectToService(QBluetoothAddress(serverAddress), QBluetoothUuid(uuid));
+    serverSocket.connectToService(QBluetoothAddress(serverAddress), QBluetoothUuid(uuid));
 }
 
 void CelluloBluetoothRelayClient::disconnectFromServer(){
-    serverSocket->disconnectFromService();
+    serverSocket.disconnectFromService();
+}
+
+void CelluloBluetoothRelayClient::addRobot(CelluloBluetooth* robot){
+    if(!robots.contains(robot)){
+        robots.append(robot);
+        robot->setRelayClient(this);
+    }
 }
 
 void CelluloBluetoothRelayClient::incomingServerData(){
-    QByteArray message = serverSocket->readAll();
+    QByteArray message = serverSocket.readAll();
 
     for(int i=0; i<message.length(); i++)
 
@@ -113,10 +119,33 @@ void CelluloBluetoothRelayClient::processServerPacket(){
 
     //Some other command and there is already a target robot
     else{
-        //QUEUE OR IMMEDIATE SEND
+
+        //IMMEDIATE SEND FOR NOW
 
         robots[currentRobot]->processResponse(serverPacket);
     }
 
     serverPacket.clear();
+}
+
+void CelluloBluetoothRelayClient::sendToServer(QString macAddr, CelluloBluetoothPacket const& packet){
+
+    //IMMEDIATE SEND FOR NOW
+
+    QStringList octets = macAddr.split(':');
+    if(octets.size() < 2){
+        qWarning() << "CelluloBluetoothRelayClient::sendToServer(): Provided MAC address is in the wrong format.";
+        return;
+    }
+
+    quint8 fifthOctet = (quint8)(octets[octets.size() - 2].toUInt(NULL, 16));
+    quint8 sixthOctet = (quint8)(octets[octets.size() - 1].toUInt(NULL, 16));
+
+    CelluloBluetoothPacket setAddressPacket;
+    setAddressPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeSetAddress);
+    setAddressPacket.load(fifthOctet);
+    setAddressPacket.load(sixthOctet);
+    serverSocket.write(setAddressPacket.getCmdSendData());
+
+    serverSocket.write(packet.getCmdSendData());
 }
