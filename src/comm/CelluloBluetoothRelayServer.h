@@ -133,7 +133,7 @@ private:
      */
     void sendToClient(QString macAddr, CelluloBluetoothPacket const& packet);
 
-    QString uuid;                                           ///< Service uuid, e.g "{00001101-0000-1000-8000-00805F9B34FB}"
+    QString uuid;                                           ///< Service uuid
     QString name;                                           ///< Service name
     QBluetoothServer server;                                ///< The QBluetoothServer object to wrap
     QBluetoothServiceInfo service;                          ///< Service that is opened by listen()

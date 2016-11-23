@@ -40,7 +40,6 @@ class CelluloBluetoothRelayClient : public QQuickItem {
     /* *INDENT-ON* */
 
     Q_PROPERTY(QString serverAddress READ getServerAddress WRITE setServerAddress NOTIFY serverAddressChanged)
-    Q_PROPERTY(QString uuid READ getUuid WRITE setUuid NOTIFY uuidChanged)
 
 friend class CelluloBluetooth;
 
@@ -72,20 +71,6 @@ public:
      */
     void setServerAddress(QString serverAddress);
 
-    /**
-     * @brief Gets the current uuid of the service on the server
-     *
-     * @return Current uuid
-     */
-    QString getUuid() const { return uuid; }
-
-    /**
-     * @brief Sets the uuid to connect to on the server
-     *
-     * @param port The new full uuid, e.g "{00001101-0000-1000-8000-00805F9B34FB}"
-     */
-    void setUuid(QString uuid);
-
 public slots:
 
     /**
@@ -111,11 +96,6 @@ signals:
      * @brief Emitted when the server MAC address changes
      */
     void serverAddressChanged();
-
-    /**
-     * @brief Emitted whe the service uuid changes
-     */
-    void uuidChanged();
 
     /**
      * @brief Emitted when the server socket is connected

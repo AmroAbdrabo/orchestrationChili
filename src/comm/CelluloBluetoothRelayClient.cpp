@@ -30,7 +30,7 @@ CelluloBluetoothRelayClient::CelluloBluetoothRelayClient(QQuickItem* parent):
 {
     currentRobot = -1;
     serverAddress = "00:00:00:00:00:00";
-    uuid = "{00000000-0000-0000-0000-000000000000}";
+    uuid = "{00001101-0000-1000-8000-00805F9B34FB}";
 
     connect(&serverSocket, SIGNAL(connected()), this, SIGNAL(connected()));
     connect(&serverSocket, SIGNAL(disconnected()), this, SIGNAL(disconnected()));
@@ -50,19 +50,6 @@ void CelluloBluetoothRelayClient::setServerAddress(QString serverAddress){
         else{
             this->serverAddress = serverAddress;
             emit serverAddressChanged();
-        }
-    }
-}
-
-void CelluloBluetoothRelayClient::setUuid(QString uuid){
-    if(uuid != this->uuid){
-        if(serverSocket.state() != QBluetoothSocket::UnconnectedState)
-            qWarning() << "CelluloBluetoothRelayClient::setUuid(QString): Can only set uuid while disconnected.";
-        else if(QBluetoothUuid(uuid) == QBluetoothUuid(QString("{00000000-0000-0000-0000-000000000000}")))
-            qWarning() << "CelluloBluetoothRelayClient::setUuid(QString): Invalid uuid. ";
-        else{
-            this->uuid = uuid;
-            emit uuidChanged();
         }
     }
 }
