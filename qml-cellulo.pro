@@ -8,6 +8,7 @@ HEADERS += \
     src/comm/BluetoothLocalDeviceEnums.h \
     src/comm/CelluloBluetooth.h \
     src/comm/CelluloBluetoothRelayServer.h \
+    src/comm/CelluloBluetoothRelayClient.h \
     src/comm/CelluloBluetoothEMP.h \
     src/comm/CelluloBluetoothEnums.h \
     src/comm/CameraFrameImageProvider.h \
@@ -37,6 +38,7 @@ SOURCES += \
     src/comm/BluetoothLocalDeviceEnums.cpp \
     src/comm/CelluloBluetooth.cpp \
     src/comm/CelluloBluetoothRelayServer.cpp \
+    src/comm/CelluloBluetoothRelayClient.cpp \
     src/comm/CelluloBluetoothEMP.cpp \
     src/comm/CelluloBluetoothEnums.cpp \
     src/comm/CameraFrameImageProvider.cpp \

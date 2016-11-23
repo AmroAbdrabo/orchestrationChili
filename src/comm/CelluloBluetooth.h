@@ -66,6 +66,7 @@ class CelluloBluetooth : public CelluloZoneClient {
     Q_PROPERTY(float cameraImageProgress READ getCameraImageProgress NOTIFY cameraImageProgressChanged)
 
 friend class CelluloBluetoothRelayServer;
+friend class CelluloBluetoothRelayClient;
 
 public:
 
@@ -657,6 +658,11 @@ private:
      * @brief Processes the response in the receive buffer if possible
      */
     void processResponse();
+
+    /**
+     * @brief Processes the response in the given buffer if possible
+     */
+    void processResponse(CelluloBluetoothPacket& externalPacket);
 };
 
 #endif // CELLULOBLUETOOTH_H

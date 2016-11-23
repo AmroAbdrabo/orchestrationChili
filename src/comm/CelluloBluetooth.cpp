@@ -202,7 +202,11 @@ void CelluloBluetooth::socketDataArrived(){
 }
 
 void CelluloBluetooth::processResponse(){
-    switch(recvPacket.getEventPacketType()){
+    processResponse(recvPacket);
+}
+
+void CelluloBluetooth::processResponse(CelluloBluetoothPacket& externalPacket){
+    switch(externalPacket.getEventPacketType()){
         case CelluloBluetoothPacket::EventPacketTypeBootComplete:
             emit bootCompleted();
             break;
@@ -216,7 +220,7 @@ void CelluloBluetooth::processResponse(){
             break;
 
         case CelluloBluetoothPacket::EventPacketTypeBatteryStateChanged: {
-            CelluloBluetoothEnums::BatteryState newState = (CelluloBluetoothEnums::BatteryState)recvPacket.unloadUInt8();
+            CelluloBluetoothEnums::BatteryState newState = (CelluloBluetoothEnums::BatteryState)externalPacket.unloadUInt8();
             if(batteryState != newState){
                 batteryState = newState;
                 emit batteryStateChanged();
@@ -225,30 +229,30 @@ void CelluloBluetooth::processResponse(){
         }
 
         case CelluloBluetoothPacket::EventPacketTypeTouchBegan: {
-            int key = recvPacket.unloadUInt8();
+            int key = externalPacket.unloadUInt8();
             if(key >= 0 && key <= 5)
                 emit touchBegan(key);
             break;
         }
 
         case CelluloBluetoothPacket::EventPacketTypeTouchLongPressed: {
-            int key = recvPacket.unloadUInt8();
+            int key = externalPacket.unloadUInt8();
             if(key >= 0 && key <= 5)
                 emit longTouch(key);
             break;
         }
 
         case CelluloBluetoothPacket::EventPacketTypeTouchReleased: {
-            int key = recvPacket.unloadUInt8();
+            int key = externalPacket.unloadUInt8();
             if(key >= 0 && key <= 5)
                 emit touchReleased(key);
             break;
         }
 
         case CelluloBluetoothPacket::EventPacketTypePoseChanged: {
-            x = recvPacket.unloadUInt32()*DOTS_GRID_SPACING/(float)GOAL_POSE_FACTOR_SHARED;
-            y = recvPacket.unloadUInt32()*DOTS_GRID_SPACING/(float)GOAL_POSE_FACTOR_SHARED;
-            theta = recvPacket.unloadUInt16()/(float)GOAL_POSE_FACTOR_SHARED;
+            x = externalPacket.unloadUInt32()*DOTS_GRID_SPACING/(float)GOAL_POSE_FACTOR_SHARED;
+            y = externalPacket.unloadUInt32()*DOTS_GRID_SPACING/(float)GOAL_POSE_FACTOR_SHARED;
+            theta = externalPacket.unloadUInt16()/(float)GOAL_POSE_FACTOR_SHARED;
             emit poseChanged(x,y,theta);
 
             if(kidnapped){
@@ -260,12 +264,12 @@ void CelluloBluetooth::processResponse(){
         }
 
         case CelluloBluetoothPacket::EventPacketTypePoseChangedTimestamped: {
-            x = recvPacket.unloadUInt32()*DOTS_GRID_SPACING/(float)GOAL_POSE_FACTOR_SHARED;
-            y = recvPacket.unloadUInt32()*DOTS_GRID_SPACING/(float)GOAL_POSE_FACTOR_SHARED;
-            theta = recvPacket.unloadUInt16()/(float)GOAL_POSE_FACTOR_SHARED;
+            x = externalPacket.unloadUInt32()*DOTS_GRID_SPACING/(float)GOAL_POSE_FACTOR_SHARED;
+            y = externalPacket.unloadUInt32()*DOTS_GRID_SPACING/(float)GOAL_POSE_FACTOR_SHARED;
+            theta = externalPacket.unloadUInt16()/(float)GOAL_POSE_FACTOR_SHARED;
             emit poseChanged(x,y,theta);
 
-            unsigned int newTimestamp = recvPacket.unloadUInt32();
+            unsigned int newTimestamp = externalPacket.unloadUInt32();
             framerate =
                 FRAMERATE_SMOOTH_FACTOR*framerate +
                 (1.0 - FRAMERATE_SMOOTH_FACTOR)*1000/(newTimestamp - lastTimestamp);
@@ -281,7 +285,7 @@ void CelluloBluetooth::processResponse(){
         }
 
         case CelluloBluetoothPacket::EventPacketTypeKidnapChanged: {
-            int newKidnapped = recvPacket.unloadUInt8();
+            int newKidnapped = externalPacket.unloadUInt8();
             if(newKidnapped == 0 || newKidnapped == 1)
                 if((bool)newKidnapped != kidnapped){
                     kidnapped = (bool)newKidnapped;
@@ -291,7 +295,7 @@ void CelluloBluetooth::processResponse(){
         }
 
         case CelluloBluetoothPacket::EventPacketTypeGestureChanged: {
-            CelluloBluetoothEnums::Gesture newGesture = (CelluloBluetoothEnums::Gesture)recvPacket.unloadUInt8();
+            CelluloBluetoothEnums::Gesture newGesture = (CelluloBluetoothEnums::Gesture)externalPacket.unloadUInt8();
             if(gesture != newGesture){
                 gesture = newGesture;
                 emit gestureChanged();
@@ -308,7 +312,7 @@ void CelluloBluetooth::processResponse(){
             break;
 
         case CelluloBluetoothPacket::EventPacketTypeFrameLine: {
-            quint16 line = recvPacket.unloadUInt16();
+            quint16 line = externalPacket.unloadUInt16();
 
             //Drop previous incomplete frame
             if(frameBuffer.length() > line*IMG_WIDTH_SHARED){
@@ -325,7 +329,7 @@ void CelluloBluetooth::processResponse(){
 
             //Append line just received
             for(int i=0; i<IMG_WIDTH_SHARED; i++)
-                frameBuffer.append(recvPacket.unloadUInt8());
+                frameBuffer.append(externalPacket.unloadUInt8());
 
             //Update progress
             cameraImageProgress = (float)(line + 1)/IMG_HEIGHT_SHARED;
@@ -338,7 +342,7 @@ void CelluloBluetooth::processResponse(){
         }
 
         case CelluloBluetoothPacket::EventPacketTypeDebug: {
-            qDebug("%6u %6u\n",recvPacket.unloadUInt32(),recvPacket.unloadUInt32());
+            qDebug("%6u %6u\n",externalPacket.unloadUInt32(),externalPacket.unloadUInt32());
             //qDebug() << "CelluloBluetoothPacket::processResponse(): Debug event received";
             break;
         }
@@ -346,8 +350,8 @@ void CelluloBluetooth::processResponse(){
         case CelluloBluetoothPacket::EventPacketTypeSetAddress:
 
             //Ignore, should never come from a robot
-            recvPacket.unloadUInt8();
-            recvPacket.unloadUInt8();
+            externalPacket.unloadUInt8();
+            externalPacket.unloadUInt8();
             qDebug() << "CelluloBluetoothPacket::processResponse(): EventPacketTypeSetAddress received, should not happen!";
             break;
 
@@ -355,7 +359,7 @@ void CelluloBluetooth::processResponse(){
             break;
     }
 
-    recvPacket.clear();
+    externalPacket.clear();
 }
 
 void CelluloBluetooth::sendCommand(){
