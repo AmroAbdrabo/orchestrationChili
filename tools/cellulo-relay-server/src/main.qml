@@ -55,6 +55,16 @@ ApplicationWindow {
         id: localDevice
 
         Component.onCompleted: powerOn()
+
+        onHostModeChanged:{
+            switch(hostMode){
+            case BluetoothLocalDeviceEnums.HostModeConnectable:
+            case BluetoothLocalDeviceEnums.HostModeDiscoverable:
+            case BluetoothLocalDeviceEnums.HostModeDiscoverableLimitedInquiry:
+                server.listen = true;
+                break;
+            }
+        }
     }
 
     ScrollView {
@@ -73,7 +83,10 @@ ApplicationWindow {
             }
 
             Text{
-                text: "Local address: " + localDevice.address + "\n" + (server.listen ? "Listening" : "Connected") + "\nClient address: " + window.clientAddress
+                text:
+                    "Local address: " + localDevice.address + "\n" +
+                    (server.listen ? "Listening..." : (localDevice.hostMode === BluetoothLocalDeviceEnums.HostModePoweredOff ? "Powering on Bluetooth..." : "Connected")) + "\n" +
+                    "Client address: " + window.clientAddress
             }
 
             Repeater{
