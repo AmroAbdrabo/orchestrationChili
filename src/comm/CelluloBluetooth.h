@@ -662,6 +662,11 @@ private:
     void openSocket();
 
     /**
+     * @brief Sends an EventPacketTypeAnnounceConnectionStatus to the relay server
+     */
+    void announceConnectionStatusToRelayServer();
+
+    /**
      * @brief Sets the motor output
      *
      * @param motor 1, 2 or 3

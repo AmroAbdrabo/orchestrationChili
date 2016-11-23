@@ -24,7 +24,7 @@
 
 #include "CelluloBluetoothRelayClient.h"
 
-CelluloBluetoothRelayClient::CelluloBluetoothRelayClient(QQuickItem* parent):
+CelluloBluetoothRelayClient::CelluloBluetoothRelayClient(QQuickItem* parent) :
     QQuickItem(parent),
     serverSocket(QBluetoothServiceInfo::RfcommProtocol, this)
 {
@@ -80,15 +80,16 @@ void CelluloBluetoothRelayClient::incomingServerData(){
 }
 
 void CelluloBluetoothRelayClient::processServerPacket(){
+    CelluloBluetoothPacket::EventPacketType packetType = serverPacket.getEventPacketType();
 
     //Set target robot command
-    if(serverPacket.getEventPacketType() == CelluloBluetoothPacket::EventPacketTypeSetAddress){
+    if(packetType == CelluloBluetoothPacket::EventPacketTypeSetAddress){
         quint8 fifthOctet = serverPacket.unloadUInt8();
         quint8 sixthOctet = serverPacket.unloadUInt8();
         QString suffix = QString::number(fifthOctet, 16) + ":" + QString::number(sixthOctet, 16);
 
         int newRobot = -1;
-        for(int i=0;i<robots.size();i++)
+        for(int i=0; i<robots.size(); i++)
             if(robots[i]->getMacAddr().endsWith(suffix, Qt::CaseInsensitive)){
                 newRobot = i;
                 break;
@@ -103,6 +104,15 @@ void CelluloBluetoothRelayClient::processServerPacket(){
     //Some other command but no robot selected yet
     else if(currentRobot < 0)
         qWarning() << "CelluloBluetoothRelayClient::processServerPacket(): Received event packet but no robot is chosen yet, EventPacketTypeSetAddress must be sent first. Dropping this packet.";
+
+    //Connection status announcement
+    else if(packetType == CelluloBluetoothPacket::EventPacketTypeAnnounceConnectionStatus){
+        CelluloBluetoothEnums::ConnectionStatus newStatus = (CelluloBluetoothEnums::ConnectionStatus)serverPacket.unloadUInt8();
+        if(robots[currentRobot]->connectionStatus != newStatus){
+            robots[currentRobot]->connectionStatus = newStatus;
+            emit robots[currentRobot]->connectionStatusChanged();
+        }
+    }
 
     //Some other command and there is already a target robot
     else{

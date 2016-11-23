@@ -113,6 +113,7 @@ void CelluloBluetooth::setAutoConnect(bool autoConnect){
 }
 
 void CelluloBluetooth::setRelayClient(CelluloBluetoothRelayClient* relayClient){
+    disconnectFromServer();
     this->relayClient = relayClient;
 }
 
@@ -145,11 +146,26 @@ void CelluloBluetooth::openSocket(){
             connectionStatus = CelluloBluetoothEnums::ConnectionStatusConnecting;
             emit connectionStatusChanged();
         }
+
+        //Announce connection status to relay server if it's there
+        announceConnectionStatusToRelayServer();
     }
 }
 
 void CelluloBluetooth::connectToServer(){
-    if(socket == NULL){
+
+    //Virtual robot (representing a real robot over a relay connection)
+    if(relayClient != NULL){
+        qDebug() << "CelluloBluetooth::connectToServer(): " << macAddr << " over a relay...";
+
+        sendPacket.clear();
+        sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeSetConnectionStatus);
+        sendPacket.load((quint8)CelluloBluetoothEnums::ConnectionStatusConnected);
+        sendCommand();
+    }
+
+    //Real robot
+    else if(socket == NULL){
         socket = new QBluetoothSocket(QBluetoothServiceInfo::RfcommProtocol);
 
         connect(socket, SIGNAL(readyRead()), this, SLOT(socketDataArrived()));
@@ -163,7 +179,19 @@ void CelluloBluetooth::connectToServer(){
 }
 
 void CelluloBluetooth::disconnectFromServer(){
-    if(socket != NULL){
+
+    //Virtual robot (representing a real robot over a relay connection)
+    if(relayClient != NULL){
+        qDebug() << "CelluloBluetooth::disconnectFromServer(): " << macAddr << " over a relay...";
+
+        sendPacket.clear();
+        sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeSetConnectionStatus);
+        sendPacket.load((quint8)CelluloBluetoothEnums::ConnectionStatusDisconnected);
+        sendCommand();
+    }
+
+    //Real robot
+    else if(socket != NULL){
         qDebug() << "CelluloBluetooth::disconnectFromServer(): " << macAddr << "...";
         disconnect(socket, SIGNAL(readyRead()), this, SLOT(socketDataArrived()));
         disconnect(socket, SIGNAL(connected()), this, SLOT(socketConnected()));
@@ -174,6 +202,10 @@ void CelluloBluetooth::disconnectFromServer(){
             connectionStatus = CelluloBluetoothEnums::ConnectionStatusDisconnected;
             emit connectionStatusChanged();
         }
+
+        //Announce connection status to relay server if it's there
+        announceConnectionStatusToRelayServer();
+
         socket->deleteLater();
         socket = NULL;
         btConnectTimeoutTimer.stop();
@@ -188,6 +220,9 @@ void CelluloBluetooth::socketConnected(){
         emit connectionStatusChanged();
     }
 
+    //Announce connection status to relay server if it's there
+    announceConnectionStatusToRelayServer();
+
     //Update residual states that normally update by events
     queryBatteryState();
 }
@@ -198,7 +233,12 @@ void CelluloBluetooth::socketDisconnected(){
         connectionStatus = CelluloBluetoothEnums::ConnectionStatusDisconnected;
         emit connectionStatusChanged();
     }
-    if(autoConnect)
+
+    //Announce connection status to relay server if it's there
+    announceConnectionStatusToRelayServer();
+
+    //Reconnect if autoConnect
+    if(autoConnect && relayClient == NULL)
         openSocket();
 }
 
@@ -210,6 +250,15 @@ void CelluloBluetooth::socketDataArrived(){
         //Load byte and check end of packet
         if(recvPacket.loadEventByte(message[i]))
             processResponse();
+}
+
+void CelluloBluetooth::announceConnectionStatusToRelayServer(){
+    if(relayServer != NULL){
+        sendPacket.clear();
+        sendPacket.setEventPacketType(CelluloBluetoothPacket::EventPacketTypeAnnounceConnectionStatus);
+        sendPacket.load((quint8)connectionStatus);
+        relayServer->sendToClient(macAddr, sendPacket);
+    }
 }
 
 void CelluloBluetooth::processResponse(){

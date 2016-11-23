@@ -26,7 +26,7 @@
 
 #include <QBluetoothUuid>
 
-CelluloBluetoothRelayServer::CelluloBluetoothRelayServer(QQuickItem* parent):
+CelluloBluetoothRelayServer::CelluloBluetoothRelayServer(QQuickItem* parent) :
     QQuickItem(parent),
     server(QBluetoothServiceInfo::RfcommProtocol, this)
 {
@@ -43,7 +43,7 @@ CelluloBluetoothRelayServer::~CelluloBluetoothRelayServer(){
     disconnectClient();
 }
 
-bool CelluloBluetoothRelayServer::isListening() const{
+bool CelluloBluetoothRelayServer::isListening() const {
     return server.isListening();
 }
 
@@ -72,6 +72,7 @@ void CelluloBluetoothRelayServer::addRobot(CelluloBluetooth* robot){
     if(!robots.contains(robot)){
         robots.append(robot);
         robot->setRelayServer(this);
+        robot->announceConnectionStatusToRelayServer();
     }
 }
 
@@ -85,6 +86,10 @@ void CelluloBluetoothRelayServer::addClient(){
                 [=](QBluetoothSocket::SocketError error){ qDebug() << "CelluloBluetoothRelayServer clientSocket error: " << error; });
 
         setListening(false);
+
+        for(CelluloBluetooth* robot : robots)
+            robot->announceConnectionStatusToRelayServer();
+
         emit clientConnected();
     }
 
@@ -137,15 +142,16 @@ void CelluloBluetoothRelayServer::incomingClientData(){
 }
 
 void CelluloBluetoothRelayServer::processClientPacket(){
+    CelluloBluetoothPacket::CmdPacketType packetType = clientPacket.getCmdPacketType();
 
     //Set target robot command
-    if(clientPacket.getCmdPacketType() == CelluloBluetoothPacket::CmdPacketTypeSetAddress){
+    if(packetType == CelluloBluetoothPacket::CmdPacketTypeSetAddress){
         quint8 fifthOctet = clientPacket.unloadUInt8();
         quint8 sixthOctet = clientPacket.unloadUInt8();
         QString suffix = QString::number(fifthOctet, 16) + ":" + QString::number(sixthOctet, 16);
 
         int newRobot = -1;
-        for(int i=0;i<robots.size();i++)
+        for(int i=0; i<robots.size(); i++)
             if(robots[i]->getMacAddr().endsWith(suffix, Qt::CaseInsensitive)){
                 newRobot = i;
                 break;
@@ -160,6 +166,25 @@ void CelluloBluetoothRelayServer::processClientPacket(){
     //Some other command but no robot selected yet
     else if(currentRobot < 0)
         qWarning() << "CelluloBluetoothRelayServer::processClientPacket(): Received command packet but no robot is chosen yet, CmdPacketTypeSetAddress must be sent first. Dropping this packet.";
+
+    //Connect/disconnect command
+    else if(packetType == CelluloBluetoothPacket::CmdPacketTypeSetConnectionStatus){
+        CelluloBluetoothEnums::ConnectionStatus status = (CelluloBluetoothEnums::ConnectionStatus)clientPacket.unloadUInt8();
+
+        switch(status){
+            case CelluloBluetoothEnums::ConnectionStatusConnected:
+                robots[currentRobot]->connectToServer();
+                break;
+
+            case CelluloBluetoothEnums::ConnectionStatusDisconnected:
+                robots[currentRobot]->disconnectFromServer();
+                break;
+
+            default:
+                qWarning() << "CelluloBluetoothRelayServer::processClientPacket(): Invalid argument to CmdPacketTypeSetAddress packet.";
+                break;
+        }
+    }
 
     //Some other command and there is already a target robot
     else{
