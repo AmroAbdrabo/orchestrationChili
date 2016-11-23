@@ -37,12 +37,24 @@ ApplicationWindow {
         "00:06:66:74:48:A7"
     ]
 
-    ToastManager{ id: toast }
+    property string clientAddress: "Not connected"
 
     CelluloBluetoothRelayServer{
         id: server
 
         listen: true
+
+        onClientConnected: window.clientAddress = getClientAddress()
+        onClientDisconnected: {
+            window.clientAddress = "Not connected";
+            listen = true;
+        }
+    }
+
+    BluetoothLocalDevice{
+        id: localDevice
+
+        Component.onCompleted: powerOn()
     }
 
     ScrollView {
@@ -55,13 +67,17 @@ ApplicationWindow {
             anchors.verticalCenter: parent.verticalCenter
             spacing: 5
 
+            Text{
+                text: "Cellulo Relay Server"
+                font.pointSize: 20
+            }
+
+            Text{
+                text: "Local address: " + localDevice.address + "\n" + (server.listen ? "Listening" : "Connected") + "\nClient address: " + window.clientAddress
+            }
+
             Repeater{
                 model: 6
-
-                Text{
-                    text: "Cellulo Relay Server"
-                    anchors.verticalCenter: parent.verticalCenter
-                }
 
                 Row{
                     CelluloBluetooth{
