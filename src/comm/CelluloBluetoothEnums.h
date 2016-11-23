@@ -46,12 +46,7 @@ public:
     /**
      * @brief Bluetooth connection status
      */
-    enum ConnectionStatus {
-        ConnectionStatusDisconnected = 0, ///< Idle and not connected
-        ConnectionStatusConnecting,       ///< Actively trying to connect
-        ConnectionStatusConnected,        ///< Connected
-        ConnectionStatusNumElements
-    };
+    CONNECTION_STATUS_ENUM_SHARED;
     Q_ENUM(ConnectionStatus)
     CELLULO_ENUM_DECL(ConnectionStatus)
 

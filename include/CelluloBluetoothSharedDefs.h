@@ -33,6 +33,16 @@
 #define DOTS_GRID_SPACING 0.508f      ///< Average distance between two grid lines in localization dots grid
 
 /**
+ * @brief Connection status, not used by the robot but passed around between relay clients and servers
+ */
+#define CONNECTION_STATUS_ENUM_SHARED enum ConnectionStatus { \
+        ConnectionStatusDisconnected = 0, /** Idle and not connected */ \
+        ConnectionStatusConnecting = 1,   /** Actively trying to connect */ \
+        ConnectionStatusConnected = 2,    /** Connected */ \
+        ConnectionStatusNumElements \
+}
+
+/**
  * @brief Battery states
  */
 #define BATTERY_STATE_ENUM_SHARED enum BatteryState { \
@@ -126,7 +136,8 @@
         CmdPacketTypeSetGoalPolyBezierAligned,       /** Same as CmdPacketTypeSetGoalPolyBezier while keeping orientation aligned to curve */ \
         CmdPacketTypeReset,                          /** Request reset */ \
         CmdPacketTypeShutdown,                       /** Request shutdown */ \
-        CmdPacketTypeSetAddress,                     /** Set address of all following packets (only last 2 octets are sent) */ \
+        CmdPacketTypeSetAddress,                     /** Set address of all following packets (only last 2 octets are sent, only used by relay clients/servers) */ \
+        CmdPacketTypeSetConnectionStatus,            /** Set connection status of the robot on the server (only used by relay clients) */ \
         CmdPacketTypeNumElements, \
 }
 
@@ -166,7 +177,8 @@
         "Q",  /** CmdPacketTypeSetGoalPolyBezierAligned */ \
         "R",  /** CmdPacketTypeReset */ \
         "S",  /** CmdPacketTypeShutdown */ \
-        "@"   /** CmdPacketTypeSetAddress */ \
+        "@",  /** CmdPacketTypeSetAddress */ \
+        "!"   /** CmdPacketTypeSetConnectionStatus */ \
 }
 
 /*
@@ -205,29 +217,31 @@
         2 + 2 + 2,         /** CmdPacketTypeSetGoalPolyBezierAligned: uint16 v, uint16 theta, uint16 w */ \
         0,                 /** CmdPacketTypeReset */ \
         0,                 /** CmdPacketTypeShutdown */ \
-        1 + 1              /** CmdPacketTypeSetAddress: uint8 fifthOctet, uint8 sixthOctet */ \
+        1 + 1,             /** CmdPacketTypeSetAddress: uint8 fifthOctet, uint8 sixthOctet */ \
+        1                  /** CmdPacketTypeSetConnectionStatus: uint8 status */ \
 }
 
 /**
  * @brief Robot to app message types
  */
 #define EVENT_PACKET_TYPE_ENUM_SHARED enum EventPacketType { \
-        EventPacketTypeBootComplete = 0,       /** Boot completed after reset */ \
-        EventPacketTypeShuttingDown,           /** About to shut down */ \
-        EventPacketTypeLowBattery,             /** Battery is low, about to shut down */ \
-        EventPacketTypeBatteryStateChanged,    /** Battery state is changed */ \
-        EventPacketTypeTouchBegan,             /** Key was touched */ \
-        EventPacketTypeTouchLongPressed,       /** Key was touched for a time */ \
-        EventPacketTypeTouchReleased,          /** Key was released */ \
-        EventPacketTypeGestureChanged,         /** Robot was held/released (only works when gesture detection is enabled) */ \
-        EventPacketTypePoseChanged,            /** Pose changed */ \
-        EventPacketTypePoseChangedTimestamped, /** Pose changed, timestamp attached to message */ \
-        EventPacketTypeKidnapChanged,          /** Kidnap state changed */ \
-        EventPacketTypeTrackingGoalReached,    /** Pose/position/angle tracking goal reached */ \
-        EventPacketTypeAcknowledged,           /** Acknowledged */ \
-        EventPacketTypeFrameLine,              /** Camera frame line is sent */ \
-        EventPacketTypeDebug,                  /** Debug message */ \
-        EventPacketTypeSetAddress,             /** Specify address of all following packets (only last 2 octets are sent) */ \
+        EventPacketTypeBootComplete = 0,         /** Boot completed after reset */ \
+        EventPacketTypeShuttingDown,             /** About to shut down */ \
+        EventPacketTypeLowBattery,               /** Battery is low, about to shut down */ \
+        EventPacketTypeBatteryStateChanged,      /** Battery state is changed */ \
+        EventPacketTypeTouchBegan,               /** Key was touched */ \
+        EventPacketTypeTouchLongPressed,         /** Key was touched for a time */ \
+        EventPacketTypeTouchReleased,            /** Key was released */ \
+        EventPacketTypeGestureChanged,           /** Robot was held/released (only works when gesture detection is enabled) */ \
+        EventPacketTypePoseChanged,              /** Pose changed */ \
+        EventPacketTypePoseChangedTimestamped,   /** Pose changed, timestamp attached to message */ \
+        EventPacketTypeKidnapChanged,            /** Kidnap state changed */ \
+        EventPacketTypeTrackingGoalReached,      /** Pose/position/angle tracking goal reached */ \
+        EventPacketTypeAcknowledged,             /** Acknowledged */ \
+        EventPacketTypeFrameLine,                /** Camera frame line is sent */ \
+        EventPacketTypeDebug,                    /** Debug message */ \
+        EventPacketTypeSetAddress,               /** Specify address of all following packets (only last 2 octets are sent, only used by relay clients/servers) */ \
+        EventPacketTypeAnnounceConnectionStatus, /** Announce connection status of the robot (only used by relay servers) */ \
         EventPacketTypeNumElements \
 }
 
@@ -250,7 +264,8 @@
         "A", /** EventPacketTypeAcknowledged */ \
         "C", /** EventPacketTypeFrameLine */ \
         "E", /** EventPacketTypeDebug */ \
-        "@"  /** EventPacketTypeSetAddress */ \
+        "@", /** EventPacketTypeSetAddress */ \
+        "!"  /** EventPacketTypeAnnounceConnectionStatus */ \
 }
 
 /**
@@ -272,7 +287,8 @@
         0,                    /** EventPacketTypeAcknowledged */ \
         2 + IMG_WIDTH_SHARED, /** EventPacketTypeFrameLine: uint16 currentLineIndex, IMG_WIDTH*uint8 grayscalePixel */ \
         8,                    /** EventPacketTypeDebug */ \
-        1 + 1                 /** EventPacketTypeSetAddress */ \
+        1 + 1,                /** EventPacketTypeSetAddress */ \
+        1                     /** EventPacketTypeAnnounceConnectionStatus: uint8 status */ \
 }
 
 #endif // CELLULOBLUETOOTHSHAREDDEFS_H
