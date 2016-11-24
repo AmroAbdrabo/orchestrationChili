@@ -43,6 +43,7 @@ ApplicationWindow {
         id: server
 
         listen: true
+        broadcastPeriod: 1000
 
         onClientConnected: window.clientAddress = getClientAddress()
         onClientDisconnected: {

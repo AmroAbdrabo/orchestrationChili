@@ -63,8 +63,16 @@ CelluloBluetoothPacket::CelluloBluetoothPacket(){
     clear();
 }
 
-CelluloBluetoothPacket::~CelluloBluetoothPacket(){
+CelluloBluetoothPacket::CelluloBluetoothPacket(CelluloBluetoothPacket const& other){
+    cmdPacketType = other.cmdPacketType;
+    eventPacketType = other.eventPacketType;
+    receiveStatus = other.receiveStatus;
+    receiveBytesRemaining = other.receiveBytesRemaining;
+    payload = other.payload;
+    unloadIndex = other.unloadIndex;
 }
+
+CelluloBluetoothPacket::~CelluloBluetoothPacket(){ }
 
 void CelluloBluetoothPacket::setCmdPacketType(CmdPacketType type){
     cmdPacketType = type;

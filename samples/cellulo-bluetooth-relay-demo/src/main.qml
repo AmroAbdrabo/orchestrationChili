@@ -99,6 +99,15 @@ ApplicationWindow {
         }
 
         Button{
+            text: "shutdown"
+
+            onClicked: {
+                robot1.shutdown();
+                robot2.shutdown();
+            }
+        }
+
+        Button{
             text: "setperiod"
 
             onClicked: {

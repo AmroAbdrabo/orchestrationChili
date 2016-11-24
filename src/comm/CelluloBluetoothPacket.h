@@ -55,6 +55,13 @@ public:
     CelluloBluetoothPacket();
 
     /**
+     * @brief Creates a new Cellulo Bluetooth message identical to the other
+     *
+     * @param other Packet to copy
+     */
+    CelluloBluetoothPacket(CelluloBluetoothPacket const& other);
+
+    /**
      * @brief Destroys this Cellulo Bluetooth message
      */
     virtual ~CelluloBluetoothPacket();

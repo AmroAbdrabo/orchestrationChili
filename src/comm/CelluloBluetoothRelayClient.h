@@ -41,7 +41,7 @@ class CelluloBluetoothRelayClient : public QQuickItem {
 
     Q_PROPERTY(QString serverAddress READ getServerAddress WRITE setServerAddress NOTIFY serverAddressChanged)
 
-friend class CelluloBluetooth;
+    friend class CelluloBluetooth;
 
 public:
 
@@ -137,18 +137,18 @@ private:
      */
     void sendToServerNow(QString macAddr, CelluloBluetoothPacket const& packet);
 
-    QString serverAddress;               ///< Server's MAC address
-    QString uuid;                        ///< Service uuid to connect to on the server
+    QString serverAddress;                                 ///< Server's MAC address
+    QString uuid;                                          ///< Service uuid to connect to on the server
 
-    QBluetoothSocket serverSocket;       ///< The low level socket
-    CelluloBluetoothPacket serverPacket; ///< Server's incoming packet
+    QBluetoothSocket serverSocket;                         ///< The low level socket
+    CelluloBluetoothPacket serverPacket;                   ///< Server's incoming packet
 
-    int currentRobot;                    ///< Current robot index to relay messages to, set by a CmdPacketTypeSetAddress
-    QList<CelluloBluetooth*> robots;     ///< List of robots to relay to/from
+    int currentRobot;                                      ///< Current robot index to relay messages to, set by a CmdPacketTypeSetAddress
+    QList<CelluloBluetooth*> robots;                       ///< List of robots to relay to/from
 
-    QString lastMacAddr;                 ///< MAC address of the last CmdPacketTypeSetAddress packet sent to the server
+    QString lastMacAddr;                                   ///< MAC address of the last CmdPacketTypeSetAddress packet sent to the server
 
-    //QList<QQueue<CelluloBluetoothPacket> > serverPackets;    ///< Packets going to all robots, to send to the server
+    QList<QQueue<CelluloBluetoothPacket*>*> serverPackets; ///< Packets going to all robots, to send to the server
 
 };
 
