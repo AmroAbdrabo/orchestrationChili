@@ -40,7 +40,7 @@ class CelluloBluetoothRelayServer : public QQuickItem {
 
     Q_PROPERTY(bool listen READ isListening WRITE setListening NOTIFY listeningChanged)
 
-friend class CelluloBluetooth;
+    friend class CelluloBluetooth;
 
 public:
 
@@ -140,16 +140,26 @@ private:
      */
     void sendToClient(QString macAddr, CelluloBluetoothPacket const& packet);
 
-    QString uuid;                                           ///< Service uuid
-    QString name;                                           ///< Service name
-    QBluetoothServer server;                                ///< The QBluetoothServer object to wrap
-    QBluetoothServiceInfo service;                          ///< Service that is opened by listen()
+    /**
+     * @brief Relays the packet from the robot to the client
+     *
+     * @param macAddr Full MAC address of the target robot on the client
+     * @param packet The packet to relay
+     */
+    void sendToClientNow(QString macAddr, CelluloBluetoothPacket const& packet);
 
-    QBluetoothSocket* clientSocket;                         ///< Bluetooth socket connected to the client
-    CelluloBluetoothPacket clientPacket;                    ///< Client's incoming packet
+    QString uuid;                           ///< Service uuid
+    QString name;                           ///< Service name
+    QBluetoothServer server;                ///< The QBluetoothServer object to wrap
+    QBluetoothServiceInfo service;          ///< Service that is opened by listen()
 
-    int currentRobot;                                       ///< Current robot index to relay messages to, set by a CmdPacketTypeSetAddress
-    QList<CelluloBluetooth*> robots;                        ///< List of robots to relay to/from
+    QBluetoothSocket* clientSocket;         ///< Bluetooth socket connected to the client
+    CelluloBluetoothPacket clientPacket;    ///< Client's incoming packet
+
+    int currentRobot;                       ///< Current robot index to relay messages to, set by a CmdPacketTypeSetAddress
+    QList<CelluloBluetooth*> robots;        ///< List of robots to relay to/from
+
+    QString lastMacAddr;                    ///< MAC address of the last EventPacketTypeSetAddress packet sent to the server
 
     //QList<QQueue<CelluloBluetoothPacket> > clientPackets;   ///< Packets coming from all robots, to be sent to the client
 

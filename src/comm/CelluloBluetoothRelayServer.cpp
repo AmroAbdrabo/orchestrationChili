@@ -30,6 +30,7 @@ CelluloBluetoothRelayServer::CelluloBluetoothRelayServer(QQuickItem* parent) :
     QQuickItem(parent),
     server(QBluetoothServiceInfo::RfcommProtocol, this)
 {
+    lastMacAddr = "";
     currentRobot = -1;
     clientSocket = NULL;
     uuid = "{00001101-0000-1000-8000-00805F9B34FB}";
@@ -87,6 +88,8 @@ void CelluloBluetoothRelayServer::addClient(){
 
         setListening(false);
 
+        lastMacAddr = "";
+
         for(CelluloBluetooth* robot : robots)
             robot->announceConnectionStatusToRelayServer();
 
@@ -113,6 +116,8 @@ void CelluloBluetoothRelayServer::deleteClient(){
         disconnect(clientSocket, SIGNAL(readyRead()), this, SLOT(incomingClientData()));
         disconnect(clientSocket, SIGNAL(disconnected()), this, SLOT(deleteClient()));
 
+        lastMacAddr = "";
+
         clientSocket->deleteLater();
         clientSocket = NULL;
         emit clientDisconnected();
@@ -123,6 +128,8 @@ void CelluloBluetoothRelayServer::disconnectClient(){
     if(clientSocket != NULL){
         disconnect(clientSocket, SIGNAL(readyRead()), this, SLOT(incomingClientData()));
         disconnect(clientSocket, SIGNAL(disconnected()), this, SLOT(deleteClient()));
+
+        lastMacAddr = "";
 
         connect(clientSocket, SIGNAL(disconnected()), clientSocket, SLOT(deleteLater()));
         clientSocket->close();
@@ -188,9 +195,9 @@ void CelluloBluetoothRelayServer::processClientPacket(){
 
     //Some other command and there is already a target robot
     else{
-        //QUEUE OR IMMEDIATE SEND
-
         robots[currentRobot]->sendCommand(clientPacket);
+
+        //TODO: CONSIDER SOME KIND OF OPTIONAL CONGESTION CONTROL HERE AS OPPOSED TO IMMEDIATE SEND
     }
 
     clientPacket.clear();
@@ -199,22 +206,33 @@ void CelluloBluetoothRelayServer::processClientPacket(){
 void CelluloBluetoothRelayServer::sendToClient(QString macAddr, CelluloBluetoothPacket const& packet){
 
     //IMMEDIATE SEND FOR NOW
+    sendToClientNow(macAddr, packet);
+}
+
+void CelluloBluetoothRelayServer::sendToClientNow(QString macAddr, CelluloBluetoothPacket const& packet){
     if(clientSocket != NULL){
-        QStringList octets = macAddr.split(':');
-        if(octets.size() < 2){
-            qWarning() << "CelluloBluetoothRelayServer::sendToClient(): Provided MAC address is in the wrong format.";
-            return;
+
+        //Send MAC address only if another robot is targeted
+        if(lastMacAddr != macAddr){
+            QStringList octets = macAddr.split(':');
+            if(octets.size() < 2){
+                qWarning() << "CelluloBluetoothRelayServer::sendToClient(): Provided MAC address is in the wrong format.";
+                return;
+            }
+
+            quint8 fifthOctet = (quint8)(octets[octets.size() - 2].toUInt(NULL, 16));
+            quint8 sixthOctet = (quint8)(octets[octets.size() - 1].toUInt(NULL, 16));
+
+            CelluloBluetoothPacket setAddressPacket;
+            setAddressPacket.setEventPacketType(CelluloBluetoothPacket::EventPacketTypeSetAddress);
+            setAddressPacket.load(fifthOctet);
+            setAddressPacket.load(sixthOctet);
+            clientSocket->write(setAddressPacket.getEventSendData());
+
+            lastMacAddr = macAddr;
         }
 
-        quint8 fifthOctet = (quint8)(octets[octets.size() - 2].toUInt(NULL, 16));
-        quint8 sixthOctet = (quint8)(octets[octets.size() - 1].toUInt(NULL, 16));
-
-        CelluloBluetoothPacket setAddressPacket;
-        setAddressPacket.setEventPacketType(CelluloBluetoothPacket::EventPacketTypeSetAddress);
-        setAddressPacket.load(fifthOctet);
-        setAddressPacket.load(sixthOctet);
-        clientSocket->write(setAddressPacket.getEventSendData());
-
+        //Send actual packet
         clientSocket->write(packet.getEventSendData());
     }
     else

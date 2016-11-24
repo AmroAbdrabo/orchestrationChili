@@ -113,12 +113,19 @@ void CelluloBluetooth::setAutoConnect(bool autoConnect){
 }
 
 void CelluloBluetooth::setRelayClient(CelluloBluetoothRelayClient* relayClient){
-    disconnectFromServer();
-    this->relayClient = relayClient;
+    if(relayServer == NULL){
+        disconnectFromServer();
+        this->relayClient = relayClient;
+    }
+    else
+        qWarning() << "CelluloBluetooth::setRelayClient(): Cannot set relay client, this object already belongs to a relay server.";
 }
 
 void CelluloBluetooth::setRelayServer(CelluloBluetoothRelayServer* relayServer){
-    this->relayServer = relayServer;
+    if(relayClient == NULL)
+        this->relayServer = relayServer;
+    else
+        qWarning() << "CelluloBluetooth::setRelayServer(): Cannot set relay server, this object already belongs to a relay client.";
 }
 
 void CelluloBluetooth::refreshConnection(){

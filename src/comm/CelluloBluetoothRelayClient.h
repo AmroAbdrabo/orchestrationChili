@@ -129,6 +129,14 @@ private:
      */
     void sendToServer(QString macAddr, CelluloBluetoothPacket const& packet);
 
+    /**
+     * @brief Relays the packet from the robot to the server immediately
+     *
+     * @param macAddr Full MAC address of the target robot on the server
+     * @param packet The packet to relay
+     */
+    void sendToServerNow(QString macAddr, CelluloBluetoothPacket const& packet);
+
     QString serverAddress;               ///< Server's MAC address
     QString uuid;                        ///< Service uuid to connect to on the server
 
@@ -137,6 +145,8 @@ private:
 
     int currentRobot;                    ///< Current robot index to relay messages to, set by a CmdPacketTypeSetAddress
     QList<CelluloBluetooth*> robots;     ///< List of robots to relay to/from
+
+    QString lastMacAddr;                 ///< MAC address of the last CmdPacketTypeSetAddress packet sent to the server
 
     //QList<QQueue<CelluloBluetoothPacket> > serverPackets;    ///< Packets going to all robots, to send to the server
 

@@ -28,6 +28,7 @@ CelluloBluetoothRelayClient::CelluloBluetoothRelayClient(QQuickItem* parent) :
     QQuickItem(parent),
     serverSocket(QBluetoothServiceInfo::RfcommProtocol, this)
 {
+    lastMacAddr = "";
     currentRobot = -1;
     serverAddress = "00:00:00:00:00:00";
     uuid = "{00001101-0000-1000-8000-00805F9B34FB}";
@@ -55,10 +56,12 @@ void CelluloBluetoothRelayClient::setServerAddress(QString serverAddress){
 }
 
 void CelluloBluetoothRelayClient::connectToServer(){
+    lastMacAddr = "";
     serverSocket.connectToService(QBluetoothAddress(serverAddress), QBluetoothUuid(uuid));
 }
 
 void CelluloBluetoothRelayClient::disconnectFromServer(){
+    lastMacAddr = "";
     serverSocket.disconnectFromService();
 }
 
@@ -115,12 +118,8 @@ void CelluloBluetoothRelayClient::processServerPacket(){
     }
 
     //Some other command and there is already a target robot
-    else{
-
-        //IMMEDIATE SEND FOR NOW
-
+    else
         robots[currentRobot]->processResponse(serverPacket);
-    }
 
     serverPacket.clear();
 }
@@ -129,20 +128,31 @@ void CelluloBluetoothRelayClient::sendToServer(QString macAddr, CelluloBluetooth
 
     //IMMEDIATE SEND FOR NOW
 
-    QStringList octets = macAddr.split(':');
-    if(octets.size() < 2){
-        qWarning() << "CelluloBluetoothRelayClient::sendToServer(): Provided MAC address is in the wrong format.";
-        return;
+    sendToServerNow(macAddr, packet);
+}
+
+void CelluloBluetoothRelayClient::sendToServerNow(QString macAddr, CelluloBluetoothPacket const& packet){
+
+    //Send MAC address only if another robot is targeted
+    if(lastMacAddr != macAddr){
+        QStringList octets = macAddr.split(':');
+        if(octets.size() < 2){
+            qWarning() << "CelluloBluetoothRelayClient::sendToServer(): Provided MAC address is in the wrong format.";
+            return;
+        }
+
+        quint8 fifthOctet = (quint8)(octets[octets.size() - 2].toUInt(NULL, 16));
+        quint8 sixthOctet = (quint8)(octets[octets.size() - 1].toUInt(NULL, 16));
+
+        CelluloBluetoothPacket setAddressPacket;
+        setAddressPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeSetAddress);
+        setAddressPacket.load(fifthOctet);
+        setAddressPacket.load(sixthOctet);
+        serverSocket.write(setAddressPacket.getCmdSendData());
+
+        lastMacAddr = macAddr;
     }
 
-    quint8 fifthOctet = (quint8)(octets[octets.size() - 2].toUInt(NULL, 16));
-    quint8 sixthOctet = (quint8)(octets[octets.size() - 1].toUInt(NULL, 16));
-
-    CelluloBluetoothPacket setAddressPacket;
-    setAddressPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeSetAddress);
-    setAddressPacket.load(fifthOctet);
-    setAddressPacket.load(sixthOctet);
-    serverSocket.write(setAddressPacket.getCmdSendData());
-
+    //Send actual packet
     serverSocket.write(packet.getCmdSendData());
 }
