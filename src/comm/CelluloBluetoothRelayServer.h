@@ -27,6 +27,7 @@
 
 #include <QQuickItem>
 #include <QBluetoothServer>
+#include <QTimer>
 
 #include "CelluloBluetoothPacket.h"
 #include "CelluloBluetooth.h"

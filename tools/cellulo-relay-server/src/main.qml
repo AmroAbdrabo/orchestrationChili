@@ -43,7 +43,6 @@ ApplicationWindow {
         id: server
 
         listen: true
-        broadcastPeriod: 1000
 
         onClientConnected: window.clientAddress = getClientAddress()
         onClientDisconnected: {
@@ -88,6 +87,24 @@ ApplicationWindow {
                     "Local address: " + localDevice.address + "\n" +
                     (server.listen ? "Listening..." : (localDevice.hostMode === BluetoothLocalDeviceEnums.HostModePoweredOff ? "Powering on Bluetooth..." : "Connected")) + "\n" +
                     "Client address: " + window.clientAddress
+            }
+
+            Row{
+                Text{
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: "Broadcast period in ms (set 0 to relay immediately): "
+                }
+                TextField{
+                    id: broadcastPeriodField
+                    anchors.verticalCenter: parent.verticalCenter
+                    inputMethodHints: Qt.ImhFormattedNumbersOnly
+                    text: "0"
+                }
+                Button{
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: "Set"
+                    onClicked: server.broadcastPeriod = parseFloat(broadcastPeriodField.text)
+                }
             }
 
             Repeater{

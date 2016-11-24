@@ -63,16 +63,18 @@ CelluloBluetoothPacket::CelluloBluetoothPacket(){
     clear();
 }
 
-CelluloBluetoothPacket::CelluloBluetoothPacket(CelluloBluetoothPacket const& other){
-    cmdPacketType = other.cmdPacketType;
-    eventPacketType = other.eventPacketType;
-    receiveStatus = other.receiveStatus;
-    receiveBytesRemaining = other.receiveBytesRemaining;
-    payload = other.payload;
-    unloadIndex = other.unloadIndex;
-}
-
 CelluloBluetoothPacket::~CelluloBluetoothPacket(){ }
+
+CelluloBluetoothPacket* CelluloBluetoothPacket::clone() const {
+    CelluloBluetoothPacket* newPacket = new CelluloBluetoothPacket();
+    newPacket->cmdPacketType = cmdPacketType;
+    newPacket->eventPacketType = eventPacketType;
+    newPacket->receiveStatus = receiveStatus;
+    newPacket->receiveBytesRemaining = receiveBytesRemaining;
+    newPacket->unloadIndex = unloadIndex;
+    newPacket->payload.append(payload.data(), payload.size());
+    return newPacket;
+}
 
 void CelluloBluetoothPacket::setCmdPacketType(CmdPacketType type){
     cmdPacketType = type;

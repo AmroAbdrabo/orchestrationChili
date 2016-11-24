@@ -38,6 +38,9 @@ CelluloBluetoothRelayClient::CelluloBluetoothRelayClient(QQuickItem* parent) :
     connect(&serverSocket, static_cast<void (QBluetoothSocket::*)(QBluetoothSocket::SocketError)>(&QBluetoothSocket::error),
             [=](QBluetoothSocket::SocketError error){ qDebug() << "CelluloBluetoothRelayClient serverSocket error: " << error; });
     connect(&serverSocket, SIGNAL(readyRead()), this, SLOT(incomingServerData()));
+
+    broadcastPeriod = 0;
+    connect(&broadcastTimer, SIGNAL(timeout()), this, SLOT(broadcastToServer()));
 }
 
 CelluloBluetoothRelayClient::~CelluloBluetoothRelayClient(){
@@ -55,6 +58,24 @@ void CelluloBluetoothRelayClient::setServerAddress(QString serverAddress){
     }
 }
 
+void CelluloBluetoothRelayClient::setBroadcastPeriod(qreal broadcastPeriod){
+    if(this->broadcastPeriod != broadcastPeriod){
+        this->broadcastPeriod = broadcastPeriod;
+
+        if(broadcastPeriod == 0){
+            broadcastTimer.stop();
+            broadcastToServer();
+        }
+        else{
+            broadcastTimer.stop();
+            broadcastTimer.setInterval(broadcastPeriod);
+            broadcastTimer.start();
+        }
+
+        emit broadcastPeriodChanged();
+    }
+}
+
 void CelluloBluetoothRelayClient::connectToServer(){
     lastMacAddr = "";
     serverSocket.connectToService(QBluetoothAddress(serverAddress), QBluetoothUuid(uuid));
@@ -68,6 +89,7 @@ void CelluloBluetoothRelayClient::disconnectFromServer(){
 void CelluloBluetoothRelayClient::addRobot(CelluloBluetooth* robot){
     if(!robots.contains(robot)){
         robots.append(robot);
+        serverPackets.append(new QQueue<CelluloBluetoothPacket*>());
         robot->setRelayClient(this);
     }
 }
@@ -126,9 +148,20 @@ void CelluloBluetoothRelayClient::processServerPacket(){
 
 void CelluloBluetoothRelayClient::sendToServer(QString macAddr, CelluloBluetoothPacket const& packet){
 
-    //IMMEDIATE SEND FOR NOW
+    //Immediate send
+    if(broadcastPeriod <= 0)
+        sendToServerNow(macAddr, packet);
 
-    sendToServerNow(macAddr, packet);
+    //Queue for sending on broadcast
+    else{
+        for(int i=0; i<robots.size(); i++)
+            if(robots[i]->macAddr == macAddr){
+                serverPackets[i]->enqueue(packet.clone());
+                return;
+            }
+
+        qWarning() << "CelluloBluetoothRelayClient::sendToServer(): Provided MAC address does not match any in the robot list.";
+    }
 }
 
 void CelluloBluetoothRelayClient::sendToServerNow(QString macAddr, CelluloBluetoothPacket const& packet){
@@ -155,4 +188,15 @@ void CelluloBluetoothRelayClient::sendToServerNow(QString macAddr, CelluloBlueto
 
     //Send actual packet
     serverSocket.write(packet.getCmdSendData());
+}
+
+void CelluloBluetoothRelayClient::broadcastToServer(){
+    for(int i=0;i<robots.size();i++){
+        QString macAddr = robots[i]->macAddr;
+        while(!serverPackets[i]->isEmpty()){
+            CelluloBluetoothPacket* packet = serverPackets[i]->dequeue();
+            sendToServerNow(macAddr, *packet);
+            delete packet;
+        }
+    }
 }

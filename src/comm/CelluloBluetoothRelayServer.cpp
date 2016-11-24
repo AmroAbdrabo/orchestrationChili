@@ -235,7 +235,7 @@ void CelluloBluetoothRelayServer::sendToClient(QString macAddr, CelluloBluetooth
     else{
         for(int i=0;i<robots.size();i++)
             if(robots[i]->macAddr == macAddr){
-                clientPackets[i]->enqueue(new CelluloBluetoothPacket(packet));
+                clientPackets[i]->enqueue(packet.clone());
                 return;
             }
 

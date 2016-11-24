@@ -42,6 +42,7 @@ ApplicationWindow {
     CelluloBluetoothRelayClient{
         id: client
 
+        broadcastPeriod: 1000
         serverAddress: "C0:11:73:34:D0:B2"
 
         Component.onCompleted: connectToServer()
