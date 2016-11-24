@@ -49,6 +49,14 @@ ApplicationWindow {
             window.clientAddress = "Not connected";
             listen = true;
         }
+
+        Component.onCompleted: {
+            var cachedPeriod = parseFloat(QMLCache.read("broadcastPeriod"));
+            if(!isNaN(cachedPeriod)){
+                broadcastPeriod = cachedPeriod;
+                broadcastPeriodField.text = cachedPeriod + "";
+            }
+        }
     }
 
     BluetoothLocalDevice{
@@ -103,7 +111,13 @@ ApplicationWindow {
                 Button{
                     anchors.verticalCenter: parent.verticalCenter
                     text: "Set"
-                    onClicked: server.broadcastPeriod = parseFloat(broadcastPeriodField.text)
+                    onClicked: {
+                        var newPeriod = parseFloat(broadcastPeriodField.text);
+                        if(!isNaN(newPeriod)){
+                            server.broadcastPeriod = newPeriod;
+                            QMLCache.write("broadcastPeriod", newPeriod + "");
+                        }
+                    }
                 }
             }
 
