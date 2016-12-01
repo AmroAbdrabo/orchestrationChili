@@ -111,7 +111,7 @@ void CelluloBluetoothRelayClient::processServerPacket(){
     if(packetType == CelluloBluetoothPacket::EventPacketTypeSetAddress){
         quint8 fifthOctet = serverPacket.unloadUInt8();
         quint8 sixthOctet = serverPacket.unloadUInt8();
-        QString suffix = QString::number(fifthOctet, 16) + ":" + QString::number(sixthOctet, 16);
+        QString suffix = (fifthOctet <= 0xF ? "0" : "") + QString::number(fifthOctet, 16) + ":" + (sixthOctet <= 0xF ? "0" : "") + QString::number(sixthOctet, 16);
 
         int newRobot = -1;
         for(int i=0; i<robots.size(); i++)
