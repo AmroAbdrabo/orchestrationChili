@@ -27,8 +27,6 @@
 #include <QQmlEngine>
 #include <qqml.h>
 
-#include "comm/BluetoothLocalDevice.h"
-#include "comm/BluetoothLocalDeviceEnums.h"
 #include "comm/CelluloBluetooth.h"
 #include "comm/CelluloBluetoothRelayClient.h"
 #include "comm/CelluloBluetoothRelayServer.h"
@@ -54,14 +52,6 @@
 #include "util/lang/TranslationTool.h"
 
 void CelluloPlugin::registerTypes(const char *uri){
-    qmlRegisterType<BluetoothLocalDevice>(uri, 1, 0, "BluetoothLocalDevice");
-    qmlRegisterSingletonType<BluetoothLocalDeviceEnums>(uri, 1, 0, "BluetoothLocalDeviceEnums",
-                                                    [] (QQmlEngine* qmlEngine, QJSEngine* jsEngine)->QObject* {
-                                                        Q_UNUSED(qmlEngine)
-                                                        Q_UNUSED(jsEngine)
-                                                        return new BluetoothLocalDeviceEnums();
-                                                    });
-
     qmlRegisterType<CelluloBluetooth>(uri, 1, 0, "CelluloBluetooth");
     qmlRegisterType<CelluloBluetoothRelayClient>(uri, 1, 0, "CelluloBluetoothRelayClient");
     qmlRegisterType<CelluloBluetoothRelayServer>(uri, 1, 0, "CelluloBluetoothRelayServer");

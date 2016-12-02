@@ -2,10 +2,10 @@ QT += qml quick bluetooth
 
 CONFIG += qt plugin c++11 nostrip
 
+LIBS += -lbluetooth
+
 HEADERS += \
     src/CelluloPlugin.h \
-    src/comm/BluetoothLocalDevice.h \
-    src/comm/BluetoothLocalDeviceEnums.h \
     src/comm/CelluloBluetooth.h \
     src/comm/CelluloBluetoothRelayServer.h \
     src/comm/CelluloBluetoothRelayClient.h \
@@ -34,8 +34,6 @@ HEADERS += \
 
 SOURCES += \
     src/CelluloPlugin.cpp \
-    src/comm/BluetoothLocalDevice.cpp \
-    src/comm/BluetoothLocalDeviceEnums.cpp \
     src/comm/CelluloBluetooth.cpp \
     src/comm/CelluloBluetoothRelayServer.cpp \
     src/comm/CelluloBluetoothRelayClient.cpp \

@@ -27,6 +27,11 @@
 #include <QBluetoothDeviceInfo>
 #include <time.h>
 
+
+#include <sys/socket.h>
+#include <bluetooth/bluetooth.h>
+#include <bluetooth/rfcomm.h>
+
 QByteArray CelluloBluetooth::frameBuffer;
 
 CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) : CelluloZoneClient(parent){
@@ -180,6 +185,17 @@ void CelluloBluetooth::connectToServer(){
         connect(socket, SIGNAL(disconnected()), this, SLOT(socketDisconnected()));
         connect(socket, static_cast<void (QBluetoothSocket::*)(QBluetoothSocket::SocketError)>(&QBluetoothSocket::error),
                 [=](QBluetoothSocket::SocketError error){ qDebug() << "CelluloBluetooth socket error: " << error; });
+
+        struct sockaddr_rc loc_addr;
+        int socketDescriptor = ::socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
+        qDebug() << "socket returned: " << socketDescriptor;
+        loc_addr.rc_family = AF_BLUETOOTH;
+        qDebug() << "str2ba returned: " << str2ba("C8:F7:33:D7:62:51", &(loc_addr.rc_bdaddr)); //"5C:F3:70:7C:71:0D"
+        qDebug() << "rc_channel: " << loc_addr.rc_channel;
+        //loc_addr.rc_channel = (uint8_t) 1;
+        qDebug() << "bind returned: " << bind(socketDescriptor, (struct sockaddr*)&loc_addr, sizeof(loc_addr));
+
+        qDebug() << "set socket desc returned: " << socket->setSocketDescriptor(socketDescriptor, QBluetoothServiceInfo::RfcommProtocol, QBluetoothSocket::UnconnectedState);
 
         openSocket();
     }
