@@ -15,7 +15,7 @@ ApplicationWindow {
     function em(x){ return Math.round(x*TextSingleton.font.pixelSize); }
 
     property bool mobile: Qt.platform.os === "android"
-    property real gWidth: mobile ? Screen.width : 640
+    property real gWidth: mobile ? Screen.width : 800
     width: gWidth
     height: mobile ? Screen.desktopAvailableHeight : 0.7*Screen.height
 
@@ -53,7 +53,10 @@ ApplicationWindow {
                         "00:06:66:74:46:60",
                         "00:06:66:74:48:A7"
                     ]
-                    onConnectRequested: robotComm.macAddr = selectedAddress
+                    onConnectRequested: {
+                        robotComm.localAdapterMacAddr = selectedLocalAdapterAddress;
+                        robotComm.macAddr = selectedAddress;
+                    }
                     onDisconnectRequested: robotComm.disconnectFromServer()
                     connectionStatus: robotComm.connectionStatus
                 }
