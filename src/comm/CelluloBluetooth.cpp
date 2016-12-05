@@ -28,6 +28,7 @@
 #include <time.h>
 
 #ifdef BT_MULTIADAPTER_SUPPORT
+    #include <unistd.h>
     #include <sys/socket.h>
     #include <bluetooth/bluetooth.h>
     #include <bluetooth/rfcomm.h>
@@ -114,17 +115,17 @@ void CelluloBluetooth::setMacAddr(QString macAddr){
 
 void CelluloBluetooth::setLocalAdapterMacAddr(QString localAdapterMacAddr){
     #ifndef BT_MULTIADAPTER_SUPPORT
-        Q_UNUSED(localAdapterMacAddr);
-        qWarning() << "CelluloBluetooth::setLocalAdapterMacAddr(): Only works on Linux and requires qml-cellulo to be built with bluez. Try installing libbluetooth-dev.";
+    Q_UNUSED(localAdapterMacAddr);
+    qWarning() << "CelluloBluetooth::setLocalAdapterMacAddr(): Only works on Linux and requires qml-cellulo to be built with bluez. Try installing libbluetooth-dev.";
     #else
-        if(localAdapterMacAddr != this->localAdapterMacAddr){
-            bool wasDisconnected = connectionStatus == CelluloBluetoothEnums::ConnectionStatusDisconnected;
-            disconnectFromServer();
-            this->localAdapterMacAddr = localAdapterMacAddr;
-            emit localAdapterMacAddrChanged();
-            if(autoConnect && !wasDisconnected)
-                connectToServer();
-        }
+    if(localAdapterMacAddr != this->localAdapterMacAddr){
+        bool wasDisconnected = connectionStatus == CelluloBluetoothEnums::ConnectionStatusDisconnected;
+        disconnectFromServer();
+        this->localAdapterMacAddr = localAdapterMacAddr;
+        emit localAdapterMacAddrChanged();
+        if(autoConnect && !wasDisconnected)
+            connectToServer();
+    }
     #endif
 }
 
@@ -161,15 +162,17 @@ void CelluloBluetooth::refreshConnection(){
 
 void CelluloBluetooth::openSocket(){
     if(socket != NULL){
-        qDebug() << "CelluloBluetooth::openSocket(): " << macAddr << "...";
+        qDebug() << "CelluloBluetooth::openSocket(): To " << macAddr <<
+            (localAdapterMacAddr != "" ? " over local adapter " + localAdapterMacAddr : "") <<
+            "...";
 
         socket->connectToService(
             QBluetoothAddress(macAddr),
-                #ifdef ANDROID
+            #ifdef ANDROID
             QBluetoothUuid(QBluetoothUuid::SerialPort)
-                #else
-            1     //TODO: Temporary fix until https://bugreports.qt.io/browse/QTBUG-53041 is fixed
-                #endif
+            #else
+            1         //TODO: Temporary fix until https://bugreports.qt.io/browse/QTBUG-53041 is fixed
+            #endif
             );
         btConnectTimeoutTimer.start();
         if(connectionStatus != CelluloBluetoothEnums::ConnectionStatusConnecting){
@@ -190,7 +193,7 @@ void CelluloBluetooth::connectToServer(){
 
         sendPacket.clear();
         sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeSetConnectionStatus);
-        sendPacket.load((quint8)CelluloBluetoothEnums::ConnectionStatusConnected);
+        sendPacket.load((quint8) CelluloBluetoothEnums::ConnectionStatusConnected);
         sendCommand();
     }
 
@@ -198,34 +201,43 @@ void CelluloBluetooth::connectToServer(){
     else if(socket == NULL){
         socket = new QBluetoothSocket(QBluetoothServiceInfo::RfcommProtocol);
 
+        #ifdef BT_MULTIADAPTER_SUPPORT
+        if(!localAdapterMacAddr.isEmpty()){
+            struct sockaddr_rc localAddrStruct;
+            localAddrStruct.rc_family = AF_BLUETOOTH;
+            //qDebug() << "rc_channel: " << localAddrStruct.rc_channel;
+            //localAddrStruct.rc_channel = (uint8_t) 1;
+
+            int socketDescriptor = ::socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
+            if(socketDescriptor < 0){
+                qCritical() << "CelluloBluetooth::connectToServer(): While trying to set local adapter, socket() returned -1, error: " << strerror(errno);
+                btConnectTimeoutTimer.start();
+                return;
+            }
+
+            str2ba(localAdapterMacAddr.toStdString().c_str(), &(localAddrStruct.rc_bdaddr)); //Always returns 0, does not return error
+
+            if(bind(socketDescriptor, (struct sockaddr*)(&localAddrStruct), sizeof(localAddrStruct)) < 0){
+                qCritical() << "CelluloBluetooth::connectToServer(): While trying to set local adapter, bind() returned -1, errno: " << strerror(errno);
+                ::close(socketDescriptor);
+                btConnectTimeoutTimer.start();
+                return;
+            }
+
+            if(!socket->setSocketDescriptor(socketDescriptor, QBluetoothServiceInfo::RfcommProtocol, QBluetoothSocket::UnconnectedState)){
+                qCritical() << "CelluloBluetooth::connectToServer(): While trying to set local adapter, QBluetoothSocket::setSocketDescriptor() failed.";
+                ::close(socketDescriptor);
+                btConnectTimeoutTimer.start();
+                return;
+            }
+        }
+        #endif
+
         connect(socket, SIGNAL(readyRead()), this, SLOT(socketDataArrived()));
         connect(socket, SIGNAL(connected()), this, SLOT(socketConnected()));
         connect(socket, SIGNAL(disconnected()), this, SLOT(socketDisconnected()));
         connect(socket, static_cast<void (QBluetoothSocket::*)(QBluetoothSocket::SocketError)>(&QBluetoothSocket::error),
                 [=](QBluetoothSocket::SocketError error){ qDebug() << "CelluloBluetooth socket error: " << error; });
-
-        #ifdef BT_MULTIADAPTER_SUPPORT
-            if(!localAdapterMacAddr.isEmpty()){
-                struct sockaddr_rc loc_addr;
-                loc_addr.rc_family = AF_BLUETOOTH;
-
-                int socketDescriptor = ::socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
-                if(socketDescriptor < 0)
-                    qCritical() << "CelluloBluetooth::connectToServer(): While trying to set local adapter, socket() returned -1, error: " << strerror(errno);
-                else{
-                    str2ba(localAdapterMacAddr.toStdString().c_str(), &(loc_addr.rc_bdaddr));
-                    //qDebug() << "rc_channel: " << loc_addr.rc_channel;
-                    //loc_addr.rc_channel = (uint8_t) 1;
-                    if(bind(socketDescriptor, (struct sockaddr*)&loc_addr, sizeof(loc_addr)) < 0)
-                        qCritical() << "CelluloBluetooth::connectToServer(): While trying to set local adapter, bind() returned -1, errno: " << strerror(errno);
-                    else{
-                        if(!socket->setSocketDescriptor(socketDescriptor, QBluetoothServiceInfo::RfcommProtocol, QBluetoothSocket::UnconnectedState))
-                            qCritical() << "CelluloBluetooth::connectToServer(): While trying to set local adapter, QBluetoothSocket::setSocketDescriptor() failed.";
-                        qDebug() << "CelluloBluetooth::connectToServer(): Local adapter MAC address is " << localAdapterMacAddr;
-                    }
-                }
-            }
-        #endif
 
         openSocket();
     }
@@ -239,7 +251,7 @@ void CelluloBluetooth::disconnectFromServer(){
 
         sendPacket.clear();
         sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeSetConnectionStatus);
-        sendPacket.load((quint8)CelluloBluetoothEnums::ConnectionStatusDisconnected);
+        sendPacket.load((quint8) CelluloBluetoothEnums::ConnectionStatusDisconnected);
         sendCommand();
     }
 
