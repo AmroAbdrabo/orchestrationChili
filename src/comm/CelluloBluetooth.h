@@ -51,6 +51,7 @@ class CelluloBluetooth : public CelluloZoneClient {
     Q_OBJECT
     /* *INDENT-ON* */
 
+    Q_PROPERTY(QString localAdapterMacAddr WRITE setLocalAdapterMacAddr READ getLocalAdapterMacAddr NOTIFY localAdapterMacAddrChanged)
     Q_PROPERTY(bool autoConnect WRITE setAutoConnect READ getAutoConnect NOTIFY autoConnectChanged)
     Q_PROPERTY(QString macAddr WRITE setMacAddr READ getMacAddr NOTIFY macAddrChanged)
     Q_PROPERTY(CelluloBluetoothEnums::ConnectionStatus connectionStatus READ getConnectionStatus NOTIFY connectionStatusChanged)
@@ -91,6 +92,13 @@ public:
      * @brief Destroys this Cellulo robot communicator
      */
     virtual ~CelluloBluetooth();
+
+    /**
+     * @brief Get the chosen local adapter's MAC address
+     *
+     * @return Chosen local adapter's MAC address, empty string if using default adapter
+     */
+    QString getLocalAdapterMacAddr() const { return localAdapterMacAddr; }
 
     /**
      * @brief Gets whether the socket tries to reconnect when it drops, connects when mac address is set
@@ -213,6 +221,15 @@ private slots:
     void refreshConnection();
 
 public slots:
+
+    /**
+     * @brief Sets the MAC address of the local adapter to use when connecting to the robot
+     *
+     * Only works on Linux; must be built with bluez.
+     *
+     * @param localAdapterMacAddr MAC address of the local adapter, must exist; set to empty string to connect with default adapter
+     */
+    void setLocalAdapterMacAddr(QString localAdapterMacAddr);
 
     /**
      * @brief Sets whether the socket will try to reconnect when it drops, connects when mac address is set
@@ -512,6 +529,11 @@ public slots:
 signals:
 
     /**
+     * @brief Emitted when the desired local adapter changes
+     */
+    void localAdapterMacAddrChanged();
+
+    /**
      * @brief Auto connect strategy changed
      */
     void autoConnectChanged();
@@ -606,6 +628,7 @@ signals:
 
 private:
 
+    QString localAdapterMacAddr;                              ///< MAC address of the local adapter to use when connecting to the robot, only works on Linux
     bool autoConnect;                                         ///< Whether the socket will try to reconnect every time it drops, will connect when mac address is set
 
     CelluloBluetoothPacket sendPacket;                        ///< Outgoing packet

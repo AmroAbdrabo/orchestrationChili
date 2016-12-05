@@ -11,3 +11,4 @@
 -std=c++11
 -Wall
 -Wunused-parameter
+-DBT_MULTIADAPTER_SUPPORT

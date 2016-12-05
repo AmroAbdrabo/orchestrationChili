@@ -2,7 +2,18 @@ QT += qml quick bluetooth
 
 CONFIG += qt plugin c++11 nostrip
 
-LIBS += -lbluetooth
+linux:!android {
+    CONFIG += link_pkgconfig
+
+    packagesExist(bluez){
+        PKGCONFIG += bluez
+        DEFINES += BT_MULTIADAPTER_SUPPORT
+        message("BlueZ found, enabling Bluetooth multiadapter support.")
+    }
+    else{
+        message("BlueZ not found, disabling Bluetooth multiadapter support.")
+    }
+}
 
 HEADERS += \
     src/CelluloPlugin.h \

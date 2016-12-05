@@ -27,16 +27,18 @@
 #include <QBluetoothDeviceInfo>
 #include <time.h>
 
-
-#include <sys/socket.h>
-#include <bluetooth/bluetooth.h>
-#include <bluetooth/rfcomm.h>
+#ifdef BT_MULTIADAPTER_SUPPORT
+    #include <sys/socket.h>
+    #include <bluetooth/bluetooth.h>
+    #include <bluetooth/rfcomm.h>
+#endif
 
 QByteArray CelluloBluetooth::frameBuffer;
 
 CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) : CelluloZoneClient(parent){
     connect(this, SIGNAL(poseChanged(qreal,qreal,qreal)), this, SIGNAL(poseChanged_inherited()));
 
+    localAdapterMacAddr = "";
     autoConnect = true;
     socket = NULL;
 
@@ -108,6 +110,22 @@ void CelluloBluetooth::setMacAddr(QString macAddr){
     }
     if(!macAddr.isEmpty() && autoConnect)
         connectToServer();
+}
+
+void CelluloBluetooth::setLocalAdapterMacAddr(QString localAdapterMacAddr){
+    #ifndef BT_MULTIADAPTER_SUPPORT
+        Q_UNUSED(localAdapterMacAddr);
+        qWarning() << "CelluloBluetooth::setLocalAdapterMacAddr(): Only works on Linux and requires qml-cellulo to be built with bluez. Try installing libbluetooth-dev.";
+    #else
+        if(localAdapterMacAddr != this->localAdapterMacAddr){
+            bool wasDisconnected = connectionStatus == CelluloBluetoothEnums::ConnectionStatusDisconnected;
+            disconnectFromServer();
+            this->localAdapterMacAddr = localAdapterMacAddr;
+            emit localAdapterMacAddrChanged();
+            if(autoConnect && !wasDisconnected)
+                connectToServer();
+        }
+    #endif
 }
 
 void CelluloBluetooth::setAutoConnect(bool autoConnect){
@@ -186,16 +204,28 @@ void CelluloBluetooth::connectToServer(){
         connect(socket, static_cast<void (QBluetoothSocket::*)(QBluetoothSocket::SocketError)>(&QBluetoothSocket::error),
                 [=](QBluetoothSocket::SocketError error){ qDebug() << "CelluloBluetooth socket error: " << error; });
 
-        struct sockaddr_rc loc_addr;
-        int socketDescriptor = ::socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
-        qDebug() << "socket returned: " << socketDescriptor;
-        loc_addr.rc_family = AF_BLUETOOTH;
-        qDebug() << "str2ba returned: " << str2ba("C8:F7:33:D7:62:51", &(loc_addr.rc_bdaddr)); //"5C:F3:70:7C:71:0D"
-        qDebug() << "rc_channel: " << loc_addr.rc_channel;
-        //loc_addr.rc_channel = (uint8_t) 1;
-        qDebug() << "bind returned: " << bind(socketDescriptor, (struct sockaddr*)&loc_addr, sizeof(loc_addr));
+        #ifdef BT_MULTIADAPTER_SUPPORT
+            if(!localAdapterMacAddr.isEmpty()){
+                struct sockaddr_rc loc_addr;
+                loc_addr.rc_family = AF_BLUETOOTH;
 
-        qDebug() << "set socket desc returned: " << socket->setSocketDescriptor(socketDescriptor, QBluetoothServiceInfo::RfcommProtocol, QBluetoothSocket::UnconnectedState);
+                int socketDescriptor = ::socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
+                if(socketDescriptor < 0)
+                    qCritical() << "CelluloBluetooth::connectToServer(): While trying to set local adapter, socket() returned -1, error: " << strerror(errno);
+                else{
+                    str2ba(localAdapterMacAddr.toStdString().c_str(), &(loc_addr.rc_bdaddr));
+                    //qDebug() << "rc_channel: " << loc_addr.rc_channel;
+                    //loc_addr.rc_channel = (uint8_t) 1;
+                    if(bind(socketDescriptor, (struct sockaddr*)&loc_addr, sizeof(loc_addr)) < 0)
+                        qCritical() << "CelluloBluetooth::connectToServer(): While trying to set local adapter, bind() returned -1, errno: " << strerror(errno);
+                    else{
+                        if(!socket->setSocketDescriptor(socketDescriptor, QBluetoothServiceInfo::RfcommProtocol, QBluetoothSocket::UnconnectedState))
+                            qCritical() << "CelluloBluetooth::connectToServer(): While trying to set local adapter, QBluetoothSocket::setSocketDescriptor() failed.";
+                        qDebug() << "CelluloBluetooth::connectToServer(): Local adapter MAC address is " << localAdapterMacAddr;
+                    }
+                }
+            }
+        #endif
 
         openSocket();
     }
