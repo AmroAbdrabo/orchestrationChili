@@ -44,7 +44,7 @@ CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) : CelluloZoneClient(paren
     socket = NULL;
 
     btConnectTimeoutTimer.setSingleShot(true);
-    btConnectTimeoutTimer.setInterval(BT_CONNECT_TIMEOUT_MILLIS);
+    qsrand(time(0));
     connect(&btConnectTimeoutTimer, SIGNAL(timeout()), this, SLOT(refreshConnection()));
 
     relayClient = NULL;
@@ -129,6 +129,11 @@ void CelluloBluetooth::setLocalAdapterMacAddr(QString localAdapterMacAddr){
     #endif
 }
 
+void CelluloBluetooth::startTimeoutTimer(int time, int pm){
+    btConnectTimeoutTimer.setInterval(time - pm + 2*(qrand() % pm));
+    btConnectTimeoutTimer.start();
+}
+
 void CelluloBluetooth::setAutoConnect(bool autoConnect){
     if(this->autoConnect != autoConnect){
         this->autoConnect = autoConnect;
@@ -174,7 +179,7 @@ void CelluloBluetooth::openSocket(){
             1         //TODO: Temporary fix until https://bugreports.qt.io/browse/QTBUG-53041 is fixed
             #endif
             );
-        btConnectTimeoutTimer.start();
+        startTimeoutTimer(BT_CONNECT_TIMEOUT_MILLIS, BT_CONNECT_TIMEOUT_MILLIS_PM);
         if(connectionStatus != CelluloBluetoothEnums::ConnectionStatusConnecting){
             connectionStatus = CelluloBluetoothEnums::ConnectionStatusConnecting;
             emit connectionStatusChanged();
@@ -211,7 +216,7 @@ void CelluloBluetooth::connectToServer(){
             int socketDescriptor = ::socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
             if(socketDescriptor < 0){
                 qCritical() << "CelluloBluetooth::connectToServer(): While trying to set local adapter, socket() returned -1, error: " << strerror(errno);
-                btConnectTimeoutTimer.start();
+                startTimeoutTimer(BT_BIND_FAIL_RECONNECT_MILLIS, BT_BIND_FAIL_RECONNECT_MILLIS_PM);
                 return;
             }
 
@@ -220,14 +225,14 @@ void CelluloBluetooth::connectToServer(){
             if(bind(socketDescriptor, (struct sockaddr*)(&localAddrStruct), sizeof(localAddrStruct)) < 0){
                 qCritical() << "CelluloBluetooth::connectToServer(): While trying to set local adapter, bind() returned -1, errno: " << strerror(errno);
                 ::close(socketDescriptor);
-                btConnectTimeoutTimer.start();
+                startTimeoutTimer(BT_BIND_FAIL_RECONNECT_MILLIS, BT_BIND_FAIL_RECONNECT_MILLIS_PM);
                 return;
             }
 
             if(!socket->setSocketDescriptor(socketDescriptor, QBluetoothServiceInfo::RfcommProtocol, QBluetoothSocket::UnconnectedState)){
                 qCritical() << "CelluloBluetooth::connectToServer(): While trying to set local adapter, QBluetoothSocket::setSocketDescriptor() failed.";
                 ::close(socketDescriptor);
-                btConnectTimeoutTimer.start();
+                startTimeoutTimer(BT_BIND_FAIL_RECONNECT_MILLIS, BT_BIND_FAIL_RECONNECT_MILLIS_PM);
                 return;
             }
         }

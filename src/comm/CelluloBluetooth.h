@@ -71,15 +71,18 @@ class CelluloBluetooth : public CelluloZoneClient {
 
     Q_PROPERTY(float cameraImageProgress READ getCameraImageProgress NOTIFY cameraImageProgressChanged)
 
-friend class CelluloBluetoothRelayServer;
-friend class CelluloBluetoothRelayClient;
+    friend class CelluloBluetoothRelayServer;
+    friend class CelluloBluetoothRelayClient;
 
 public:
 
-    static const int BT_CONNECT_TIMEOUT_MILLIS     = 30000;  ///< Will try to reconnect after this much time
-    static constexpr float FRAMERATE_SMOOTH_FACTOR = 0.99f;  ///< Smoothing factor for framerate, closer to 1.0 means less update
+    static const int BT_CONNECT_TIMEOUT_MILLIS = 30000;       ///< Will try to reconnect after this much time
+    static const int BT_CONNECT_TIMEOUT_MILLIS_PM = 5000;     ///< Variation in reconnect timeout
+    static const int BT_BIND_FAIL_RECONNECT_MILLIS = 5000;    ///< After local adapter binding fail, will try to reconnect after this much time
+    static const int BT_BIND_FAIL_RECONNECT_MILLIS_PM = 2500; ///< Variation in local adapter binding fail reconnect timeout
+    static constexpr float FRAMERATE_SMOOTH_FACTOR = 0.99f;   ///< Smoothing factor for framerate, closer to 1.0 means less update
 
-    static QByteArray frameBuffer;                           ///< Container for the received camera frame data
+    static QByteArray frameBuffer;                            ///< Container for the received camera frame data
 
     /**
      * @brief Creates a new Cellulo robot communicator
@@ -659,6 +662,14 @@ private:
      * @brief Resets properties of the robot to default
      */
     void resetProperties();
+
+    /**
+     * @brief Starts the connection timeout timer, sets the timer to (time +- pm) milliseconds
+     *
+     * @param time Mean time to wait in milliseconds
+     * @param pm Plus-minus time to wait in milliseconds
+     */
+    void startTimeoutTimer(int time, int pm);
 
     /**
      * @brief Sets the relay client
