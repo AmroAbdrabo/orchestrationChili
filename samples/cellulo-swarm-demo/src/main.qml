@@ -17,6 +17,11 @@ ApplicationWindow {
     readonly property int numRobots: 15
     property var robots: []
 
+    property real bcastPeriod: 100
+    property real bcastPeriodMin: 50
+    property real bcastPeriodMax: 200
+    property real vMu: 0.6
+
     Repeater{
         model: numRobots
 
@@ -28,15 +33,66 @@ ApplicationWindow {
 
             onConnectionStatusChanged: {
                 if(connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected){
-                    robot.setPoseBcastPeriod(100);
+                    robot.setPoseBcastPeriod(bcastPeriod);
                     robot.setCasualBackdriveAssistEnabled(true);
                     robot.clearHapticFeedback();
                     robot.clearTracking();
                 }
             }
 
+            property vector3d vxyw: Qt.vector3d(0,0,0)
+
+            property bool needsReset: true
+            property vector3d lastXYTheta: Qt.vector3d(0,0,0)
+            property real lastTime: 0
+
+            function calcVel(x, y, theta){
+                var newTime = (new Date()).getTime();
+                var deltaTime = newTime - lastTime;
+                var newXYTheta = Qt.vector3d(x,y,theta);
+
+
+                var newVxyw = newXYTheta.minus(lastXYTheta);
+                while(newVxyw.z <= -180)
+                    newVxyw.z += 360;
+                while(newVxyw.z > 180)
+                    newVxyw.z -= 360;
+
+                newVxyw = newVxyw.times(1000/deltaTime);
+                if(bcastPeriodMin < deltaTime && deltaTime < bcastPeriodMax){
+                    if(needsReset){
+                        vxyw = newVxyw;
+                        needsReset = false;
+                    }
+                    else{
+                        vxyw = vxyw.times(vMu).plus(newVxyw.times(1 - vMu));
+                    }
+                }
+                else if(bcastPeriodMax <= deltaTime){
+                    needsReset = true;
+                    vxyw = newVxyw;
+                }
+                else
+                    needsReset = true;
+
+                lastXYTheta = newXYTheta;
+                lastTime = newTime;
+            }
+
+            //property vector2d
+
+            function calcTrajGoal(){
+                var time = (new Date()).getTime();
+
+
+            }
+
             onPoseChanged: {
-                robot.setGoalVelocity(0,0,0);
+                calcVel(x,y,theta);
+
+                calcTrajGoal();
+
+                //calcCommand();
             }
         }
 
