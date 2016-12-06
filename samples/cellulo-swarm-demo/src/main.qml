@@ -20,7 +20,7 @@ ApplicationWindow {
     property real bcastPeriod: 100
     property real bcastPeriodMin: 50
     property real bcastPeriodMax: 200
-    property real vMu: 0.6
+    property real vMu: 0.8
 
     Repeater{
         model: numRobots
@@ -34,7 +34,7 @@ ApplicationWindow {
             onConnectionStatusChanged: {
                 if(connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected){
                     robot.setPoseBcastPeriod(bcastPeriod);
-                    robot.setCasualBackdriveAssistEnabled(true);
+                    robot.setCasualBackdriveAssistEnabled(false);
                     robot.clearHapticFeedback();
                     robot.clearTracking();
                 }
@@ -42,21 +42,26 @@ ApplicationWindow {
 
             property vector3d vxyw: Qt.vector3d(0,0,0)
 
+            readonly property real maxXYVel: 500
+            readonly property real maxW: 25
+
             property bool needsReset: true
             property vector3d lastXYTheta: Qt.vector3d(0,0,0)
             property real lastTime: 0
+
+            onKidnappedChanged: needsReset = true
 
             function calcVel(x, y, theta){
                 var newTime = (new Date()).getTime();
                 var deltaTime = newTime - lastTime;
                 var newXYTheta = Qt.vector3d(x,y,theta);
 
-
                 var newVxyw = newXYTheta.minus(lastXYTheta);
                 while(newVxyw.z <= -180)
                     newVxyw.z += 360;
                 while(newVxyw.z > 180)
                     newVxyw.z -= 360;
+                newVxyw.z = newVxyw.z*Math.PI/180;
 
                 newVxyw = newVxyw.times(1000/deltaTime);
                 if(bcastPeriodMin < deltaTime && deltaTime < bcastPeriodMax){
@@ -75,16 +80,119 @@ ApplicationWindow {
                 else
                     needsReset = true;
 
+                if(vxyw.x > maxXYVel)
+                    vxyw.x = maxXYVel;
+                else if(vxyw.x < -maxXYVel)
+                    vxyw.x = -maxXYVel;
+                if(vxyw.y > maxXYVel)
+                    vxyw.y = maxXYVel;
+                else if(vxyw.y < -maxXYVel)
+                    vxyw.y = -maxXYVel;
+                if(vxyw.z > maxW)
+                    vxyw.z = maxW;
+                else if(vxyw.z < -maxW)
+                    vxyw.z = -maxW;
+
                 lastXYTheta = newXYTheta;
                 lastTime = newTime;
             }
 
-            //property vector2d
+            property vector3d goalXYTheta: Qt.vector3d(0,0,0);
+            property vector3d goalVxyw: Qt.vector3d(0,0,0);
+
+            readonly property real trajEdge: 200
+            readonly property real trajDuration: 16000
+            readonly property real trajEdgeDuration: trajDuration/4
+            readonly property real trajLinearVel: trajEdge/trajEdgeDuration*1000
+            readonly property vector2d trajCorner: Qt.vector2d(600, 300);
 
             function calcTrajGoal(){
-                var time = (new Date()).getTime();
+                var time = (new Date()).getTime() % trajDuration;
+                var trajProgress = 0;
 
+                if(time < trajEdgeDuration){
+                    trajProgress = time/trajEdgeDuration;
+                    goalXYTheta = Qt.vector3d(trajCorner.x + trajEdge*trajProgress, trajCorner.y, 0);
+                    goalVxyw = Qt.vector3d(trajLinearVel, 0, 0);
+                }
+                else if(time < 2*trajEdgeDuration){
+                    time -= trajEdgeDuration;
+                    trajProgress = time/trajEdgeDuration;
+                    goalXYTheta = Qt.vector3d(trajCorner.x + trajEdge, trajCorner.y + trajEdge*trajProgress, 0);
+                    goalVxyw = Qt.vector3d(0, trajLinearVel, 0);
+                }
+                else if(time < 3*trajEdgeDuration){
+                    time -= 2*trajEdgeDuration;
+                    trajProgress = time/trajEdgeDuration;
+                    goalXYTheta = Qt.vector3d(trajCorner.x + trajEdge - trajEdge*trajProgress, trajCorner.y + trajEdge, 0);
+                    goalVxyw = Qt.vector3d(-trajLinearVel, 0, 0);
+                }
+                else{
+                    time -= 3*trajEdgeDuration;
+                    trajProgress = time/trajEdgeDuration;
+                    goalXYTheta = Qt.vector3d(trajCorner.x, trajCorner.y + trajEdge - trajEdge*trajProgress, 0);
+                    goalVxyw = Qt.vector3d(0, -trajLinearVel, 0);
+                }
+            }
 
+            property vector3d commandVxyw: Qt.vector3d(0,0,0)
+
+            readonly property vector3d kGoalVelXYW: Qt.vector3d(0.9,0.9,0.9)
+            readonly property vector3d kCommandXYTheta: Qt.vector3d(2,2,0.1)
+            readonly property vector3d kCommandVxyw: Qt.vector3d(0.2,0.2,0.2)
+
+            function calcCommandWithVel(){
+                var xythetaDiff = goalXYTheta.minus(Qt.vector3d(x,y,theta));
+                while(xythetaDiff.z > 180)
+                    xythetaDiff.z -= 360;
+                while(xythetaDiff.z <= -180)
+                    xythetaDiff.z += 360;
+                var Pxytheta = xythetaDiff.times(kCommandXYTheta);
+                var VxywDiff = goalVxyw.minus(vxyw);
+                var PVxyw = VxywDiff.times(kCommandVxyw);
+
+                commandVxyw = goalVxyw.times(kGoalVelXYW);
+                commandVxyw = commandVxyw.plus(Pxytheta);
+                commandVxyw = commandVxyw.plus(PVxyw);
+
+                if(commandVxyw.x > 200)
+                    commandVxyw.x = 200;
+                else if(commandVxyw.x < -200)
+                    commandVxyw.x = -200;
+                if(commandVxyw.y > 200)
+                    commandVxyw.y = 200;
+                else if(commandVxyw.y < -200)
+                    commandVxyw.y = -200;
+                if(commandVxyw.z > 10)
+                    commandVxyw.z = 10;
+                else if(commandVxyw.z < -10)
+                    commandVxyw.z = -10;
+            }
+
+            readonly property vector3d kCommandWithoutVelXYTheta: Qt.vector3d(5,5,0.1)
+
+            function calcCommandWithoutVel(){
+                var xythetaDiff = goalXYTheta.minus(Qt.vector3d(x,y,theta));
+                while(xythetaDiff.z > 180)
+                    xythetaDiff.z -= 360;
+                while(xythetaDiff.z <= -180)
+                    xythetaDiff.z += 360;
+                var Pxytheta = xythetaDiff.times(kCommandWithoutVelXYTheta);
+
+                commandVxyw = Pxytheta;
+
+                if(commandVxyw.x > 200)
+                    commandVxyw.x = 200;
+                else if(commandVxyw.x < -200)
+                    commandVxyw.x = -200;
+                if(commandVxyw.y > 200)
+                    commandVxyw.y = 200;
+                else if(commandVxyw.y < -200)
+                    commandVxyw.y = -200;
+                if(commandVxyw.z > 10)
+                    commandVxyw.z = 10;
+                else if(commandVxyw.z < -10)
+                    commandVxyw.z = -10;
             }
 
             onPoseChanged: {
@@ -92,7 +200,10 @@ ApplicationWindow {
 
                 calcTrajGoal();
 
-                //calcCommand();
+                calcCommandWithVel();
+                //calcCommandWithoutVel();
+
+                setGoalVelocity(commandVxyw.x, commandVxyw.y, commandVxyw.z);
             }
         }
 
@@ -193,6 +304,20 @@ ApplicationWindow {
                         rotation: robots[index].theta
                         x: robots[index].x*parent.scaleCoeff - width/2
                         y: robots[index].y*parent.scaleCoeff - height/2
+                        width: parent.physicalRobotWidth*parent.scaleCoeff
+                        fillMode: Image.PreserveAspectFit
+                    }
+                }
+
+                Repeater{
+                    model: numRobots
+
+                    Image{
+                        visible: robots[index].connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected
+                        source: "../assets/yellowHexagon.svg"
+                        rotation: robots[index].goalXYTheta.z
+                        x: robots[index].goalXYTheta.x*parent.scaleCoeff - width/2
+                        y: robots[index].goalXYTheta.y*parent.scaleCoeff - height/2
                         width: parent.physicalRobotWidth*parent.scaleCoeff
                         fillMode: Image.PreserveAspectFit
                     }
