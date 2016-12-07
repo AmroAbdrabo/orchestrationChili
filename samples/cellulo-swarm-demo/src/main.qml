@@ -50,12 +50,19 @@ ApplicationWindow {
                     robot.setCasualBackdriveAssistEnabled(false);
                     robot.clearHapticFeedback();
                     robot.clearTracking();
+                    robot.setExposureTime(0);
+                    robot.setGestureEnabled(true);
+                    robot.setLocomotionInteractivityMode(CelluloBluetoothEnums.LocomotionInteractivityModeNormal);
+                    robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll,"#050505",0);
+                    robot.setLEDResponseMode(CelluloBluetoothEnums.LEDResponseModeResponsiveHold);
                 }
 
                 recalcNumRobots();
             }
 
-            property vector3d vxyw: Qt.vector3d(0,0,0)
+            onGestureChanged: recalcTouchedRobots()
+
+            /*property vector3d vxyw: Qt.vector3d(0,0,0)
 
             readonly property real maxXYVel: 500
             readonly property real maxW: 25
@@ -110,10 +117,11 @@ ApplicationWindow {
 
                 lastXYTheta = newXYTheta;
                 lastTime = newTime;
-            }
+            }*/
 
             property vector3d goalXYTheta: Qt.vector3d(0,0,0);
-            property vector3d goalVxyw: Qt.vector3d(0,0,0);
+
+            /*property vector3d goalVxyw: Qt.vector3d(0,0,0);
 
             readonly property real trajEdge: 200
             readonly property real trajDuration: 16000
@@ -148,18 +156,25 @@ ApplicationWindow {
                     goalXYTheta = Qt.vector3d(trajCorner.x, trajCorner.y + trajEdge - trajEdge*trajProgress, 0);
                     goalVxyw = Qt.vector3d(0, -trajLinearVel, 0);
                 }
-            }
+            }*/
 
             function calcLatticeGoal(){
                 var myX = index % nearestSquareEdge;
                 var myY = (index - myX)/nearestSquareEdge;
+                var myVec = Qt.vector2d(myX*distSlider.dist, myY*distSlider.dist);
 
-                goalXYTheta = Qt.vector3d(trajCorner.x + myX*distSlider.dist, trajCorner.y + myY*distSlider.dist, 0);
+                var rotRad = latticePose.z*Math.PI/180;
+                var rotMat = [
+                            [Math.cos(rotRad), -Math.sin(rotRad)],
+                            [Math.sin(rotRad), Math.cos(rotRad)]
+                        ];
+
+                myVec = Qt.vector2d(rotMat[0][0]*myVec.x + rotMat[0][1]*myVec.y, rotMat[1][0]*myVec.x + rotMat[1][1]*myVec.y);
+
+                goalXYTheta = Qt.vector3d(latticePose.x + myVec.x, latticePose.y + myVec.y, latticePose.z);
             }
 
-            property vector3d commandVxyw: Qt.vector3d(0,0,0)
-
-            readonly property vector3d kGoalVelXYW: Qt.vector3d(0.9,0.9,0.9)
+            /*readonly property vector3d kGoalVelXYW: Qt.vector3d(0.9,0.9,0.9)
             readonly property vector3d kCommandXYTheta: Qt.vector3d(2,2,0.1)
             readonly property vector3d kCommandVxyw: Qt.vector3d(0.2,0.2,0.2)
 
@@ -189,7 +204,9 @@ ApplicationWindow {
                     commandVxyw.z = 10;
                 else if(commandVxyw.z < -10)
                     commandVxyw.z = -10;
-            }
+            }*/
+
+            property vector3d commandVxyw: Qt.vector3d(0,0,0)
 
             readonly property vector3d kCommandWithoutVelXYTheta: Qt.vector3d(5,5,0.1)
 
@@ -201,24 +218,65 @@ ApplicationWindow {
                     xythetaDiff.z += 360;
                 var Pxytheta = xythetaDiff.times(kCommandWithoutVelXYTheta);
 
-                commandVxyw = Pxytheta;
+                if(go.checked){
+                    commandVxyw = Pxytheta;
 
-                if(commandVxyw.x > 200)
-                    commandVxyw.x = 200;
-                else if(commandVxyw.x < -200)
-                    commandVxyw.x = -200;
-                if(commandVxyw.y > 200)
-                    commandVxyw.y = 200;
-                else if(commandVxyw.y < -200)
-                    commandVxyw.y = -200;
-                if(commandVxyw.z > 10)
-                    commandVxyw.z = 10;
-                else if(commandVxyw.z < -10)
-                    commandVxyw.z = -10;
+                    if(commandVxyw.x > 200)
+                        commandVxyw.x = 200;
+                    else if(commandVxyw.x < -200)
+                        commandVxyw.x = -200;
+                    if(commandVxyw.y > 200)
+                        commandVxyw.y = 200;
+                    else if(commandVxyw.y < -200)
+                        commandVxyw.y = -200;
+                    if(commandVxyw.z > 10)
+                        commandVxyw.z = 10;
+                    else if(commandVxyw.z < -10)
+                        commandVxyw.z = -10;
+                }
+                else
+                    commandVxyw = Qt.vector3d(0,0,0);
+            }
+
+            function calcUserInput(){
+                if(touchedRobot1 !== null){
+
+                    //"Resize"
+                    if(touchedRobot2 !== null){
+
+                    }
+
+                    //"Move"
+                    else{
+
+                        //If me
+                        if(touchedRobot1 === robot){
+                            var myX = index % nearestSquareEdge;
+                            var myY = (index - myX)/nearestSquareEdge;
+
+                            var latticeCornerPos = Qt.vector2d(-myX*distSlider.dist, -myY*distSlider.dist);
+                            var rotRad = theta*Math.PI/180;
+                            var rotMat = [
+                                        [Math.cos(rotRad), -Math.sin(rotRad)],
+                                        [Math.sin(rotRad), Math.cos(rotRad)]
+                                    ];
+                            latticeCornerPos = Qt.vector2d(
+                                        rotMat[0][0]*latticeCornerPos.x + rotMat[0][1]*latticeCornerPos.y,
+                                        rotMat[1][0]*latticeCornerPos.x + rotMat[1][1]*latticeCornerPos.y
+                                        );
+
+
+                            var newLatticePose = Qt.vector3d(x + latticeCornerPos.x, y + latticeCornerPos.y, theta);
+                            latticePose = newLatticePose;
+                        }
+                    }
+                }
             }
 
             onPoseChanged: {
                 //calcVel(x,y,theta);
+
+                calcUserInput();
 
                 //calcTrajGoal();
                 calcLatticeGoal();
@@ -235,6 +293,25 @@ ApplicationWindow {
             temp.push(item);
             robots = temp;
         }
+    }
+
+    property vector3d latticePose: Qt.vector3d(200, 200, 0)//angleSlider.angle)
+    property var touchedRobot1: null
+    property var touchedRobot2: null
+
+    function recalcTouchedRobots(){
+        touchedRobot1 = null;
+        touchedRobot2 = null;
+
+        for(var i=0;i<robots.length;i++)
+            if(robots[i].gesture === CelluloBluetoothEnums.GestureHold){
+                if(touchedRobot1 === null)
+                    touchedRobot1 = robots[i];
+                else{
+                    touchedRobot2 = robots[i];
+                    break;
+                }
+            }
     }
 
     //Visible items
@@ -288,10 +365,24 @@ ApplicationWindow {
                 }
             }
 
+            CheckBox{
+                id: go
+                text: "Go!"
+                checked: false
+            }
+
+            Text{ text: "distance:" }
             Slider{
                 id: distSlider
-
+                width: 200
                 property real dist: value*100 + 80
+            }
+
+            Text{ text: "angle:" }
+            Slider{
+                id: angleSlider
+                width: 200
+                property real angle: value*90
             }
         }
     }
