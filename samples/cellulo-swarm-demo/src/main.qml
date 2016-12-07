@@ -15,6 +15,19 @@ ApplicationWindow {
     minimumWidth: 200
 
     readonly property int numRobots: 15
+    property int currentNumRobots: 0
+
+    function recalcNumRobots(){
+        var ret = 0;
+        for(var i=0;i<robots.length;i++)
+            if(robots[i].connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected)
+                ret++;
+        currentNumRobots = ret;
+    }
+
+    property int nearestSquareEdge: Math.ceil(Math.sqrt(currentNumRobots))
+
+    onNearestSquareEdgeChanged: console.log(nearestSquareEdge)
     property var robots: []
 
     property real bcastPeriod: 100
@@ -38,6 +51,8 @@ ApplicationWindow {
                     robot.clearHapticFeedback();
                     robot.clearTracking();
                 }
+
+                recalcNumRobots();
             }
 
             property vector3d vxyw: Qt.vector3d(0,0,0)
@@ -135,6 +150,13 @@ ApplicationWindow {
                 }
             }
 
+            function calcLatticeGoal(){
+                var myX = index % nearestSquareEdge;
+                var myY = (index - myX)/nearestSquareEdge;
+
+                goalXYTheta = Qt.vector3d(trajCorner.x + myX*distSlider.dist, trajCorner.y + myY*distSlider.dist, 0);
+            }
+
             property vector3d commandVxyw: Qt.vector3d(0,0,0)
 
             readonly property vector3d kGoalVelXYW: Qt.vector3d(0.9,0.9,0.9)
@@ -196,12 +218,13 @@ ApplicationWindow {
             }
 
             onPoseChanged: {
-                calcVel(x,y,theta);
+                //calcVel(x,y,theta);
 
-                calcTrajGoal();
+                //calcTrajGoal();
+                calcLatticeGoal();
 
-                calcCommandWithVel();
-                //calcCommandWithoutVel();
+                //calcCommandWithVel();
+                calcCommandWithoutVel();
 
                 setGoalVelocity(commandVxyw.x, commandVxyw.y, commandVxyw.z);
             }
@@ -263,6 +286,12 @@ ApplicationWindow {
                         selectLocalAdapterAddress(QMLCache.read("robot" + index + "LocalAdapterMacAddr"));
                     }
                 }
+            }
+
+            Slider{
+                id: distSlider
+
+                property real dist: value*100 + 80
             }
         }
     }
