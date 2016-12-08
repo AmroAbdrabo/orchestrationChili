@@ -166,7 +166,7 @@ ApplicationWindow {
             function calcLatticeGoal(){
                 var myX = index % nearestSquareEdge;
                 var myY = (index - myX)/nearestSquareEdge;
-                var myVec = Qt.vector2d(myX*distSlider.dist, myY*distSlider.dist);
+                var myVec = Qt.vector2d(myX*latticeDist, myY*latticeDist);
 
                 var rotRad = latticePose.z*Math.PI/180;
                 var rotMat = [
@@ -246,37 +246,33 @@ ApplicationWindow {
             }
 
             function calcUserInput(){
-                if(touchedRobot1 !== null){
+                if(touchedRobot1 === robot){
 
-                    //"Resize"
-                    if(touchedRobot2 !== null){
+                    //Resize and rotate lattice according to the first and second held robot
+                    if(touchedRobot2 !== null)
+                        recalcResize();
 
-                    }
+                    //Rotate according to the first held robot
+                    else
+                        latticePose.z = theta;
 
-                    //"Move"
-                    else{
+                    //Move lattice according to the first held robot
+                    var myX = index % nearestSquareEdge;
+                    var myY = (index - myX)/nearestSquareEdge;
 
-                        //If me
-                        if(touchedRobot1 === robot){
-                            var myX = index % nearestSquareEdge;
-                            var myY = (index - myX)/nearestSquareEdge;
+                    var latticeCornerPos = Qt.vector2d(-myX*latticeDist, -myY*latticeDist);
+                    var rotRad = latticePose.z*Math.PI/180;
+                    var rotMat = [
+                                [Math.cos(rotRad), -Math.sin(rotRad)],
+                                [Math.sin(rotRad), Math.cos(rotRad)]
+                            ];
+                    latticeCornerPos = Qt.vector2d(
+                                rotMat[0][0]*latticeCornerPos.x + rotMat[0][1]*latticeCornerPos.y,
+                                rotMat[1][0]*latticeCornerPos.x + rotMat[1][1]*latticeCornerPos.y
+                                );
 
-                            var latticeCornerPos = Qt.vector2d(-myX*distSlider.dist, -myY*distSlider.dist);
-                            var rotRad = theta*Math.PI/180;
-                            var rotMat = [
-                                        [Math.cos(rotRad), -Math.sin(rotRad)],
-                                        [Math.sin(rotRad), Math.cos(rotRad)]
-                                    ];
-                            latticeCornerPos = Qt.vector2d(
-                                        rotMat[0][0]*latticeCornerPos.x + rotMat[0][1]*latticeCornerPos.y,
-                                        rotMat[1][0]*latticeCornerPos.x + rotMat[1][1]*latticeCornerPos.y
-                                        );
-
-
-                            var newLatticePose = Qt.vector3d(x + latticeCornerPos.x, y + latticeCornerPos.y, theta);
-                            latticePose = newLatticePose;
-                        }
-                    }
+                    latticePose.x = x + latticeCornerPos.x;
+                    latticePose.y = y + latticeCornerPos.y;
                 }
             }
 
@@ -302,9 +298,12 @@ ApplicationWindow {
         }
     }
 
-    property vector3d latticePose: Qt.vector3d(200, 500, 0)//angleSlider.angle)
+    property vector3d latticePose: Qt.vector3d(200, 500, 0)
+    property real latticeDist: 80
     property var touchedRobot1: null
     property var touchedRobot2: null
+    property int touchedRobot1Index: -1
+    property int touchedRobot2Index: -1
 
     function recalcTouchedRobots(){
         touchedRobot1 = null;
@@ -312,13 +311,34 @@ ApplicationWindow {
 
         for(var i=0;i<robots.length;i++)
             if(robots[i].gesture === CelluloBluetoothEnums.GestureHold){
-                if(touchedRobot1 === null)
+                if(touchedRobot1 === null){
                     touchedRobot1 = robots[i];
+                    touchedRobot1Index = i;
+                }
                 else{
                     touchedRobot2 = robots[i];
+                    touchedRobot2Index = i;
                     break;
                 }
             }
+    }
+
+    function recalcResize(){
+        var r1X = touchedRobot1Index % nearestSquareEdge;
+        var r1Y = (touchedRobot1Index - r1X)/nearestSquareEdge;
+        var r2X = touchedRobot2Index % nearestSquareEdge;
+        var r2Y = (touchedRobot2Index - r2X)/nearestSquareEdge;
+        var unitXDiff = r2X - r1X;
+        var unitYDiff = r2Y - r1Y;
+        var originalLatticeAngle = Math.atan2(unitYDiff, unitXDiff);
+        var unitDistance = Math.sqrt(unitXDiff*unitXDiff + unitYDiff*unitYDiff);
+
+        var yDiff = touchedRobot2.y - touchedRobot1.y;
+        var xDiff = touchedRobot2.x - touchedRobot1.x;
+        var angle = Math.atan2(yDiff, xDiff) - originalLatticeAngle;
+        latticePose.z = angle/Math.PI*180;
+
+        latticeDist = Math.sqrt(xDiff*xDiff + yDiff*yDiff)/unitDistance;
     }
 
     //Visible items
@@ -376,13 +396,6 @@ ApplicationWindow {
                 id: go
                 text: "Go!"
                 checked: false
-            }
-
-            Text{ text: "distance:" }
-            Slider{
-                id: distSlider
-                width: 200
-                property real dist: value*100 + 80
             }
         }
     }
