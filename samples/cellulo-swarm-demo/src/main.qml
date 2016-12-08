@@ -50,10 +50,11 @@ ApplicationWindow {
                 clearHapticFeedback();
                 clearTracking();
                 setExposureTime(0);
-                setGestureEnabled(true);
+                setGestureEnabled(false);
                 setLocomotionInteractivityMode(CelluloBluetoothEnums.LocomotionInteractivityModeNormal);
-                setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll,"#050505",0);
-                setLEDResponseMode(CelluloBluetoothEnums.LEDResponseModeResponsiveHold);
+                setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll,"#202020",0);
+                setLEDResponseMode(CelluloBluetoothEnums.LEDResponseModeResponsiveIndividual);
+                keys = [false, false, false, false, false, false];
             }
 
             onBootCompleted: init()
@@ -65,7 +66,24 @@ ApplicationWindow {
                 recalcNumRobots();
             }
 
-            onGestureChanged: recalcTouchedRobots()
+            onTouchBegan: {
+                keys[key] = true;
+                recalcTouchedRobots();
+            }
+
+            onTouchReleased: {
+                keys[key] = false;
+                recalcTouchedRobots();
+            }
+
+            property var keys: [false, false, false, false, false, false]
+
+            function anyKey(){
+                for(var i=0;i<6;i++)
+                    if(keys[i])
+                        return true;
+                return false;
+            }
 
             property vector3d vxyw: Qt.vector3d(0,0,0)
 
@@ -213,7 +231,7 @@ ApplicationWindow {
 
             property vector3d commandVxyw: Qt.vector3d(0,0,0)
 
-            readonly property vector3d kPCommandWithoutVelXYTheta: Qt.vector3d(3.0, 3.0, 0.06)
+            readonly property vector3d kPCommandWithoutVelXYTheta: Qt.vector3d(2.5, 2.5, 0.05)
             readonly property vector3d kDCommandWithoutVelXYTheta: Qt.vector3d(0.3, 0.3, 0.2)
 
             function calcCommandWithoutVel(){
@@ -305,22 +323,36 @@ ApplicationWindow {
     property int touchedRobot1Index: -1
     property int touchedRobot2Index: -1
 
+    function initTouched(robot){
+        robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "#202000", 0);
+        robot.setHapticBackdriveAssist(0.7, 0.7, 0.7);
+    }
+
+    function initReleased(robot){
+        robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "#202020", 0);
+        robot.setHapticBackdriveAssist(0,0,0);
+    }
+
     function recalcTouchedRobots(){
         touchedRobot1 = null;
         touchedRobot2 = null;
 
         for(var i=0;i<robots.length;i++)
-            if(robots[i].gesture === CelluloBluetoothEnums.GestureHold){
+            if(robots[i].anyKey()){
                 if(touchedRobot1 === null){
                     touchedRobot1 = robots[i];
                     touchedRobot1Index = i;
+                    initTouched(touchedRobot1);
                 }
                 else{
                     touchedRobot2 = robots[i];
                     touchedRobot2Index = i;
+                    initTouched(touchedRobot2);
                     break;
                 }
             }
+            else
+                initReleased(robots[i]);
     }
 
     function recalcResize(){
