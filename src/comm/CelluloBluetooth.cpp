@@ -400,7 +400,6 @@ void CelluloBluetooth::processResponse(CelluloBluetoothPacket& externalPacket){
                 x = externalPacket.unloadUInt32()*DOTS_GRID_SPACING/(float)GOAL_POSE_FACTOR_SHARED;
                 y = externalPacket.unloadUInt32()*DOTS_GRID_SPACING/(float)GOAL_POSE_FACTOR_SHARED;
                 theta = externalPacket.unloadUInt16()/(float)GOAL_POSE_FACTOR_SHARED;
-                emit poseChanged(x,y,theta);
 
                 unsigned int newTimestamp = externalPacket.unloadUInt32();
                 framerate =
@@ -408,6 +407,8 @@ void CelluloBluetooth::processResponse(CelluloBluetoothPacket& externalPacket){
                     (1.0 - FRAMERATE_SMOOTH_FACTOR)*1000/(newTimestamp - lastTimestamp);
                 lastTimestamp = newTimestamp;
                 emit timestampChanged();
+
+                emit poseChanged(x,y,theta);
 
                 if(kidnapped){
                     kidnapped = false;
