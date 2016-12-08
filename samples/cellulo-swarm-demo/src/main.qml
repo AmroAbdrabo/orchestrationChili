@@ -27,13 +27,12 @@ ApplicationWindow {
 
     property int nearestSquareEdge: Math.ceil(Math.sqrt(currentNumRobots))
 
-    onNearestSquareEdgeChanged: console.log(nearestSquareEdge)
     property var robots: []
 
     property real bcastPeriod: 100
     property real bcastPeriodMin: 50
     property real bcastPeriodMax: 200
-    property real vMu: 0.8
+    property real vMu: 0
 
     Repeater{
         model: numRobots
@@ -44,28 +43,34 @@ ApplicationWindow {
             macAddr: QMLCache.read("robot" + index + "MacAddr")
             localAdapterMacAddr: QMLCache.read("robot" + index + "LocalAdapterMacAddr")
 
+            function init(){
+                setPoseBcastPeriod(bcastPeriod);
+                setTimestampingEnabled(true);
+                setCasualBackdriveAssistEnabled(false);
+                clearHapticFeedback();
+                clearTracking();
+                setExposureTime(0);
+                setGestureEnabled(true);
+                setLocomotionInteractivityMode(CelluloBluetoothEnums.LocomotionInteractivityModeNormal);
+                setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll,"#050505",0);
+                setLEDResponseMode(CelluloBluetoothEnums.LEDResponseModeResponsiveHold);
+            }
+
+            onBootCompleted: init()
+
             onConnectionStatusChanged: {
-                if(connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected){
-                    robot.setPoseBcastPeriod(bcastPeriod);
-                    robot.setCasualBackdriveAssistEnabled(false);
-                    robot.clearHapticFeedback();
-                    robot.clearTracking();
-                    robot.setExposureTime(0);
-                    robot.setGestureEnabled(true);
-                    robot.setLocomotionInteractivityMode(CelluloBluetoothEnums.LocomotionInteractivityModeNormal);
-                    robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll,"#050505",0);
-                    robot.setLEDResponseMode(CelluloBluetoothEnums.LEDResponseModeResponsiveHold);
-                }
+                if(connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected)
+                    init();
 
                 recalcNumRobots();
             }
 
             onGestureChanged: recalcTouchedRobots()
 
-            /*property vector3d vxyw: Qt.vector3d(0,0,0)
+            property vector3d vxyw: Qt.vector3d(0,0,0)
 
-            readonly property real maxXYVel: 500
-            readonly property real maxW: 25
+            readonly property real maxXYVel: 1000//500
+            readonly property real maxW: 50//25
 
             property bool needsReset: true
             property vector3d lastXYTheta: Qt.vector3d(0,0,0)
@@ -73,8 +78,8 @@ ApplicationWindow {
 
             onKidnappedChanged: needsReset = true
 
-            function calcVel(x, y, theta){
-                var newTime = (new Date()).getTime();
+            function calcVel(){
+                var newTime = lastTimestamp;
                 var deltaTime = newTime - lastTime;
                 var newXYTheta = Qt.vector3d(x,y,theta);
 
@@ -117,7 +122,7 @@ ApplicationWindow {
 
                 lastXYTheta = newXYTheta;
                 lastTime = newTime;
-            }*/
+            }
 
             property vector3d goalXYTheta: Qt.vector3d(0,0,0);
 
@@ -208,7 +213,8 @@ ApplicationWindow {
 
             property vector3d commandVxyw: Qt.vector3d(0,0,0)
 
-            readonly property vector3d kCommandWithoutVelXYTheta: Qt.vector3d(5,5,0.1)
+            readonly property vector3d kPCommandWithoutVelXYTheta: Qt.vector3d(3.0, 3.0, 0.06)
+            readonly property vector3d kDCommandWithoutVelXYTheta: Qt.vector3d(0.3, 0.3, 0.2)
 
             function calcCommandWithoutVel(){
                 var xythetaDiff = goalXYTheta.minus(Qt.vector3d(x,y,theta));
@@ -216,10 +222,11 @@ ApplicationWindow {
                     xythetaDiff.z -= 360;
                 while(xythetaDiff.z <= -180)
                     xythetaDiff.z += 360;
-                var Pxytheta = xythetaDiff.times(kCommandWithoutVelXYTheta);
+                var Pxytheta = xythetaDiff.times(kPCommandWithoutVelXYTheta);
+                var Dxytheta = vxyw.times(-1).times(kDCommandWithoutVelXYTheta);
 
                 if(go.checked){
-                    commandVxyw = Pxytheta;
+                    commandVxyw = Pxytheta.plus(Dxytheta);
 
                     if(commandVxyw.x > 200)
                         commandVxyw.x = 200;
@@ -274,7 +281,7 @@ ApplicationWindow {
             }
 
             onPoseChanged: {
-                //calcVel(x,y,theta);
+                calcVel();
 
                 calcUserInput();
 
@@ -295,7 +302,7 @@ ApplicationWindow {
         }
     }
 
-    property vector3d latticePose: Qt.vector3d(200, 200, 0)//angleSlider.angle)
+    property vector3d latticePose: Qt.vector3d(200, 500, 0)//angleSlider.angle)
     property var touchedRobot1: null
     property var touchedRobot2: null
 
@@ -376,13 +383,6 @@ ApplicationWindow {
                 id: distSlider
                 width: 200
                 property real dist: value*100 + 80
-            }
-
-            Text{ text: "angle:" }
-            Slider{
-                id: angleSlider
-                width: 200
-                property real angle: value*90
             }
         }
     }
