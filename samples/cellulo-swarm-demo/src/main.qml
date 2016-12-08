@@ -234,16 +234,29 @@ ApplicationWindow {
             readonly property vector3d kPCommandWithoutVelXYTheta: Qt.vector3d(2.5, 2.5, 0.05)
             readonly property vector3d kDCommandWithoutVelXYTheta: Qt.vector3d(0.3, 0.3, 0.2)
 
-            function calcCommandWithoutVel(){
-                var xythetaDiff = goalXYTheta.minus(Qt.vector3d(x,y,theta));
-                while(xythetaDiff.z > 180)
-                    xythetaDiff.z -= 360;
-                while(xythetaDiff.z <= -180)
-                    xythetaDiff.z += 360;
-                var Pxytheta = xythetaDiff.times(kPCommandWithoutVelXYTheta);
-                var Dxytheta = vxyw.times(-1).times(kDCommandWithoutVelXYTheta);
+            readonly property vector3d smallkPCommandWithoutVelXYTheta: Qt.vector3d(0.1, 0.1, 0.002)
 
+            property bool reached: false
+
+            function calcCommandWithoutVel(){
                 if(go.checked){
+                    var xythetaDiff = goalXYTheta.minus(Qt.vector3d(x,y,theta));
+                    while(xythetaDiff.z > 180)
+                        xythetaDiff.z -= 360;
+                    while(xythetaDiff.z <= -180)
+                        xythetaDiff.z += 360;
+                    var Pxytheta = xythetaDiff.times(kPCommandWithoutVelXYTheta);
+                    var Dxytheta = vxyw.times(-1).times(kDCommandWithoutVelXYTheta);
+
+                    if(Qt.vector2d(xythetaDiff.x, xythetaDiff.y).length() < 5 && Math.abs(xythetaDiff.z) < 5){
+                        Pxytheta = xythetaDiff.times(smallkPCommandWithoutVelXYTheta);
+                        Dxytheta = Qt.vector3d(0,0,0);
+
+                        reached = true;
+                    }
+                    else
+                        reached = false;
+
                     commandVxyw = Pxytheta.plus(Dxytheta);
 
                     if(commandVxyw.x > 200)
@@ -465,7 +478,7 @@ ApplicationWindow {
 
                     Image{
                         visible: robots[index].connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected
-                        source: robots[index].kidnapped ? "../assets/redHexagon.svg" : "../assets/greenHexagon.svg"
+                        source: robots[index].reached ? "../assets/redHexagon.svg" : "../assets/greenHexagon.svg"
                         rotation: robots[index].theta
                         x: robots[index].x*parent.scaleCoeff - width/2
                         y: robots[index].y*parent.scaleCoeff - height/2
