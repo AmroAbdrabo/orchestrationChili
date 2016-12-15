@@ -45,3 +45,50 @@ mkdir build-test && cd build-test
 make -j5
 ./celluloplugintests
 ```
+
+QML API
+-------
+
+### `CelluloBluetoothEnums [Singleton]`
+
+QML wrapper for enums used across the Cellulo objects.
+
+**Enums:**
+
+>  - **ConnectionStatus** - Robot connection status
+> > - `ConnectionStatusDisconnected` - Idle and not connected
+> > - `ConnectionStatusConnecting` - Actively trying to connect
+> > - `ConnectionStatusConnected` - Connected
+
+>  - **BatteryState** - Robot battery state
+> > - `BatteryStateDischarging` - No charger present, battery draining
+> > - `BatteryStateLow` - No charger present, battery low, will shut down
+> > - `BatteryStateCharging` - Charger present, battery charging
+> > - `BatteryStateCharged` - Charger present, battery full
+> > - `BatteryStateShutdown` - Charger charging disabled, voltage too low or battery not present
+> > - `BatteryStateError` - Thermal fault or charge timeout
+
+>  - **LEDResponseMode** - Robot LED response mode to touch
+> > - `LEDResponseModeResponsiveIndividual` - LEDs respond to touches by slightly increasing brightness
+> > - `LEDResponseModeAbsolute` - LEDs don't respond to touches
+> > - `LEDResponseModeResponsiveHold` - LEDs respond to Hold gesture by all changing color
+
+>  - **LocomotionInteractivityMode** - Robot locomotion relation to touches
+> > - `LocomotionInteractivityModeNormal` - Robot moves normally
+> > - `LocomotionInteractivityModeRequiresHold` - Robot doesn't move unless Hold gesture is present
+
+>  - **VisualEffect** - Robot LED effects
+> > - `VisualEffectConstAll` - Set all LED colors (value unused)
+> > - `VisualEffectConstSingle` - Set one LED color (value is LED index)
+> > - `VisualEffectAlertAll` - Alert animation for all LEDs (value unused)
+> > - `VisualEffectAlertSingle` - Alert animation for one LED (value is LED index)
+> > - `VisualEffectProgress` - Static progress circularly (value 0-255 maps to 0-100%)
+> > - `VisualEffectWaiting` - Circular waiting/processing animation (value unused)
+> > - `VisualEffectDirection` - Point toward one direction (value 0-255 maps to 0-360 degrees)
+> > - `VisualEffectBlink` - Alert forever (value*20 is LED on time in milliseconds)
+> > - `VisualEffectBreathe` - Breathe animation (value unused)
+> > - `VisualEffectPulse` - Slower breathe-like animation (value unused)
+
+>  - **Gesture** - Special robot key touch states
+> > - `GestureNone` - No gesture
+> > - `GestureHold` - Robot is "held" (a general presence is detected on the keys)
