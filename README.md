@@ -421,3 +421,25 @@ Calculates the client's distance to the zone that is a line segment.
 >  - **x2** : `real` - X coordinate of the second line segment end (mm)
 >  - **y2** : `real` - Y coordinate of the second line segment end (mm)
 
+### CelluloZoneLineDistanceSigned
+
+Calculates the client's (signed) distance to the zone that is an infinite line.
+
+**Properties:**
+
+>  - **x1** : `real` - X coordinate of the first point that the line passes through (mm)
+>  - **y1** : `real` - Y coordinate of the first point that the line passes through (mm)
+>  - **x2** : `real` - X coordinate of the second point that the line passes through (mm)
+>  - **y2** : `real` - Y coordinate of the second point that the line passes through (mm)
+
+### CelluloZoneLineBorder
+
+Calculates whether the client's position is within **borderThickness** of the zone's border, value is `0.0` or `1.0`.
+
+**Properties:**
+
+>  - **x1** : `real` - X coordinate of the first point that the line passes through (mm)
+>  - **y1** : `real` - Y coordinate of the first point that the line passes through (mm)
+>  - **x2** : `real` - X coordinate of the second point that the line passes through (mm)
+>  - **y2** : `real` - Y coordinate of the second point that the line passes through (mm)
+>  - **borderThickness** : `real` - Thickness of the sensitivity (mm)
