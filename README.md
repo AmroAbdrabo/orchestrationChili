@@ -329,12 +329,12 @@ Utilities to load/save `CelluloZone`s to to/from files in JSON format.
 > - `CIRCLEINNER` - Type for `CelluloZoneCircleInner`
 > - `CIRCLEBORDER` - Type for `CelluloZoneCircleBorder`
 > - `CIRCLEDISTANCE` - Type for `CelluloZoneCircleDistance`
-> - `RECTANGLEINNER` - Type for ``
-> - `RECTANGLEBORDER` - Type for ``
-> - `RECTANGLEDISTANCE` - Type for ``
-> - `LINESEGMENTDISTANCE` - Type for ``
-> - `LINEDISTANCESIGNED` - Type for ``
-> - `LINEBORDER` - Type for ``
+> - `RECTANGLEINNER` - Type for `CelluloZoneRectangleInner`
+> - `RECTANGLEBORDER` - Type for `CelluloZoneRectangleBorder`
+> - `RECTANGLEDISTANCE` - Type for `CelluloZoneRectangleDistance`
+> - `LINESEGMENTDISTANCE` - Type for `CelluloZoneLineSegmentDistance`
+> - `LINEDISTANCESIGNED` - Type for `CelluloZoneLineDistanceSigned`
+> - `LINEBORDER` - Type for `CelluloZoneLineBorder`
 > - `POINTDISTANCE` - Type for ``
 > - `RPOLYGONINNER` - Type for ``
 > - `RPOLYGONBORDER` - Type for ``
@@ -420,6 +420,40 @@ Calculates the client's distance to the zone's border.
 >  - **x** : `real` - X coordinate of this zone (mm)
 >  - **y** : `real` - Y coordinate of this zone (mm)
 >  - **r** : `real` - Radius of this zone (mm)
+
+### CelluloZoneRectangleInner
+
+Calculates whether the client's position is within the rectangle, value is `0.0` or `1.0`.
+
+**Properties:**
+
+>  - **x** : `real` - X coordinate of the top left corner (mm)
+>  - **y** : `real` - Y coordinate of the top left corner (mm)
+>  - **width** : `real` - Width of the rectangle (mm)
+>  - **height** : `real` - Height of the rectangle (mm)
+
+### CelluloZoneRectangleBorder
+
+Calculates whether the client's position is within **borderThickness** of the zone's border, value is `0.0` or `1.0`.
+
+**Properties:**
+
+>  - **x** : `real` - X coordinate of the top left corner (mm)
+>  - **y** : `real` - Y coordinate of the top left corner (mm)
+>  - **width** : `real` - Width of the rectangle (mm)
+>  - **height** : `real` - Height of the rectangle (mm)
+>  - **borderThickness** : `real` - Thickness of the sensitivity (mm)
+
+### CelluloZoneRectangleDistance
+
+Calculates the client's distance to the zone's border.
+
+**Properties:**
+
+>  - **x** : `real` - X coordinate of the top left corner (mm)
+>  - **y** : `real` - Y coordinate of the top left corner (mm)
+>  - **width** : `real` - Width of the rectangle (mm)
+>  - **height** : `real` - Height of the rectangle (mm)
 
 ### CelluloZoneLineSegmentDistance
 
