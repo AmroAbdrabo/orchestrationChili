@@ -266,6 +266,17 @@ This object cannot be used on its own but all usable Cellulo zones inherit from 
 >  - **CelluloZonePaintedItem getPaintedItem()** : Gets the visual representation of this zone so that its properties can be changed.
 >  - **bool isMouseInside(vector2d mousePosition, real canvasWidth, real canvasHeight, real physicalWidth, real physicalHeight)** : Returns whether the given mouse position (in pixels within the canvas) is in the visual zone representation or not. Needs the canvas size (in pixels) and the physical playground size (in mm).
 
+### CelluloZonePaintedItem
+
+Visual representation of a `CelluloZone`; can be used to draw `CelluloZone`s in e.g `Rectangle`s. Visually covers its parent (from `[0, 0]` to `[parent.width, parent.height]`), using it as a canvas and drawing the zone at the appropriate place.
+
+**Properties:**
+
+>  - **color** : `color` - The color of the drawn zone
+>  - **associatedZone** : `CelluloZone` - Associated zone
+>  - **physicalPlaygroundWidth** : `real` - Physical playground width that the canvas represents (in mm)
+>  - **physicalPlaygroundHeight** : `real` - Physical playground height that the canvas represents (in mm)
+
 ### CelluloZoneClient [Abstract]
 
 Abstract object that interacts with `CelluloZone`s through a `CelluloZoneEngine`. Inherit from this object (i.e if being used from QML, create the `YourObject.qml` file with `CelluloZoneClient` as the top object) to have your custom object interact with `CelluloZone`s. For example, `CelluloBluetooth` already inherits from this object.
