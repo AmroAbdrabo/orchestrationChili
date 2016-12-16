@@ -99,6 +99,7 @@ Object that communicates with a Cellulo robot over Bluetooth. Inherits from `Cel
 
 **Properties:**
 
+>  - **localAdapterMacAddr** : `string` - Local adapter's MAC address chosen to connect to the robot, empty string if using default adapter; only works on Linux and if the plugin is built with BlueZ
 >  - **autoConnect** :      `bool` - Whether to start connecting immediately as soon as **macAddr** is set and to reconnect if connection drops, default true
 >  - **macAddr** :          `string` - Robot MAC address in the form "XX:XX:XX:XX:XX:XX"
 >  - **connectionStatus** : `readonly CelluloBluetoothEnums.ConnectionStatus` - Current connection status to the robot
@@ -163,6 +164,46 @@ Object that communicates with a Cellulo robot over Bluetooth. Inherits from `Cel
 >  - **void simpleVibrate(real iX, real iY, real iTheta, int period, int duration)**: Constantly vibrates the robot with given linear and angular intensities (scale same as linear and angular velocities) and with given period (ms, maximum is `0xFFFF`) for the given duration (ms, maximum is `0xFFFF`, set to `0` to vibrate forever).
 >  - **void vibrateOnMotion(real iCoeff, int period)**: Enables vibration against user motion with given period (ms, maximum is `0xFFFF`) with given intensity for all DOF. Intensity is given as a coefficient to be multiplied with the drive velocities.
 >  - **void clearHapticFeedback()**: Clears **vibrateOnMotion** and **simpleVibrate**
+
+### CelluloBluetoothRelayServer [EXPERIMENTAL]
+
+Object that relays packets between a `CelluloBluetoothRelayClient` and physical robots.
+
+**Properties:**
+
+>  - **listen** : `bool` - Whether to listen for an incoming connection, default false
+>  - **broadcastPeriod** : `real` - Sets the broadcast period in ms; if set to greater than zero, the server will queue all event packets coming from physical robots and broadcast them to the `CelluloBluetoothRelayClient` periodically to avoid congestion. Default is `0`, meaning all packets are broadcast as soon they arrive.
+
+**Signals:**
+
+>  - **clientConnected()** : Emitted when a connection from a `CelluloBluetoothRelayClient` is established
+>  - **clientDisconnected()** : Emitted when the connection from the `CelluloBluetoothRelayClient` is closed
+
+**Slots:**
+
+>  - **void addRobot(CelluloBluetooth robot)** : All event packets that arrive from the given robot from now on will be sent through the server instead of being emitted
+>  - **string getClientAddress()** : Gets the connected client's MAC address
+>  - **void disconnectClient()** : Closes the connection to the client
+
+### CelluloBluetoothRelayClient [EXPERIMENTAL]
+
+Object that relays packets between a `CelluloBluetoothRelayServer` and virtual robot objects.
+
+**Properties:**
+
+>  - **serverAddress** : `string` - MAC address of the `CelluloBluetoothRelayServer` to connect to
+>  - **broadcastPeriod** : `real` - Sets the broadcast period in ms; if set to greater than zero, the client will queue all command packets coming from virtual robots and broadcast them to the `CelluloBluetoothRelayServer` periodically to avoid congestion. Default is `0`, meaning all packets are broadcast as soon they arrive.
+
+**Signals:**
+
+>  - **connected()** : Emitted when the connection to the `CelluloBluetoothRelayServer` is established
+>  - **disconnected()** : Emitted when the connection to the `CelluloBluetoothRelayServer` is closed
+
+**Slots:**
+
+>  - **void connectToServer()** : Initiates a connection to the `CelluloBluetoothRelayServer`
+>  - **void disconnectFromServer()** : Disconnects from the `CelluloBluetoothRelayServer`
+>  - **void addRobot(CelluloBluetooth robot)** : All command packets coming from the given robot from now on will be sent through this client instead of a direct Bluetooth connection to a physical robot. Essentially makes the given `CelluloBluetooth` a virtual robot.
 
 ### CelluloBluetoothEMP
 
@@ -249,7 +290,7 @@ Creates on-screen banner texts, like Android's `Toast`s. Ensures that multiple t
 
 Abstract description of a "zone" on a 2D plane. These zones could be closed curves, polygons, open curves, even points.
 
-They are meant interact with `CelluloZoneClient`s (such as a robot, or a virtual robot on a screen), calculating a real value with respect to each client (for example, the distance to the client in the case of a point zone). With the help of `CelluloZoneEngine`, a zone emits each client's `zoneValueChanged()` signal upon the changing of the value with respect to that client. 
+They are meant interact with `CelluloZoneClient`s (such as a robot, or a virtual robot on a screen), calculating a real value with respect to each client (for example, the distance to the client in the case of a point zone). With the help of `CelluloZoneEngine`, a zone emits each client's `zoneValueChanged()` signal upon the changing of the value with respect to that client.
 
 This object cannot be used on its own but all usable Cellulo zones inherit from this object and possess the properties, signals and slots described here unless stated otherwise.
 
