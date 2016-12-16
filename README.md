@@ -208,3 +208,13 @@ Mathematical utilities.
 >  - **int c_rand(int max)** : Call to c's `rand()`, returns a random integer in [0, **max** - 1]
 >  - **bool collinear(vector2d a, vector2d b, vector2d c)** : Returns whether given points are collinear (enough)
 >  - **list shuffle(list list)** : Calls `std::random_shuffle` with the given list. Returns the shuffled list.
+
+
+### CelluloSVGUtil [Singleton]
+
+Utilities for converting SVG files into CelluloZone description files.
+
+**Slots:**
+
+>  - **string dumpAllPathsToJSON(string inSVGFile, string outJSONFile, string type, string name = "SVG_DUMP_ZONE", real dpi = 90.0, bool optimized = true)** : Loads an SVG and converts all paths/shapes to CelluloZone types and dumps these zones into a JSON file. **type** is DEPRECATED. **name** is the base name for the dumped zones, consecutive zones are suffixed with "_1", "_2" etc. **dpi** is the DPI setting to be used when converting to mm, which is the CelluloZone unit for all measurements; by default this is 90.0, which is the Inkscape export default. If **optimized** is disabled (enabled by default), all zones are converted into `POLBEZIERCLOSESTT`, if not, an EXPERIMENTAL module tries to interpret individual types of shapes like circle and rectangle. Returns a status string that can be shown to the user.
+
