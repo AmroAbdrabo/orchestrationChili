@@ -8,7 +8,8 @@ and Android and was tested with Qt 5.4.2.
 Dependencies
 -------------
 
-Depends on `nanosvg`, run `git submodule init && git submodule update` on the root directory to obtain it.
+  - `nanosvg` to convert SVG paths into Cellulo zone paths, run `git submodule init && git submodule update` on the root directory to obtain it.
+  - [qml-bluetooth-extras](https://github.com/chili-epfl/qml-bluetooth-extras) must be installed to obtain the list of local Bluetooth adapters, see the repository for installation instructions
 
 Desktop build
 -------------
@@ -267,6 +268,7 @@ A GUI for selecting a MAC address from a drop-down box and connecting to a robot
 
 >  - **addresses** : `list<string>` - List of MAC addresses to display in the drop-down box
 >  - **selectedAddress** : `readonly string` - Currently selected address
+>  - **selectedLocalAdapterAddress** : `readonly string` - Currently selected local adapter address
 >  - **connectionStatus** : `CelluloBluetooth.ConnectionStatus` - Connection status to display
 
 **Signals:**
@@ -276,7 +278,8 @@ A GUI for selecting a MAC address from a drop-down box and connecting to a robot
 
 **Slots:**
 
->  - **selectAddress(string address)** : Selects the given ddress if it exists in the list of addresses
+>  - **selectAddress(string address)** : Selects the given address if it exists in the list of addresses
+>  - **selectLocalAdapterAddress(string address)** : Selects the given local adapter address if it exists on this machine
 
 ### ToastManager
 
