@@ -313,30 +313,30 @@ Utilities to load/save `CelluloZone`s to to/from files in JSON format.
 `ZoneType` - All instantiatable zone types
 > - `ANGLEDIFFERENCE` - Type for `CelluloZoneAngleDifference`
 > - `ANGLEINTERVALINNER` - Type for `CelluloZoneAngleIntervalInner`
-> - `ANGLEINTERVALBORDER` - 
-> - `ANGLEINTERVALDISTANCE` - 
-> - `CIRCLEINNER` - 
-> - `CIRCLEBORDER` - 
-> - `CIRCLEDISTANCE` - 
-> - `RECTANGLEINNER` - 
-> - `RECTANGLEBORDER` - 
-> - `RECTANGLEDISTANCE` - 
-> - `LINESEGMENTDISTANCE` - 
-> - `LINEDISTANCESIGNED` - 
-> - `LINEBORDER` - 
-> - `POINTDISTANCE` - 
-> - `RPOLYGONINNER` - 
-> - `RPOLYGONBORDER` - 
-> - `RPOLYGONDISTANCE` - 
-> - `IRPOLYGONINNER` - 
-> - `IRPOLYGONBORDER` - 
-> - `IRPOLYGONDISTANCE` - 
-> - `POLYBEZIERCLOSESTT` - 
-> - `POLYBEZIERXT` - 
-> - `POLYBEZIERYT` - 
-> - `POLYBEZIERDISTANCE` - 
-> - `POLYBEZIERBORDER` - 
-> - `POLYBEZIERINNER` - 
+> - `ANGLEINTERVALBORDER` - Type for `CelluloZoneAngleIntervalBorder`
+> - `ANGLEINTERVALDISTANCE` - Type for `CelluloZoneAngleIntervalDistance`
+> - `CIRCLEINNER` - Type for `CelluloZoneCircleInner`
+> - `CIRCLEBORDER` - Type for `CelluloZoneCircleBorder`
+> - `CIRCLEDISTANCE` - Type for `CelluloZoneCircleDistance`
+> - `RECTANGLEINNER` - Type for ``
+> - `RECTANGLEBORDER` - Type for ``
+> - `RECTANGLEDISTANCE` - Type for ``
+> - `LINESEGMENTDISTANCE` - Type for ``
+> - `LINEDISTANCESIGNED` - Type for ``
+> - `LINEBORDER` - Type for ``
+> - `POINTDISTANCE` - Type for ``
+> - `RPOLYGONINNER` - Type for ``
+> - `RPOLYGONBORDER` - Type for ``
+> - `RPOLYGONDISTANCE` - Type for ``
+> - `IRPOLYGONINNER` - Type for ``
+> - `IRPOLYGONBORDER` - Type for ``
+> - `IRPOLYGONDISTANCE` - Type for ``
+> - `POLYBEZIERCLOSESTT` - Type for ``
+> - `POLYBEZIERXT` - Type for ``
+> - `POLYBEZIERYT` - Type for ``
+> - `POLYBEZIERDISTANCE` - Type for ``
+> - `POLYBEZIERBORDER` - Type for ``
+> - `POLYBEZIERINNER` - Type for ``
 
 **Slots:**
 
@@ -345,15 +345,15 @@ Utilities to load/save `CelluloZone`s to to/from files in JSON format.
 
 ### CelluloZoneAngleDifference
 
-Calculates the signed difference of the client orientation angles to the zone's angle, difference will be in `]-180, 180]`.
+Calculates the signed difference of the client orientation angles to the zone's angle, value is in `]-180, 180]`.
 
 **Properties:**
 
->  - **angle** : `real` - Internal zone angle reference (deg)
+>  - **angle** : `real` - Zone's angle (deg)
 
 ### CelluloZoneAngleIntervalInner
 
-Calculates whether the client's orientation is within the zone's angle interval. The zone is described by the limits **fromAngle** to **toAngle**, in that order; e.g if `330` and `30` are provided, the zone interval includes `0` degrees and not `180` degrees.
+Calculates whether the client's orientation is within the zone's angle interval, value is `0.0` or `1.0`. The zone is described by the limits **fromAngle** to **toAngle**, in that order; e.g if `330` and `30` are provided, the zone interval includes `0` degrees and not `180` degrees.
 
 **Properties:**
 
@@ -362,7 +362,7 @@ Calculates whether the client's orientation is within the zone's angle interval.
 
 ### CelluloZoneAngleIntervalBorder
 
-Calculates whether the client's orientation is within **borderThickness** of the zone's angle interval limits.
+Calculates whether the client's orientation is within **borderThickness** of the zone's angle interval limits, value is `0.0` or `1.0`
 
 **Properties:**
 
@@ -378,3 +378,46 @@ Calculates the client's angular distance to the zone's angle interval. The zone 
 
 >  - **fromAngle** : `real` - Beginning of this zone (deg)
 >  - **toAngle** : `real` -  End of this zone (deg)
+
+### CelluloZoneCircleInner
+
+Calculates whether the client's position is within the circle, value is `0.0` or `1.0`.
+
+**Properties:**
+
+>  - **x** : `real` - X coordinate of this zone (mm)
+>  - **y** : `real` - Y coordinate of this zone (mm)
+>  - **r** : `real` - Radius of this zone (mm)
+
+### CelluloZoneCircleBorder
+
+Calculates whether the client's position is within **borderThickness** of the zone's border, value is `0.0` or `1.0`.
+
+**Properties:**
+
+>  - **x** : `real` - X coordinate of this zone (mm)
+>  - **y** : `real` - Y coordinate of this zone (mm)
+>  - **r** : `real` - Radius of this zone (mm)
+>  - **borderThickness** : `real` - Thickness of the sensitivity (mm)
+
+### CelluloZoneCircleDistance
+
+Calculates the client's distance to the zone's border.
+
+**Properties:**
+
+>  - **x** : `real` - X coordinate of this zone (mm)
+>  - **y** : `real` - Y coordinate of this zone (mm)
+>  - **r** : `real` - Radius of this zone (mm)
+
+### CelluloZoneLineSegmentDistance
+
+Calculates the client's distance to the zone that is a line segment.
+
+**Properties:**
+
+>  - **x1** : `real` - X coordinate of the first line segment end (mm)
+>  - **y1** : `real` - Y coordinate of the first line segment end (mm)
+>  - **x2** : `real` - X coordinate of the second line segment end (mm)
+>  - **y2** : `real` - Y coordinate of the second line segment end (mm)
+
