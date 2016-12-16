@@ -179,3 +179,17 @@ Object that shuts down or resets multiple robots simultaneously.
 >  - **void resetLater(string macAddr)** : Starts a connection to the given robot and schedules a reset
 >  - **void shutdownLater(string macAddr)** : Starts a connection to the given robot and schedules a shutdown
 >  - **void clear()**: Clears both lists (macAddrToBlast and macAddrBlasted) and drops all connections
+
+### TranslationTool
+
+Object that provides a language translation for the entire app. To use, create one `TranslationTool` named e.g `tr`, and concatenate every user-readable string in the app with `tr.estr`. For example, a text property in another object would look like `text: tr.estr + "Text that would normally be here."`
+
+**Properties:**
+
+>  - **languageList** : `map<string,string>` - List of languages (e.g `"en"`) versus their translation resource files loaded into the app
+>  - **estr** : `readonly string` - An empty string to be concatenated to all user-visible strings in the app to be translated if dynamic modification of the language during runtime is desired
+
+**Slots:**
+
+>  - **void selectLanguage(string language):** A language given in **languageList** or `"default"` to unload the translator
+
