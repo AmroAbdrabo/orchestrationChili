@@ -295,6 +295,15 @@ Object that ensures `CelluloZone` and `CelluloZoneClient` interaction. All `Cell
 >  - **void clearZones()** : Deletes all the zones in this engine
 >  - **void addNewClient(CelluloZoneClient newClient)** : Adds the given client to the engine
 
+### CelluloZoneJsonHandler [Singleton]
+
+Utilities to load/save `CelluloZone`s to to/from files in JSON format.
+
+**Slots:**
+
+>  - **void saveZones(list&lt;CelluloZone&gt; zones, string path)** : Saves all given zones to the given file
+>  - **list&lt;CelluloZone&gt; loadZonesQML(string path)** : Loads zones from the given file
+
 ### CelluloZoneTypes [Singleton]
 
 `CelluloZone` type enum and utilities.
