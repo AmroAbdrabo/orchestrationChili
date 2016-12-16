@@ -49,7 +49,7 @@ make -j5
 QML API
 -------
 
-### `CelluloBluetoothEnums [Singleton]`
+### CelluloBluetoothEnums [Singleton]
 
 Object that contains enums used across the Cellulo objects.
 
@@ -93,7 +93,7 @@ Object that contains enums used across the Cellulo objects.
 > - `GestureNone` - No gesture
 > - `GestureHold` - Robot is "held" (a general presence is detected on the keys)
 
-### `CelluloBluetooth`
+### CelluloBluetooth
 
 Object that communicates with a Cellulo robot over Bluetooth.
 
@@ -163,3 +163,19 @@ Object that communicates with a Cellulo robot over Bluetooth.
 >  - **void simpleVibrate(real iX, real iY, real iTheta, int period, int duration)**: Constantly vibrates the robot with given linear and angular intensities (scale same as linear and angular velocities) and with given period (ms, maximum is `0xFFFF`) for the given duration (ms, maximum is `0xFFFF`, set to `0` to vibrate forever).
 >  - **void vibrateOnMotion(real iCoeff, int period)**: Enables vibration against user motion with given period (ms, maximum is `0xFFFF`) with given intensity for all DOF. Intensity is given as a coefficient to be multiplied with the drive velocities.
 >  - **void clearHapticFeedback()**: Clears **vibrateOnMotion** and **simpleVibrate**
+
+### CelluloBluetoothEMP
+
+Object that shuts down or resets multiple robots simultaneously.
+
+**Properties:**
+
+>  - **continuous** :      `bool` - Whether to shut down or reset the same robots over and over, default false
+>  - **macAddrToBlast** :  `readonly list<string>` - List of robots waiting to be shut down or reset
+>  - **macAddrBlasted** :  `readonly list<string>` - List of robots already shut down or reset
+
+**Slots**:
+
+>  - **void resetLater(string macAddr)** : Starts a connection to the given robot and schedules a reset
+>  - **void shutdownLater(string macAddr)** : Starts a connection to the given robot and schedules a shutdown
+>  - **void clear()**: Clears both lists (macAddrToBlast and macAddrBlasted) and drops all connections
