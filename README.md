@@ -247,7 +247,7 @@ Creates on-screen banner texts, like Android's `Toast`s. Ensures that multiple t
 
 ### CelluloZone [Abstract]
 
-Abstract description of a "zone" on a 2D plane. These zones could be closed curves, polygons, open curves, even points. They are meant to take "zone clients" (such as a robot, or a virtual robot on a screen) and calculate a real value with respect to this client (for example, the distance to the client in the case of a point zone). This object cannot be used on its own but all usable Cellulo zones inherit from this object and possess the properties, signals and slots described here unless stated otherwise.
+Abstract description of a "zone" on a 2D plane. These zones could be closed curves, polygons, open curves, even points. They are meant interact with `CelluloZoneClient`s (such as a robot, or a virtual robot on a screen), calculating a real value with respect to each client (for example, the distance to the client in the case of a point zone). With the help of `CelluloZoneEngine`, a zone emits each client's `zoneValueChanged()` signal upon the changing of the value with respect to that client. This object cannot be used on its own but all usable Cellulo zones inherit from this object and possess the properties, signals and slots described here unless stated otherwise.
 
 **Properties:**
 
@@ -262,4 +262,52 @@ Abstract description of a "zone" on a 2D plane. These zones could be closed curv
 >  - **CelluloZonePaintedItem getPaintedItem()** : Gets the visual representation of this zone so that its properties can be changed.
 >  - **bool isMouseInside(vector2d mousePosition, real canvasWidth, real canvasHeight, real physicalWidth, real physicalHeight)** : Returns whether the given mouse position (in pixels within the canvas) is in the visual zone representation or not. Needs the canvas size (in pixels) and the physical playground size (in mm).
 
+### CelluloZoneClient [Abstract]
+
+Abstract object that interacts with `CelluloZone`s through a `CelluloZoneEngine`. Inherit from this object (i.e if being used from QML, create the `YourObject.qml` file with `CelluloZoneClient` as the top object) to have your custom object interact with `CelluloZone`s. For example, `CelluloBluetooth` already inherits from this object.
+
+**Signals:**
+
+>  - **zoneValueChanged(CelluloZone zone, real value)** : Emitted when a zone's value changes (passed as the **zone** attribute and the **value** attribute) with respect to this client
+>  - **poseChanged(real x, real y, real theta)** : User is responsible for emitting this signal when this client's pose (in mm, mm, deg) changes
+
 ### CelluloZoneTypes [Singleton]
+
+`CelluloZone` type enum and utilities.
+
+**Enums:**
+
+`ZoneType` - All instantiatable zone types
+> - `ANGLEDIFFERENCE` - Type for `CelluloZoneAngleDifference`
+> - `ANGLEINTERVALINNER` - Type for `CelluloZoneAngleIntervalInner`
+> - `ANGLEINTERVALBORDER` - 
+> - `ANGLEINTERVALDISTANCE` - 
+> - `CIRCLEINNER` - 
+> - `CIRCLEBORDER` - 
+> - `CIRCLEDISTANCE` - 
+> - `RECTANGLEINNER` - 
+> - `RECTANGLEBORDER` - 
+> - `RECTANGLEDISTANCE` - 
+> - `LINESEGMENTDISTANCE` - 
+> - `LINEDISTANCESIGNED` - 
+> - `LINEBORDER` - 
+> - `POINTDISTANCE` - 
+> - `RPOLYGONINNER` - 
+> - `RPOLYGONBORDER` - 
+> - `RPOLYGONDISTANCE` - 
+> - `IRPOLYGONINNER` - 
+> - `IRPOLYGONBORDER` - 
+> - `IRPOLYGONDISTANCE` - 
+> - `POLYBEZIERCLOSESTT` - 
+> - `POLYBEZIERXT` - 
+> - `POLYBEZIERYT` - 
+> - `POLYBEZIERDISTANCE` - 
+> - `POLYBEZIERBORDER` - 
+> - `POLYBEZIERINNER` - 
+
+**Slots:**
+
+>  - **ZoneType typeFromString(string typeName)** : Gets the enum zone type from its string representation
+>  - **CelluloZone newZoneFromType(ZoneType type)** : Creates a new CelluloZone with the given type
+
+
