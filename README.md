@@ -343,4 +343,38 @@ Utilities to load/save `CelluloZone`s to to/from files in JSON format.
 >  - **ZoneType typeFromString(string typeName)** : Gets the enum zone type from its string representation
 >  - **CelluloZone newZoneFromType(ZoneType type)** : Creates a new CelluloZone with the given type
 
+### CelluloZoneAngleDifference
 
+Calculates the signed difference of the client orientation angles to the zone's angle, difference will be in `]-180, 180]`.
+
+**Properties:**
+
+>  - **angle** : `real` - Internal zone angle reference (deg)
+
+### CelluloZoneAngleIntervalInner
+
+Calculates whether the client's orientation is within the zone's angle interval. The zone is described by the limits **fromAngle** to **toAngle**, in that order; e.g if `330` and `30` are provided, the zone interval includes `0` degrees and not `180` degrees.
+
+**Properties:**
+
+>  - **fromAngle** : `real` - Beginning of this zone (deg)
+>  - **toAngle** : `real` -  End of this zone (deg)
+
+### CelluloZoneAngleIntervalBorder
+
+Calculates whether the client's orientation is within **borderThickness** of the zone's angle interval limits.
+
+**Properties:**
+
+>  - **fromAngle** : `real` - Beginning of this zone (deg)
+>  - **toAngle** : `real` -  End of this zone (deg)
+>  - **borderThickness** : `real` - Thickness of the sensitivity (deg)
+
+### CelluloZoneAngleIntervalDistance
+
+Calculates the client's angular distance to the zone's angle interval. The zone is described by the limits **fromAngle** to **toAngle**, in that order; e.g if `330` and `30` are provided, the zone interval includes `0` degrees and not `180` degrees.
+
+**Properties:**
+
+>  - **fromAngle** : `real` - Beginning of this zone (deg)
+>  - **toAngle** : `real` -  End of this zone (deg)
