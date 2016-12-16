@@ -191,5 +191,20 @@ Object that provides a language translation for the entire app. To use, create o
 
 **Slots:**
 
->  - **void selectLanguage(string language):** A language given in **languageList** or `"default"` to unload the translator
+>  - **void selectLanguage(string language)** : A language given in **languageList** or `"default"` to unload the translator
 
+### CelluloMathUtil [Singleton]
+
+Mathematical utilities.
+
+**Slots:**
+
+>  - **real pointToSegmentDist(vector2d p, vector2d seg1, vector2d seg2)** : Returns the distance of the given point to the line segment whose ends are given
+>  - **real pointToLineDistSigned(vector2d p, vector2d lp1, vector2d lp2)** : Returns the signed distance of the given point to the line segment whose ends are given (negative if below the segment, positive if above)
+>  - **bool pointInPoly(vector2d p, list<vector2d> v)** : Returns whether the given point is in the polygon with given vertices
+>  - **real pointToPolyBorderDist(vector2d p, list<vector2d> v)** : Returns the distance of the point to the border of the polygon whose vertices are given
+>  - **bool hRayCrossesLineSeg(vector2d r, vector2d seg1, vector2d seg2)** : Returns whether a horizontal ray originating from **r** and continuing towards +infinity crosses the line segment whose ends are given
+>  - **void c_srand(int seed)** : Call to c's `srand()`. This method is called with `time(NULL)` at `CelluloMathUtil` creation time
+>  - **int c_rand(int max)** : Call to c's `rand()`, returns a random integer in [0, **max** - 1]
+>  - **bool collinear(vector2d a, vector2d b, vector2d c)** : Returns whether given points are collinear (enough)
+>  - **list shuffle(list list)** : Calls `std::random_shuffle` with the given list. Returns the shuffled list.
