@@ -218,3 +218,23 @@ Utilities for converting SVG files into CelluloZone description files.
 
 >  - **string dumpAllPathsToJSON(string inSVGFile, string outJSONFile, string type, string name = "SVG_DUMP_ZONE", real dpi = 90.0, bool optimized = true)** : Loads an SVG and converts all paths/shapes to CelluloZone types and dumps these zones into a JSON file. **type** is DEPRECATED. **name** is the base name for the dumped zones, consecutive zones are suffixed with "_1", "_2" etc. **dpi** is the DPI setting to be used when converting to mm, which is the CelluloZone unit for all measurements; by default this is 90.0, which is the Inkscape export default. If **optimized** is disabled (enabled by default), all zones are converted into `POLBEZIERCLOSESTT`, if not, an EXPERIMENTAL module tries to interpret individual types of shapes like circle and rectangle. Returns a status string that can be shown to the user.
 
+### MacAddrSelector
+
+A GUI for selecting a MAC address from a drop-down box and connecting to a robot.
+
+**Properties:**
+
+>  - **addresses** : `list<string>` - List of MAC addresses to display in the drop-down box
+>  - **selectedAddress** : `readonly string` - Currently selected address
+>  - **connectionStatus** : `CelluloBluetooth.ConnectionStatus` - Connection status to display
+
+**Signals:**
+
+>  - **connectRequested()** : Emitted when the user presses the connect button
+>  - **disconnectRequested()** : Emitted when the user presses the disconnect button
+
+**Slots:**
+
+>  - **selectAddress(string address)** : Selects the given ddress if it exists in the list of addresses
+
+
