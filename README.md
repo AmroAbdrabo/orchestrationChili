@@ -132,7 +132,6 @@ Object that communicates with a Cellulo robot over Bluetooth.
 >  - **void setExposureTime(int pixels)**: Disables robot's camera autoexposure and sets a manual exposure time for super-fast unkidnap detection; **pixels** represents this time and must be greater than `260`. A good value for white paper is `460`. Setting **pixels** to `0` re-enables autoexposure.
 >  - **void queryBatteryState()**: Manually requests the **batteryState**
 >  - **void setVisualEffect(CelluloBluetoothEnums.VisualEffect effect, color color, int value)**: Sets the LED effect and color on the robot; **value** is in [0,255] and can be meaningful for a given effect.
-
 >  - **void setLEDResponseMode(CelluloBluetoothEnums.LEDResponseMode mode)**: Sets the LED response mode to touch
 >  - **void setLocomotionInteractivityMode(CelluloBluetoothEnums.LocomotionInteractivityMode mode)**: Sets the locomotion relation to touch
 >  - **void setGestureEnabled(bool enabled)**: Sets whether gesture detection is enabled, it is disabled by default
