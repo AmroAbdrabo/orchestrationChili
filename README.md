@@ -247,7 +247,11 @@ Creates on-screen banner texts, like Android's `Toast`s. Ensures that multiple t
 
 ### CelluloZone [Abstract]
 
-Abstract description of a "zone" on a 2D plane. These zones could be closed curves, polygons, open curves, even points. They are meant interact with `CelluloZoneClient`s (such as a robot, or a virtual robot on a screen), calculating a real value with respect to each client (for example, the distance to the client in the case of a point zone). With the help of `CelluloZoneEngine`, a zone emits each client's `zoneValueChanged()` signal upon the changing of the value with respect to that client. This object cannot be used on its own but all usable Cellulo zones inherit from this object and possess the properties, signals and slots described here unless stated otherwise.
+Abstract description of a "zone" on a 2D plane. These zones could be closed curves, polygons, open curves, even points.
+
+They are meant interact with `CelluloZoneClient`s (such as a robot, or a virtual robot on a screen), calculating a real value with respect to each client (for example, the distance to the client in the case of a point zone). With the help of `CelluloZoneEngine`, a zone emits each client's `zoneValueChanged()` signal upon the changing of the value with respect to that client. 
+
+This object cannot be used on its own but all usable Cellulo zones inherit from this object and possess the properties, signals and slots described here unless stated otherwise.
 
 **Properties:**
 
@@ -270,6 +274,26 @@ Abstract object that interacts with `CelluloZone`s through a `CelluloZoneEngine`
 
 >  - **zoneValueChanged(CelluloZone zone, real value)** : Emitted when a zone's value changes (passed as the **zone** attribute and the **value** attribute) with respect to this client
 >  - **poseChanged(real x, real y, real theta)** : User is responsible for emitting this signal when this client's pose (in mm, mm, deg) changes
+
+### CelluloZoneEngine
+
+Object that ensures `CelluloZone` and `CelluloZoneClient` interaction. All `CelluloZoneClient`s in this engine have their `zoneValueChanged()` signals emitted when the value of a `CelluloZone` (within this engine) with respect to the client changes.
+
+`CelluloZone`s instantiated as children of a `CelluloZoneEngine` will be automatically added to it. `CelluloZoneClient`s must be manually added.
+
+**Properties:**
+
+>  - **active** : `bool` - Whether the zones in this engine are active, default true
+
+**Slots:**
+
+>  - **list<string> getAllZoneNames()** : Returns the list of names of all zones in this engine
+>  - **CelluloZone getZoneByName(string name)** : Returns the zone with the given name or null if not found
+>  - **list<CelluloZone> getZonesList()** : Returns the list of all zones in this engine
+>  - **void addNewZones(list&lt;CelluloZone&gt; newZones)** : Adds the given list of zones to the engine
+>  - **void addNewZone(CelluloZone newZone)** : Adds the given zone to the engine
+>  - **void clearZones()** : Deletes all the zones in this engine
+>  - **void addNewClient(CelluloZoneClient newClient)** : Adds the given client to the engine
 
 ### CelluloZoneTypes [Singleton]
 
