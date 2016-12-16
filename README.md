@@ -336,12 +336,12 @@ Utilities to load/save `CelluloZone`s to to/from files in JSON format.
 > - `LINEDISTANCESIGNED` - Type for `CelluloZoneLineDistanceSigned`
 > - `LINEBORDER` - Type for `CelluloZoneLineBorder`
 > - `POINTDISTANCE` - Type for `CelluloZonePointDistance`
-> - `RPOLYGONINNER` - Type for ``
-> - `RPOLYGONBORDER` - Type for ``
-> - `RPOLYGONDISTANCE` - Type for ``
-> - `IRPOLYGONINNER` - Type for ``
-> - `IRPOLYGONBORDER` - Type for ``
-> - `IRPOLYGONDISTANCE` - Type for ``
+> - `RPOLYGONINNER` - Type for `CelluloZoneRegularPolygonDistance`
+> - `RPOLYGONBORDER` - Type for `CelluloZoneRegularPolygonBorder`
+> - `RPOLYGONDISTANCE` - Type for `CelluloZoneRegularPolygonDistance`
+> - `IRPOLYGONINNER` - Type for `CelluloZoneIrregularPolygonInner`
+> - `IRPOLYGONBORDER` - Type for `CelluloZoneIrregularPolygonBorder`
+> - `IRPOLYGONDISTANCE` - Type for `CelluloZoneIrregularPolygonDistance`
 > - `POLYBEZIERCLOSESTT` - Type for ``
 > - `POLYBEZIERXT` - Type for ``
 > - `POLYBEZIERYT` - Type for ``
@@ -497,3 +497,65 @@ Calculates the client's distance to the zone.
 
 >  - **x** : `real` - X coordinate of the point (mm)
 >  - **y** : `real` - Y coordinate of the point (mm)
+
+### CelluloZoneIrregularPolygonInner
+
+Calculates whether the client's position is within the irregular polygon, value is `0.0` or `1.0`.
+
+**Properties:**
+
+>  - **vertices** : `list<vector2d>` - List of vertices, polygon has an edge between every `i`th and `i+1`th vertex
+
+### CelluloZoneIrregularPolygonBorder
+
+Calculates whether the client's position is within **borderThickness** of the zone's border, value is `0.0` or `1.0`.
+
+**Properties:**
+
+>  - **vertices** : `list<vector2d>` - List of vertices, polygon has an edge between every `i`th and `i+1`th vertex
+>  - **borderThickness** : `real` - Thickness of the sensitivity (mm)
+
+### CelluloZoneIrregularPolygonDistance
+
+Calculates the client's distance to the zone's border.
+
+**Properties:**
+
+>  - **vertices** : `list<vector2d>` - List of vertices, polygon has an edge between every `i`th and `i+1`th vertex
+
+### CelluloZoneRegularPolygonInner
+
+Calculates whether the client's position is within the regular polygon, value is `0.0` or `1.0`.
+
+**Properties:**
+
+>  - **numEdges** : `int` - Number of edges
+>  - **x** : `real` - X coordinate of the center (mm)
+>  - **y** : `real` - Y coordinate of the center (mm)
+>  - **r** : `real` - Radius of the enclosing circle (mm)
+>  - **rotAngle** : `real` - Extra rotation from the initial orientation (deg)
+
+### CelluloZoneRegularPolygonBorder
+
+Calculates whether the client's position is within **borderThickness** of the zone's border, value is `0.0` or `1.0`.
+
+**Properties:**
+
+>  - **numEdges** : `int` - Number of edges
+>  - **x** : `real` - X coordinate of the center (mm)
+>  - **y** : `real` - Y coordinate of the center (mm)
+>  - **r** : `real` - Radius of the enclosing circle (mm)
+>  - **rotAngle** : `real` - Extra rotation from the initial orientation (deg)
+>  - **borderThickness** : `real` - Thickness of the sensitivity (mm)
+
+### CelluloZoneRegularPolygonDistance
+
+Calculates the client's distance to the zone's border.
+
+**Properties:**
+
+>  - **numEdges** : `int` - Number of edges
+>  - **x** : `real` - X coordinate of the center (mm)
+>  - **y** : `real` - Y coordinate of the center (mm)
+>  - **r** : `real` - Radius of the enclosing circle (mm)
+>  - **rotAngle** : `real` - Extra rotation from the initial orientation (deg)
