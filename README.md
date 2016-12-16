@@ -49,6 +49,10 @@ make -j5
 QML API
 -------
 
+### Table of Contents
+
+ - [**CelluloBluetooth**](#CelluloBluetooth)
+
 ### CelluloBluetoothEnums [Singleton]
 
 Object that contains enums used across the Cellulo objects.
@@ -93,7 +97,7 @@ Object that contains enums used across the Cellulo objects.
 > - `GestureNone` - No gesture
 > - `GestureHold` - Robot is "held" (a general presence is detected on the keys)
 
-### CelluloBluetooth
+### CelluloBluetooth <a name="CelluloBluetooth"></a>
 
 Object that communicates with a Cellulo robot over Bluetooth. Inherits from `CelluloZoneClient` and therefore can be used as one.
 
