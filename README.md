@@ -335,7 +335,7 @@ Utilities to load/save `CelluloZone`s to to/from files in JSON format.
 > - `LINESEGMENTDISTANCE` - Type for `CelluloZoneLineSegmentDistance`
 > - `LINEDISTANCESIGNED` - Type for `CelluloZoneLineDistanceSigned`
 > - `LINEBORDER` - Type for `CelluloZoneLineBorder`
-> - `POINTDISTANCE` - Type for ``
+> - `POINTDISTANCE` - Type for `CelluloZonePointDistance`
 > - `RPOLYGONINNER` - Type for ``
 > - `RPOLYGONBORDER` - Type for ``
 > - `RPOLYGONDISTANCE` - Type for ``
@@ -488,3 +488,12 @@ Calculates whether the client's position is within **borderThickness** of the zo
 >  - **x2** : `real` - X coordinate of the second point that the line passes through (mm)
 >  - **y2** : `real` - Y coordinate of the second point that the line passes through (mm)
 >  - **borderThickness** : `real` - Thickness of the sensitivity (mm)
+
+### CelluloZonePointDistance
+
+Calculates the client's distance to the zone.
+
+**Properties:**
+
+>  - **x** : `real` - X coordinate of the point (mm)
+>  - **y** : `real` - Y coordinate of the point (mm)
