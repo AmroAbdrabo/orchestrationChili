@@ -1,4 +1,6 @@
-import QtQuick 2.0
+import QtQuick 2.5
+
+import Cellulo 1.0
 
 /**
  * @brief Cellulo robot object
@@ -9,8 +11,8 @@ CelluloBluetooth{
      * Public
      */
 
-    property int poseVelControlPeriod: 0        ///< Desired pose/velocity control period in ms, set to 0 for highest possible frequency
-    property vector3d Vxyw: Qt.vector3d(0,0,0)  ///< Robot's estimated velocity in mm/s, mm/s, rad/s; must not be set by the user
+    property int poseVelControlPeriod: 20       ///< Desired pose/velocity control period in ms, set to 0 for highest possible frequency
+    property vector3d vxyw: Qt.vector3d(0,0,0)  ///< Robot's estimated velocity in mm/s, mm/s, rad/s; must not be set by the user
 
     property vector3d kGoalVel: Qt.vector3d(0.9,0.9,0.9)
     property vector3d kGoalVelErr: Qt.vector3d(0.2,0.2,0.2)
@@ -59,7 +61,7 @@ CelluloBluetooth{
     function init(){
         if(connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected){
             setPoseBcastPeriod(poseVelControlPeriod);
-            setTimestampingEnabled(poseVelControlEnabled);
+            setTimestampingEnabled(true);
 
             velEstimateNeedsReset = true;
             lastPose = Qt.vector3d(0,0,0);
@@ -95,30 +97,30 @@ CelluloBluetooth{
         if(bcastPeriodMin < deltaTime && deltaTime < bcastPeriodMax){
             if(velEstimateNeedsReset){
                 velEstimateNeedsReset = false;
-                Vxyw = newVxyw;
+                vxyw = newVxyw;
             }
             else
-                Vxyw = Vxyw.times(vMu).plus(newVxyw.times(1 - vMu));
+                vxyw = vxyw.times(vMu).plus(newVxyw.times(1 - vMu));
         }
         else if(bcastPeriodMax <= deltaTime){
             velEstimateNeedsReset = true;
-            Vxyw = newVxyw;
+            vxyw = newVxyw;
         }
         else
             velEstimateNeedsReset = true;
 
-        if(Vxyw.x > maxEstimatedXYVel)
-            Vxyw.x = maxEstimatedXYVel;
-        else if(Vxyw.x < -maxEstimatedXYVel)
-            Vxyw.x = -maxEstimatedXYVel;
-        if(Vxyw.y > maxEstimatedXYVel)
-            Vxyw.y = maxEstimatedXYVel;
-        else if(Vxyw.y < -maxEstimatedXYVel)
-            Vxyw.y = -maxEstimatedXYVel;
-        if(Vxyw.z > maxEstimatedW)
-            Vxyw.z = maxEstimatedW;
-        else if(Vxyw.z < -maxEstimatedW)
-            Vxyw.z = -maxEstimatedW;
+        if(vxyw.x > maxEstimatedXYVel)
+            vxyw.x = maxEstimatedXYVel;
+        else if(vxyw.x < -maxEstimatedXYVel)
+            vxyw.x = -maxEstimatedXYVel;
+        if(vxyw.y > maxEstimatedXYVel)
+            vxyw.y = maxEstimatedXYVel;
+        else if(vxyw.y < -maxEstimatedXYVel)
+            vxyw.y = -maxEstimatedXYVel;
+        if(vxyw.z > maxEstimatedW)
+            vxyw.z = maxEstimatedW;
+        else if(vxyw.z < -maxEstimatedW)
+            vxyw.z = -maxEstimatedW;
 
         lastPose = newPose;
         lastTime = newTime;
@@ -135,7 +137,7 @@ CelluloBluetooth{
             var commandVel = goalVel.times(kGoalVel);
 
             //Goal velocity error component
-            var velErr = goalVel.minus(Vxyw);
+            var velErr = goalVel.minus(vxyw);
             commandVel = commandVel.plus(velErr.times(kGoalVelErr));
 
             //Goal pose error component
