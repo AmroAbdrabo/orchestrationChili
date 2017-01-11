@@ -77,7 +77,8 @@ INCLUDEPATH += \
 QML_SOURCES = \
     src/util/ui/MacAddrSelector.qml \
     src/util/ui/Toast.qml \
-    src/util/ui/ToastManager.qml
+    src/util/ui/ToastManager.qml \
+    src/util/robot/CelluloRobot.qml
 
 JS_SOURCES =
 
