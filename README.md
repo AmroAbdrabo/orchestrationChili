@@ -172,11 +172,12 @@ Object that represents a Cellulo robot. Inherits from `CelluloBluetooth` and has
 
 **Properties:**
 
->  - **poseVelControlPeriod** : `int` - Desired pose/velocity control period in ms, set to 0 for highest possible frequency, default 20
->  - **vxyw** :                 `vector3d` - Robot's estimated velocity in mm/s, mm/s, rad/s; must not be set by the user
->  - **kGoalVel** :             `vector3d` - Goal velocity coefficients when tracking pose/velocity, default (0.9, 0.9, 0.9), do not change if you don't have a good reason
->  - **kGoalVelErr** :          `vector3d` - Goal velocity error coefficients when tracking pose/velocity, default (0.2, 0.2, 0.2), do not change if you don't have a good reason
->  - **kGoalPoseErr** :          `vector3d` - Goal pose error coefficients when tracking pose/velocity, default (2.0, 2.0, 2.3), do not change if you don't have a good reason
+>  - **poseVelControlEnabled** :    `bool` - Whether the simultaneous pose/velocity is enabled, must be set by the user, default false
+>  - **poseVelControlPeriod** :     `int` - Desired pose/velocity control period in ms, set to 0 for highest possible frequency, default 20
+>  - **vxyw** :                     `vector3d` - Robot's estimated velocity in mm/s, mm/s, rad/s; must not be set by the user
+>  - **kGoalVel** :                 `vector3d` - Goal velocity coefficients when tracking pose/velocity, default (0.9, 0.9, 0.9), do not change if you don't have a good reason
+>  - **kGoalVelErr** :              `vector3d` - Goal velocity error coefficients when tracking pose/velocity, default (0.2, 0.2, 0.2), do not change if you don't have a good reason
+>  - **kGoalPoseErr** :             `vector3d` - Goal pose error coefficients when tracking pose/velocity, default (2.0, 2.0, 2.3), do not change if you don't have a good reason
 
 **Signals:**
 

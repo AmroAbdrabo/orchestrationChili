@@ -117,6 +117,7 @@ ApplicationWindow {
     CelluloRobot{
         id: robot
 
+        poseVelControlEnabled: true
         poseVelControlPeriod: 50
 
         onNextGoalPoseVelRequested: {

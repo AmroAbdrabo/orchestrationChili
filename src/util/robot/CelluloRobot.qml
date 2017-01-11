@@ -11,6 +11,7 @@ CelluloBluetooth{
      * Public
      */
 
+    property bool poseVelControlEnabled: false              ///< Whether the simultaneous pose and velocity controller is enabled, must be enabled by the user
     property int poseVelControlPeriod: 20                   ///< Desired pose/velocity control period in ms, set to 0 for highest possible frequency
     property vector3d vxyw: Qt.vector3d(0,0,0)              ///< Robot's estimated velocity in mm/s, mm/s, rad/s; must not be set by the user
 
@@ -31,7 +32,8 @@ CelluloBluetooth{
     function setGoalPoseAndVelocity(x, y, theta, Vx, Vy, w){
         goalPose = Qt.vector3d(x,y,theta);
         goalVel = Qt.vector3d(Vx,Vy,w);
-        poseVelControlEnabled = true;
+        if(!poseVelControlEnabled)
+            console.log("CelluloRobot.setGoalPoseAndVelocity(): Warning, setGoalPoseAndVelocity() called but poseVelControlEnabled is not true, nothing will happen.")
     }
 
     signal nextGoalPoseVelRequested()   ///< Emitted when the controller needs the next goal pose and velocity; setGoalPoseAndVelocity() should be called by the user upon receiving this signal if a user control loop that cycles on each received pose of the robot is present
@@ -42,7 +44,7 @@ CelluloBluetooth{
 
     id: root
 
-    property bool poseVelControlEnabled: false                          ///< Whether the simultaneous pose and velocity controller is enabled
+
     property vector3d goalPose: Qt.vector3d(0,0,0)                      ///< Latest x, y, theta goal
     property vector3d goalVel: Qt.vector3d(0,0,0)                       ///< Latest Vx, Vy, w goal
     property bool velEstimateNeedsReset: true                           ///< If true, velocity estimate variables will be reset in the next cycle
@@ -130,45 +132,44 @@ CelluloBluetooth{
      * @brief Calculates goal velocities to simultaneously reach pose and velocity goals
      */
     function commandVel(){
-        if(poseVelControlEnabled){
-            nextGoalPoseVelRequested();
+        nextGoalPoseVelRequested();
 
-            //Goal velocity component
-            var commandVel = goalVel.times(kGoalVel);
+        //Goal velocity component
+        var commandVel = goalVel.times(kGoalVel);
 
-            //Goal velocity error component
-            var velErr = goalVel.minus(vxyw);
-            commandVel = commandVel.plus(velErr.times(kGoalVelErr));
+        //Goal velocity error component
+        var velErr = goalVel.minus(vxyw);
+        commandVel = commandVel.plus(velErr.times(kGoalVelErr));
 
-            //Goal pose error component
-            var poseErr = goalPose.minus(Qt.vector3d(x,y,theta));
-            while(poseErr.z > 180)
-                poseErr.z -= 360;
-            while(poseErr.z <= -180)
-                poseErr.z += 360;
-            poseErr.z = poseErr.z/180*Math.PI;
-            commandVel = commandVel.plus(poseErr.times(kGoalPoseErr));
+        //Goal pose error component
+        var poseErr = goalPose.minus(Qt.vector3d(x,y,theta));
+        while(poseErr.z > 180)
+            poseErr.z -= 360;
+        while(poseErr.z <= -180)
+            poseErr.z += 360;
+        poseErr.z = poseErr.z/180*Math.PI;
+        commandVel = commandVel.plus(poseErr.times(kGoalPoseErr));
 
-            //Clamp goal velocity
-            if(commandVel.x > 200)
-                commandVel.x = 200;
-            else if(commandVel.x < -200)
-                commandVel.x = -200;
-            if(commandVel.y > 200)
-                commandVel.y = 200;
-            else if(commandVel.y < -200)
-                commandVel.y = -200;
-            if(commandVel.z > 10)
-                commandVel.z = 10;
-            else if(commandVel.z < -10)
-                commandVel.z = -10;
+        //Clamp goal velocity
+        if(commandVel.x > 200)
+            commandVel.x = 200;
+        else if(commandVel.x < -200)
+            commandVel.x = -200;
+        if(commandVel.y > 200)
+            commandVel.y = 200;
+        else if(commandVel.y < -200)
+            commandVel.y = -200;
+        if(commandVel.z > 10)
+            commandVel.z = 10;
+        else if(commandVel.z < -10)
+            commandVel.z = -10;
 
-            setGoalVelocity(commandVel.x, commandVel.y, commandVel.z);
-        }
+        setGoalVelocity(commandVel.x, commandVel.y, commandVel.z);
     }
 
     onPoseChanged: {
         estimateVel();
-        commandVel();
+        if(poseVelControlEnabled)
+            commandVel();
     }
 }
