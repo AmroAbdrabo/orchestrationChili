@@ -9,7 +9,7 @@ Dependencies
 -------------
 
   - `nanosvg` to convert SVG paths into Cellulo zone paths, run `git submodule init && git submodule update` on the root directory to obtain it.
-  - [qml-bluetooth-extras](https://github.com/chili-epfl/qml-bluetooth-extras) must be installed to obtain the list of local Bluetooth adapters, see the repository for installation instructions
+  - [qml-bluetooth-extras](https://github.com/chili-epfl/qml-bluetooth-extras) must be installed to obtain the list of local Bluetooth adapters, see the repository for installation instructions.
 
 Desktop build
 -------------
@@ -165,6 +165,26 @@ Object that communicates with a Cellulo robot over Bluetooth. Inherits from `Cel
 >  - **void simpleVibrate(real iX, real iY, real iTheta, int period, int duration)**: Constantly vibrates the robot with given linear and angular intensities (scale same as linear and angular velocities) and with given period (ms, maximum is `0xFFFF`) for the given duration (ms, maximum is `0xFFFF`, set to `0` to vibrate forever).
 >  - **void vibrateOnMotion(real iCoeff, int period)**: Enables vibration against user motion with given period (ms, maximum is `0xFFFF`) with given intensity for all DOF. Intensity is given as a coefficient to be multiplied with the drive velocities.
 >  - **void clearHapticFeedback()**: Clears **vibrateOnMotion** and **simpleVibrate**
+
+### CelluloRobot
+
+Object that represents a Cellulo robot. Inherits from `CelluloBluetooth` and has all its functionalities; these are not listed below.
+
+**Properties:**
+
+>  - **poseVelControlPeriod** : `int` - Desired pose/velocity control period in ms, set to 0 for highest possible frequency, default 20
+>  - **vxyw** :                 `vector3d` - Robot's estimated velocity in mm/s, mm/s, rad/s; must not be set by the user
+>  - **kGoalVel** :             `vector3d` - Goal velocity coefficients when tracking pose/velocity, default (0.9, 0.9, 0.9), do not change if you don't have a good reason
+>  - **kGoalVelErr** :          `vector3d` - Goal velocity error coefficients when tracking pose/velocity, default (0.2, 0.2, 0.2), do not change if you don't have a good reason
+>  - **kGoalPoseErr** :          `vector3d` - Goal pose error coefficients when tracking pose/velocity, default (2.0, 2.0, 2.3), do not change if you don't have a good reason
+
+**Signals:**
+
+>  - **nextGoalPoseVelRequested()**: Emitted when the controller needs the next goal pose and velocity; `setGoalPoseAndVelocity()` should be called by the user upon receiving this signal if a user control loop that cycles on each received pose of the robot is present
+
+**Slots:**
+
+>  - **void setGoalPoseAndVelocity(real x, real y, real theta, real Vx, real Vy, real w)**: Sets the simultaneous pose and velocity goal of the robot, i.e the robot tries to be at the desired pose and move with the desired velocity while there; x/y are in mm, theta is in degrees, Vx/Vy are in mm/s, w is in rad/s
 
 ### CelluloBluetoothRelayServer [EXPERIMENTAL]
 

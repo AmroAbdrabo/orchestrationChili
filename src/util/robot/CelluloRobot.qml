@@ -11,11 +11,11 @@ CelluloBluetooth{
      * Public
      */
 
-    property int poseVelControlPeriod: 20       ///< Desired pose/velocity control period in ms, set to 0 for highest possible frequency
-    property vector3d vxyw: Qt.vector3d(0,0,0)  ///< Robot's estimated velocity in mm/s, mm/s, rad/s; must not be set by the user
+    property int poseVelControlPeriod: 20                   ///< Desired pose/velocity control period in ms, set to 0 for highest possible frequency
+    property vector3d vxyw: Qt.vector3d(0,0,0)              ///< Robot's estimated velocity in mm/s, mm/s, rad/s; must not be set by the user
 
-    property vector3d kGoalVel: Qt.vector3d(0.9,0.9,0.9)
-    property vector3d kGoalVelErr: Qt.vector3d(0.2,0.2,0.2)
+    property vector3d kGoalVel: Qt.vector3d(0.9,0.9,0.9)    ///< Goal velocity coefficients when tracking pose/velocity, do not change if you don't have a good reason
+    property vector3d kGoalVelErr: Qt.vector3d(0.2,0.2,0.2) ///< Goal velocity error coefficients when tracking pose/velocity, do not change if you don't have a good reason
     property vector3d kGoalPoseErr: Qt.vector3d(2,2,2.3)
 
     /**
@@ -34,7 +34,7 @@ CelluloBluetooth{
         poseVelControlEnabled = true;
     }
 
-    signal nextGoalPoseVelRequested()   ///< Emitted when the controller needs the next goal pose and velocity; setGoalPoseAndVelocity() should be called by the user upon receiving this signal
+    signal nextGoalPoseVelRequested()   ///< Emitted when the controller needs the next goal pose and velocity; setGoalPoseAndVelocity() should be called by the user upon receiving this signal if a user control loop that cycles on each received pose of the robot is present
 
     /**
      * Private
