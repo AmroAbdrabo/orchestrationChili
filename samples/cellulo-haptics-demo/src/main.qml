@@ -54,7 +54,7 @@ ApplicationWindow {
         "STONES": -1
     }
 
-    CelluloBluetooth{
+    CelluloRobot{
         id: robotComm
 
         onConnectionStatusChanged: {
