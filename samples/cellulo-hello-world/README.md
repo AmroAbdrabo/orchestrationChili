@@ -1,4 +1,19 @@
 cellulo-hello-world
 ===================
 
-This is the most basic Cellulo application to get you started. Can be built with Qt 5.6.2 on Ubuntu 16.04 for Ubuntu 16.04 or Android SDK 9 and NDK r10e. It needs [qml-cellulo](../../) to be installed. It is intended to be loaded into Qt Creator, built and deployed from there.
+This is the most basic Cellulo application to get you started.
+
+Tested with Qt 5.6.2 on Ubuntu 16.04 and Android SDK 25 and NDK r10e.
+
+Build
+-----
+
+1. Build and install [qml-cellulo](../../).
+1. Load into Qt Creator, click `Build Project`.
+
+Run
+---
+
+1. Click `Run` inside Qt Creator
+1. Connect to desired robot
+1. Robot should light up green when connected
