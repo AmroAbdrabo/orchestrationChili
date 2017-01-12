@@ -44,7 +44,7 @@ ApplicationWindow {
         }
     }
 
-    CelluloBluetooth{
+    CelluloRobot{
         id: robotComm
         macAddr: "00:06:66:74:43:00"
 
@@ -248,7 +248,7 @@ ApplicationWindow {
             text: "Follow the path"
             onClicked: {
                 robotComm.setCasualBackdriveAssistEnabled(false);
-                robotComm.polyBezierSetFromZone(zoneEngine.zoneDistance);
+                robotComm.polyBezierSetFromZone(zoneEngine.zoneClosestT);
                 robotComm.setGoalPolyBezier(parseFloat(vel.text), parseFloat(w.text));
             }
         }
@@ -257,7 +257,7 @@ ApplicationWindow {
             text: "Follow the path (aligned)"
             onClicked: {
                 robotComm.setCasualBackdriveAssistEnabled(false);
-                robotComm.polyBezierSetFromZone(zoneEngine.zoneDistance);
+                robotComm.polyBezierSetFromZone(zoneEngine.zoneClosestT);
                 robotComm.setGoalPolyBezierAligned(parseFloat(vel.text), parseFloat(theta.text), parseFloat(w.text));
             }
         }
