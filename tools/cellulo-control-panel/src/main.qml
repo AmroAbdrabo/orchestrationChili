@@ -63,6 +63,147 @@ ApplicationWindow {
             }
 
             GroupBox {
+                title: "Status"
+                width: gWidth
+
+                Column{
+                    spacing: 5
+
+                    Row{
+                        spacing: 5
+
+                        Text{
+                            text: "Battery State: " + CelluloBluetoothEnums.BatteryStateString(robotComm.batteryState)
+                        }
+                        Text{
+                            id: k0
+                            text: "K0"
+                            color: "black"
+                        }
+                        Text{
+                            id: k1
+                            text: "K1"
+                            color: "black"
+                        }
+                        Text{
+                            id: k2
+                            text: "K2"
+                            color: "black"
+                        }
+                        Text{
+                            id: k3
+                            text: "K3"
+                            color: "black"
+                        }
+                        Text{
+                            id: k4
+                            text: "K4"
+                            color: "black"
+                        }
+                        Text{
+                            id: k5
+                            text: "K5"
+                            color: "black"
+                        }
+                    }
+                    Row{
+                        spacing: 5
+
+                        Text{
+                            text: "Kidnapped?"
+                            color: robotComm.kidnapped ? "red" : "green"
+                        }
+                        Text{
+                            text: "X=" + robotComm.x.toFixed(2) + "mm Y=" + robotComm.y.toFixed(2) + "mm Theta=" + robotComm.theta.toFixed(1) + "deg"
+                        }
+                    }
+                }
+            }
+
+            GroupBox {
+                title: "Power"
+                width: gWidth
+
+                Row{
+                    spacing: 5
+
+                    Button{
+                        text: "Reset"
+                        onClicked: robotComm.reset();
+                    }
+                    Button{
+                        text: "Shutdown"
+                        onClicked: robotComm.shutdown();
+                    }
+                    Button {
+                        text: "Query Battery State"
+                        onClicked: robotComm.queryBatteryState();
+                    }
+                }
+            }
+
+            GroupBox{
+                title: "Camera image"
+                width: gWidth
+
+                Row{
+                    spacing: 5
+
+                    Image{
+                        id: cameraImage
+                        source: "image://cameraFrame/"
+                        cache: false
+                        function reload() {
+                            var oldSource = source;
+                            source = "";
+                            source = oldSource;
+                            if(grabCamFramesContinuously.checked)
+                                robotComm.requestFrame();
+                        }
+
+                        fillMode: Image.PreserveAspectFit
+                        width: gWidth*0.4 - 10
+                        height: width/188*120
+                    }
+
+                    Column{
+                        spacing: 5
+
+                        Button{
+                            text: "Grab one frame"
+                            onClicked: robotComm.requestFrame()
+                        }
+
+                        CheckBox{
+                            id: grabCamFramesContinuously
+                            text: "Grab frames continuously"
+                            checked: false
+                            onCheckedChanged:{
+                                if(checked)
+                                    robotComm.requestFrame();
+                            }
+                        }
+
+                        ProgressBar{
+                            value: robotComm.cameraImageProgress
+                            width: gWidth*0.6 - 10
+                        }
+
+                        Row{
+                            TextField{
+                                id: exposureTime
+                                placeholderText: "Exp. time (pixels)"
+                            }
+                            Button{
+                                text: "Set (0 for autoexposure)"
+                                onClicked: robotComm.setExposureTime(parseInt(exposureTime.text))
+                            }
+                        }
+                    }
+                }
+            }
+
+            GroupBox {
                 title: "Color Effects"
                 width: gWidth
 
@@ -159,117 +300,11 @@ ApplicationWindow {
             }
 
             GroupBox {
-                title: "Power"
-                width: gWidth
-
-                Row{
-                    spacing: 5
-
-                    Button{
-                        text: "Reset"
-                        onClicked: robotComm.reset();
-                    }
-                    Button{
-                        text: "Shutdown"
-                        onClicked: robotComm.shutdown();
-                    }
-                    Button {
-                        text: "Query Battery State"
-                        onClicked: robotComm.queryBatteryState();
-                    }
-                }
-            }
-
-            GroupBox {
                 title: "Locomotion"
                 width: gWidth
 
                 Column{
                     anchors.fill: parent
-
-                    RowLayout{
-                        spacing: 5
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-
-                        Label{
-                            text: "Motor 1 output:"
-                        }
-                        Slider{
-                            id: motor1Slider
-                            Layout.fillWidth: true
-                            minimumValue: -0xFFF
-                            maximumValue: 0xFFF
-                            stepSize: 1
-                            value: 0
-                            style: SliderStyle {
-                                groove: Rectangle {
-                                    implicitHeight: 8
-                                }
-                            }
-                            onValueChanged: robotComm.setMotor1Output(value)
-                        }
-                        Button{
-                            text: "Zero"
-                            onClicked: motor1Slider.value = 0
-                        }
-                    }
-
-                    RowLayout{
-                        spacing: 5
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-
-                        Label{
-                            text: "Motor 2 output:"
-                        }
-                        Slider{
-                            id: motor2Slider
-                            Layout.fillWidth: true
-                            minimumValue: -0xFFF
-                            maximumValue: 0xFFF
-                            stepSize: 1
-                            value: 0
-                            style: SliderStyle {
-                                groove: Rectangle {
-                                    implicitHeight: 8
-                                }
-                            }
-                            onValueChanged: robotComm.setMotor2Output(value)
-                        }
-                        Button{
-                            text: "Zero"
-                            onClicked: motor2Slider.value = 0
-                        }
-                    }
-
-                    RowLayout{
-                        spacing: 5
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-
-                        Label{
-                            text: "Motor 3 output:"
-                        }
-                        Slider{
-                            id: motor3Slider
-                            Layout.fillWidth: true
-                            minimumValue: -0xFFF
-                            maximumValue: 0xFFF
-                            stepSize: 1
-                            value: 0
-                            style: SliderStyle {
-                                groove: Rectangle {
-                                    implicitHeight: 8
-                                }
-                            }
-                            onValueChanged: robotComm.setMotor3Output(value)
-                        }
-                        Button{
-                            text: "Zero"
-                            onClicked: motor3Slider.value = 0
-                        }
-                    }
 
                     Row{
                         spacing: 15
@@ -526,64 +561,6 @@ ApplicationWindow {
                 }
             }
 
-            GroupBox {
-                title: "Status"
-                width: gWidth
-
-                Column{
-                    spacing: 5
-
-                    Row{
-                        spacing: 5
-
-                        Text{
-                            text: "Battery State: " + CelluloBluetoothEnums.BatteryStateString(robotComm.batteryState)
-                        }
-                        Text{
-                            id: k0
-                            text: "K0"
-                            color: "black"
-                        }
-                        Text{
-                            id: k1
-                            text: "K1"
-                            color: "black"
-                        }
-                        Text{
-                            id: k2
-                            text: "K2"
-                            color: "black"
-                        }
-                        Text{
-                            id: k3
-                            text: "K3"
-                            color: "black"
-                        }
-                        Text{
-                            id: k4
-                            text: "K4"
-                            color: "black"
-                        }
-                        Text{
-                            id: k5
-                            text: "K5"
-                            color: "black"
-                        }
-                    }
-                    Row{
-                        spacing: 5
-
-                        Text{
-                            text: "Kidnapped?"
-                            color: robotComm.kidnapped ? "red" : "green"
-                        }
-                        Text{
-                            text: "X=" + robotComm.x.toFixed(2) + "mm Y=" + robotComm.y.toFixed(2) + "mm Theta=" + robotComm.theta.toFixed(1) + "deg"
-                        }
-                    }
-                }
-            }
-
             GroupBox{
                 title: "Profiling"
                 width: gWidth
@@ -622,67 +599,6 @@ ApplicationWindow {
                         Button{
                             text: "Set"
                             onClicked: robotComm.setPoseBcastPeriod(parseFloat(poseBcastPeriodField.text))
-                        }
-                    }
-                }
-            }
-
-            GroupBox{
-                title: "Camera image"
-                width: gWidth
-
-                Row{
-                    spacing: 5
-
-                    Image{
-                        id: cameraImage
-                        source: "image://cameraFrame/"
-                        cache: false
-                        function reload() {
-                            var oldSource = source;
-                            source = "";
-                            source = oldSource;
-                            if(grabCamFramesContinuously.checked)
-                                robotComm.requestFrame();
-                        }
-
-                        fillMode: Image.PreserveAspectFit
-                        width: gWidth*0.4 - 10
-                        height: width/188*120
-                    }
-
-                    Column{
-                        spacing: 5
-
-                        Button{
-                            text: "Grab one frame"
-                            onClicked: robotComm.requestFrame()
-                        }
-
-                        CheckBox{
-                            id: grabCamFramesContinuously
-                            text: "Grab frames continuously"
-                            checked: false
-                            onCheckedChanged:{
-                                if(checked)
-                                    robotComm.requestFrame();
-                            }
-                        }
-
-                        ProgressBar{
-                            value: robotComm.cameraImageProgress
-                            width: gWidth*0.6 - 10
-                        }
-
-                        Row{
-                            TextField{
-                                id: exposureTime
-                                placeholderText: "Exp. time (pixels)"
-                            }
-                            Button{
-                                text: "Set (0 for autoexposure)"
-                                onClicked: robotComm.setExposureTime(parseInt(exposureTime.text))
-                            }
                         }
                     }
                 }
