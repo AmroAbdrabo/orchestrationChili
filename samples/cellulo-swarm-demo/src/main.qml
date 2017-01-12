@@ -29,23 +29,18 @@ ApplicationWindow {
 
     property var robots: []
 
-    property real bcastPeriod: 100
-    property real bcastPeriodMin: 50
-    property real bcastPeriodMax: 200
-    property real vMu: 0
-
     Repeater{
         model: numRobots
 
-        CelluloBluetooth{
+        CelluloRobot{
             id: robot
 
             macAddr: QMLCache.read("robot" + index + "MacAddr")
             localAdapterMacAddr: QMLCache.read("robot" + index + "LocalAdapterMacAddr")
 
             function init(){
-                setPoseBcastPeriod(bcastPeriod);
-                setTimestampingEnabled(true);
+                setPoseBcastPeriod(100);
+                setTimestampingEnabled(false);
                 setCasualBackdriveAssistEnabled(false);
                 clearHapticFeedback();
                 clearTracking();
@@ -85,101 +80,7 @@ ApplicationWindow {
                 return false;
             }
 
-            property vector3d vxyw: Qt.vector3d(0,0,0)
-
-            readonly property real maxXYVel: 1000//500
-            readonly property real maxW: 50//25
-
-            property bool needsReset: true
-            property vector3d lastXYTheta: Qt.vector3d(0,0,0)
-            property real lastTime: 0
-
-            onKidnappedChanged: needsReset = true
-
-            function calcVel(){
-                var newTime = lastTimestamp;
-                var deltaTime = newTime - lastTime;
-                var newXYTheta = Qt.vector3d(x,y,theta);
-
-                var newVxyw = newXYTheta.minus(lastXYTheta);
-                while(newVxyw.z <= -180)
-                    newVxyw.z += 360;
-                while(newVxyw.z > 180)
-                    newVxyw.z -= 360;
-                newVxyw.z = newVxyw.z*Math.PI/180;
-
-                newVxyw = newVxyw.times(1000/deltaTime);
-                if(bcastPeriodMin < deltaTime && deltaTime < bcastPeriodMax){
-                    if(needsReset){
-                        vxyw = newVxyw;
-                        needsReset = false;
-                    }
-                    else{
-                        vxyw = vxyw.times(vMu).plus(newVxyw.times(1 - vMu));
-                    }
-                }
-                else if(bcastPeriodMax <= deltaTime){
-                    needsReset = true;
-                    vxyw = newVxyw;
-                }
-                else
-                    needsReset = true;
-
-                if(vxyw.x > maxXYVel)
-                    vxyw.x = maxXYVel;
-                else if(vxyw.x < -maxXYVel)
-                    vxyw.x = -maxXYVel;
-                if(vxyw.y > maxXYVel)
-                    vxyw.y = maxXYVel;
-                else if(vxyw.y < -maxXYVel)
-                    vxyw.y = -maxXYVel;
-                if(vxyw.z > maxW)
-                    vxyw.z = maxW;
-                else if(vxyw.z < -maxW)
-                    vxyw.z = -maxW;
-
-                lastXYTheta = newXYTheta;
-                lastTime = newTime;
-            }
-
-            property vector3d goalXYTheta: Qt.vector3d(0,0,0);
-
-            /*property vector3d goalVxyw: Qt.vector3d(0,0,0);
-
-            readonly property real trajEdge: 200
-            readonly property real trajDuration: 16000
-            readonly property real trajEdgeDuration: trajDuration/4
-            readonly property real trajLinearVel: trajEdge/trajEdgeDuration*1000
-            readonly property vector2d trajCorner: Qt.vector2d(600, 300);
-
-            function calcTrajGoal(){
-                var time = (new Date()).getTime() % trajDuration;
-                var trajProgress = 0;
-
-                if(time < trajEdgeDuration){
-                    trajProgress = time/trajEdgeDuration;
-                    goalXYTheta = Qt.vector3d(trajCorner.x + trajEdge*trajProgress, trajCorner.y, 0);
-                    goalVxyw = Qt.vector3d(trajLinearVel, 0, 0);
-                }
-                else if(time < 2*trajEdgeDuration){
-                    time -= trajEdgeDuration;
-                    trajProgress = time/trajEdgeDuration;
-                    goalXYTheta = Qt.vector3d(trajCorner.x + trajEdge, trajCorner.y + trajEdge*trajProgress, 0);
-                    goalVxyw = Qt.vector3d(0, trajLinearVel, 0);
-                }
-                else if(time < 3*trajEdgeDuration){
-                    time -= 2*trajEdgeDuration;
-                    trajProgress = time/trajEdgeDuration;
-                    goalXYTheta = Qt.vector3d(trajCorner.x + trajEdge - trajEdge*trajProgress, trajCorner.y + trajEdge, 0);
-                    goalVxyw = Qt.vector3d(-trajLinearVel, 0, 0);
-                }
-                else{
-                    time -= 3*trajEdgeDuration;
-                    trajProgress = time/trajEdgeDuration;
-                    goalXYTheta = Qt.vector3d(trajCorner.x, trajCorner.y + trajEdge - trajEdge*trajProgress, 0);
-                    goalVxyw = Qt.vector3d(0, -trajLinearVel, 0);
-                }
-            }*/
+            property vector3d goalXYTheta: Qt.vector3d(0,0,0)
 
             function calcLatticeGoal(){
                 var myX = index % nearestSquareEdge;
@@ -197,84 +98,7 @@ ApplicationWindow {
                 goalXYTheta = Qt.vector3d(latticePose.x + myVec.x, latticePose.y + myVec.y, latticePose.z);
             }
 
-            /*readonly property vector3d kGoalVelXYW: Qt.vector3d(0.9,0.9,0.9)
-            readonly property vector3d kCommandXYTheta: Qt.vector3d(2,2,0.1)
-            readonly property vector3d kCommandVxyw: Qt.vector3d(0.2,0.2,0.2)
-
-            function calcCommandWithVel(){
-                var xythetaDiff = goalXYTheta.minus(Qt.vector3d(x,y,theta));
-                while(xythetaDiff.z > 180)
-                    xythetaDiff.z -= 360;
-                while(xythetaDiff.z <= -180)
-                    xythetaDiff.z += 360;
-                var Pxytheta = xythetaDiff.times(kCommandXYTheta);
-                var VxywDiff = goalVxyw.minus(vxyw);
-                var PVxyw = VxywDiff.times(kCommandVxyw);
-
-                commandVxyw = goalVxyw.times(kGoalVelXYW);
-                commandVxyw = commandVxyw.plus(Pxytheta);
-                commandVxyw = commandVxyw.plus(PVxyw);
-
-                if(commandVxyw.x > 200)
-                    commandVxyw.x = 200;
-                else if(commandVxyw.x < -200)
-                    commandVxyw.x = -200;
-                if(commandVxyw.y > 200)
-                    commandVxyw.y = 200;
-                else if(commandVxyw.y < -200)
-                    commandVxyw.y = -200;
-                if(commandVxyw.z > 10)
-                    commandVxyw.z = 10;
-                else if(commandVxyw.z < -10)
-                    commandVxyw.z = -10;
-            }*/
-
-            property vector3d commandVxyw: Qt.vector3d(0,0,0)
-
-            readonly property vector3d kPCommandWithoutVelXYTheta: Qt.vector3d(2.5, 2.5, 0.05)
-            readonly property vector3d kDCommandWithoutVelXYTheta: Qt.vector3d(0.3, 0.3, 0.2)
-
-            readonly property vector3d smallkPCommandWithoutVelXYTheta: Qt.vector3d(0.1, 0.1, 0.002)
-
             property bool reached: false
-
-            function calcCommandWithoutVel(){
-                if(go.checked){
-                    var xythetaDiff = goalXYTheta.minus(Qt.vector3d(x,y,theta));
-                    while(xythetaDiff.z > 180)
-                        xythetaDiff.z -= 360;
-                    while(xythetaDiff.z <= -180)
-                        xythetaDiff.z += 360;
-                    var Pxytheta = xythetaDiff.times(kPCommandWithoutVelXYTheta);
-                    var Dxytheta = vxyw.times(-1).times(kDCommandWithoutVelXYTheta);
-
-                    if(Qt.vector2d(xythetaDiff.x, xythetaDiff.y).length() < 5 && Math.abs(xythetaDiff.z) < 5){
-                        Pxytheta = xythetaDiff.times(smallkPCommandWithoutVelXYTheta);
-                        Dxytheta = Qt.vector3d(0,0,0);
-
-                        reached = true;
-                    }
-                    else
-                        reached = false;
-
-                    commandVxyw = Pxytheta.plus(Dxytheta);
-
-                    if(commandVxyw.x > 200)
-                        commandVxyw.x = 200;
-                    else if(commandVxyw.x < -200)
-                        commandVxyw.x = -200;
-                    if(commandVxyw.y > 200)
-                        commandVxyw.y = 200;
-                    else if(commandVxyw.y < -200)
-                        commandVxyw.y = -200;
-                    if(commandVxyw.z > 10)
-                        commandVxyw.z = 10;
-                    else if(commandVxyw.z < -10)
-                        commandVxyw.z = -10;
-                }
-                else
-                    commandVxyw = Qt.vector3d(0,0,0);
-            }
 
             function calcUserInput(){
                 if(touchedRobot1 === robot){
@@ -307,18 +131,32 @@ ApplicationWindow {
                 }
             }
 
+            function calcReached(){
+                var xythetaDiff = goalXYTheta.minus(Qt.vector3d(x,y,theta));
+                while(xythetaDiff.z > 180)
+                    xythetaDiff.z -= 360;
+                while(xythetaDiff.z <= -180)
+                    xythetaDiff.z += 360;
+                reached = (Qt.vector2d(xythetaDiff.x, xythetaDiff.y).length() < 5 && Math.abs(xythetaDiff.z) < 5);
+            }
+
             onPoseChanged: {
-                calcVel();
-
                 calcUserInput();
-
-                //calcTrajGoal();
                 calcLatticeGoal();
+                calcReached();
 
-                //calcCommandWithVel();
-                calcCommandWithoutVel();
-
-                setGoalVelocity(commandVxyw.x, commandVxyw.y, commandVxyw.z);
+                if(touchedRobot1 === robot || touchedRobot2 === robot){
+                    setGoalVelocity(0,0,0);
+                }
+                else if(go.checked){
+                    while(goalXYTheta.z >= 360)
+                        goalXYTheta.z -= 360;
+                    while(goalXYTheta.z < 0)
+                        goalXYTheta.z += 360;
+                    setGoalPose(goalXYTheta.x, goalXYTheta.y, goalXYTheta.z, 200, 10);
+                }
+                else
+                    setGoalVelocity(0,0,0);
             }
         }
 
