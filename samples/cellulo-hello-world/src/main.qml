@@ -29,13 +29,13 @@ ApplicationWindow {
             "00:06:66:74:46:60",
             "00:06:66:74:48:A7"
         ]
-        onConnectRequested: robotComm.macAddr = selectedAddress
-        onDisconnectRequested: robotComm.disconnectFromServer()
-        connectionStatus: robotComm.connectionStatus
+        onConnectRequested: robot.macAddr = selectedAddress
+        onDisconnectRequested: robot.disconnectFromServer()
+        connectionStatus: robot.connectionStatus
     }
 
-    CelluloBluetooth{
-        id: robotComm
+    CelluloRobot{
+        id: robot
 
         onConnectionStatusChanged: {
 
