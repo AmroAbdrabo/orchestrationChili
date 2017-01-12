@@ -60,7 +60,7 @@ ApplicationWindow {
             property real gridSpacing: 0.5
 
             source: robotComm.kidnapped ? "../assets/redHexagon.svg" : "../assets/greenHexagon.svg"
-            rotation: -robotComm.theta //QML wants clockwise angle for some reason
+            rotation: robotComm.theta
             x: robotComm.x*gridSpacing*parent.scaleCoeff - width/2
             y: robotComm.y*gridSpacing*parent.scaleCoeff - height/2
             sourceSize.width: 55*parent.scaleCoeff
@@ -78,7 +78,7 @@ ApplicationWindow {
         anchors.margins: page.robotHalf
     }
 
-    CelluloBluetooth{
+    CelluloRobot{
         id: robotComm
         onConnectionStatusChanged:{
             if(connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected)

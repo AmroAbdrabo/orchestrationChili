@@ -1,9 +1,20 @@
-cellulo-control-panel
-=====================
+cellulo-localization-demo
+=========================
 
-This is a debug tool to view the robot's pose on an A4 paper whose top left
-corner is the (0,0) coordinate. It supports desktop and Android and was tested
-with Qt 5.4.1, Ubuntu 14.04, Android SDK 17 and Android NDK r10e. It needs
-[qml-cellulo](../../) to be installed. It is intended to be loaded into Qt
-Creator, built and deployed from there.
+Demonstrates the localization capability of the Cellulo robots.
 
+Tested with Qt 5.6.2 on Ubuntu 16.04 and Android SDK 25 and NDK r10e.
+
+Build
+-----
+
+1. Build and install [qml-cellulo](../../).
+1. Load into Qt Creator, click `Build Project`.
+
+Run
+---
+
+1. Print [assets/testA4.pdf](assets/testA4.pdf)
+1. Click `Run` inside Qt Creator
+1. Connect to a robot
+1. Virtual representation of the robot should be in almost perfect synchrony with the pose of the physical robot
