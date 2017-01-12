@@ -68,56 +68,51 @@ ApplicationWindow {
 
             Row{
                 Label{
-                    text: "X:"
+                    text: "X goal (mm):"
                 }
                 TextField{
                     id: xGoalField
                     text: "105"
-                    placeholderText: "X Goal"
                 }
             }
 
             Row{
                 Label{
-                    text: "Y:"
+                    text: "Y goal (mm):"
                 }
                 TextField{
                     id: yGoalField
                     text: "148.5"
-                    placeholderText: "Y Goal"
                 }
             }
 
             Row{
                 Label{
-                    text: "Theta:"
+                    text: "Theta goal (deg):"
                 }
                 TextField{
                     id: thetaGoalField
                     text: "30"
-                    placeholderText: "Theta Goal"
                 }
             }
 
             Row{
                 Label{
-                    text: "Linear max velocity:"
+                    text: "Linear max vel (mm/s):"
                 }
                 TextField{
                     id: linMaxVelField
                     text: "150"
-                    placeholderText: "Linear Max Velocity (mm/s)"
                 }
             }
 
             Row{
                 Label{
-                    text: "Theta:"
+                    text: "Angular max vel (rad/s):"
                 }
                 TextField{
                     id: angMaxVelField
                     text: "5"
-                    placeholderText: "Angular Max Velocity (rad/s)"
                 }
             }
 
@@ -130,12 +125,13 @@ ApplicationWindow {
         }
     }
 
-    CelluloBluetooth{
+    CelluloRobot{
         id: robotComm
         onConnectionStatusChanged: {
             if(connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected)
                 setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "#0F0F0F", 0);
         }
-        onBootCompleted: setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "#0F0F0F", 0);
+        onBootCompleted: setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "#0F0F0F", 0)
+        onTrackingGoalReached: setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, Qt.rgba(Math.random(), Math.random(), Math.random(), 1.0), 0)
     }
 }
