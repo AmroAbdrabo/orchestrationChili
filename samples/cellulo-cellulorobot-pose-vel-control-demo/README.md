@@ -1,4 +1,22 @@
 cellulo-cellulorobot-pose-vel-control-demo
 ==========================================
 
-Demonstrates the simultaneous pose and velocity controller within `CelluloRobot.qml` that is a loop over Bluetooth. Needs at least 400 mm by 400 mm playground, one is already provided: [assets/map-dotted.pdf](assets/map-dotted.pdf). The connected robot moves on a circle while turning around itself; self rotation is clockwise during the first half of the motion and counter-clockwise during the second half. Can be built with Qt 5.6.2 on Ubuntu 16.04 for Ubuntu 16.04. It needs [qml-cellulo](../../) to be installed. It is intended to be loaded into Qt Creator, built and deployed from there.
+Demonstrates the simultaneous pose and velocity controller within `CelluloRobot.qml` that is a loop over Bluetooth.
+
+Tested with Qt 5.6.2 on Ubuntu 16.04 and Android SDK 25 and NDK r10e.
+
+Build
+-----
+
+1. Build and install [qml-cellulo](../../).
+1. Load into Qt Creator, click `Build Project`.
+
+Run
+---
+
+1. Print [assets/map-dotted.pdf](assets/map-dotted.pdf) or any other playground that is at least 400mm by 400mm
+1. Click `Run` inside Qt Creator
+1. Connect to a robot
+1. Check `Go`
+1. Robot should move on a circle while turning around itself; self rotation is clockwise during the first half of the motion and counter-clockwise during the second half
+1. Robot can be kidnapped and put elsewhere, should still converge to the trajectory

@@ -10,8 +10,8 @@ ApplicationWindow {
     id: root
 
     visible: true
-    width: 640
-    height: 480
+    minimumHeight: height
+    minimumWidth: width
 
     Column{
         spacing: 5
@@ -56,6 +56,12 @@ ApplicationWindow {
         Text{ text: "Vx error = " + (robot.vxyw.x - goalVel.x).toFixed(2) }
         Text{ text: "Vy error = " + (robot.vxyw.y - goalVel.y).toFixed(2) }
         Text{ text: "w error = " + (robot.vxyw.z - goalVel.z).toFixed(2) }
+
+        CheckBox{
+            id: go
+            text: "Go"
+            checked: false
+        }
 
         Item{
             width: page.width + page.physicalRobotWidth*page.scaleCoeff
@@ -117,12 +123,16 @@ ApplicationWindow {
     CelluloRobot{
         id: robot
 
-        poseVelControlEnabled: true
+        poseVelControlEnabled: go.checked
         poseVelControlPeriod: 50
 
         onNextGoalPoseVelRequested: {
-            calcGoalPoseVel();
-            setGoalPoseAndVelocity(root.goalPose.x, root.goalPose.y, root.goalPose.z, root.goalVel.x, root.goalVel.y, root.goalVel.z);
+            if(poseVelControlEnabled){
+                calcGoalPoseVel();
+                setGoalPoseAndVelocity(root.goalPose.x, root.goalPose.y, root.goalPose.z, root.goalVel.x, root.goalVel.y, root.goalVel.z);
+            }
+            else
+                setGoalVelocity(0,0,0);
         }
     }
 
