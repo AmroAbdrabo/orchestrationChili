@@ -169,7 +169,7 @@ ApplicationWindow {
         }
     }
 
-    CelluloBluetooth{
+    CelluloRobot{
         id: robotComm1
 
         property string robotName: "robot1"
@@ -180,7 +180,7 @@ ApplicationWindow {
         onZoneValueChanged: respondToZoneChange(robotComm1, zone, value)
     }
 
-    CelluloBluetooth{
+    CelluloRobot{
         id: robotComm2
 
         property string robotName: "robot2"
