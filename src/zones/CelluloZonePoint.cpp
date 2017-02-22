@@ -24,6 +24,8 @@
 
 #include "CelluloZonePoint.h"
 
+#include <cmath>
+
 /**
  * CelluloZonePoint
  */

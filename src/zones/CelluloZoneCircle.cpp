@@ -25,6 +25,8 @@
 #include "CelluloZoneCircle.h"
 #include <QQmlEngine>
 
+#include <cmath>
+
 /**
  * CelluloZoneCircle
  */
