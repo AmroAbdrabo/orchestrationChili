@@ -24,31 +24,55 @@
 
 #include "CelluloRelayClient.h"
 
-#include "CelluloRelayServer.h"
-
-CelluloRelayClient::CelluloRelayClient(QQuickItem* parent) :
-    QQuickItem(parent),
-    serverSocket(this)
+CelluloRelayClient::CelluloRelayClient(QQuickItem* parent, CelluloRelayCommon::PROTOCOL protocol) :
+    QQuickItem(parent)
 {
     lastMacAddr = "";
     currentRobot = -1;
-    serverAddress = "localhost";
-    port = CelluloRelayServer::DEFAULT_RELAY_PORT;
 
-    connect(&serverSocket, SIGNAL(connected()), this, SIGNAL(connected()));
-    connect(&serverSocket, SIGNAL(disconnected()), this, SIGNAL(disconnected()));
-    connect(&serverSocket, static_cast<void (QTcpSocket::*)(QTcpSocket::SocketError)>(&QTcpSocket::error),
-            [=](QTcpSocket::SocketError error){ qDebug() << "CelluloRelayClient serverSocket error: " << error; });
-    connect(&serverSocket, SIGNAL(readyRead()), this, SLOT(incomingServerData()));
+    this->protocol = protocol;
+    switch(protocol){
+        case CelluloRelayCommon::PROTOCOL::LOCAL:
+            serverAddress = "cellulo_relay";
+            port = -1;
+            serverSocket = new QLocalSocket(this);
+            connect((QLocalSocket*)serverSocket, static_cast<void (QLocalSocket::*)(QLocalSocket::LocalSocketError)>(&QLocalSocket::error),
+                    [=](QLocalSocket::LocalSocketError error){ qDebug() << "CelluloRelayClient serverSocket error: " << error; });
+            break;
+
+        case CelluloRelayCommon::PROTOCOL::TCP:
+            serverAddress = "localhost";
+            port = CelluloRelayCommon::DEFAULT_RELAY_PORT;
+            serverSocket = new QTcpSocket(this);
+            connect((QTcpSocket*)serverSocket, static_cast<void (QTcpSocket::*)(QTcpSocket::SocketError)>(&QTcpSocket::error),
+                    [=](QTcpSocket::SocketError error){ qDebug() << "CelluloRelayClient serverSocket error: " << error; });
+            break;
+    }
+
+    connect(serverSocket, SIGNAL(connected()), this, SIGNAL(connected()));
+    connect(serverSocket, SIGNAL(disconnected()), this, SIGNAL(disconnected()));
+    connect(serverSocket, SIGNAL(readyRead()), this, SLOT(incomingServerData()));
 }
 
 CelluloRelayClient::~CelluloRelayClient(){
-    serverSocket.close();
+    serverSocket->close();
+    delete serverSocket;
 }
 
 void CelluloRelayClient::setServerAddress(QString serverAddress){
     if(serverAddress != this->serverAddress){
-        if(serverSocket.state() != QTcpSocket::UnconnectedState)
+        bool unconnected = false;
+        switch(protocol){
+            case CelluloRelayCommon::PROTOCOL::LOCAL:
+                unconnected = ((QLocalSocket*)serverSocket)->state() != QLocalSocket::UnconnectedState;
+                break;
+
+            case CelluloRelayCommon::PROTOCOL::TCP:
+                unconnected = ((QTcpSocket*)serverSocket)->state() != QTcpSocket::UnconnectedState;
+                break;
+        }
+
+        if(!unconnected)
             qWarning() << "CelluloRelayClient::setServerAddress(): Can only set server address while disconnected.";
         else{
             this->serverAddress = serverAddress;
@@ -58,6 +82,11 @@ void CelluloRelayClient::setServerAddress(QString serverAddress){
 }
 
 void CelluloRelayClient::setPort(int port){
+    if(protocol != CelluloRelayCommon::PROTOCOL::TCP){
+        qWarning() << "CelluloRelayClient::setPort(): Port only meaningful for TCP sockets.";
+        return;
+    }
+
     if(port < 0){
         qWarning() << "CelluloRelayClient::setPort(): port given was negative, setting to 0.";
         port = 0;
@@ -68,7 +97,7 @@ void CelluloRelayClient::setPort(int port){
     }
 
     if(port != this->port){
-        if(serverSocket.state() != QTcpSocket::UnconnectedState)
+        if(((QTcpSocket*)serverSocket)->state() != QTcpSocket::UnconnectedState)
             qWarning() << "CelluloRelayClient::setPort(): Can only set port while disconnected.";
         else{
             this->port = port;
@@ -79,12 +108,28 @@ void CelluloRelayClient::setPort(int port){
 
 void CelluloRelayClient::connectToServer(){
     lastMacAddr = "";
-    serverSocket.connectToHost(serverAddress, port);
+    switch(protocol){
+        case CelluloRelayCommon::PROTOCOL::LOCAL:
+            ((QLocalSocket*)serverSocket)->connectToServer(serverAddress);
+            break;
+
+        case CelluloRelayCommon::PROTOCOL::TCP:
+            ((QTcpSocket*)serverSocket)->connectToHost(serverAddress, port);
+            break;
+    }
 }
 
 void CelluloRelayClient::disconnectFromServer(){
     lastMacAddr = "";
-    serverSocket.disconnectFromHost();
+    switch(protocol){
+        case CelluloRelayCommon::PROTOCOL::LOCAL:
+            ((QLocalSocket*)serverSocket)->disconnectFromServer();
+            break;
+
+        case CelluloRelayCommon::PROTOCOL::TCP:
+            ((QTcpSocket*)serverSocket)->disconnectFromHost();
+            break;
+    }
 }
 
 void CelluloRelayClient::addRobot(CelluloBluetooth* robot){
@@ -95,7 +140,7 @@ void CelluloRelayClient::addRobot(CelluloBluetooth* robot){
 }
 
 void CelluloRelayClient::incomingServerData(){
-    QByteArray message = serverSocket.readAll();
+    QByteArray message = serverSocket->readAll();
 
     for(int i=0; i<message.length(); i++)
 
@@ -181,7 +226,7 @@ void CelluloRelayClient::sendToServer(QString macAddr, CelluloBluetoothPacket co
         setAddressPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeSetAddress);
         setAddressPacket.load(fifthOctet);
         setAddressPacket.load(sixthOctet);
-        serverSocket.write(setAddressPacket.getCmdSendData());
+        serverSocket->write(setAddressPacket.getCmdSendData());
 
         lastMacAddr = macAddr;
     }
@@ -191,5 +236,5 @@ void CelluloRelayClient::sendToServer(QString macAddr, CelluloBluetoothPacket co
         lastMacAddr = "";
 
     //Send actual packet
-    serverSocket.write(packet.getCmdSendData());
+    serverSocket->write(packet.getCmdSendData());
 }

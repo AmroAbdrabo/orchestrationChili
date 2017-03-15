@@ -26,11 +26,15 @@
 #define CELLULORELAYCLIENT_H
 
 #include <QQuickItem>
+#include <QIODevice>
 #include <QTcpServer>
 #include <QTcpSocket>
+#include <QLocalServer>
+#include <QLocalSocket>
 
-#include "CelluloBluetoothPacket.h"
 #include "CelluloBluetooth.h"
+#include "CelluloBluetoothPacket.h"
+#include "CelluloRelayCommon.h"
 
 class CelluloBluetooth;
 
@@ -50,8 +54,9 @@ public:
      * @brief Creates a new CelluloRelayClient with the given QML parent
      *
      * @param parent The QML parent
+     * @param protocol Underlying transfer protocol to use
      */
-    CelluloRelayClient(QQuickItem* parent = 0);
+    CelluloRelayClient(QQuickItem* parent = 0, CelluloRelayCommon::PROTOCOL protocol = CelluloRelayCommon::PROTOCOL::LOCAL);
 
     /**
      * @brief Destroys this CelluloRelayClient
@@ -149,16 +154,18 @@ private:
      */
     void sendToServer(QString macAddr, CelluloBluetoothPacket const& packet);
 
-    QString serverAddress;               ///< Server's address, e.g "127.0.0.1"
-    quint16 port;                        ///< Port to connect to on the server
+    CelluloRelayCommon::PROTOCOL protocol; ///< Underlying transfer protocol
 
-    QTcpSocket serverSocket;             ///< TCP socket to server that handles communication
-    CelluloBluetoothPacket serverPacket; ///< Server's incoming packet
+    QString serverAddress;                       ///< Server's address, e.g "127.0.0.1"
+    quint16 port;                                ///< Port to connect to on the server
 
-    int currentRobot;                    ///< Current robot index to relay messages to, set by a CmdPacketTypeSetAddress
-    QList<CelluloBluetooth*> robots;     ///< List of robots to relay to/from
+    QIODevice* serverSocket;                     ///< Socket to server that handles communication
+    CelluloBluetoothPacket serverPacket;         ///< Server's incoming packet
 
-    QString lastMacAddr;                 ///< MAC address of the last CmdPacketTypeSetAddress packet sent to the server
+    int currentRobot;                            ///< Current robot index to relay messages to, set by a CmdPacketTypeSetAddress
+    QList<CelluloBluetooth*> robots;             ///< List of robots to relay to/from
+
+    QString lastMacAddr;                         ///< MAC address of the last CmdPacketTypeSetAddress packet sent to the server
 
 };
 

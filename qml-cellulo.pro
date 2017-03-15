@@ -18,6 +18,7 @@ linux:!android {
 HEADERS += \
     src/CelluloPlugin.h \
     src/comm/CelluloBluetooth.h \
+    src/comm/CelluloRelayCommon.h \
     src/comm/CelluloRelayServer.h \
     src/comm/CelluloRelayClient.h \
     src/comm/CelluloBluetoothEMP.h \
@@ -46,6 +47,7 @@ HEADERS += \
 SOURCES += \
     src/CelluloPlugin.cpp \
     src/comm/CelluloBluetooth.cpp \
+    src/comm/CelluloRelayCommon.cpp \
     src/comm/CelluloRelayServer.cpp \
     src/comm/CelluloRelayClient.cpp \
     src/comm/CelluloBluetoothEMP.cpp \
