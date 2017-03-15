@@ -37,25 +37,26 @@ ApplicationWindow {
         "00:06:66:74:48:A7"
     ]
 
-    ToastManager{ id: toast }
-
-    CelluloBluetoothRelayClient{
+    CelluloTcpRelayClient{
         id: client
 
-        broadcastPeriod: 1000
-        serverAddress: "C0:11:73:34:D0:B2"
+        port: 1234
 
         Component.onCompleted: connectToServer()
+
+        onConnected: console.log("Client: Connected to server.")
+        onDisconnected: console.log("Client: Disconnected from server.")
     }
 
     CelluloBluetooth{
         id: robot1
 
-        macAddr: "00:06:66:74:48:A7"
+        macAddr: "00:06:66:74:41:03"
+        autoConnect: false
 
         Component.onCompleted: client.addRobot(robot1)
 
-        onPoseChanged: console.log("48:A7 " + x + " " + y + " " + theta)
+        onPoseChanged: console.log("Client: " + macAddr + " pose changed: " + x + " " + y + " " + theta)
     }
 
 
@@ -63,10 +64,22 @@ ApplicationWindow {
         id: robot2
 
         macAddr: "00:06:66:74:46:58"
+        autoConnect: false
 
         Component.onCompleted: client.addRobot(robot2)
 
-        onPoseChanged: console.log("46:58 " + x + " " + y + " " + theta)
+        onPoseChanged: console.log("Client: " + macAddr + " pose changed: " + x + " " + y + " " + theta)
+    }
+
+    CelluloBluetooth{
+        id: robot3
+
+        macAddr: "00:06:66:74:43:00"
+        autoConnect: false
+
+        Component.onCompleted: client.addRobot(robot3)
+
+        onPoseChanged: console.log("Client: " + macAddr + " pose changed: " + x + " " + y + " " + theta)
     }
 
     Column{
@@ -90,12 +103,23 @@ ApplicationWindow {
             Component.onCompleted: selectAddress(robot2.macAddr)
         }
 
+        MacAddrSelector{
+            addresses: window.robotAddresses
+            connectionStatus: robot3.connectionStatus
+
+            onConnectRequested: robot3.connectToServer()
+            onDisconnectRequested: robot3.disconnectFromServer()
+
+            Component.onCompleted: selectAddress(robot3.macAddr)
+        }
+
         Button{
             text: "reset"
 
             onClicked: {
                 robot1.reset();
                 robot2.reset();
+                robot3.reset();
             }
         }
 
@@ -105,6 +129,7 @@ ApplicationWindow {
             onClicked: {
                 robot1.shutdown();
                 robot2.shutdown();
+                robot3.shutdown();
             }
         }
 
@@ -114,6 +139,7 @@ ApplicationWindow {
             onClicked: {
                 robot1.setPoseBcastPeriod(0);
                 robot2.setPoseBcastPeriod(0);
+                robot3.setPoseBcastPeriod(0);
             }
         }
 
