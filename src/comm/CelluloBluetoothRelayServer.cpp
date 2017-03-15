@@ -31,7 +31,7 @@ CelluloBluetoothRelayServer::CelluloBluetoothRelayServer(QQuickItem* parent) :
     lastMacAddr = "";
     currentRobot = -1;
 
-    host = "localhost";
+    address = "localhost";
     port = DEFAULT_RELAY_PORT;
 
     clientSocket = NULL;
@@ -54,7 +54,7 @@ void CelluloBluetoothRelayServer::setListening(bool enable){
         if(clientSocket != NULL)
             qWarning() << "BluetoothServer::setListening(): Can't start listening while client is connected, only one client is allowed.";
         else{
-            if(!server.listen(QHostAddress(host), port))
+            if(!server.listen(QHostAddress(address), port))
                 qWarning() << "TcpServer::setListening(): Couldn't start listening: " << server.errorString();
         }
     }
@@ -65,24 +65,24 @@ void CelluloBluetoothRelayServer::setListening(bool enable){
         emit listeningChanged();
 }
 
-void CelluloBluetoothRelayServer::setHost(QString host){
-    if(host != this->host){
+void CelluloBluetoothRelayServer::setAddress(QString address){
+    if(address != this->address){
         bool wasListening = isListening();
         setListening(false);
-        this->host = host;
+        this->address = address;
         if(wasListening)
             setListening(true);
-        emit hostChanged();
+        emit addressChanged();
     }
 }
 
 void CelluloBluetoothRelayServer::setPort(int port){
     if(port < 0){
-        qWarning() << "TcpServer::setPort(): port given was negative, setting to 0.";
+        qWarning() << "CelluloBluetoothRelayServer::setPort(): port given was negative, setting to 0.";
         port = 0;
     }
     else if(port > 0xFFFF){
-        qWarning() << "TcpServer::setPort(): port given was larger than 65535, setting to 65535.";
+        qWarning() << "CelluloBluetoothRelayServer::setPort(): port given was larger than 65535, setting to 65535.";
         port = 0xFFFF;
     }
 

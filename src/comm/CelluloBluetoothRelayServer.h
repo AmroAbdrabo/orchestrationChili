@@ -39,7 +39,7 @@ class CelluloBluetoothRelayServer : public QQuickItem {
     Q_OBJECT
     /* *INDENT-ON* */
 
-    Q_PROPERTY(QString host READ getHost WRITE setHost NOTIFY hostChanged)
+    Q_PROPERTY(QString address READ getAddress WRITE setAddress NOTIFY addressChanged)
     Q_PROPERTY(int port READ getPort WRITE setPort NOTIFY portChanged)
     Q_PROPERTY(bool listen READ isListening WRITE setListening NOTIFY listeningChanged)
 
@@ -76,18 +76,18 @@ public:
     void setListening(bool enable);
 
     /**
-     * @brief Gets the current host name
+     * @brief Gets the current host address
      *
-     * @return Current host name, e.g "127.0.0.1"
+     * @return Current host address, e.g "127.0.0.1"
      */
-    QString getHost() const { return host; }
+    QString getAddress() const { return address; }
 
     /**
-     * @brief Sets the host name
+     * @brief Sets the host address
      *
-     * @param host The new host name, e.g "127.0.0.1"
+     * @param host The new host address, e.g "127.0.0.1"
      */
-    void setHost(QString host);
+    void setAddress(QString address);
 
     /**
      * @brief Gets the current port
@@ -111,9 +111,9 @@ signals:
     void listeningChanged();
 
     /**
-     * @brief Emitted when the host name changes
+     * @brief Emitted when the host address changes
      */
-    void hostChanged();
+    void addressChanged();
 
     /**
      * @brief Emitted whe the port changes
@@ -176,7 +176,7 @@ private:
      */
     void sendToClient(QString macAddr, CelluloBluetoothPacket const& packet);
 
-    QString host;                        ///< Host address, e.g "127.0.0.1"
+    QString address;                     ///< Host address, e.g "127.0.0.1"
     quint16 port;                        ///< Port to listen to
     QTcpServer server;                   ///< TCP server that listens to clients
 
