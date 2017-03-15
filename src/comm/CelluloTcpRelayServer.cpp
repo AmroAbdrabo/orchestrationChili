@@ -36,6 +36,8 @@ CelluloTcpRelayServer::CelluloTcpRelayServer(QQuickItem* parent) :
 
     clientSocket = NULL;
     connect(&server, SIGNAL(newConnection()), this, SLOT(addClient()));
+
+    setListening(true);
 }
 
 CelluloTcpRelayServer::~CelluloTcpRelayServer(){
@@ -48,8 +50,6 @@ bool CelluloTcpRelayServer::isListening() const {
 }
 
 void CelluloTcpRelayServer::setListening(bool enable){
-    bool wasListening = server.isListening();
-
     if(enable){
         if(clientSocket != NULL)
             qWarning() << "CelluloTcpRelayServer::setListening(): Can't start listening while client is connected, only one client is allowed.";
@@ -60,9 +60,6 @@ void CelluloTcpRelayServer::setListening(bool enable){
     }
     else
         server.close();
-
-    if(wasListening != server.isListening())
-        emit listeningChanged();
 }
 
 void CelluloTcpRelayServer::setAddress(QString address){
@@ -143,6 +140,8 @@ void CelluloTcpRelayServer::deleteClient(){
         clientSocket->deleteLater();
         clientSocket = NULL;
         emit clientDisconnected();
+
+        setListening(true);
     }
 }
 
@@ -157,6 +156,8 @@ void CelluloTcpRelayServer::disconnectClient(){
         clientSocket->close();
         clientSocket = NULL;
         emit clientDisconnected();
+
+        setListening(true);
     }
 }
 

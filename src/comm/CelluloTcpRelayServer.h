@@ -41,7 +41,6 @@ class CelluloTcpRelayServer : public QQuickItem {
 
     Q_PROPERTY(QString address READ getAddress WRITE setAddress NOTIFY addressChanged)
     Q_PROPERTY(int port READ getPort WRITE setPort NOTIFY portChanged)
-    Q_PROPERTY(bool listen READ isListening WRITE setListening NOTIFY listeningChanged)
 
     friend class CelluloBluetooth;
 
@@ -104,11 +103,6 @@ public:
     void setPort(int port);
 
 signals:
-
-    /**
-     * @brief Emitted when listening changes
-     */
-    void listeningChanged();
 
     /**
      * @brief Emitted when the host address changes
