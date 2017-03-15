@@ -16,14 +16,14 @@
  */
 
 /**
- * @file CelluloBluetoothRelayServer.h
- * @brief Relays packets between a client and robots
+ * @file CelluloTcpRelayServer.h
+ * @brief Relays packets between a client and robots over TCP
  * @author Ayberk Özgür
  * @date 2016-11-18
  */
 
-#ifndef CELLULOBLUETOOTHRELAYSERVER_H
-#define CELLULOBLUETOOTHRELAYSERVER_H
+#ifndef CELLULOTCPRELAYSERVER_H
+#define CELLULOTCPRELAYSERVER_H
 
 #include <QQuickItem>
 #include <QTcpServer>
@@ -34,7 +34,7 @@
 
 class CelluloBluetooth;
 
-class CelluloBluetoothRelayServer : public QQuickItem {
+class CelluloTcpRelayServer : public QQuickItem {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
@@ -50,16 +50,16 @@ public:
     static const int DEFAULT_RELAY_PORT = 2556;   ///< Default TCP port for Cellulo relay communication
 
     /**
-     * @brief Creates a new CelluloBluetoothRelayServer with the given QML parent
+     * @brief Creates a new CelluloTcpRelayServer with the given QML parent
      *
      * @param parent The QML parent
      */
-    CelluloBluetoothRelayServer(QQuickItem* parent = 0);
+    CelluloTcpRelayServer(QQuickItem* parent = 0);
 
     /**
-     * @brief Destroys this CelluloBluetoothRelayServer
+     * @brief Destroys this CelluloTcpRelayServer
      */
-    ~CelluloBluetoothRelayServer();
+    ~CelluloTcpRelayServer();
 
     /**
      * @brief Gets whether the server is listening
@@ -190,4 +190,4 @@ private:
 
 };
 
-#endif // CELLULOBLUETOOTHRELAYSERVER_H
+#endif // CELLULOTCPRELAYSERVER_H

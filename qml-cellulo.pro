@@ -18,8 +18,8 @@ linux:!android {
 HEADERS += \
     src/CelluloPlugin.h \
     src/comm/CelluloBluetooth.h \
-    src/comm/CelluloBluetoothRelayServer.h \
-    src/comm/CelluloBluetoothRelayClient.h \
+    src/comm/CelluloTcpRelayServer.h \
+    src/comm/CelluloTcpRelayClient.h \
     src/comm/CelluloBluetoothEMP.h \
     src/comm/CelluloBluetoothEnums.h \
     src/comm/CameraFrameImageProvider.h \
@@ -46,8 +46,8 @@ HEADERS += \
 SOURCES += \
     src/CelluloPlugin.cpp \
     src/comm/CelluloBluetooth.cpp \
-    src/comm/CelluloBluetoothRelayServer.cpp \
-    src/comm/CelluloBluetoothRelayClient.cpp \
+    src/comm/CelluloTcpRelayServer.cpp \
+    src/comm/CelluloTcpRelayClient.cpp \
     src/comm/CelluloBluetoothEMP.cpp \
     src/comm/CelluloBluetoothEnums.cpp \
     src/comm/CameraFrameImageProvider.cpp \

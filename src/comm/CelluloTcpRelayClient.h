@@ -16,14 +16,14 @@
  */
 
 /**
- * @file CelluloBluetoothRelayClient.h
+ * @file CelluloTcpRelayClient.h
  * @brief Relays packets between a server and virtual robot objects
  * @author Ayberk Özgür
  * @date 2016-11-22
  */
 
-#ifndef CELLULOBLUETOOTHRELAYCLIENT_H
-#define CELLULOBLUETOOTHRELAYCLIENT_H
+#ifndef CELLULOTCPRELAYCLIENT_H
+#define CELLULOTCPRELAYCLIENT_H
 
 #include <QQuickItem>
 #include <QTcpServer>
@@ -34,7 +34,7 @@
 
 class CelluloBluetooth;
 
-class CelluloBluetoothRelayClient : public QQuickItem {
+class CelluloTcpRelayClient : public QQuickItem {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
@@ -47,16 +47,16 @@ class CelluloBluetoothRelayClient : public QQuickItem {
 public:
 
     /**
-     * @brief Creates a new BluetoothSocketExtended with the given QML parent
+     * @brief Creates a new CelluloTcpRelayClient with the given QML parent
      *
      * @param parent The QML parent
      */
-    CelluloBluetoothRelayClient(QQuickItem* parent = 0);
+    CelluloTcpRelayClient(QQuickItem* parent = 0);
 
     /**
-     * @brief Destroys this CelluloBluetoothRelayClient
+     * @brief Destroys this CelluloTcpRelayClient
      */
-    ~CelluloBluetoothRelayClient();
+    ~CelluloTcpRelayClient();
 
     /**
      * @brief Gets the current server's MAC address
@@ -162,4 +162,4 @@ private:
 
 };
 
-#endif // CELLULOBLUETOOTHRELAYCLIENT_H
+#endif // CELLULOTCPRELAYCLIENT_H

@@ -16,15 +16,15 @@
  */
 
 /**
- * @file CelluloBluetoothRelayServer.cpp
+ * @file CelluloTcpRelayServer.cpp
  * @brief Relays packets between a client and robots
  * @author Ayberk Özgür
  * @date 2016-11-18
  */
 
-#include "CelluloBluetoothRelayServer.h"
+#include "CelluloTcpRelayServer.h"
 
-CelluloBluetoothRelayServer::CelluloBluetoothRelayServer(QQuickItem* parent) :
+CelluloTcpRelayServer::CelluloTcpRelayServer(QQuickItem* parent) :
     QQuickItem(parent),
     server(this)
 {
@@ -38,24 +38,24 @@ CelluloBluetoothRelayServer::CelluloBluetoothRelayServer(QQuickItem* parent) :
     connect(&server, SIGNAL(newConnection()), this, SLOT(addClient()));
 }
 
-CelluloBluetoothRelayServer::~CelluloBluetoothRelayServer(){
+CelluloTcpRelayServer::~CelluloTcpRelayServer(){
     server.close();
     disconnectClient();
 }
 
-bool CelluloBluetoothRelayServer::isListening() const {
+bool CelluloTcpRelayServer::isListening() const {
     return server.isListening();
 }
 
-void CelluloBluetoothRelayServer::setListening(bool enable){
+void CelluloTcpRelayServer::setListening(bool enable){
     bool wasListening = server.isListening();
 
     if(enable){
         if(clientSocket != NULL)
-            qWarning() << "BluetoothServer::setListening(): Can't start listening while client is connected, only one client is allowed.";
+            qWarning() << "CelluloTcpRelayServer::setListening(): Can't start listening while client is connected, only one client is allowed.";
         else{
             if(!server.listen(QHostAddress(address), port))
-                qWarning() << "TcpServer::setListening(): Couldn't start listening: " << server.errorString();
+                qWarning() << "CelluloTcpRelayServer::setListening(): Couldn't start listening: " << server.errorString();
         }
     }
     else
@@ -65,7 +65,7 @@ void CelluloBluetoothRelayServer::setListening(bool enable){
         emit listeningChanged();
 }
 
-void CelluloBluetoothRelayServer::setAddress(QString address){
+void CelluloTcpRelayServer::setAddress(QString address){
     if(address != this->address){
         bool wasListening = isListening();
         setListening(false);
@@ -76,13 +76,13 @@ void CelluloBluetoothRelayServer::setAddress(QString address){
     }
 }
 
-void CelluloBluetoothRelayServer::setPort(int port){
+void CelluloTcpRelayServer::setPort(int port){
     if(port < 0){
-        qWarning() << "CelluloBluetoothRelayServer::setPort(): port given was negative, setting to 0.";
+        qWarning() << "CelluloTcpRelayServer::setPort(): port given was negative, setting to 0.";
         port = 0;
     }
     else if(port > 0xFFFF){
-        qWarning() << "CelluloBluetoothRelayServer::setPort(): port given was larger than 65535, setting to 65535.";
+        qWarning() << "CelluloTcpRelayServer::setPort(): port given was larger than 65535, setting to 65535.";
         port = 0xFFFF;
     }
 
@@ -96,7 +96,7 @@ void CelluloBluetoothRelayServer::setPort(int port){
     }
 }
 
-void CelluloBluetoothRelayServer::addRobot(CelluloBluetooth* robot){
+void CelluloTcpRelayServer::addRobot(CelluloBluetooth* robot){
     if(!robots.contains(robot)){
         robots.append(robot);
         robot->setRelayServer(this);
@@ -104,14 +104,14 @@ void CelluloBluetoothRelayServer::addRobot(CelluloBluetooth* robot){
     }
 }
 
-void CelluloBluetoothRelayServer::addClient(){
+void CelluloTcpRelayServer::addClient(){
     if(clientSocket == NULL && server.hasPendingConnections()){
         clientSocket = server.nextPendingConnection();
 
         connect(clientSocket, SIGNAL(readyRead()), this, SLOT(incomingClientData()));
         connect(clientSocket, SIGNAL(disconnected()), this, SLOT(deleteClient()));
         connect(clientSocket, static_cast<void (QTcpSocket::*)(QTcpSocket::SocketError)>(&QTcpSocket::error),
-                [=](QTcpSocket::SocketError error){ qDebug() << "CelluloBluetoothRelayServer clientSocket error: " << error; });
+                [=](QTcpSocket::SocketError error){ qDebug() << "CelluloTcpRelayServer clientSocket error: " << error; });
 
         setListening(false);
 
@@ -133,7 +133,7 @@ void CelluloBluetoothRelayServer::addClient(){
     }
 }
 
-void CelluloBluetoothRelayServer::deleteClient(){
+void CelluloTcpRelayServer::deleteClient(){
     if(clientSocket != NULL){
         disconnect(clientSocket, SIGNAL(readyRead()), this, SLOT(incomingClientData()));
         disconnect(clientSocket, SIGNAL(disconnected()), this, SLOT(deleteClient()));
@@ -146,7 +146,7 @@ void CelluloBluetoothRelayServer::deleteClient(){
     }
 }
 
-void CelluloBluetoothRelayServer::disconnectClient(){
+void CelluloTcpRelayServer::disconnectClient(){
     if(clientSocket != NULL){
         disconnect(clientSocket, SIGNAL(readyRead()), this, SLOT(incomingClientData()));
         disconnect(clientSocket, SIGNAL(disconnected()), this, SLOT(deleteClient()));
@@ -160,7 +160,7 @@ void CelluloBluetoothRelayServer::disconnectClient(){
     }
 }
 
-void CelluloBluetoothRelayServer::incomingClientData(){
+void CelluloTcpRelayServer::incomingClientData(){
     QByteArray message = clientSocket->readAll();
 
     for(int i=0; i<message.length(); i++)
@@ -170,7 +170,7 @@ void CelluloBluetoothRelayServer::incomingClientData(){
             processClientPacket();
 }
 
-void CelluloBluetoothRelayServer::processClientPacket(){
+void CelluloTcpRelayServer::processClientPacket(){
     CelluloBluetoothPacket::CmdPacketType packetType = clientPacket.getCmdPacketType();
 
     //Set target robot command
@@ -203,14 +203,14 @@ void CelluloBluetoothRelayServer::processClientPacket(){
 
 
 
-            qWarning() << "CelluloBluetoothRelayServer::processClientPacket(): Received CmdPacketTypeSetAddress with address suffix " << suffix << ", but no such robot is known to the server.";
+            qWarning() << "CelluloTcpRelayServer::processClientPacket(): Received CmdPacketTypeSetAddress with address suffix " << suffix << ", but no such robot is known to the server.";
         else
             currentRobot = newRobot;
     }
 
     //Some other command but no robot selected yet
     else if(currentRobot < 0)
-        qWarning() << "CelluloBluetoothRelayServer::processClientPacket(): Received command packet but no robot is chosen yet, CmdPacketTypeSetAddress must be sent first. Dropping this packet.";
+        qWarning() << "CelluloTcpRelayServer::processClientPacket(): Received command packet but no robot is chosen yet, CmdPacketTypeSetAddress must be sent first. Dropping this packet.";
 
     //Connect/disconnect command
     else if(packetType == CelluloBluetoothPacket::CmdPacketTypeSetConnectionStatus){
@@ -226,7 +226,7 @@ void CelluloBluetoothRelayServer::processClientPacket(){
                 break;
 
             default:
-                qWarning() << "CelluloBluetoothRelayServer::processClientPacket(): Invalid argument to CmdPacketTypeSetAddress packet.";
+                qWarning() << "CelluloTcpRelayServer::processClientPacket(): Invalid argument to CmdPacketTypeSetAddress packet.";
                 break;
         }
     }
@@ -238,14 +238,14 @@ void CelluloBluetoothRelayServer::processClientPacket(){
     clientPacket.clear();
 }
 
-void CelluloBluetoothRelayServer::sendToClient(QString macAddr, CelluloBluetoothPacket const& packet){
+void CelluloTcpRelayServer::sendToClient(QString macAddr, CelluloBluetoothPacket const& packet){
     if(clientSocket != NULL){
 
         //Send MAC address only if another robot is targeted
         if(lastMacAddr != macAddr){
             QStringList octets = macAddr.split(':');
             if(octets.size() < 2){
-                qWarning() << "CelluloBluetoothRelayServer::sendToClient(): Provided MAC address is in the wrong format.";
+                qWarning() << "CelluloTcpRelayServer::sendToClient(): Provided MAC address is in the wrong format.";
                 return;
             }
 
@@ -265,5 +265,5 @@ void CelluloBluetoothRelayServer::sendToClient(QString macAddr, CelluloBluetooth
         clientSocket->write(packet.getEventSendData());
     }
     else
-        qWarning() << "CelluloBluetoothRelayServer::sendToClient(): Trying to relay packet but no client connected yet.";
+        qWarning() << "CelluloTcpRelayServer::sendToClient(): Trying to relay packet but no client connected yet.";
 }

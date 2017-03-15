@@ -35,13 +35,13 @@
 
 #include "CelluloBluetoothEnums.h"
 #include "CelluloBluetoothPacket.h"
-#include "CelluloBluetoothRelayClient.h"
-#include "CelluloBluetoothRelayServer.h"
+#include "CelluloTcpRelayClient.h"
+#include "CelluloTcpRelayServer.h"
 #include "../zones/CelluloZoneClient.h"
 #include "../zones/CelluloZonePolyBezier.h"
 
-class CelluloBluetoothRelayClient;
-class CelluloBluetoothRelayServer;
+class CelluloTcpRelayClient;
+class CelluloTcpRelayServer;
 
 /**
  * @brief Bluetooth communicator for a Cellulo robot
@@ -71,8 +71,8 @@ class CelluloBluetooth : public CelluloZoneClient {
 
     Q_PROPERTY(float cameraImageProgress READ getCameraImageProgress NOTIFY cameraImageProgressChanged)
 
-    friend class CelluloBluetoothRelayServer;
-    friend class CelluloBluetoothRelayClient;
+    friend class CelluloTcpRelayServer;
+    friend class CelluloTcpRelayClient;
 
 public:
 
@@ -642,8 +642,8 @@ private:
     QString macAddr;                                          ///< Bluetooth MAC address of the server
     CelluloBluetoothEnums::ConnectionStatus connectionStatus; ///< Bluetooth connection status
 
-    CelluloBluetoothRelayClient* relayClient;                 ///< Client to route all command packets to
-    CelluloBluetoothRelayServer* relayServer;                 ///< Server to route all event packets to
+    CelluloTcpRelayClient* relayClient;                       ///< Client to route all command packets to
+    CelluloTcpRelayServer* relayServer;                       ///< Server to route all event packets to
 
     bool timestampingEnabled;                                 ///< Whether timestamping along with pose is enabled and idling disabled
     int lastTimestamp;                                        ///< Latest received onboard timestamp (in milliseconds)
@@ -679,7 +679,7 @@ private:
      *
      * @param relayClient The relay client
      */
-    void setRelayClient(CelluloBluetoothRelayClient* relayClient);
+    void setRelayClient(CelluloTcpRelayClient* relayClient);
 
     /**
      * @brief Sets the relay server
@@ -688,7 +688,7 @@ private:
      *
      * @param relayServer The relay server
      */
-    void setRelayServer(CelluloBluetoothRelayServer* relayServer);
+    void setRelayServer(CelluloTcpRelayServer* relayServer);
 
     /**
      * @brief Connects or reconnects to the service on the server if not already connected
