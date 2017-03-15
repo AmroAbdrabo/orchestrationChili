@@ -68,7 +68,8 @@ CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) : CelluloZoneClient(paren
 }
 
 CelluloBluetooth::~CelluloBluetooth(){
-    disconnectFromServer();
+    if(relayClient == NULL)
+        disconnectFromServer();
 }
 
 void CelluloBluetooth::resetProperties(){
