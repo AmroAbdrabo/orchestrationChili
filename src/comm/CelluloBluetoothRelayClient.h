@@ -26,9 +26,8 @@
 #define CELLULOBLUETOOTHRELAYCLIENT_H
 
 #include <QQuickItem>
-#include <QBluetoothSocket>
-#include <QList>
-#include <QTimer>
+#include <QTcpServer>
+#include <QTcpSocket>
 
 #include "CelluloBluetoothPacket.h"
 #include "CelluloBluetooth.h"
@@ -41,7 +40,7 @@ class CelluloBluetoothRelayClient : public QQuickItem {
     /* *INDENT-ON* */
 
     Q_PROPERTY(QString serverAddress READ getServerAddress WRITE setServerAddress NOTIFY serverAddressChanged)
-    Q_PROPERTY(qreal broadcastPeriod READ getBroadcastPeriod WRITE setBroadcastPeriod NOTIFY broadcastPeriodChanged)
+    Q_PROPERTY(int port READ getPort WRITE setPort NOTIFY portChanged)
 
     friend class CelluloBluetooth;
 
@@ -74,20 +73,18 @@ public:
     void setServerAddress(QString serverAddress);
 
     /**
-     * @brief Gets the broadcast period
+     * @brief Gets the current port
      *
-     * @return Broadcast period in milliseconds
+     * @return Current port
      */
-    qreal getBroadcastPeriod() const { return broadcastPeriod; }
+    int getPort() const { return port; }
 
     /**
-     * @brief Sets the broadcast period
+     * @brief Sets the port
      *
-     * If set to greater than zero, the server will queue all packets coming from virtual robots and broadcast them to the server periodically.
-     *
-     * @param broadcastPeriod The broadcast period in milliseconds
+     * @param port The new port, must be in [0,65535]
      */
-    void setBroadcastPeriod(qreal broadcastPeriod);
+    void setPort(int port);
 
 public slots:
 
@@ -111,14 +108,14 @@ public slots:
 signals:
 
     /**
-     * @brief Emitted when the server MAC address changes
+     * @brief Emitted when the server address changes
      */
     void serverAddressChanged();
 
     /**
-     * @brief Emitted when the broadcast period changes
+     * @brief Emitted whe the port changes
      */
-    void broadcastPeriodChanged();
+    void portChanged();
 
     /**
      * @brief Emitted when the server socket is connected
@@ -137,11 +134,6 @@ private slots:
      */
     void incomingServerData();
 
-    /**
-     * @brief Sends all packets in the serverPackets queues to the server
-     */
-    void broadcastToServer();
-
 private:
 
     /**
@@ -157,28 +149,16 @@ private:
      */
     void sendToServer(QString macAddr, CelluloBluetoothPacket const& packet);
 
-    /**
-     * @brief Relays the packet from the robot to the server immediately
-     *
-     * @param macAddr Full MAC address of the target robot on the server
-     * @param packet The packet to relay
-     */
-    void sendToServerNow(QString macAddr, CelluloBluetoothPacket const& packet);
+    QString serverAddress;               ///< Server's address, e.g "127.0.0.1"
+    quint16 port;                        ///< Port to connect to on the server
 
-    QString serverAddress;                                 ///< Server's MAC address
-    QString uuid;                                          ///< Service uuid to connect to on the server
+    QTcpSocket serverSocket;             ///< TCP socket to server that handles communication
+    CelluloBluetoothPacket serverPacket; ///< Server's incoming packet
 
-    QBluetoothSocket serverSocket;                         ///< The low level socket
-    CelluloBluetoothPacket serverPacket;                   ///< Server's incoming packet
+    int currentRobot;                    ///< Current robot index to relay messages to, set by a CmdPacketTypeSetAddress
+    QList<CelluloBluetooth*> robots;     ///< List of robots to relay to/from
 
-    int currentRobot;                                      ///< Current robot index to relay messages to, set by a CmdPacketTypeSetAddress
-    QList<CelluloBluetooth*> robots;                       ///< List of robots to relay to/from
-
-    QString lastMacAddr;                                   ///< MAC address of the last CmdPacketTypeSetAddress packet sent to the server
-
-    qreal broadcastPeriod;                                 ///< Delays and broadcasts all packets with this period (milliseconds); default is 0 which disables this congestion control
-    QList<QQueue<CelluloBluetoothPacket*>*> serverPackets; ///< Packets coming from all virtual robots, to be sent to the server
-    QTimer broadcastTimer;                                 ///< Timer that signals broadcasts
+    QString lastMacAddr;                 ///< MAC address of the last CmdPacketTypeSetAddress packet sent to the server
 
 };
 
