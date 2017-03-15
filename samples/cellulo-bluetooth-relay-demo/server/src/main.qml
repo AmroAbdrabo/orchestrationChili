@@ -44,33 +44,8 @@ ApplicationWindow {
 
         onClientConnected: console.log("Server: Client connected.")
         onClientDisconnected: console.log("Server: Client disconnected.")
-    }
 
-    CelluloBluetooth{
-        id: robot1
-
-        macAddr: "00:06:66:74:41:03"
-        autoConnect: false
-
-        Component.onCompleted: server.addRobot(robot1)
-    }
-
-
-    CelluloBluetooth{
-        id: robot2
-
-        macAddr: "00:06:66:74:46:58"
-        autoConnect: false
-
-        Component.onCompleted: server.addRobot(robot2)
-    }
-
-    CelluloBluetooth{
-        id: robot3
-
-        macAddr: "00:06:66:74:43:00"
-        autoConnect: false
-
-        Component.onCompleted: server.addRobot(robot3)
+        onRobotAdded: console.log("Server: Robot added: " + macAddr)
+        onRobotRemoved: console.log("Server: Robot removed: " + macAddr)
     }
 }

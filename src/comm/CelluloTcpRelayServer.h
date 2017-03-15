@@ -46,7 +46,8 @@ class CelluloTcpRelayServer : public QQuickItem {
 
 public:
 
-    static const int DEFAULT_RELAY_PORT = 2556;   ///< Default TCP port for Cellulo relay communication
+    static const int DEFAULT_RELAY_PORT = 2556;         ///< Default TCP port for Cellulo relay communication
+    static const QString DEFAULT_ROBOT_MAC_ADDR_PREFIX; ///< Default prefix of Cellulo robot MAC addresses
 
     /**
      * @brief Creates a new CelluloTcpRelayServer with the given QML parent
@@ -124,6 +125,20 @@ signals:
      */
     void clientDisconnected();
 
+    /**
+     * @brief Emitted when a new robot is added to the server
+     *
+     * @param macAddr MAC address of the added robot
+     */
+    void robotAdded(QString macAddr);
+
+    /**
+     * @brief Emitted when a robot is removed from the server
+     *
+     * @param macAddr MAC address of the removed robot
+     */
+    void robotRemoved(QString macAddr);
+
 public slots:
 
     /**
@@ -132,6 +147,13 @@ public slots:
      * @param robot New robot
      */
     void addRobot(CelluloBluetooth* robot);
+
+    /**
+     * @brief Removes the robot from the robots list
+     *
+     * @param robot Existing robot
+     */
+    void removeRobot(CelluloBluetooth* robot);
 
     /**
      * @brief Closes the client's socket

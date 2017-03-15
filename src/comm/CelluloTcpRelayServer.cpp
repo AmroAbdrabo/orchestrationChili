@@ -24,6 +24,8 @@
 
 #include "CelluloTcpRelayServer.h"
 
+const QString CelluloTcpRelayServer::DEFAULT_ROBOT_MAC_ADDR_PREFIX = "00:06:66:74:";
+
 CelluloTcpRelayServer::CelluloTcpRelayServer(QQuickItem* parent) :
     QQuickItem(parent),
     server(this)
@@ -94,10 +96,19 @@ void CelluloTcpRelayServer::setPort(int port){
 }
 
 void CelluloTcpRelayServer::addRobot(CelluloBluetooth* robot){
-    if(!robots.contains(robot)){
+    if(robot != NULL && !robots.contains(robot)){
         robots.append(robot);
         robot->setRelayServer(this);
         robot->announceConnectionStatusToRelayServer();
+        emit robotAdded(robot->macAddr);
+    }
+}
+
+void CelluloTcpRelayServer::removeRobot(CelluloBluetooth* robot){
+    if(robot != NULL && robots.removeAll(robot) > 0){
+        robot->announceConnectionStatusToRelayServer();
+        robot->setRelayServer(NULL);
+        emit robotRemoved(robot->macAddr);
     }
 }
 
@@ -187,24 +198,14 @@ void CelluloTcpRelayServer::processClientPacket(){
                 break;
             }
 
-        if(newRobot < 0)
-
-
-
-
-
-
-
-
-            //CREATE AND ADD NEW ROBOT
-
-
-
-
-
-
-
-            qWarning() << "CelluloTcpRelayServer::processClientPacket(): Received CmdPacketTypeSetAddress with address suffix " << suffix << ", but no such robot is known to the server.";
+        if(newRobot < 0){
+            CelluloBluetooth* robot = new CelluloBluetooth(this);
+            robot->setAutoConnect(false);
+            robot->setMacAddr(DEFAULT_ROBOT_MAC_ADDR_PREFIX + suffix);
+            robot->setAutoConnect(true);
+            addRobot(robot);
+            currentRobot = robots.size() - 1;
+        }
         else
             currentRobot = newRobot;
     }
@@ -216,15 +217,19 @@ void CelluloTcpRelayServer::processClientPacket(){
     //Connect/disconnect command
     else if(packetType == CelluloBluetoothPacket::CmdPacketTypeSetConnectionStatus){
         CelluloBluetoothEnums::ConnectionStatus status = (CelluloBluetoothEnums::ConnectionStatus)clientPacket.unloadUInt8();
-
         switch(status){
             case CelluloBluetoothEnums::ConnectionStatusConnected:
                 robots[currentRobot]->connectToServer();
                 break;
 
-            case CelluloBluetoothEnums::ConnectionStatusDisconnected:
-                robots[currentRobot]->disconnectFromServer();
+            case CelluloBluetoothEnums::ConnectionStatusDisconnected:{
+                CelluloBluetooth* robot = robots[currentRobot];
+                robot->disconnectFromServer();
+                removeRobot(robot);
+                robot->deleteLater();
+                currentRobot = -1;
                 break;
+            }
 
             default:
                 qWarning() << "CelluloTcpRelayServer::processClientPacket(): Invalid argument to CmdPacketTypeSetAddress packet.";

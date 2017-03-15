@@ -186,6 +186,10 @@ void CelluloTcpRelayClient::sendToServer(QString macAddr, CelluloBluetoothPacket
         lastMacAddr = macAddr;
     }
 
+    //If connect/disconnect requested, need to resend MAC addr in the future
+    if(packet.getCmdPacketType() == CelluloBluetoothPacket::CmdPacketTypeSetConnectionStatus)
+        lastMacAddr = "";
+
     //Send actual packet
     serverSocket.write(packet.getCmdSendData());
 }

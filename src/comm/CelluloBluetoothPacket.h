@@ -194,14 +194,14 @@ public:
      *
      * @return The received event packet type
      */
-    EventPacketType getEventPacketType(){ return eventPacketType; }
+    EventPacketType getEventPacketType() const { return eventPacketType; }
 
     /**
      * @brief Gets the received command packet type if any
      *
      * @return The received command packet type
      */
-    CmdPacketType getCmdPacketType(){ return cmdPacketType; }
+    CmdPacketType getCmdPacketType() const { return cmdPacketType; }
 
     /**
      * @brief Attempts to unload a 32-bit unsigned integer

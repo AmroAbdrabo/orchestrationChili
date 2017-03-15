@@ -307,9 +307,19 @@ void CelluloBluetooth::socketDisconnected(){
     //Announce connection status to relay server if it's there
     announceConnectionStatusToRelayServer();
 
-    //Reconnect if autoConnect
-    if(autoConnect && relayClient == NULL)
-        openSocket();
+    //Real robot
+    if(relayClient == NULL){
+
+        //Reconnect if autoConnect
+        if(autoConnect)
+            openSocket();
+        else{
+            socket->deleteLater();
+            socket = NULL;
+            btConnectTimeoutTimer.stop();
+            resetProperties();
+        }
+    }
 }
 
 void CelluloBluetooth::socketDataArrived(){
