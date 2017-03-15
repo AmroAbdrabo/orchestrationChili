@@ -16,14 +16,14 @@
  */
 
 /**
- * @file CelluloTcpRelayClient.h
+ * @file CelluloRelayClient.h
  * @brief Relays packets between a server and virtual robot objects
  * @author Ayberk Özgür
  * @date 2016-11-22
  */
 
-#ifndef CELLULOTCPRELAYCLIENT_H
-#define CELLULOTCPRELAYCLIENT_H
+#ifndef CELLULORELAYCLIENT_H
+#define CELLULORELAYCLIENT_H
 
 #include <QQuickItem>
 #include <QTcpServer>
@@ -34,7 +34,7 @@
 
 class CelluloBluetooth;
 
-class CelluloTcpRelayClient : public QQuickItem {
+class CelluloRelayClient : public QQuickItem {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
@@ -47,28 +47,28 @@ class CelluloTcpRelayClient : public QQuickItem {
 public:
 
     /**
-     * @brief Creates a new CelluloTcpRelayClient with the given QML parent
+     * @brief Creates a new CelluloRelayClient with the given QML parent
      *
      * @param parent The QML parent
      */
-    CelluloTcpRelayClient(QQuickItem* parent = 0);
+    CelluloRelayClient(QQuickItem* parent = 0);
 
     /**
-     * @brief Destroys this CelluloTcpRelayClient
+     * @brief Destroys this CelluloRelayClient
      */
-    ~CelluloTcpRelayClient();
+    ~CelluloRelayClient();
 
     /**
-     * @brief Gets the current server's MAC address
+     * @brief Gets the current server's address
      *
-     * @return Current server MAC address, e.g "XX:XX:XX:XX:XX:XX"
+     * @return Current server address, e.g `127.0.0.1` for TCP
      */
     QString getServerAddress() const { return serverAddress; }
 
     /**
-     * @brief Sets the server MAC address to connect to
+     * @brief Sets the server address to connect to
      *
-     * @param peer The new server MAC address, e.g "XX:XX:XX:XX:XX:XX"
+     * @param peer The new server address, e.g `127.0.0.1` for TCP
      */
     void setServerAddress(QString serverAddress);
 
@@ -162,4 +162,4 @@ private:
 
 };
 
-#endif // CELLULOTCPRELAYCLIENT_H
+#endif // CELLULORELAYCLIENT_H

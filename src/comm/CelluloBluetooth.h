@@ -35,13 +35,13 @@
 
 #include "CelluloBluetoothEnums.h"
 #include "CelluloBluetoothPacket.h"
-#include "CelluloTcpRelayClient.h"
-#include "CelluloTcpRelayServer.h"
+#include "CelluloRelayClient.h"
+#include "CelluloRelayServer.h"
 #include "../zones/CelluloZoneClient.h"
 #include "../zones/CelluloZonePolyBezier.h"
 
-class CelluloTcpRelayClient;
-class CelluloTcpRelayServer;
+class CelluloRelayClient;
+class CelluloRelayServer;
 
 /**
  * @brief Bluetooth communicator for a Cellulo robot
@@ -71,8 +71,8 @@ class CelluloBluetooth : public CelluloZoneClient {
 
     Q_PROPERTY(float cameraImageProgress READ getCameraImageProgress NOTIFY cameraImageProgressChanged)
 
-    friend class CelluloTcpRelayServer;
-    friend class CelluloTcpRelayClient;
+    friend class CelluloRelayServer;
+    friend class CelluloRelayClient;
 
 public:
 
@@ -642,8 +642,8 @@ private:
     QString macAddr;                                          ///< Bluetooth MAC address of the server
     CelluloBluetoothEnums::ConnectionStatus connectionStatus; ///< Bluetooth connection status
 
-    CelluloTcpRelayClient* relayClient;                       ///< Client to route all command packets to
-    CelluloTcpRelayServer* relayServer;                       ///< Server to route all event packets to
+    CelluloRelayClient* relayClient;                          ///< Client to route all command packets to
+    CelluloRelayServer* relayServer;                          ///< Server to route all event packets to
 
     bool timestampingEnabled;                                 ///< Whether timestamping along with pose is enabled and idling disabled
     int lastTimestamp;                                        ///< Latest received onboard timestamp (in milliseconds)
@@ -679,7 +679,7 @@ private:
      *
      * @param relayClient The relay client
      */
-    void setRelayClient(CelluloTcpRelayClient* relayClient);
+    void setRelayClient(CelluloRelayClient* relayClient);
 
     /**
      * @brief Sets the relay server
@@ -688,7 +688,7 @@ private:
      *
      * @param relayServer The relay server
      */
-    void setRelayServer(CelluloTcpRelayServer* relayServer);
+    void setRelayServer(CelluloRelayServer* relayServer);
 
     /**
      * @brief Connects or reconnects to the service on the server if not already connected
