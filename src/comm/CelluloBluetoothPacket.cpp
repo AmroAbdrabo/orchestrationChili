@@ -325,7 +325,7 @@ quint32 CelluloBluetoothPacket::unloadUInt32(){
         //Decode from big endian
         unsigned char* p = (unsigned char*)payload.data() + unloadIndex;
         unloadIndex += 4;
-        return (quint32)((p[0] << 24) | (p[1] << 16) | (p[2] << 8) | (p[3] << 0));
+        return (quint32)((p[0] << 24) | (p[1] << 16) | (p[2] << 8) | (p[3] << 0)); //TODO: CHECK OVERFLOW ON PROMOTE TO INT WHEN << 24
     }
 }
 
@@ -379,7 +379,7 @@ qint32 CelluloBluetoothPacket::unloadInt32(){
         //Decode from big endian
         unsigned char* p = (unsigned char*)payload.data() + unloadIndex;
         unloadIndex += 4;
-        quint32 unum = (quint32)((p[0] << 24) | (p[1] << 16) | (p[2] << 8) | (p[3] << 0));
+        quint32 unum = (quint32)((p[0] << 24) | (p[1] << 16) | (p[2] << 8) | (p[3] << 0)); //TODO: CHECK OVERFLOW ON PROMOTE TO INT WHEN << 24
         return *((qint32*)(&unum));
     }
 }
@@ -440,7 +440,8 @@ float CelluloBluetoothPacket::unloadFloat(){
         //Decode from big endian
         unsigned char* p = (unsigned char*)payload.data() + unloadIndex;
         unloadIndex += 4;
-        quint32 unum = (quint32)((p[0] << 24) | (p[1] << 16) | (p[2] << 8) | (p[3] << 0));
-        return *((float*)(&unum));
+        quint32 unum = (quint32)((p[0] << 24) | (p[1] << 16) | (p[2] << 8) | (p[3] << 0)); //TODO: CHECK OVERFLOW ON PROMOTE TO INT WHEN << 24
+        float* num = (float*)(&unum);
+        return *num;
     }
 }

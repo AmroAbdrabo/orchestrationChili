@@ -87,6 +87,12 @@ void CelluloZoneAngleInterval::paint(QPainter* painter, QColor color, qreal canv
 }
 
 bool CelluloZoneAngleInterval::isMouseInside(QVector2D  mousePosition, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    Q_UNUSED(mousePosition)
+    Q_UNUSED(canvasWidth)
+    Q_UNUSED(canvasHeight)
+    Q_UNUSED(physicalWidth)
+    Q_UNUSED(physicalHeight)
+
     //TODO implement
     return false;
 }
@@ -122,8 +128,8 @@ void CelluloZoneAngleIntervalInner::paint(QPainter* painter, QColor color, qreal
     painter->setBrush(QBrush(color));
     painter->setPen(Qt::NoPen);
 
-    qreal horizontalScaleCoeff = canvasWidth/physicalWidth;
-    qreal verticalScaleCoeff = canvasHeight/physicalHeight;
+    //qreal horizontalScaleCoeff = canvasWidth/physicalWidth;
+    //qreal verticalScaleCoeff = canvasHeight/physicalHeight;
 
     //TODO: FIGURE THIS OUT
     //painter->drawRect(x*horizontalScaleCoeff, y*verticalScaleCoeff, width*horizontalScaleCoeff, height*verticalScaleCoeff);
@@ -246,8 +252,8 @@ void CelluloZoneAngleIntervalDistance::paint(QPainter* painter, QColor color, qr
     painter->setBrush(QBrush(color, Qt::Dense5Pattern));
     painter->setPen(Qt::NoPen);
 
-    qreal horizontalScaleCoeff = canvasWidth/physicalWidth;
-    qreal verticalScaleCoeff = canvasHeight/physicalHeight;
+    //qreal horizontalScaleCoeff = canvasWidth/physicalWidth;
+    //qreal verticalScaleCoeff = canvasHeight/physicalHeight;
 
     //TODO: FIGURE THIS OUT
     //painter->drawRect(x*horizontalScaleCoeff, y*verticalScaleCoeff, width*horizontalScaleCoeff, height*verticalScaleCoeff);

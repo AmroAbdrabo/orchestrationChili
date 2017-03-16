@@ -165,6 +165,7 @@ bool CelluloSVGUtil::bezierIsPoly(QList<QVector2D> controlPoints){
 }
 
 bool CelluloSVGUtil::polyIsSmallEnoughToBeAPoint(QList<QVector2D> polyPoints){
+    Q_UNUSED(polyPoints)
     //TODO get outbounding rect value and if < than thresolf then it is a point
     return false;
 }
@@ -187,11 +188,13 @@ bool CelluloSVGUtil::polyIsRectangle(QList<QVector2D> polyPoints){
 }
 
 bool CelluloSVGUtil::polyIsCircle(QList<QVector2D> polyPoints){
+    Q_UNUSED(polyPoints)
     //TODO
     return false;
 }
 
 bool CelluloSVGUtil::polyIsRegular(QList<QVector2D> polyPoints){
+    Q_UNUSED(polyPoints)
     //TODO
     return false;
 }
@@ -222,12 +225,16 @@ CelluloZoneRectangleDistance* CelluloSVGUtil::getRectangleFromPolyPoints(QList<Q
 }
 
 CelluloZoneCircleDistance* CelluloSVGUtil::getCircleFromPolyPoints(QList<QVector2D> polyPoints){
+    Q_UNUSED(polyPoints)
+
     CelluloZoneCircleDistance* newZoneCircle = new CelluloZoneCircleDistance();
     //TODO
     return newZoneCircle;
 }
 
 CelluloZoneRegularPolygonDistance* CelluloSVGUtil::getRegularPolygonFromPolyPoints(QList<QVector2D> polyPoints){
+    Q_UNUSED(polyPoints)
+
     CelluloZoneRegularPolygonDistance* newZoneRegularPoly = new CelluloZoneRegularPolygonDistance();
     //TODO
     return newZoneRegularPoly;

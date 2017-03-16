@@ -221,7 +221,7 @@ void CelluloRelayServer::addClient(){
             break;
     }
     while(serverHasPendingConnections){
-        QIODevice* trash;
+        QIODevice* trash = NULL;
         switch(protocol){
             case CelluloRelayCommon::PROTOCOL::LOCAL:
                 trash = localServer->nextPendingConnection();
@@ -233,8 +233,10 @@ void CelluloRelayServer::addClient(){
                 serverHasPendingConnections = tcpServer->hasPendingConnections();
                 break;
         }
-        connect(trash, SIGNAL(disconnected()), trash, SLOT(deleteLater()));
-        trash->close();
+        if(trash != NULL){
+            connect(trash, SIGNAL(disconnected()), trash, SLOT(deleteLater()));
+            trash->close();
+        }
     }
 }
 

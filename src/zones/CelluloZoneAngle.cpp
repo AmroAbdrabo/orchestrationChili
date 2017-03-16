@@ -71,6 +71,12 @@ void CelluloZoneAngle::paint(QPainter* painter, QColor color, qreal canvasWidth,
 }
 
 bool CelluloZoneAngle::isMouseInside(QVector2D  mousePosition, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
+    Q_UNUSED(mousePosition)
+    Q_UNUSED(canvasWidth)
+    Q_UNUSED(canvasHeight)
+    Q_UNUSED(physicalWidth)
+    Q_UNUSED(physicalHeight)
+
     //TODO implement
     return false;
 }
@@ -108,8 +114,8 @@ void CelluloZoneAngleDifference::paint(QPainter* painter, QColor color, qreal ca
     painter->setBrush(QBrush(color));
     painter->setPen(Qt::NoPen);
 
-    qreal horizontalScaleCoeff = canvasWidth/physicalWidth;
-    qreal verticalScaleCoeff = canvasHeight/physicalHeight;
+    //qreal horizontalScaleCoeff = canvasWidth/physicalWidth;
+    //qreal verticalScaleCoeff = canvasHeight/physicalHeight;
 
     //TODO: FIGURE THIS OUT
     //painter->drawRect(x*horizontalScaleCoeff, y*verticalScaleCoeff, width*horizontalScaleCoeff, height*verticalScaleCoeff);

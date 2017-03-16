@@ -122,7 +122,7 @@ void CubicBezier::split(qreal t, CubicBezier& left, CubicBezier& right){
 }
 
 qreal CubicBezier::getClosest(const QVector2D& m, QVector2D& closestPoint, qreal& closestDist){
-    qreal closestT;
+    qreal closestT = 0;
 
     //Calculate equidistant t/point lookup table if not already calculated
     buildEquidistantTLUT();

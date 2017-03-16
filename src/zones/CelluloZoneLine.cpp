@@ -172,8 +172,8 @@ void CelluloZoneLineDistanceSigned::paint(QPainter* painter, QColor color, qreal
     painter->setBrush(Qt::NoBrush);
     painter->setPen(QPen(QBrush(color), 2));
 
-    qreal horizontalScaleCoeff = canvasWidth/physicalWidth;
-    qreal verticalScaleCoeff = canvasHeight/physicalHeight;
+    //qreal horizontalScaleCoeff = canvasWidth/physicalWidth;
+    //qreal verticalScaleCoeff = canvasHeight/physicalHeight;
 
     //TODO: PAINT INFINITE LINE
     //painter->drawLine(QPointF(x1*horizontalScaleCoeff, y1*verticalScaleCoeff), QPointF(x2*horizontalScaleCoeff, y2*verticalScaleCoeff));
@@ -218,8 +218,8 @@ void CelluloZoneLineBorder::paint(QPainter* painter, QColor color, qreal canvasW
     painter->setBrush(Qt::NoBrush);
     painter->setPen(QPen(QBrush(color), 2));
 
-    qreal horizontalScaleCoeff = canvasWidth/physicalWidth;
-    qreal verticalScaleCoeff = canvasHeight/physicalHeight;
+    //qreal horizontalScaleCoeff = canvasWidth/physicalWidth;
+    //qreal verticalScaleCoeff = canvasHeight/physicalHeight;
 
     //TODO: PAINT INFINITE LINE WITH BORDER
     //painter->drawLine(QPointF(x1*horizontalScaleCoeff, y1*verticalScaleCoeff), QPointF(x2*horizontalScaleCoeff, y2*verticalScaleCoeff));
