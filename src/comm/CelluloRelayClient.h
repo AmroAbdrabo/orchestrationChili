@@ -133,6 +133,13 @@ public slots:
      */
     void addRobot(CelluloBluetooth* robot, bool select = false);
 
+    /**
+     * @brief Removes the robot from the robots list
+     *
+     * @param robot Robot to remove
+     */
+    void removeRobot(CelluloBluetooth* robot);
+
 signals:
 
     /**

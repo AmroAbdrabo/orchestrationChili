@@ -175,6 +175,22 @@ void CelluloRelayClient::addRobot(CelluloBluetooth* robot, bool select){
     }
 }
 
+void CelluloRelayClient::removeRobot(CelluloBluetooth* robot){
+    if(robot != NULL){
+        CelluloBluetooth* prevRobot = NULL;
+        if(currentRobot >= 0)
+            prevRobot = robots[currentRobot];
+
+        if(robots.removeAll(robot) > 0){
+            robot->setRelayClient(NULL);
+            if(prevRobot == robot)
+                prevRobot = NULL;
+        }
+
+        currentRobot = robots.indexOf(prevRobot);
+    }
+}
+
 void CelluloRelayClient::incomingServerData(){
     QByteArray message = serverSocket->readAll();
 
