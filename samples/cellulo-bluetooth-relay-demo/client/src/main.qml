@@ -17,27 +17,7 @@ ApplicationWindow {
     width: gWidth
     height: mobile ? Screen.desktopAvailableHeight : 0.7*Screen.height
 
-    property variant robotAddresses: [
-        "00:06:66:74:40:D2",
-        "00:06:66:74:40:D4",
-        "00:06:66:74:40:D5",
-        "00:06:66:74:40:DB",
-        "00:06:66:74:40:DC",
-        "00:06:66:74:40:E4",
-        "00:06:66:74:40:EC",
-        "00:06:66:74:40:EE",
-        "00:06:66:74:41:03",
-        "00:06:66:74:41:04",
-        "00:06:66:74:41:14",
-        "00:06:66:74:41:4C",
-        "00:06:66:74:43:00",
-        "00:06:66:74:43:01",
-        "00:06:66:74:46:58",
-        "00:06:66:74:46:60",
-        "00:06:66:74:48:A7"
-    ]
-
-    CelluloTcpRelayClient{
+    CelluloLocalRelayClient{
         id: client
 
         port: 1234
@@ -84,30 +64,36 @@ ApplicationWindow {
 
     Column{
         MacAddrSelector{
-            addresses: window.robotAddresses
             connectionStatus: robot1.connectionStatus
 
-            onConnectRequested: robot1.connectToServer()
+            onConnectRequested: {
+                robot1.localAdapterMacAddr = selectedLocalAdapterAddress;
+                robot1.connectToServer();
+            }
             onDisconnectRequested: robot1.disconnectFromServer()
 
             Component.onCompleted: selectAddress(robot1.macAddr)
         }
 
         MacAddrSelector{
-            addresses: window.robotAddresses
             connectionStatus: robot2.connectionStatus
 
-            onConnectRequested: robot2.connectToServer()
+            onConnectRequested: {
+                robot2.localAdapterMacAddr = selectedLocalAdapterAddress;
+                robot2.connectToServer();
+            }
             onDisconnectRequested: robot2.disconnectFromServer()
 
             Component.onCompleted: selectAddress(robot2.macAddr)
         }
 
         MacAddrSelector{
-            addresses: window.robotAddresses
             connectionStatus: robot3.connectionStatus
 
-            onConnectRequested: robot3.connectToServer()
+            onConnectRequested: {
+                robot3.localAdapterMacAddr = selectedLocalAdapterAddress;
+                robot3.connectToServer();
+            }
             onDisconnectRequested: robot3.disconnectFromServer()
 
             Component.onCompleted: selectAddress(robot3.macAddr)

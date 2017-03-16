@@ -321,9 +321,25 @@ void CelluloRelayServer::processClientPacket(){
     else if(packetType == CelluloBluetoothPacket::CmdPacketTypeSetConnectionStatus){
         CelluloBluetoothEnums::ConnectionStatus status = (CelluloBluetoothEnums::ConnectionStatus)clientPacket.unloadUInt8();
         switch(status){
-            case CelluloBluetoothEnums::ConnectionStatusConnected:
+            case CelluloBluetoothEnums::ConnectionStatusConnected:{
+
+                //Get possible local adapter MAC address
+                quint8 octet = clientPacket.unloadUInt8();
+                QString localAdapterMacAddr = (octet <= 0xF ? "0" : "") + QString::number(octet, 16);
+                for(int i=1;i<6;i++){
+                    octet = clientPacket.unloadUInt8();
+                    localAdapterMacAddr += ":";
+                    localAdapterMacAddr += (octet <= 0xF ? "0" : "") + QString::number(octet, 16);
+                }
+                robots[currentRobot]->setAutoConnect(false);
+                if(localAdapterMacAddr == "00:00:00:00:00:00")
+                    localAdapterMacAddr = "";
+                robots[currentRobot]->setLocalAdapterMacAddr(localAdapterMacAddr);
+                robots[currentRobot]->setAutoConnect(true);
+
                 robots[currentRobot]->connectToServer();
                 break;
+            }
 
             case CelluloBluetoothEnums::ConnectionStatusDisconnected: {
                 CelluloBluetooth* robot = robots[currentRobot];

@@ -197,9 +197,27 @@ void CelluloBluetooth::connectToServer(){
     if(relayClient != NULL){
         qDebug() << "CelluloBluetooth::connectToServer(): " << macAddr << " over a relay...";
 
+        //Connection status message
         sendPacket.clear();
         sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeSetConnectionStatus);
         sendPacket.load((quint8) CelluloBluetoothEnums::ConnectionStatusConnected);
+
+        //Local adapter MAC address message
+        if(localAdapterMacAddr.isEmpty())
+            for(int i=0;i<6;i++)
+                sendPacket.load((quint8) 0);
+        else{
+            QStringList localAdapterMacAddrOctets = localAdapterMacAddr.split(':');
+            if(localAdapterMacAddrOctets.size() < 6){
+                qWarning() << "CelluloBluetooth::connectToServer(): Provided local adapter MAC address is in the wrong format.";
+                for(int i=0;i<6;i++)
+                    sendPacket.load((quint8) 0);
+            }
+            else
+                for(int i=0;i<6;i++)
+                    sendPacket.load((quint8)(localAdapterMacAddrOctets[i].toUInt(NULL, 16)));
+        }
+
         sendCommand();
     }
 
@@ -258,6 +276,8 @@ void CelluloBluetooth::disconnectFromServer(){
         sendPacket.clear();
         sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeSetConnectionStatus);
         sendPacket.load((quint8) CelluloBluetoothEnums::ConnectionStatusDisconnected);
+        for(int i=0;i<6;i++)
+            sendPacket.load((quint8) 0);
         sendCommand();
     }
 

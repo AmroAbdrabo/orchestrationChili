@@ -218,7 +218,7 @@
         0,                 /** CmdPacketTypeReset */ \
         0,                 /** CmdPacketTypeShutdown */ \
         1 + 1,             /** CmdPacketTypeSetAddress: uint8 fifthOctet, uint8 sixthOctet */ \
-        1                  /** CmdPacketTypeSetConnectionStatus: uint8 status */ \
+        1 + 6*1            /** CmdPacketTypeSetConnectionStatus: uint8 status, uint8 localAdapterAddrOctet1, uint8 localAdapterAddrOctet2, uint8 localAdapterAddrOctet3, uint8 localAdapterAddrOctet4, uint8 localAdapterAddrOctet5, uint8 localAdapterAddrOctet6 */ \
 }
 
 /**

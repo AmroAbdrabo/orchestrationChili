@@ -37,7 +37,7 @@ ApplicationWindow {
         "00:06:66:74:48:A7"
     ]
 
-    CelluloTcpRelayServer{
+    CelluloLocalRelayServer{
         id: server
 
         port: 1234
