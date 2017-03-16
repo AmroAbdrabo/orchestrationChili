@@ -52,11 +52,33 @@ CelluloRelayClient::CelluloRelayClient(CelluloRelayCommon::PROTOCOL protocol, QQ
     connect(serverSocket, SIGNAL(connected()), this, SIGNAL(connected()));
     connect(serverSocket, SIGNAL(disconnected()), this, SIGNAL(disconnected()));
     connect(serverSocket, SIGNAL(readyRead()), this, SLOT(incomingServerData()));
+
+    autoConnect = true;
+    connect(&reconnectTimer, SIGNAL(timeout()), this, SLOT(decideReconnect()));
+    reconnectTimer.start(SERVER_RECONNECT_TIME_MILLIS);
 }
 
 CelluloRelayClient::~CelluloRelayClient(){
     serverSocket->close();
     delete serverSocket;
+}
+
+void CelluloRelayClient::setAutoConnect(bool autoConnect){
+    if(this->autoConnect != autoConnect){
+        this->autoConnect = autoConnect;
+
+        if(autoConnect)
+            reconnectTimer.start(SERVER_RECONNECT_TIME_MILLIS);
+        else
+            reconnectTimer.stop();
+
+        emit autoConnectChanged();
+    }
+}
+
+void CelluloRelayClient::decideReconnect(){
+    if(!isConnected() && autoConnect)
+        connectToServer();
 }
 
 void CelluloRelayClient::setServerAddress(QString serverAddress){
@@ -104,6 +126,17 @@ void CelluloRelayClient::setPort(int port){
             emit portChanged();
         }
     }
+}
+
+bool CelluloRelayClient::isConnected(){
+    switch(protocol){
+        case CelluloRelayCommon::PROTOCOL::LOCAL:
+            return ((QLocalSocket*)serverSocket)->state() == QLocalSocket::ConnectedState;
+
+        case CelluloRelayCommon::PROTOCOL::TCP:
+            return ((QTcpSocket*)serverSocket)->state() == QTcpSocket::ConnectedState;
+    }
+    return false;
 }
 
 void CelluloRelayClient::connectToServer(){
@@ -174,7 +207,7 @@ void CelluloRelayClient::processServerPacket(){
 
 
 
-            //HANDLE UNRELATED ROBOTS BETTER
+        //HANDLE UNRELATED ROBOTS BETTER
 
 
 

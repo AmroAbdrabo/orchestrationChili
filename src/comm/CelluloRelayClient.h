@@ -45,6 +45,7 @@ class CelluloRelayClient : public QQuickItem {
 
     Q_PROPERTY(QString serverAddress READ getServerAddress WRITE setServerAddress NOTIFY serverAddressChanged)
     Q_PROPERTY(int port READ getPort WRITE setPort NOTIFY portChanged)
+    Q_PROPERTY(int autoConnect READ getAutoConnect WRITE setAutoConnect NOTIFY autoConnectChanged)
 
     friend class CelluloBluetooth;
 
@@ -62,6 +63,20 @@ public:
      * @brief Destroys this CelluloRelayClient
      */
     virtual ~CelluloRelayClient();
+
+    /**
+     * @brief Gets whether the socket tries to reconnect when it drops
+     *
+     * @return Whether the socket tries to reconnect when it drops
+     */
+    bool getAutoConnect(){ return autoConnect; }
+
+    /**
+     * @brief Sets whether the socket will try to reconnect when it drops
+     *
+     * @param autoReconnect Whether the socket will try to reconnect when it drops
+     */
+    void setAutoConnect(bool autoConnect);
 
     /**
      * @brief Gets the current server's address
@@ -104,6 +119,13 @@ public slots:
     void disconnectFromServer();
 
     /**
+     * @brief Gets whether the client is connected to the server
+     *
+     * @return Whether the client is connected to the server
+     */
+    bool isConnected();
+
+    /**
      * @brief Adds the robot to the robots list, sets the robot's relay client to this object
      *
      * @param robot New robot
@@ -111,6 +133,11 @@ public slots:
     void addRobot(CelluloBluetooth* robot);
 
 signals:
+
+    /**
+     * @brief Auto connect strategy changed
+     */
+    void autoConnectChanged();
 
     /**
      * @brief Emitted when the server address changes
@@ -139,6 +166,11 @@ private slots:
      */
     void incomingServerData();
 
+    /**
+     * @brief Reconnect if autoConnect is on
+     */
+    void decideReconnect();
+
 private:
 
     /**
@@ -154,18 +186,23 @@ private:
      */
     void sendToServer(QString macAddr, CelluloBluetoothPacket const& packet);
 
-    CelluloRelayCommon::PROTOCOL protocol; ///< Underlying transfer protocol
+    static const int SERVER_RECONNECT_TIME_MILLIS = 5000; ///< Will try to reconnect to the server after this much time
 
-    QString serverAddress;                       ///< Server's address, e.g "127.0.0.1"
-    quint16 port;                                ///< Port to connect to on the server
+    CelluloRelayCommon::PROTOCOL protocol;                ///< Underlying transfer protocol
 
-    QIODevice* serverSocket;                     ///< Socket to server that handles communication
-    CelluloBluetoothPacket serverPacket;         ///< Server's incoming packet
+    bool autoConnect;                                     ///< Whether to try to reconnect to the relay server if connection is lost
+    QTimer reconnectTimer;                                ///< Timeout timer to reconnect if connection fails
 
-    int currentRobot;                            ///< Current robot index to relay messages to, set by a CmdPacketTypeSetAddress
-    QList<CelluloBluetooth*> robots;             ///< List of robots to relay to/from
+    QString serverAddress;                                ///< Server's address, e.g "127.0.0.1"
+    quint16 port;                                         ///< Port to connect to on the server
 
-    QString lastMacAddr;                         ///< MAC address of the last CmdPacketTypeSetAddress packet sent to the server
+    QIODevice* serverSocket;                              ///< Socket to server that handles communication
+    CelluloBluetoothPacket serverPacket;                  ///< Server's incoming packet
+
+    int currentRobot;                                     ///< Current robot index to relay messages to, set by a CmdPacketTypeSetAddress
+    QList<CelluloBluetooth*> robots;                      ///< List of robots to relay to/from
+
+    QString lastMacAddr;                                  ///< MAC address of the last CmdPacketTypeSetAddress packet sent to the server
 
 };
 

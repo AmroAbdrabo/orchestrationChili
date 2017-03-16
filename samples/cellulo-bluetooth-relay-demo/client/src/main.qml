@@ -133,8 +133,9 @@ ApplicationWindow {
             text: "go"
 
             onClicked: {
-                robot1.setGoalPose(105, 186, 30, 150, 5);
-                robot2.setGoalPose(105, 110, 30, 150, 5);
+                robot1.setGoalPose(105, 166, 30, 150, 5);
+                robot2.setGoalPose(105, 90, 30, 150, 5);
+                robot3.setGoalPose(171, 121, 30, 150, 5);
             }
 
         }
