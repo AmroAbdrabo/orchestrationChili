@@ -46,6 +46,7 @@ class CelluloRelayClient : public QQuickItem {
     Q_PROPERTY(QString serverAddress READ getServerAddress WRITE setServerAddress NOTIFY serverAddressChanged)
     Q_PROPERTY(int port READ getPort WRITE setPort NOTIFY portChanged)
     Q_PROPERTY(int autoConnect READ getAutoConnect WRITE setAutoConnect NOTIFY autoConnectChanged)
+    Q_PROPERTY(QVariantList robots READ getRobots NOTIFY robotsChanged)
 
     friend class CelluloBluetooth;
 
@@ -105,6 +106,13 @@ public:
      * @param port The new port, must be in [0,65535]
      */
     void setPort(int port);
+
+    /**
+     * @brief Gets the list of robots belonging to this client
+     *
+     * @return List of robots belonging to this client
+     */
+    QVariantList getRobots() const;
 
 public slots:
 
@@ -166,6 +174,11 @@ signals:
      * @brief Emitted when the server socket is disconected
      */
     void disconnected();
+
+    /**
+     * @brief Emitted when the robot list changes
+     */
+    void robotsChanged();
 
     /**
      * @brief Emitted when the server has a robot already connected that is not in the robots list covered by this client

@@ -172,6 +172,8 @@ void CelluloRelayClient::addRobot(CelluloBluetooth* robot, bool select){
 
         if(select)
             currentRobot = robots.size() - 1;
+
+        emit robotsChanged();
     }
 }
 
@@ -185,10 +187,19 @@ void CelluloRelayClient::removeRobot(CelluloBluetooth* robot){
             robot->setRelayClient(NULL);
             if(prevRobot == robot)
                 prevRobot = NULL;
+
+            emit robotsChanged();
         }
 
         currentRobot = robots.indexOf(prevRobot);
     }
+}
+
+QVariantList CelluloRelayClient::getRobots() const {
+    QVariantList robotsVar;
+    for(CelluloBluetooth* robot : robots)
+        robotsVar << QVariant::fromValue(robot);
+    return robotsVar;
 }
 
 void CelluloRelayClient::incomingServerData(){
