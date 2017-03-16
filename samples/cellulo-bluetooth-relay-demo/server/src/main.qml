@@ -40,8 +40,6 @@ ApplicationWindow {
     CelluloLocalRelayServer{
         id: server
 
-        port: 1234
-
         onClientConnected: console.log("Server: Client connected.")
         onClientDisconnected: console.log("Server: Client disconnected.")
 
