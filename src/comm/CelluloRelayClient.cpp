@@ -24,7 +24,7 @@
 
 #include "CelluloRelayClient.h"
 
-CelluloRelayClient::CelluloRelayClient(QQuickItem* parent, CelluloRelayCommon::PROTOCOL protocol) :
+CelluloRelayClient::CelluloRelayClient(CelluloRelayCommon::PROTOCOL protocol, QQuickItem* parent) :
     QQuickItem(parent)
 {
     lastMacAddr = "";

@@ -21,6 +21,10 @@ HEADERS += \
     src/comm/CelluloRelayCommon.h \
     src/comm/CelluloRelayServer.h \
     src/comm/CelluloRelayClient.h \
+    src/comm/CelluloLocalRelayServer.h \
+    src/comm/CelluloLocalRelayClient.h \
+    src/comm/CelluloTcpRelayServer.h \
+    src/comm/CelluloTcpRelayClient.h \
     src/comm/CelluloBluetoothEMP.h \
     src/comm/CelluloBluetoothEnums.h \
     src/comm/CameraFrameImageProvider.h \
@@ -50,6 +54,10 @@ SOURCES += \
     src/comm/CelluloRelayCommon.cpp \
     src/comm/CelluloRelayServer.cpp \
     src/comm/CelluloRelayClient.cpp \
+    src/comm/CelluloLocalRelayServer.cpp \
+    src/comm/CelluloLocalRelayClient.cpp \
+    src/comm/CelluloTcpRelayServer.cpp \
+    src/comm/CelluloTcpRelayClient.cpp \
     src/comm/CelluloBluetoothEMP.cpp \
     src/comm/CelluloBluetoothEnums.cpp \
     src/comm/CameraFrameImageProvider.cpp \

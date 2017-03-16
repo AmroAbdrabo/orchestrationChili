@@ -24,7 +24,7 @@
 
 #include "CelluloRelayServer.h"
 
-CelluloRelayServer::CelluloRelayServer(QQuickItem* parent, CelluloRelayCommon::PROTOCOL protocol) :
+CelluloRelayServer::CelluloRelayServer(CelluloRelayCommon::PROTOCOL protocol, QQuickItem* parent) :
     QQuickItem(parent)
 {
     lastMacAddr = "";
@@ -91,11 +91,15 @@ void CelluloRelayServer::setListening(bool enable){
                     QLocalServer::removeServer(address);
                     if(!localServer->listen(address))
                         qWarning() << "CelluloRelayServer::setListening(): Couldn't start listening: " << localServer->errorString();
+                    else
+                        qDebug() << "CelluloRelayServer::setListening(): Started listening on " << localServer->fullServerName();
                     break;
 
                 case CelluloRelayCommon::PROTOCOL::TCP:
                     if(!tcpServer->listen(QHostAddress(address), port))
                         qWarning() << "CelluloRelayServer::setListening(): Couldn't start listening: " << tcpServer->errorString();
+                    else
+                        qDebug() << "CelluloRelayServer::setListening(): Started listening on " << tcpServer->serverAddress() << ":" << tcpServer->serverPort();
                     break;
             }
         }

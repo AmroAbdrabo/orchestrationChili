@@ -53,15 +53,15 @@ public:
     /**
      * @brief Creates a new CelluloRelayClient with the given QML parent
      *
-     * @param parent The QML parent
      * @param protocol Underlying transfer protocol to use
+     * @param parent The QML parent
      */
-    CelluloRelayClient(QQuickItem* parent = 0, CelluloRelayCommon::PROTOCOL protocol = CelluloRelayCommon::PROTOCOL::LOCAL);
+    CelluloRelayClient(CelluloRelayCommon::PROTOCOL protocol, QQuickItem* parent = 0);
 
     /**
      * @brief Destroys this CelluloRelayClient
      */
-    ~CelluloRelayClient();
+    virtual ~CelluloRelayClient();
 
     /**
      * @brief Gets the current server's address
