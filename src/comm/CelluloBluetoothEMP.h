@@ -27,9 +27,6 @@
 
 #include "CelluloBluetooth.h"
 
-/**
- * @brief Bluetooth communicator for a Cellulo robot
- */
 class CelluloBluetoothEMP : public QQuickItem {
     /* *INDENT-OFF* */
     Q_OBJECT

@@ -45,112 +45,161 @@ ApplicationWindow {
         }
     }
 
-    Column{
+    Row{
         spacing: 5
 
-        GroupBox{
-            title: "Server controls"
+        Column{
+            spacing: 5
 
-            Row{
-                spacing: 5
+            GroupBox{
+                title: "Server controls"
 
-                Button{
-                    text: "Launch Server"
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-                Button{
-                    text: "Kill Server"
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-                Text{
-                    id: serverConnectedText
-                    text: "Connecting to Server..."
-                    color: "red"
-                    anchors.verticalCenter: parent.verticalCenter
+                Row{
+                    spacing: 5
+
+                    Button{
+                        text: "Launch Server"
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                    Button{
+                        text: "Kill Server"
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                    Text{
+                        id: serverConnectedText
+                        text: "Connecting to Server..."
+                        color: "red"
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
                 }
             }
-        }
 
-        GroupBox{
-            title: "Robot list controls"
+            GroupBox{
+                title: "Robot list controls"
 
-            Row{
-                spacing: 5
+                Row{
+                    spacing: 5
 
-                Text{
-                    id: prefix
-                    text: "00:06:66:74:"
-                    anchors.verticalCenter: parent.verticalCenter
+                    Text{
+                        id: prefix
+                        text: "00:06:66:74:"
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+
+                    TextField{
+                        id: suffix
+                        placeholderText: "XX:XX"
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        onAccepted: addButton.clicked()
+                    }
+
+                    Button{
+                        id: addButton
+
+                        text: "Add new robot"
+                        anchors.verticalCenter: parent.verticalCenter
+                        onClicked: {
+                            var robot = createRobot(prefix.text + suffix.text);
+                            client.addRobot(robot);
+                        }
+                    }
                 }
+            }
 
-                TextField{
-                    id: suffix
-                    placeholderText: "XX:XX"
-                    anchors.verticalCenter: parent.verticalCenter
+            GroupBox{
+                title: "Robots on server"
 
-                    onAccepted: addButton.clicked()
+                Column{
+                    id: robotList
+
+                    Repeater{
+                        model: client.robots.length
+
+                        MacAddrSelector{
+                            addresses: [client.robots[index].macAddr]
+                            connectionStatus: client.robots[index].connectionStatus
+
+                            onConnectRequested: {
+                                client.robots[index].localAdapterMacAddr = selectedLocalAdapterAddress;
+                                client.robots[index].macAddr = selectedAddress;
+                                client.robots[index].connectToServer();
+                            }
+
+                            onDisconnectRequested: client.robots[index].disconnectFromServer()
+                        }
+                    }
                 }
+            }
 
-                Button{
-                    id: addButton
+            GroupBox{
+                title: "Robot mass control"
 
-                    text: "Add new robot"
-                    anchors.verticalCenter: parent.verticalCenter
-                    onClicked: {
-                        var robot = createRobot(prefix.text + suffix.text);
-                        client.addRobot(robot);
+                Row{
+                    spacing: 5
+
+                    Button{
+                        text: "Reset all"
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        onClicked:{
+                            for(var i=0;i<client.robots.length;i++)
+                                client.robots[i].reset();
+                        }
+                    }
+                    Button{
+                        text: "Shutdown all"
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        onClicked:{
+                            for(var i=0;i<client.robots.length;i++)
+                                client.robots[i].shutdown();
+                        }
                     }
                 }
             }
         }
 
         GroupBox{
-            title: "Robots on server"
+            title: "Robots found"
+
+            CelluloBluetoothScanner{
+                id: scanner
+                running: true
+            }
 
             Column{
-                id: robotList
+                id: scanList
+
+                Button{
+                    text: "Clear"
+                    onClicked: scanner.clear()
+                }
 
                 Repeater{
-                    model: client.robots.length
+                    model: scanner.foundRobots.length
 
-                    MacAddrSelector{
-                        addresses: [client.robots[index].macAddr]
-                        connectionStatus: client.robots[index].connectionStatus
+                    Row{
+                        spacing: 5
 
-                        onConnectRequested: {
-                            client.robots[index].localAdapterMacAddr = selectedLocalAdapterAddress;
-                            client.robots[index].macAddr = selectedAddress;
-                            client.robots[index].connectToServer();
+                        Text{
+                            text: scanner.foundRobots[index]
+                            anchors.verticalCenter: parent.verticalCenter
                         }
 
-                        onDisconnectRequested: client.robots[index].disconnectFromServer()
-                    }
-                }
-            }
-        }
+                        Button{
+                            text: "Add this robot"
+                            anchors.verticalCenter: parent.verticalCenter
+                            onClicked: {
+                                var robot = createRobot(scanner.foundRobots[index]);
+                                client.addRobot(robot);
 
-        GroupBox{
-            title: "Robot mass control"
 
-            Row{
-                spacing: 5
 
-                Button{
-                    text: "Reset all"
-                    anchors.verticalCenter: parent.verticalCenter
 
-                    onClicked:{
-                        for(var i=0;i<client.robots.length;i++)
-                            client.robots[i].reset();
-                    }
-                }
-                Button{
-                    text: "Shutdown all"
-                    anchors.verticalCenter: parent.verticalCenter
-
-                    onClicked:{
-                        for(var i=0;i<client.robots.length;i++)
-                            client.robots[i].shutdown();
+                                //REMOVE FROM FOUND ROBOTS LIST
+                            }
+                        }
                     }
                 }
             }

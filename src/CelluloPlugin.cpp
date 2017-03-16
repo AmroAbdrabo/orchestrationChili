@@ -32,6 +32,7 @@
 #include "comm/CelluloLocalRelayServer.h"
 #include "comm/CelluloTcpRelayClient.h"
 #include "comm/CelluloTcpRelayServer.h"
+#include "comm/CelluloBluetoothScanner.h"
 #include "comm/CelluloBluetoothEMP.h"
 #include "comm/CelluloBluetoothEnums.h"
 #include "comm/CameraFrameImageProvider.h"
@@ -60,6 +61,7 @@ void CelluloPlugin::registerTypes(const char *uri){
     qmlRegisterType<CelluloTcpRelayClient>(uri, 1, 0, "CelluloTcpRelayClient");
     qmlRegisterType<CelluloTcpRelayServer>(uri, 1, 0, "CelluloTcpRelayServer");
     qmlRegisterType<CelluloBluetoothEMP>(uri, 1, 0, "CelluloBluetoothEMP");
+    qmlRegisterType<CelluloBluetoothScanner>(uri, 1, 0, "CelluloBluetoothScanner");
 
     qmlRegisterSingletonType<CelluloBluetoothEnums>(uri, 1, 0, "CelluloBluetoothEnums",
                                                     [] (QQmlEngine* qmlEngine, QJSEngine* jsEngine)->QObject* {

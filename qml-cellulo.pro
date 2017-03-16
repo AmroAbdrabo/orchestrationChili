@@ -26,6 +26,7 @@ HEADERS += \
     src/comm/CelluloTcpRelayServer.h \
     src/comm/CelluloTcpRelayClient.h \
     src/comm/CelluloBluetoothEMP.h \
+    src/comm/CelluloBluetoothScanner.h \
     src/comm/CelluloBluetoothEnums.h \
     src/comm/CameraFrameImageProvider.h \
     src/comm/CelluloBluetoothPacket.h \
@@ -59,6 +60,7 @@ SOURCES += \
     src/comm/CelluloTcpRelayServer.cpp \
     src/comm/CelluloTcpRelayClient.cpp \
     src/comm/CelluloBluetoothEMP.cpp \
+    src/comm/CelluloBluetoothScanner.cpp \
     src/comm/CelluloBluetoothEnums.cpp \
     src/comm/CameraFrameImageProvider.cpp \
     src/comm/CelluloBluetoothPacket.cpp \
