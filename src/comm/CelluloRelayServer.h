@@ -56,7 +56,7 @@ public:
      * @param protocol Underlying transfer protocol to use
      * @param parent The QML parent
      */
-    CelluloRelayServer(CelluloRelayCommon::PROTOCOL protocol, QQuickItem* parent = 0);
+    CelluloRelayServer(CelluloRelayCommon::Protocol protocol, QQuickItem* parent = 0);
 
     /**
      * @brief Destroys this CelluloRelayServer
@@ -194,7 +194,7 @@ private:
      */
     void sendToClient(QString macAddr, CelluloBluetoothPacket const& packet);
 
-    CelluloRelayCommon::PROTOCOL protocol; ///< Underlying transfer protocol
+    CelluloRelayCommon::Protocol protocol; ///< Underlying transfer protocol
 
     QString address;                       ///< Host address, e.g "127.0.0.1" for TCP
     quint16 port;                          ///< Port to listen to

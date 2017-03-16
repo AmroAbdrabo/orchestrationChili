@@ -57,7 +57,7 @@ public:
      * @param protocol Underlying transfer protocol to use
      * @param parent The QML parent
      */
-    CelluloRelayClient(CelluloRelayCommon::PROTOCOL protocol, QQuickItem* parent = 0);
+    CelluloRelayClient(CelluloRelayCommon::Protocol protocol, QQuickItem* parent = 0);
 
     /**
      * @brief Destroys this CelluloRelayClient
@@ -188,7 +188,7 @@ private:
 
     static const int SERVER_RECONNECT_TIME_MILLIS = 5000; ///< Will try to reconnect to the server after this much time
 
-    CelluloRelayCommon::PROTOCOL protocol;                ///< Underlying transfer protocol
+    CelluloRelayCommon::Protocol protocol;                ///< Underlying transfer protocol
 
     bool autoConnect;                                     ///< Whether to try to reconnect to the relay server if connection is lost
     QTimer reconnectTimer;                                ///< Timeout timer to reconnect if connection fails

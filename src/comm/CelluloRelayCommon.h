@@ -37,9 +37,9 @@ public:
     /**
      * @brief Underlying transfer protocols supported by the relay servers and clients
      */
-    enum class PROTOCOL{
-        LOCAL = 0,   ///< Unix domain socket
-        TCP          ///< TCP socket
+    enum class Protocol{
+        Local = 0,   ///< Unix domain socket
+        Tcp          ///< TCP socket
     };
 };
 
