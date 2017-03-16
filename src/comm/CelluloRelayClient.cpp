@@ -165,10 +165,13 @@ void CelluloRelayClient::disconnectFromServer(){
     }
 }
 
-void CelluloRelayClient::addRobot(CelluloBluetooth* robot){
+void CelluloRelayClient::addRobot(CelluloBluetooth* robot, bool select){
     if(!robots.contains(robot)){
         robots.append(robot);
         robot->setRelayClient(this);
+
+        if(select)
+            currentRobot = robots.size() - 1;
     }
 }
 
@@ -198,26 +201,10 @@ void CelluloRelayClient::processServerPacket(){
                 break;
             }
 
-        if(newRobot < 0)
-            qWarning() << "CelluloRelayClient::processServerPacket(): Received EventPacketTypeSetAddress with address suffix " << suffix << ", but no such robot is known to the client.";
-
-
-
-
-
-
-
-        //HANDLE UNRELATED ROBOTS BETTER
-
-
-
-
-
-
-
-
-
-
+        if(newRobot < 0){
+            currentRobot = -1;
+            emit unknownRobotAtServer(CelluloRelayCommon::DEFAULT_ROBOT_MAC_ADDR_PREFIX + suffix);
+        }
         else
             currentRobot = newRobot;
     }

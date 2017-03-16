@@ -129,8 +129,9 @@ public slots:
      * @brief Adds the robot to the robots list, sets the robot's relay client to this object
      *
      * @param robot New robot
+     * @param select Selects the newly added robot as current; pass true if robot is added as a result of an unknownRobotAtServer() signal
      */
-    void addRobot(CelluloBluetooth* robot);
+    void addRobot(CelluloBluetooth* robot, bool select = false);
 
 signals:
 
@@ -158,6 +159,13 @@ signals:
      * @brief Emitted when the server socket is disconected
      */
     void disconnected();
+
+    /**
+     * @brief Emitted when the server has a robot already connected that is not in the robots list covered by this client
+     *
+     * @param macAddr MAC address of the unknown robot
+     */
+    void unknownRobotAtServer(QString macAddr);
 
 private slots:
 

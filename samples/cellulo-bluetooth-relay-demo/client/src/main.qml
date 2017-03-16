@@ -26,118 +26,40 @@ ApplicationWindow {
 
         onConnected: console.log("Client: Connected to server.")
         onDisconnected: console.log("Client: Disconnected from server.")
-    }
 
-    CelluloBluetooth{
-        id: robot1
+        onUnknownRobotAtServer: {
+            console.log("Client: Unknown robot at server: " + macAddr + ", creating...");
 
-        macAddr: "00:06:66:74:41:03"
-        autoConnect: false
+            var newRobot = Qt.createQmlObject("import Cellulo 1.0; CelluloBluetooth{}", window);
+            newRobot.autoConnect = false;
+            newRobot.macAddr = macAddr;
+            var reportPose = function(x,y,theta){ console.log("Client: " + newRobot.macAddr + " pose changed: " + x + " " + y + " " + theta); };
+            newRobot.onPoseChanged.connect(reportPose);
 
-        Component.onCompleted: client.addRobot(robot1)
-
-        onPoseChanged: console.log("Client: " + macAddr + " pose changed: " + x + " " + y + " " + theta)
-    }
+            addRobot(newRobot, true);
 
 
-    CelluloBluetooth{
-        id: robot2
+            var newSelector = Qt.createQmlObject("import Cellulo 1.0; MacAddrSelector{}", macAddressSelectors);
+            newSelector.connectionStatus = Qt.binding(function(){ return newRobot.connectionStatus; })
+            newSelector.addresses = [macAddr];
+            newSelector.selectAddress(macAddr);
+            newSelector.onConnectRequested.connect(
+                function(){
+                    newRobot.localAdapterMacAddr = newSelector.selectedLocalAdapterAddress;
+                    newRobot.macAddr = newSelector.selectedAddress;
+                    newRobot.connectToServer();
+                }
+            );
+            newSelector.onDisconnectRequested.connect(
+                function(){
+                    newRobot.disconnectFromServer();
+                }
+            );
+        }
 
-        macAddr: "00:06:66:74:46:58"
-        autoConnect: false
-
-        Component.onCompleted: client.addRobot(robot2)
-
-        onPoseChanged: console.log("Client: " + macAddr + " pose changed: " + x + " " + y + " " + theta)
-    }
-
-    CelluloBluetooth{
-        id: robot3
-
-        macAddr: "00:06:66:74:43:00"
-        autoConnect: false
-
-        Component.onCompleted: client.addRobot(robot3)
-
-        onPoseChanged: console.log("Client: " + macAddr + " pose changed: " + x + " " + y + " " + theta)
     }
 
     Column{
-        MacAddrSelector{
-            connectionStatus: robot1.connectionStatus
-
-            onConnectRequested: {
-                robot1.localAdapterMacAddr = selectedLocalAdapterAddress;
-                robot1.connectToServer();
-            }
-            onDisconnectRequested: robot1.disconnectFromServer()
-
-            Component.onCompleted: selectAddress(robot1.macAddr)
-        }
-
-        MacAddrSelector{
-            connectionStatus: robot2.connectionStatus
-
-            onConnectRequested: {
-                robot2.localAdapterMacAddr = selectedLocalAdapterAddress;
-                robot2.connectToServer();
-            }
-            onDisconnectRequested: robot2.disconnectFromServer()
-
-            Component.onCompleted: selectAddress(robot2.macAddr)
-        }
-
-        MacAddrSelector{
-            connectionStatus: robot3.connectionStatus
-
-            onConnectRequested: {
-                robot3.localAdapterMacAddr = selectedLocalAdapterAddress;
-                robot3.connectToServer();
-            }
-            onDisconnectRequested: robot3.disconnectFromServer()
-
-            Component.onCompleted: selectAddress(robot3.macAddr)
-        }
-
-        Button{
-            text: "reset"
-
-            onClicked: {
-                robot1.reset();
-                robot2.reset();
-                robot3.reset();
-            }
-        }
-
-        Button{
-            text: "shutdown"
-
-            onClicked: {
-                robot1.shutdown();
-                robot2.shutdown();
-                robot3.shutdown();
-            }
-        }
-
-        Button{
-            text: "setperiod"
-
-            onClicked: {
-                robot1.setPoseBcastPeriod(0);
-                robot2.setPoseBcastPeriod(0);
-                robot3.setPoseBcastPeriod(0);
-            }
-        }
-
-        Button{
-            text: "go"
-
-            onClicked: {
-                robot1.setGoalPose(105, 166, 30, 150, 5);
-                robot2.setGoalPose(105, 90, 30, 150, 5);
-                robot3.setGoalPose(171, 121, 30, 150, 5);
-            }
-
-        }
+        id: macAddressSelectors
     }
 }
