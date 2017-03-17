@@ -24,7 +24,7 @@
 
 #include "CelluloBluetoothScanner.h"
 
-#include "CelluloRelayCommon.h"
+#include "CelluloCommUtil.h"
 
 CelluloBluetoothScanner::CelluloBluetoothScanner(QQuickItem* parent) : QQuickItem(parent){
     continuous = false;
@@ -71,7 +71,7 @@ void CelluloBluetoothScanner::decideRestart(){
 
 void CelluloBluetoothScanner::onDeviceDiscovered(QBluetoothDeviceInfo const& info){
     QString macAddr = info.address().toString().toUpper();
-    if(macAddr.startsWith(CelluloRelayCommon::DEFAULT_ROBOT_MAC_ADDR_PREFIX) && !foundRobots.contains(macAddr)){
+    if(macAddr.startsWith(CelluloCommUtil::DEFAULT_ROBOT_MAC_ADDR_PREFIX) && !foundRobots.contains(macAddr)){
         foundRobots.append(macAddr);
         emit foundRobotsChanged();
     }

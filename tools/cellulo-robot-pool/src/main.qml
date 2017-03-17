@@ -124,16 +124,21 @@ ApplicationWindow {
                         model: client.robots.length
 
                         MacAddrSelector{
-                            addresses: [client.robots[index].macAddr]
-                            connectionStatus: client.robots[index].connectionStatus
+                            property var robot: client.robots[index]
+                            property string localAdapterMacAddr: robot.localAdapterMacAddr
+
+                            addresses: [robot.macAddr]
+                            connectionStatus: robot.connectionStatus
+
+                            onLocalAdapterMacAddrChanged: selectLocalAdapterAddress(localAdapterMacAddr.toUpperCase())
 
                             onConnectRequested: {
-                                client.robots[index].localAdapterMacAddr = selectedLocalAdapterAddress;
-                                client.robots[index].macAddr = selectedAddress;
-                                client.robots[index].connectToServer();
+                                robot.localAdapterMacAddr = selectedLocalAdapterAddress;
+                                robot.macAddr = selectedAddress;
+                                robot.connectToServer();
                             }
 
-                            onDisconnectRequested: client.robots[index].disconnectFromServer()
+                            onDisconnectRequested: robot.disconnectFromServer()
                         }
                     }
                 }
@@ -161,6 +166,15 @@ ApplicationWindow {
                         onClicked:{
                             for(var i=0;i<client.robots.length;i++)
                                 client.robots[i].shutdown();
+                        }
+                    }
+                    Button{
+                        text: "Disconnect from all"
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        onClicked:{
+                            for(var i=0;i<client.robots.length;i++)
+                                client.robots[i].disconnectFromServer();
                         }
                     }
                 }

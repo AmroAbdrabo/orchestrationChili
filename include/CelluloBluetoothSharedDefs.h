@@ -288,7 +288,7 @@
         2 + IMG_WIDTH_SHARED, /** EventPacketTypeFrameLine: uint16 currentLineIndex, IMG_WIDTH*uint8 grayscalePixel */ \
         8,                    /** EventPacketTypeDebug */ \
         1 + 1,                /** EventPacketTypeSetAddress */ \
-        1                     /** EventPacketTypeAnnounceConnectionStatus: uint8 status */ \
+        1 + 6*1               /** EventPacketTypeAnnounceConnectionStatus: uint8 status, uint8 localAdapterAddrOctet1, uint8 localAdapterAddrOctet2, uint8 localAdapterAddrOctet3, uint8 localAdapterAddrOctet4, uint8 localAdapterAddrOctet5, uint8 localAdapterAddrOctet6 */ \
 }
 
 #endif // CELLULOBLUETOOTHSHAREDDEFS_H

@@ -26,6 +26,8 @@
 #define CELLULOCOMMUTIL_H
 
 #include <QString>
+#include <QList>
+#include <QDebug>
 
 class CelluloCommUtil{
 
@@ -41,6 +43,32 @@ public:
         Local = 0,   ///< Unix domain socket
         Tcp          ///< TCP socket
     };
+
+    /**
+     * @brief Gets the octets of a given MAC address
+     *
+     * @param macAddr Bluetooth MAC address in the form of XX:XX:XX:XX:XX:XX
+     * @return 6 octets from left to right
+     */
+    static QList<quint8> getOctets(QString const& macAddr);
+
+    /**
+     * @brief Gets the MAC address made of the given octets
+     *
+     * @param octets 6 octets from left to right
+     * @return Bluetooth MAC address in the form of "XX:XX:XX:XX:XX:XX"; returns empty string if octets not valid or the address is 00:00:00:00:00:00
+     */
+    static QString getMacAddr(QList<quint8> const& octets);
+
+    /**
+     * @brief Gets the MAC address suffix made of the last two octets
+     *
+     * @param fifthOctet Fifth octet
+     * @param sixthOctet Sixth octet
+     * @return Bluetooth MAC address suffix in the form of "XX:XX"
+     */
+    static QString getMacAddrSuffix(quint8 fifthOctet, quint8 sixthOctet);
+
 };
 
 #endif // CELLULOCOMMUTIL_H

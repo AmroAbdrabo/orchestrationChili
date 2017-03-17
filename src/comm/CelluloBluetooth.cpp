@@ -24,6 +24,8 @@
 
 #include "CelluloBluetooth.h"
 
+#include "CelluloCommUtil.h"
+
 #include <QBluetoothDeviceInfo>
 #include <time.h>
 
@@ -115,19 +117,27 @@ void CelluloBluetooth::setMacAddr(QString macAddr){
 }
 
 void CelluloBluetooth::setLocalAdapterMacAddr(QString localAdapterMacAddr){
+    if(relayClient == NULL){
     #ifndef BT_MULTIADAPTER_SUPPORT
-    Q_UNUSED(localAdapterMacAddr);
-    qWarning() << "CelluloBluetooth::setLocalAdapterMacAddr(): Only works on Linux and requires qml-cellulo to be built with bluez. Try installing libbluetooth-dev.";
+        Q_UNUSED(localAdapterMacAddr);
+        qWarning() << "CelluloBluetooth::setLocalAdapterMacAddr(): Only works on Linux and requires qml-cellulo to be built with bluez. Try installing libbluetooth-dev.";
     #else
-    if(localAdapterMacAddr != this->localAdapterMacAddr){
-        bool wasDisconnected = connectionStatus == CelluloBluetoothEnums::ConnectionStatusDisconnected;
-        disconnectFromServer();
-        this->localAdapterMacAddr = localAdapterMacAddr;
-        emit localAdapterMacAddrChanged();
-        if(autoConnect && !wasDisconnected)
-            connectToServer();
-    }
+        if(localAdapterMacAddr != this->localAdapterMacAddr){
+            bool wasDisconnected = connectionStatus == CelluloBluetoothEnums::ConnectionStatusDisconnected;
+            disconnectFromServer();
+            this->localAdapterMacAddr = localAdapterMacAddr;
+            emit localAdapterMacAddrChanged();
+            if(autoConnect && !wasDisconnected)
+                connectToServer();
+        }
     #endif
+    }
+    else{
+        if(localAdapterMacAddr != this->localAdapterMacAddr){
+            this->localAdapterMacAddr = localAdapterMacAddr;
+            emit localAdapterMacAddrChanged();
+        }
+    }
 }
 
 void CelluloBluetooth::startTimeoutTimer(int time, int pm){
@@ -169,8 +179,8 @@ void CelluloBluetooth::refreshConnection(){
 void CelluloBluetooth::openSocket(){
     if(socket != NULL){
         qDebug() << "CelluloBluetooth::openSocket(): To " << macAddr <<
-            (localAdapterMacAddr != "" ? " over local adapter " + localAdapterMacAddr : "") <<
-            "...";
+        (localAdapterMacAddr != "" ? " over local adapter " + localAdapterMacAddr : "") <<
+        "...";
 
         socket->connectToService(
             QBluetoothAddress(macAddr),
@@ -203,20 +213,9 @@ void CelluloBluetooth::connectToServer(){
         sendPacket.load((quint8) CelluloBluetoothEnums::ConnectionStatusConnected);
 
         //Local adapter MAC address message
-        if(localAdapterMacAddr.isEmpty())
-            for(int i=0;i<6;i++)
-                sendPacket.load((quint8) 0);
-        else{
-            QStringList localAdapterMacAddrOctets = localAdapterMacAddr.split(':');
-            if(localAdapterMacAddrOctets.size() < 6){
-                qWarning() << "CelluloBluetooth::connectToServer(): Provided local adapter MAC address is in the wrong format.";
-                for(int i=0;i<6;i++)
-                    sendPacket.load((quint8) 0);
-            }
-            else
-                for(int i=0;i<6;i++)
-                    sendPacket.load((quint8)(localAdapterMacAddrOctets[i].toUInt(NULL, 16)));
-        }
+        QList<quint8> octets = CelluloCommUtil::getOctets(localAdapterMacAddr);
+        for(int i=0; i<6; i++)
+            sendPacket.load(octets[i]);
 
         sendCommand();
     }
@@ -276,7 +275,7 @@ void CelluloBluetooth::disconnectFromServer(){
         sendPacket.clear();
         sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeSetConnectionStatus);
         sendPacket.load((quint8) CelluloBluetoothEnums::ConnectionStatusDisconnected);
-        for(int i=0;i<6;i++)
+        for(int i=0; i<6; i++)
             sendPacket.load((quint8) 0);
         sendCommand();
     }
@@ -355,9 +354,17 @@ void CelluloBluetooth::socketDataArrived(){
 
 void CelluloBluetooth::announceConnectionStatusToRelayServer(){
     if(relayServer != NULL){
+
+        //Connection status message
         sendPacket.clear();
         sendPacket.setEventPacketType(CelluloBluetoothPacket::EventPacketTypeAnnounceConnectionStatus);
         sendPacket.load((quint8)connectionStatus);
+
+        //Local adapter MAC address message
+        QList<quint8> octets = CelluloCommUtil::getOctets(localAdapterMacAddr);
+        for(int i=0; i<6; i++)
+            sendPacket.load(octets[i]);
+
         relayServer->sendToClient(macAddr, sendPacket);
     }
 }
