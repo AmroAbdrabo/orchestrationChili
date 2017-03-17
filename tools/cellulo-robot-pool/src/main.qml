@@ -5,6 +5,7 @@ import QtQuick.Controls 1.2
 import QtQuick.Controls.Private 1.0
 import QtQuick.Controls.Styles 1.3
 
+import QMLBluetoothExtras 1.0
 import Cellulo 1.0
 
 ApplicationWindow {
@@ -95,7 +96,7 @@ ApplicationWindow {
                     Button{
                         id: addButton
 
-                        text: "Add new robot"
+                        text: "+"
                         anchors.verticalCenter: parent.verticalCenter
                         onClicked: {
                             var robot = createRobot(prefix.text + suffix.text);
@@ -132,6 +133,17 @@ ApplicationWindow {
                             }
 
                             onDisconnectRequested: robot.disconnectFromServer()
+                        }
+                    }
+
+                    Button{
+                        text: "Equally distribute local adapters"
+                        onClicked:{
+                            var localAdapters = BluetoothLocalDeviceStatic.allDevices();
+                            for(var i=0;i<client.robots.length;i++){
+                                console.log(localAdapters[Math.floor(localAdapters.length*i/client.robots.length)]);
+                                client.robots[i].localAdapterMacAddr = localAdapters[Math.floor(localAdapters.length*i/client.robots.length)];
+                            }
                         }
                     }
                 }
@@ -222,16 +234,23 @@ ApplicationWindow {
                         }
 
                         Button{
-                            text: "Add this robot"
+                            text: "+"
                             anchors.verticalCenter: parent.verticalCenter
 
                             enabled: !client.hasRobot(currentMacAddr)
 
-                            onClicked: {
-                                var robot = createRobot(currentMacAddr);
-                                client.addRobot(robot);
-                            }
+                            onClicked: client.addRobot(createRobot(currentMacAddr))
                         }
+                    }
+                }
+
+                Button{
+                    text: "Add all above"
+                    enabled: scanner.foundRobots.length > 0
+                    onClicked: {
+                        for(var i=0;i<scanner.foundRobots.length;i++)
+                            if(!client.hasRobot(scanner.foundRobots[i]))
+                                client.addRobot(createRobot(scanner.foundRobots[i]));
                     }
                 }
             }
