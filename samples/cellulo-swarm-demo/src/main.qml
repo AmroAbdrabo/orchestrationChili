@@ -14,156 +14,31 @@ ApplicationWindow {
     minimumHeight: 100
     minimumWidth: 200
 
-    readonly property int numRobots: 15
-    property int currentNumRobots: 0
-
-    function recalcNumRobots(){
-        var ret = 0;
-        for(var i=0;i<robots.length;i++)
-            if(robots[i].connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected)
-                ret++;
-        currentNumRobots = ret;
-    }
+    property int currentNumRobots: client.robots.length
 
     property int nearestSquareEdge: Math.ceil(Math.sqrt(currentNumRobots))
 
-    property var robots: []
+    property var robotComponent: Qt.createComponent("LatticeRobot.qml")
 
-    Repeater{
-        model: numRobots
+    function createRobot(macAddr){
+        var newRobot = robotComponent.createObject(window);
+        newRobot.autoConnect = false;
+        newRobot.macAddr = macAddr;
+        newRobot.index = client.robots.length;
+        return newRobot;
+    }
 
-        CelluloRobot{
-            id: robot
+    CelluloLocalRelayClient{
+        id: client
 
-            macAddr: QMLCache.read("robot" + index + "MacAddr")
-            localAdapterMacAddr: QMLCache.read("robot" + index + "LocalAdapterMacAddr")
+        Component.onCompleted: connectToServer()
 
-            function init(){
-                setPoseBcastPeriod(100);
-                setTimestampingEnabled(false);
-                setCasualBackdriveAssistEnabled(false);
-                clearHapticFeedback();
-                clearTracking();
-                setExposureTime(0);
-                setGestureEnabled(false);
-                setLocomotionInteractivityMode(CelluloBluetoothEnums.LocomotionInteractivityModeNormal);
-                setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll,"#202020",0);
-                setLEDResponseMode(CelluloBluetoothEnums.LEDResponseModeResponsiveIndividual);
-                keys = [false, false, false, false, false, false];
-            }
+        //onConnected: toast.show("Connected to Server.")
+        //onDisconnected: toast.show("Disconnected from Server.")
 
-            onBootCompleted: init()
-
-            onConnectionStatusChanged: {
-                if(connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected)
-                    init();
-
-                recalcNumRobots();
-            }
-
-            onTouchBegan: {
-                keys[key] = true;
-                recalcTouchedRobots();
-            }
-
-            onTouchReleased: {
-                keys[key] = false;
-                recalcTouchedRobots();
-            }
-
-            property var keys: [false, false, false, false, false, false]
-
-            function anyKey(){
-                for(var i=0;i<6;i++)
-                    if(keys[i])
-                        return true;
-                return false;
-            }
-
-            property vector3d goalXYTheta: Qt.vector3d(0,0,0)
-
-            function calcLatticeGoal(){
-                var myX = index % nearestSquareEdge;
-                var myY = (index - myX)/nearestSquareEdge;
-                var myVec = Qt.vector2d(myX*latticeDist, myY*latticeDist);
-
-                var rotRad = latticePose.z*Math.PI/180;
-                var rotMat = [
-                            [Math.cos(rotRad), -Math.sin(rotRad)],
-                            [Math.sin(rotRad), Math.cos(rotRad)]
-                        ];
-
-                myVec = Qt.vector2d(rotMat[0][0]*myVec.x + rotMat[0][1]*myVec.y, rotMat[1][0]*myVec.x + rotMat[1][1]*myVec.y);
-
-                goalXYTheta = Qt.vector3d(latticePose.x + myVec.x, latticePose.y + myVec.y, latticePose.z);
-            }
-
-            property bool reached: false
-
-            function calcUserInput(){
-                if(touchedRobot1 === robot){
-
-                    //Resize and rotate lattice according to the first and second held robot
-                    if(touchedRobot2 !== null)
-                        recalcResize();
-
-                    //Rotate according to the first held robot
-                    else
-                        latticePose.z = theta;
-
-                    //Move lattice according to the first held robot
-                    var myX = index % nearestSquareEdge;
-                    var myY = (index - myX)/nearestSquareEdge;
-
-                    var latticeCornerPos = Qt.vector2d(-myX*latticeDist, -myY*latticeDist);
-                    var rotRad = latticePose.z*Math.PI/180;
-                    var rotMat = [
-                                [Math.cos(rotRad), -Math.sin(rotRad)],
-                                [Math.sin(rotRad), Math.cos(rotRad)]
-                            ];
-                    latticeCornerPos = Qt.vector2d(
-                                rotMat[0][0]*latticeCornerPos.x + rotMat[0][1]*latticeCornerPos.y,
-                                rotMat[1][0]*latticeCornerPos.x + rotMat[1][1]*latticeCornerPos.y
-                                );
-
-                    latticePose.x = x + latticeCornerPos.x;
-                    latticePose.y = y + latticeCornerPos.y;
-                }
-            }
-
-            function calcReached(){
-                var xythetaDiff = goalXYTheta.minus(Qt.vector3d(x,y,theta));
-                while(xythetaDiff.z > 180)
-                    xythetaDiff.z -= 360;
-                while(xythetaDiff.z <= -180)
-                    xythetaDiff.z += 360;
-                reached = (Qt.vector2d(xythetaDiff.x, xythetaDiff.y).length() < 5 && Math.abs(xythetaDiff.z) < 5);
-            }
-
-            onPoseChanged: {
-                calcUserInput();
-                calcLatticeGoal();
-                calcReached();
-
-                if(touchedRobot1 === robot || touchedRobot2 === robot){
-                    setGoalVelocity(0,0,0);
-                }
-                else if(go.checked){
-                    while(goalXYTheta.z >= 360)
-                        goalXYTheta.z -= 360;
-                    while(goalXYTheta.z < 0)
-                        goalXYTheta.z += 360;
-                    setGoalPose(goalXYTheta.x, goalXYTheta.y, goalXYTheta.z, 200, 10);
-                }
-                else
-                    setGoalVelocity(0,0,0);
-            }
-        }
-
-        onItemAdded: {
-            var temp = robots;
-            temp.push(item);
-            robots = temp;
+        onUnknownRobotAtServer: {
+            var robot = createRobot(macAddr);
+            addRobot(robot, true);
         }
     }
 
@@ -188,22 +63,22 @@ ApplicationWindow {
         touchedRobot1 = null;
         touchedRobot2 = null;
 
-        for(var i=0;i<robots.length;i++)
-            if(robots[i].anyKey()){
+        for(var i=0;i<client.robots.length;i++)
+            if(client.robots[i].anyKey()){
                 if(touchedRobot1 === null){
-                    touchedRobot1 = robots[i];
+                    touchedRobot1 = client.robots[i];
                     touchedRobot1Index = i;
                     initTouched(touchedRobot1);
                 }
                 else{
-                    touchedRobot2 = robots[i];
+                    touchedRobot2 = client.robots[i];
                     touchedRobot2Index = i;
                     initTouched(touchedRobot2);
                     break;
                 }
             }
             else
-                initReleased(robots[i]);
+                initReleased(client.robots[i]);
     }
 
     function recalcResize(){
@@ -231,7 +106,7 @@ ApplicationWindow {
         title: "Robots"
 
         Column{
-            property variant addresses: [
+            /*property variant addresses: [
                 "00:06:66:74:40:D2",
                 "00:06:66:74:40:D4",
                 "00:06:66:74:40:D5",
@@ -273,6 +148,11 @@ ApplicationWindow {
                         selectLocalAdapterAddress(QMLCache.read("robot" + index + "LocalAdapterMacAddr"));
                     }
                 }
+            }*/
+
+            Text{
+                text: client.connected ? "Connected to Server." : "Connecting to Server..."
+                color: client.connected ? "green" : "red"
             }
 
             CheckBox{
@@ -312,28 +192,28 @@ ApplicationWindow {
                 radius: 5
 
                 Repeater{
-                    model: numRobots
+                    model: currentNumRobots
 
                     Image{
-                        visible: robots[index].connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected
-                        source: robots[index].reached ? "../assets/redHexagon.svg" : "../assets/greenHexagon.svg"
-                        rotation: robots[index].theta
-                        x: robots[index].x*parent.scaleCoeff - width/2
-                        y: robots[index].y*parent.scaleCoeff - height/2
+                        visible: client.robots[index].connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected
+                        source: client.robots[index].reached ? "../assets/redHexagon.svg" : "../assets/greenHexagon.svg"
+                        rotation: client.robots[index].theta
+                        x: client.robots[index].x*parent.scaleCoeff - width/2
+                        y: client.robots[index].y*parent.scaleCoeff - height/2
                         width: parent.physicalRobotWidth*parent.scaleCoeff
                         fillMode: Image.PreserveAspectFit
                     }
                 }
 
                 Repeater{
-                    model: numRobots
+                    model: currentNumRobots
 
                     Image{
-                        visible: robots[index].connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected
+                        visible: client.robots[index].connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected
                         source: "../assets/yellowHexagon.svg"
-                        rotation: robots[index].goalXYTheta.z
-                        x: robots[index].goalXYTheta.x*parent.scaleCoeff - width/2
-                        y: robots[index].goalXYTheta.y*parent.scaleCoeff - height/2
+                        rotation: client.robots[index].goalXYTheta.z
+                        x: client.robots[index].goalXYTheta.x*parent.scaleCoeff - width/2
+                        y: client.robots[index].goalXYTheta.y*parent.scaleCoeff - height/2
                         width: parent.physicalRobotWidth*parent.scaleCoeff
                         fillMode: Image.PreserveAspectFit
                     }
