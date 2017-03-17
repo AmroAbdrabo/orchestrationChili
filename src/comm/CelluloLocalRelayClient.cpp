@@ -23,8 +23,8 @@
  */
 
 #include "CelluloLocalRelayClient.h"
-#include "CelluloRelayCommon.h"
+#include "CelluloCommUtil.h"
 
-CelluloLocalRelayClient::CelluloLocalRelayClient(QQuickItem* parent) : CelluloRelayClient(CelluloRelayCommon::Protocol::Local, parent){}
+CelluloLocalRelayClient::CelluloLocalRelayClient(QQuickItem* parent) : CelluloRelayClient(CelluloCommUtil::RelayProtocol::Local, parent){}
 
 CelluloLocalRelayClient::~CelluloLocalRelayClient(){}

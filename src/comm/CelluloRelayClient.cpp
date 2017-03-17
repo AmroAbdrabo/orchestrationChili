@@ -24,7 +24,7 @@
 
 #include "CelluloRelayClient.h"
 
-CelluloRelayClient::CelluloRelayClient(CelluloRelayCommon::Protocol protocol, QQuickItem* parent) :
+CelluloRelayClient::CelluloRelayClient(CelluloCommUtil::RelayProtocol protocol, QQuickItem* parent) :
     QQuickItem(parent)
 {
     lastMacAddr = "";
@@ -32,7 +32,7 @@ CelluloRelayClient::CelluloRelayClient(CelluloRelayCommon::Protocol protocol, QQ
 
     this->protocol = protocol;
     switch(protocol){
-        case CelluloRelayCommon::Protocol::Local:
+        case CelluloCommUtil::RelayProtocol::Local:
             serverAddress = "cellulo_relay";
             port = -1;
             serverSocket = new QLocalSocket(this);
@@ -40,9 +40,9 @@ CelluloRelayClient::CelluloRelayClient(CelluloRelayCommon::Protocol protocol, QQ
                     [=](QLocalSocket::LocalSocketError error){ qDebug() << "CelluloRelayClient serverSocket error: " << error; });
             break;
 
-        case CelluloRelayCommon::Protocol::Tcp:
+        case CelluloCommUtil::RelayProtocol::Tcp:
             serverAddress = "localhost";
-            port = CelluloRelayCommon::DEFAULT_RELAY_PORT;
+            port = CelluloCommUtil::DEFAULT_RELAY_PORT;
             serverSocket = new QTcpSocket(this);
             connect((QTcpSocket*)serverSocket, static_cast<void (QTcpSocket::*)(QTcpSocket::SocketError)>(&QTcpSocket::error),
                     [=](QTcpSocket::SocketError error){ qDebug() << "CelluloRelayClient serverSocket error: " << error; });
@@ -85,11 +85,11 @@ void CelluloRelayClient::setServerAddress(QString serverAddress){
     if(serverAddress != this->serverAddress){
         bool unconnected = false;
         switch(protocol){
-            case CelluloRelayCommon::Protocol::Local:
+            case CelluloCommUtil::RelayProtocol::Local:
                 unconnected = ((QLocalSocket*)serverSocket)->state() != QLocalSocket::UnconnectedState;
                 break;
 
-            case CelluloRelayCommon::Protocol::Tcp:
+            case CelluloCommUtil::RelayProtocol::Tcp:
                 unconnected = ((QTcpSocket*)serverSocket)->state() != QTcpSocket::UnconnectedState;
                 break;
         }
@@ -104,7 +104,7 @@ void CelluloRelayClient::setServerAddress(QString serverAddress){
 }
 
 void CelluloRelayClient::setPort(int port){
-    if(protocol != CelluloRelayCommon::Protocol::Tcp){
+    if(protocol != CelluloCommUtil::RelayProtocol::Tcp){
         qWarning() << "CelluloRelayClient::setPort(): Port only meaningful for Tcp sockets.";
         return;
     }
@@ -130,10 +130,10 @@ void CelluloRelayClient::setPort(int port){
 
 bool CelluloRelayClient::isConnected(){
     switch(protocol){
-        case CelluloRelayCommon::Protocol::Local:
+        case CelluloCommUtil::RelayProtocol::Local:
             return ((QLocalSocket*)serverSocket)->state() == QLocalSocket::ConnectedState;
 
-        case CelluloRelayCommon::Protocol::Tcp:
+        case CelluloCommUtil::RelayProtocol::Tcp:
             return ((QTcpSocket*)serverSocket)->state() == QTcpSocket::ConnectedState;
     }
     return false;
@@ -142,11 +142,11 @@ bool CelluloRelayClient::isConnected(){
 void CelluloRelayClient::connectToServer(){
     lastMacAddr = "";
     switch(protocol){
-        case CelluloRelayCommon::Protocol::Local:
+        case CelluloCommUtil::RelayProtocol::Local:
             ((QLocalSocket*)serverSocket)->connectToServer(serverAddress);
             break;
 
-        case CelluloRelayCommon::Protocol::Tcp:
+        case CelluloCommUtil::RelayProtocol::Tcp:
             ((QTcpSocket*)serverSocket)->connectToHost(serverAddress, port);
             break;
     }
@@ -155,11 +155,11 @@ void CelluloRelayClient::connectToServer(){
 void CelluloRelayClient::disconnectFromServer(){
     lastMacAddr = "";
     switch(protocol){
-        case CelluloRelayCommon::Protocol::Local:
+        case CelluloCommUtil::RelayProtocol::Local:
             ((QLocalSocket*)serverSocket)->disconnectFromServer();
             break;
 
-        case CelluloRelayCommon::Protocol::Tcp:
+        case CelluloCommUtil::RelayProtocol::Tcp:
             ((QTcpSocket*)serverSocket)->disconnectFromHost();
             break;
     }
@@ -230,7 +230,7 @@ void CelluloRelayClient::processServerPacket(){
 
         if(newRobot < 0){
             currentRobot = -1;
-            emit unknownRobotAtServer(CelluloRelayCommon::DEFAULT_ROBOT_MAC_ADDR_PREFIX + suffix);
+            emit unknownRobotAtServer(CelluloCommUtil::DEFAULT_ROBOT_MAC_ADDR_PREFIX + suffix);
         }
         else
             currentRobot = newRobot;

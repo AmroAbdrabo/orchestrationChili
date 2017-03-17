@@ -24,7 +24,7 @@
 
 #include "CelluloRelayServer.h"
 
-CelluloRelayServer::CelluloRelayServer(CelluloRelayCommon::Protocol protocol, QQuickItem* parent) :
+CelluloRelayServer::CelluloRelayServer(CelluloCommUtil::RelayProtocol protocol, QQuickItem* parent) :
     QQuickItem(parent)
 {
     lastMacAddr = "";
@@ -36,16 +36,16 @@ CelluloRelayServer::CelluloRelayServer(CelluloRelayCommon::Protocol protocol, QQ
     localServer = NULL;
     tcpServer = NULL;
     switch(protocol){
-        case CelluloRelayCommon::Protocol::Local:
+        case CelluloCommUtil::RelayProtocol::Local:
             address = "cellulo_relay";
             port = -1;
             localServer = new QLocalServer(this);
             connect(localServer, SIGNAL(newConnection()), this, SLOT(addClient()));
             break;
 
-        case CelluloRelayCommon::Protocol::Tcp:
+        case CelluloCommUtil::RelayProtocol::Tcp:
             address = "localhost";
-            port = CelluloRelayCommon::DEFAULT_RELAY_PORT;
+            port = CelluloCommUtil::DEFAULT_RELAY_PORT;
             tcpServer = new QTcpServer(this);
             connect(tcpServer, SIGNAL(newConnection()), this, SLOT(addClient()));
             break;
@@ -56,12 +56,12 @@ CelluloRelayServer::CelluloRelayServer(CelluloRelayCommon::Protocol protocol, QQ
 
 CelluloRelayServer::~CelluloRelayServer(){
     switch(protocol){
-        case CelluloRelayCommon::Protocol::Local:
+        case CelluloCommUtil::RelayProtocol::Local:
             localServer->close();
             delete localServer;
             break;
 
-        case CelluloRelayCommon::Protocol::Tcp:
+        case CelluloCommUtil::RelayProtocol::Tcp:
             tcpServer->close();
             delete tcpServer;
             break;
@@ -71,10 +71,10 @@ CelluloRelayServer::~CelluloRelayServer(){
 
 bool CelluloRelayServer::isListening() const {
     switch(protocol){
-        case CelluloRelayCommon::Protocol::Local:
+        case CelluloCommUtil::RelayProtocol::Local:
             return localServer->isListening();
 
-        case CelluloRelayCommon::Protocol::Tcp:
+        case CelluloCommUtil::RelayProtocol::Tcp:
             return tcpServer->isListening();
     }
 
@@ -87,7 +87,7 @@ void CelluloRelayServer::setListening(bool enable){
             qWarning() << "CelluloRelayServer::setListening(): Can't start listening while client is connected, only one client is allowed.";
         else{
             switch(protocol){
-                case CelluloRelayCommon::Protocol::Local:
+                case CelluloCommUtil::RelayProtocol::Local:
                     QLocalServer::removeServer(address);
                     if(!localServer->listen(address))
                         qWarning() << "CelluloRelayServer::setListening(): Couldn't start listening: " << localServer->errorString();
@@ -95,7 +95,7 @@ void CelluloRelayServer::setListening(bool enable){
                         qDebug() << "CelluloRelayServer::setListening(): Started listening on " << localServer->fullServerName();
                     break;
 
-                case CelluloRelayCommon::Protocol::Tcp:
+                case CelluloCommUtil::RelayProtocol::Tcp:
                     if(!tcpServer->listen(QHostAddress(address), port))
                         qWarning() << "CelluloRelayServer::setListening(): Couldn't start listening: " << tcpServer->errorString();
                     else
@@ -106,11 +106,11 @@ void CelluloRelayServer::setListening(bool enable){
     }
     else{
         switch(protocol){
-            case CelluloRelayCommon::Protocol::Local:
+            case CelluloCommUtil::RelayProtocol::Local:
                 localServer->close();
                 break;
 
-            case CelluloRelayCommon::Protocol::Tcp:
+            case CelluloCommUtil::RelayProtocol::Tcp:
                 tcpServer->close();
                 break;
         }
@@ -129,7 +129,7 @@ void CelluloRelayServer::setAddress(QString address){
 }
 
 void CelluloRelayServer::setPort(int port){
-    if(protocol != CelluloRelayCommon::Protocol::Tcp){
+    if(protocol != CelluloCommUtil::RelayProtocol::Tcp){
         qWarning() << "CelluloRelayServer::setPort(): Port only meaningful for Tcp sockets.";
         return;
     }
@@ -173,11 +173,11 @@ void CelluloRelayServer::removeRobot(CelluloBluetooth* robot){
 void CelluloRelayServer::addClient(){
     bool serverHasPendingConnections = false;
     switch(protocol){
-        case CelluloRelayCommon::Protocol::Local:
+        case CelluloCommUtil::RelayProtocol::Local:
             serverHasPendingConnections = localServer->hasPendingConnections();
             break;
 
-        case CelluloRelayCommon::Protocol::Tcp:
+        case CelluloCommUtil::RelayProtocol::Tcp:
             serverHasPendingConnections = tcpServer->hasPendingConnections();
             break;
     }
@@ -185,13 +185,13 @@ void CelluloRelayServer::addClient(){
     //Get first connection
     if(clientSocket == NULL && serverHasPendingConnections){
         switch(protocol){
-            case CelluloRelayCommon::Protocol::Local:
+            case CelluloCommUtil::RelayProtocol::Local:
                 clientSocket = localServer->nextPendingConnection();
                 connect((QLocalSocket*)clientSocket, static_cast<void (QLocalSocket::*)(QLocalSocket::LocalSocketError)>(&QLocalSocket::error),
                         [=](QLocalSocket::LocalSocketError error){ qDebug() << "CelluloRelayServer clientSocket error: " << error; });
                 break;
 
-            case CelluloRelayCommon::Protocol::Tcp:
+            case CelluloCommUtil::RelayProtocol::Tcp:
                 clientSocket = tcpServer->nextPendingConnection();
                 connect((QTcpSocket*)clientSocket, static_cast<void (QTcpSocket::*)(QTcpSocket::SocketError)>(&QTcpSocket::error),
                         [=](QTcpSocket::SocketError error){ qDebug() << "CelluloRelayServer clientSocket error: " << error; });
@@ -216,23 +216,23 @@ void CelluloRelayServer::addClient(){
 
     //Discard rest of the connections
     switch(protocol){
-        case CelluloRelayCommon::Protocol::Local:
+        case CelluloCommUtil::RelayProtocol::Local:
             serverHasPendingConnections = localServer->hasPendingConnections();
             break;
 
-        case CelluloRelayCommon::Protocol::Tcp:
+        case CelluloCommUtil::RelayProtocol::Tcp:
             serverHasPendingConnections = tcpServer->hasPendingConnections();
             break;
     }
     while(serverHasPendingConnections){
         QIODevice* trash = NULL;
         switch(protocol){
-            case CelluloRelayCommon::Protocol::Local:
+            case CelluloCommUtil::RelayProtocol::Local:
                 trash = localServer->nextPendingConnection();
                 serverHasPendingConnections = localServer->hasPendingConnections();
                 break;
 
-            case CelluloRelayCommon::Protocol::Tcp:
+            case CelluloCommUtil::RelayProtocol::Tcp:
                 trash = tcpServer->nextPendingConnection();
                 serverHasPendingConnections = tcpServer->hasPendingConnections();
                 break;
@@ -304,7 +304,7 @@ void CelluloRelayServer::processClientPacket(){
         if(newRobot < 0){
             CelluloBluetooth* robot = new CelluloBluetooth(this);
             robot->setAutoConnect(false);
-            robot->setMacAddr(CelluloRelayCommon::DEFAULT_ROBOT_MAC_ADDR_PREFIX + suffix);
+            robot->setMacAddr(CelluloCommUtil::DEFAULT_ROBOT_MAC_ADDR_PREFIX + suffix);
             robot->setAutoConnect(true);
             addRobot(robot);
             currentRobot = robots.size() - 1;

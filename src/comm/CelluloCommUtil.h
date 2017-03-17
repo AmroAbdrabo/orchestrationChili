@@ -16,18 +16,18 @@
  */
 
 /**
- * @file CelluloRelayCommon.h
- * @brief Common objects used by Cellulo Relay objects
+ * @file CelluloCommUtil.h
+ * @brief Common objects used by Cellulo communication objects
  * @author Ayberk Özgür
  * @date 2017-03-15
  */
 
-#ifndef CELLULORELAYCOMMON_H
-#define CELLULORELAYCOMMON_H
+#ifndef CELLULOCOMMUTIL_H
+#define CELLULOCOMMUTIL_H
 
 #include <QString>
 
-class CelluloRelayCommon{
+class CelluloCommUtil{
 
 public:
 
@@ -37,10 +37,10 @@ public:
     /**
      * @brief Underlying transfer protocols supported by the relay servers and clients
      */
-    enum class Protocol{
+    enum class RelayProtocol{
         Local = 0,   ///< Unix domain socket
         Tcp          ///< TCP socket
     };
 };
 
-#endif // CELLULORELAYCOMMON_H
+#endif // CELLULOCOMMUTIL_H

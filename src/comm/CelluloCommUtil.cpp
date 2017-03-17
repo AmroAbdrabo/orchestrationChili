@@ -16,12 +16,12 @@
  */
 
 /**
- * @file CelluloRelayCommon.cpp
- * @brief Common objects used by Cellulo Relay objects
+ * @file CelluloCommUtil.cpp
+ * @brief Common objects used by Cellulo communication objects
  * @author Ayberk Özgür
  * @date 2017-03-15
  */
 
-#include "CelluloRelayCommon.h"
+#include "CelluloCommUtil.h"
 
-const QString CelluloRelayCommon::DEFAULT_ROBOT_MAC_ADDR_PREFIX = "00:06:66:74:";
+const QString CelluloCommUtil::DEFAULT_ROBOT_MAC_ADDR_PREFIX = "00:06:66:74:";
