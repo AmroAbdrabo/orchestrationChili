@@ -43,6 +43,13 @@ ApplicationWindow {
             var robot = createRobot(macAddr);
             addRobot(robot, true);
         }
+
+        function hasRobot(macAddr){
+            for(var i=0;i<robots.length;i++)
+                if(robots[i].macAddr.toUpperCase() === macAddr.toUpperCase())
+                    return true;
+            return false;
+        }
     }
 
     Row{
@@ -161,19 +168,36 @@ ApplicationWindow {
         }
 
         GroupBox{
-            title: "Robots found"
+            title: "Scan for robots"
 
             CelluloBluetoothScanner{
                 id: scanner
-                running: true
+                continuous: continuousCheckBox.checked
             }
 
             Column{
                 id: scanList
 
-                Button{
-                    text: "Clear"
-                    onClicked: scanner.clear()
+                CheckBox{
+                    id: continuousCheckBox
+
+                    text: "Scan continuously"
+                }
+
+                Row{
+                    spacing: 5
+
+                    Button{
+                        text: scanner.scanning ? "Scanning..." : "Scan"
+                        enabled: !scanner.scanning
+                        onClicked: scanner.start()
+                    }
+
+                    Button{
+                        text: "Stop"
+                        enabled: scanner.scanning
+                        onClicked: scanner.stop()
+                    }
                 }
 
                 Repeater{
@@ -182,22 +206,23 @@ ApplicationWindow {
                     Row{
                         spacing: 5
 
+                        property string currentMacAddr: scanner.foundRobots[index]
+
                         Text{
-                            text: scanner.foundRobots[index]
+                            text: currentMacAddr
                             anchors.verticalCenter: parent.verticalCenter
+                            color: client.hasRobot(currentMacAddr) ? "gray" : "black"
                         }
 
                         Button{
                             text: "Add this robot"
                             anchors.verticalCenter: parent.verticalCenter
+
+                            enabled: !client.hasRobot(currentMacAddr)
+
                             onClicked: {
-                                var robot = createRobot(scanner.foundRobots[index]);
+                                var robot = createRobot(currentMacAddr);
                                 client.addRobot(robot);
-
-
-
-
-                                //REMOVE FROM FOUND ROBOTS LIST
                             }
                         }
                     }
