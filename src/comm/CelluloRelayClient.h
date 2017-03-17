@@ -43,6 +43,7 @@ class CelluloRelayClient : public QQuickItem {
     Q_OBJECT
     /* *INDENT-ON* */
 
+    Q_PROPERTY(bool connected READ isConnected NOTIFY connectedChanged)
     Q_PROPERTY(QString serverAddress READ getServerAddress WRITE setServerAddress NOTIFY serverAddressChanged)
     Q_PROPERTY(int port READ getPort WRITE setPort NOTIFY portChanged)
     Q_PROPERTY(int autoConnect READ getAutoConnect WRITE setAutoConnect NOTIFY autoConnectChanged)
@@ -64,6 +65,13 @@ public:
      * @brief Destroys this CelluloRelayClient
      */
     virtual ~CelluloRelayClient();
+
+    /**
+     * @brief Gets whether the client is connected to the server
+     *
+     * @return Whether the client is connected to the server
+     */
+    bool isConnected();
 
     /**
      * @brief Gets whether the socket tries to reconnect when it drops
@@ -127,13 +135,6 @@ public slots:
     void disconnectFromServer();
 
     /**
-     * @brief Gets whether the client is connected to the server
-     *
-     * @return Whether the client is connected to the server
-     */
-    bool isConnected();
-
-    /**
      * @brief Adds the robot to the robots list, sets the robot's relay client to this object
      *
      * @param robot New robot
@@ -149,6 +150,11 @@ public slots:
     void removeRobot(CelluloBluetooth* robot);
 
 signals:
+
+    /**
+     * @brief Emitted when connected/disconnected to/from server
+     */
+    void connectedChanged();
 
     /**
      * @brief Auto connect strategy changed

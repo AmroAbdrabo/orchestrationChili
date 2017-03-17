@@ -52,6 +52,8 @@ CelluloRelayClient::CelluloRelayClient(CelluloCommUtil::RelayProtocol protocol, 
     connect(serverSocket, SIGNAL(connected()), this, SIGNAL(connected()));
     connect(serverSocket, SIGNAL(disconnected()), this, SIGNAL(disconnected()));
     connect(serverSocket, SIGNAL(readyRead()), this, SLOT(incomingServerData()));
+    connect(this, SIGNAL(connected()), this, SIGNAL(connectedChanged()));
+    connect(this, SIGNAL(disconnected()), this, SIGNAL(connectedChanged()));
 
     autoConnect = true;
     connect(&reconnectTimer, SIGNAL(timeout()), this, SLOT(decideReconnect()));

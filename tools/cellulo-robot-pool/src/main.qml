@@ -28,16 +28,8 @@ ApplicationWindow {
 
         Component.onCompleted: connectToServer()
 
-        onConnected: {
-            serverConnectedText.color = "green";
-            serverConnectedText.text = "Connected to Server";
-            toast.show("Connected to Server.");
-        }
-        onDisconnected: {
-            serverConnectedText.color = "red";
-            serverConnectedText.text = "Connecting to Server...";
-            toast.show("Disconnected from Server.");
-        }
+        onConnected: toast.show("Connected to Server.")
+        onDisconnected: toast.show("Disconnected from Server.")
 
         onUnknownRobotAtServer: {
             var robot = createRobot(macAddr);
@@ -73,9 +65,8 @@ ApplicationWindow {
                         anchors.verticalCenter: parent.verticalCenter
                     }
                     Text{
-                        id: serverConnectedText
-                        text: "Connecting to Server..."
-                        color: "red"
+                        text: client.connected ? "Connected to Server." : "Connecting to Server..."
+                        color: client.connected ? "green" : "red"
                         anchors.verticalCenter: parent.verticalCenter
                     }
                 }
@@ -116,6 +107,8 @@ ApplicationWindow {
 
             GroupBox{
                 title: "Robots on server"
+
+                enabled: client.connected
 
                 Column{
                     id: robotList
