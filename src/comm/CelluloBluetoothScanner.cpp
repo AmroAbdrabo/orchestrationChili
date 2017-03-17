@@ -27,24 +27,33 @@
 #include "CelluloRelayCommon.h"
 
 CelluloBluetoothScanner::CelluloBluetoothScanner(QQuickItem* parent) : QQuickItem(parent){
-    running = false;
+    continuous = false;
 
-    connect(&scanner, SIGNAL(finished()), this, SLOT(decideRestart()));
+    connect(&scanner, SIGNAL(finished()), this, SIGNAL(finished()));
+    connect(&scanner, SIGNAL(canceled()), this, SIGNAL(finished()));
+    connect(this, SIGNAL(finished()), this, SIGNAL(scanningChanged()));
+    connect(this, SIGNAL(finished()), this, SLOT(decideRestart()));
     connect(&scanner, SIGNAL(deviceDiscovered(QBluetoothDeviceInfo const&)), this, SLOT(onDeviceDiscovered(QBluetoothDeviceInfo const&)));
 }
 
 CelluloBluetoothScanner::~CelluloBluetoothScanner(){}
 
-void CelluloBluetoothScanner::setRunning(bool running){
-    if(this->running != running){
-        this->running = running;
+bool CelluloBluetoothScanner::isScanning() const {
+    return scanner.isActive();
+}
 
-        if(running)
-            scanner.start();
-        else
-            scanner.stop();
+void CelluloBluetoothScanner::start(){
+    if(!isScanning()){
+        clear();
+        scanner.start(QBluetoothDeviceDiscoveryAgent::ClassicMethod);
+        emit scanningChanged();
+    }
+}
 
-        emit runningChanged();
+void CelluloBluetoothScanner::stop(){
+    if(isScanning()){
+        scanner.stop();
+        emit scanningChanged();
     }
 }
 
@@ -56,8 +65,8 @@ void CelluloBluetoothScanner::clear(){
 }
 
 void CelluloBluetoothScanner::decideRestart(){
-    if(running)
-        scanner.start();
+    if(continuous)
+        start();
 }
 
 void CelluloBluetoothScanner::onDeviceDiscovered(QBluetoothDeviceInfo const& info){

@@ -33,7 +33,8 @@ class CelluloBluetoothScanner : public QQuickItem {
     Q_OBJECT
     /* *INDENT-ON* */
 
-    Q_PROPERTY(bool running READ getRunning WRITE setRunning NOTIFY runningChanged)
+    Q_PROPERTY(bool continuous MEMBER continuous)
+    Q_PROPERTY(bool scanning READ isScanning NOTIFY scanningChanged)
     Q_PROPERTY(QStringList foundRobots READ getFoundRobots NOTIFY foundRobotsChanged)
 
 public:
@@ -55,7 +56,7 @@ public:
      *
      * @return Whether currently scanning
      */
-    bool getRunning() const { return running; }
+    bool isScanning() const;
 
     /**
      * @brief Gets the list of found robot MAC addresses
@@ -67,9 +68,14 @@ public:
 signals:
 
     /**
+     * @brief Emitted when scanning finishes
+     */
+    void finished();
+
+    /**
      * @brief Emitted when scan stops or starts
      */
-    void runningChanged();
+    void scanningChanged();
 
     /**
      * @brief Emitted when list of found robot MAC addresses changes
@@ -79,16 +85,19 @@ signals:
 public slots:
 
     /**
+     * @brief Starts scanning
+     */
+    void start();
+
+    /**
+     * @brief Stops scanning
+     */
+    void stop();
+
+    /**
      * @brief Clears the list of found robots
      */
     void clear();
-
-    /**
-     * @brief Sets whether to scan continuously or do nothing
-     *
-     * @param running Whether to scan continuously or do nothing
-     */
-    void setRunning(bool running);
 
 private slots:
 
@@ -100,13 +109,13 @@ private slots:
     void onDeviceDiscovered(QBluetoothDeviceInfo const& info);
 
     /**
-     * @brief Restarts scan if still running
+     * @brief Restarts if continuously scanning
      */
     void decideRestart();
 
 private:
 
-    bool running;                           ///< Whether to scan actively
+    bool continuous;                        ///< Whether to continuously scan
     QBluetoothDeviceDiscoveryAgent scanner; ///< Bluetooth device scanner
     QStringList foundRobots;                ///< List of robot MAC addresses that are found
 
