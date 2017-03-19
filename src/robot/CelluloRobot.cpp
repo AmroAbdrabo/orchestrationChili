@@ -16,120 +16,178 @@
  */
 
 /**
- * @file CelluloBluetooth.cpp
- * @brief Source for Bluetooth communication with Cellulo robots
+ * @file CelluloRobot.h
+ * @brief Object that directly represents a Cellulo robot
  * @author Ayberk Özgür
  * @date 2015-05-20
  */
 
 #include "CelluloRobot.h"
 
+#include <cmath>
+
+#include "../comm/CelluloBluetoothEnums.h"
+
+const qreal CelluloRobot::maxEstimatedXYVel = 1000.0;
+const qreal CelluloRobot::maxEstimatedW = 50.0;
+const qreal CelluloRobot::vMu = 0.0;
+
 CelluloRobot::CelluloRobot(QQuickItem* parent) : CelluloBluetooth(parent){
     poseVelControlEnabled = false;
     poseVelControlPeriod = 20;
+
     vxyw = QVector3D(0,0,0);
+
+    velEstimateNeedsReset = true;
+
+    lastPose = QVector3D(0,0,0);
+    lastLastTimestamp = 0;
+
+    poseVelControlKGoalVel = QVector3D(0.9, 0.9, 0.9);
+    poseVelControlKGoalVelErr = QVector3D(0.2, 0.2, 0.2);
+    poseVelControlKGoalPoseErr = QVector3D(2.0, 2.0, 2.3);
+
+    connect(this, SIGNAL(kidnappedChanged()), this, SLOT(resetVelEstimate()));
+    connect(this, SIGNAL(bootCompleted()), this, SLOT(initialize()));
+    connect(this, SIGNAL(connectionStatusChanged()), this, SLOT(initialize()));
+    connect(this, SIGNAL(poseChanged(qreal, qreal, qreal)), this, SLOT(spinControllers()));
 }
 
 CelluloRobot::~CelluloRobot(){}
 
 void CelluloRobot::setPoseVelControlEnabled(bool enabled){
-
+    if(enabled != poseVelControlEnabled){
+        initialize();
+        poseVelControlEnabled = enabled;
+        emit poseVelControlEnabledChanged();
+    }
 }
 
 void CelluloRobot::setPoseVelControlPeriod(int period){
+    if(period < 0){
+        qWarning() << "CelluloRobot::setPoseVelControlPeriod(): Period must be greater than zero.";
+        return;
+    }
 
+    if(period != poseVelControlPeriod){
+        initialize();
+        poseVelControlPeriod = period;
+        emit poseVelControlPeriodChanged();
+    }
+}
+
+void CelluloRobot::setGoalPoseAndVelocity(qreal x, qreal y, qreal theta, qreal Vx, qreal Vy, qreal w){
+    poseVelControlGoalPose = QVector3D(x, y, theta);
+    poseVelControlGoalVel = QVector3D(Vx, Vy, w);
+    if(!poseVelControlEnabled)
+        qWarning() << "CelluloRobot::setGoalPoseAndVelocity(): Warning, poseVelControlEnabled is not true, nothing will happen.";
 }
 
 void CelluloRobot::initialize(){
-    if(connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected){
+    if(getConnectionStatus() == CelluloBluetoothEnums::ConnectionStatusConnected){
         setPoseBcastPeriod(poseVelControlPeriod);
         setTimestampingEnabled(true);
 
         velEstimateNeedsReset = true;
-        lastPose = Qt.vector3d(0,0,0);
-        lastTime = 0;
+        lastPose = QVector3D(0,0,0);
+        lastLastTimestamp = 0;
 
-        nextGoalPoseVelRequested();
+        qDebug() << "INIT FROM C++";
+
+        emit nextGoalPoseVelRequested();
     }
 }
 
+void CelluloRobot::resetVelEstimate(){
+    velEstimateNeedsReset = true;
+}
+
+void CelluloRobot::spinControllers(){
+    estimateVelocities();
+    if(poseVelControlEnabled)
+        poseVelControlCommandVelocities();
+}
+
 void CelluloRobot::estimateVelocities(){
-    var newTime = lastTimestamp;
-    var deltaTime = newTime - lastTime;
-    var newPose = Qt.vector3d(x,y,theta);
+    qreal newTime = getLastTimestamp();
+    qreal deltaTime = newTime - lastLastTimestamp;
+    QVector3D newPose = QVector3D(getX(), getY(), getTheta());
 
-    var newVxyw = newPose.minus(lastPose);
-    while(newVxyw.z <= -180)
-        newVxyw.z += 360;
-    while(newVxyw.z > 180)
-        newVxyw.z -= 360;
-    newVxyw.z = newVxyw.z*Math.PI/180;
+    QVector3D newVxyw = newPose - lastPose;
+    while(newVxyw.z() <= -180)
+        newVxyw.setZ(newVxyw.z() + 360);
+    while(newVxyw.z() > 180)
+        newVxyw.setZ(newVxyw.z() - 360);
+    newVxyw.setZ(newVxyw.z()*M_PI/180);
 
-    newVxyw = newVxyw.times(1000/deltaTime);
-    if(bcastPeriodMin < deltaTime && deltaTime < bcastPeriodMax){
+    newVxyw *= 1000.0/deltaTime;
+    if(getBcastPeriodMin() < deltaTime && deltaTime < getBcastPeriodMax()){
         if(velEstimateNeedsReset){
             velEstimateNeedsReset = false;
             vxyw = newVxyw;
         }
         else
-            vxyw = vxyw.times(vMu).plus(newVxyw.times(1 - vMu));
+            vxyw = vMu*vxyw + (1 - vMu)*newVxyw;
     }
-    else if(bcastPeriodMax <= deltaTime){
+    else if(getBcastPeriodMax() <= deltaTime){
         velEstimateNeedsReset = true;
         vxyw = newVxyw;
     }
     else
         velEstimateNeedsReset = true;
 
-    if(vxyw.x > maxEstimatedXYVel)
-        vxyw.x = maxEstimatedXYVel;
-    else if(vxyw.x < -maxEstimatedXYVel)
-        vxyw.x = -maxEstimatedXYVel;
-    if(vxyw.y > maxEstimatedXYVel)
-        vxyw.y = maxEstimatedXYVel;
-    else if(vxyw.y < -maxEstimatedXYVel)
-        vxyw.y = -maxEstimatedXYVel;
-    if(vxyw.z > maxEstimatedW)
-        vxyw.z = maxEstimatedW;
-    else if(vxyw.z < -maxEstimatedW)
-        vxyw.z = -maxEstimatedW;
+    if(vxyw.x() > maxEstimatedXYVel)
+        vxyw.setX(maxEstimatedXYVel);
+    else if(vxyw.x() < -maxEstimatedXYVel)
+        vxyw.setX(-maxEstimatedXYVel);
+
+    if(vxyw.y() > maxEstimatedXYVel)
+        vxyw.setY(maxEstimatedXYVel);
+    else if(vxyw.y() < -maxEstimatedXYVel)
+        vxyw.setY(-maxEstimatedXYVel);
+
+    if(vxyw.z() > maxEstimatedW)
+        vxyw.setZ(maxEstimatedW);
+    else if(vxyw.z() < -maxEstimatedW)
+        vxyw.setZ(-maxEstimatedW);
 
     lastPose = newPose;
-    lastTime = newTime;
+    lastLastTimestamp = newTime;
 }
 
-void CelluloRobot::commandVelocities(){
-    nextGoalPoseVelRequested();
+void CelluloRobot::poseVelControlCommandVelocities(){
+    emit nextGoalPoseVelRequested();
 
     //Goal velocity component
-    var commandVel = goalVel.times(kGoalVel);
+    QVector3D commandVel = poseVelControlKGoalVel*poseVelControlGoalVel;
 
     //Goal velocity error component
-    var velErr = goalVel.minus(vxyw);
-    commandVel = commandVel.plus(velErr.times(kGoalVelErr));
+    commandVel += poseVelControlKGoalVelErr*(poseVelControlGoalVel - vxyw);
 
     //Goal pose error component
-    var poseErr = goalPose.minus(Qt.vector3d(x,y,theta));
-    while(poseErr.z > 180)
-        poseErr.z -= 360;
-    while(poseErr.z <= -180)
-        poseErr.z += 360;
-    poseErr.z = poseErr.z/180*Math.PI;
-    commandVel = commandVel.plus(poseErr.times(kGoalPoseErr));
+    QVector3D poseErr = poseVelControlGoalPose - QVector3D(getX(), getY(), getTheta());
+    while(poseErr.z() > 180)
+        poseErr.setZ(poseErr.z() - 360);
+    while(poseErr.z() <= -180)
+        poseErr.setZ(poseErr.z() + 360);
+    poseErr.setZ(poseErr.z()/180*M_PI);
+    commandVel += poseVelControlKGoalPoseErr*poseErr;
 
     //Clamp goal velocity
-    if(commandVel.x > 200)
-        commandVel.x = 200;
-    else if(commandVel.x < -200)
-        commandVel.x = -200;
-    if(commandVel.y > 200)
-        commandVel.y = 200;
-    else if(commandVel.y < -200)
-        commandVel.y = -200;
-    if(commandVel.z > 10)
-        commandVel.z = 10;
-    else if(commandVel.z < -10)
-        commandVel.z = -10;
+    if(commandVel.x() > 200)
+        commandVel.setX(200);
+    else if(commandVel.x() < -200)
+        commandVel.setX(-200);
 
-    setGoalVelocity(commandVel.x, commandVel.y, commandVel.z);
+    if(commandVel.y() > 200)
+        commandVel.setY(200);
+    else if(commandVel.y() < -200)
+        commandVel.setY(-200);
+
+    if(commandVel.z() > 10)
+        commandVel.setZ(10);
+    else if(commandVel.z() < -10)
+        commandVel.setZ(-10);
+
+    setGoalVelocity(commandVel.x(), commandVel.y(), commandVel.z());
 }

@@ -34,17 +34,17 @@ class CelluloRobot : public CelluloBluetooth {
     Q_OBJECT
     /* *INDENT-ON* */
 
-    Q_PROPERTY(bool poseVelControlEnabled READ getPoseVelControlEnabled WRITE setPoseVelControlEnabled NOTIFY poseVelControlEnabledChanged)
-    Q_PROPERTY(int poseVelControlPeriod READ getPoseVelControlPeriod WRITE setPoseVelControlPeriod NOTIFY poseVelControlPeriodChanged)
     Q_PROPERTY(QVector3D vxyw READ getVxyw NOTIFY vxywChanged)
     Q_PROPERTY(qreal vx READ getVx NOTIFY vxywChanged)
     Q_PROPERTY(qreal vy READ getVy NOTIFY vxywChanged)
     Q_PROPERTY(qreal w READ getW NOTIFY vxywChanged)
 
+    Q_PROPERTY(bool poseVelControlEnabled READ getPoseVelControlEnabled WRITE setPoseVelControlEnabled NOTIFY poseVelControlEnabledChanged)
+    Q_PROPERTY(int poseVelControlPeriod READ getPoseVelControlPeriod WRITE setPoseVelControlPeriod NOTIFY poseVelControlPeriodChanged)
 
-
-
-
+    Q_PROPERTY(QVector3D poseVelControlKGoalVel MEMBER poseVelControlKGoalVel)
+    Q_PROPERTY(QVector3D poseVelControlKGoalVelErr MEMBER poseVelControlKGoalVelErr)
+    Q_PROPERTY(QVector3D poseVelControlKGoalPoseErr MEMBER poseVelControlKGoalPoseErr)
 
 public:
 
@@ -59,34 +59,6 @@ public:
      * @brief Destroys this Cellulo robot representation
      */
     virtual ~CelluloRobot();
-
-    /**
-     * @brief Gets whether the simultaneous pose and velocity controller is enabled
-     *
-     * @return Whether the simultaneous pose and velocity controller is enabled, false by default
-     */
-    bool getPoseVelControlEnabled() const { return poseVelControlEnabled; }
-
-    /**
-     * @brief Sets whether the simultaneous pose and velocity controller is enabled
-     *
-     * @param enabled Whether the simultaneous pose and velocity controller is enabled
-     */
-    void setPoseVelControlEnabled(bool enabled);
-
-    /**
-     * @brief Gets the simultaneous pose and velocity controller period
-     *
-     * @return The simultaneous pose and velocity controller period in milliseconds
-     */
-    int getPoseVelControlPeriod() const { return poseVelControlPeriod; }
-
-    /**
-     * @brief Sets the simultaneous pose and velocity controller period
-     *
-     * @param period The simultaneous pose and velocity controller period in milliseconds
-     */
-    void setPoseVelControlPeriod(int period);
 
     /**
      * @brief Gets the current velocities
@@ -116,7 +88,40 @@ public:
      */
     qreal getW() const { return vxyw.z(); }
 
+    /**
+     * @brief Gets whether the simultaneous pose and velocity controller is enabled
+     *
+     * @return Whether the simultaneous pose and velocity controller is enabled, false by default
+     */
+    bool getPoseVelControlEnabled() const { return poseVelControlEnabled; }
+
+    /**
+     * @brief Sets whether the simultaneous pose and velocity controller is enabled
+     *
+     * @param enabled Whether the simultaneous pose and velocity controller is enabled
+     */
+    void setPoseVelControlEnabled(bool enabled);
+
+    /**
+     * @brief Gets the simultaneous pose and velocity controller period
+     *
+     * @return The simultaneous pose and velocity controller period in milliseconds
+     */
+    int getPoseVelControlPeriod() const { return poseVelControlPeriod; }
+
+    /**
+     * @brief Sets the simultaneous pose and velocity controller period
+     *
+     * @param period The simultaneous pose and velocity controller period in milliseconds
+     */
+    void setPoseVelControlPeriod(int period);
+
 signals:
+
+    /**
+     * @brief Emitted when the linear/angular velocity changes
+     */
+    void vxywChanged();
 
     /**
      * @brief Emitted when the simultaneous pose and velocity controller is enabled/disabled
@@ -129,28 +134,75 @@ signals:
     void poseVelControlPeriodChanged();
 
     /**
-     * @brief Emitted when the linear/angular velocity changes
+     * @brief Emitted when the controller needs the next goal pose and velocity; setGoalPoseAndVelocity() should be called by the user upon receiving this signal if a user control loop that cycles on each received pose of the robot is present
      */
-    void vxywChanged();
+    void nextGoalPoseVelRequested();
 
 private slots:
 
-
-
-public slots:
-
-
-
-private:
-
-    bool poseVelControlEnabled; ///< Whether the simultaneous pose and velocity controller is enabled, must be enabled by the user
-    int poseVelControlPeriod;   ///< Desired pose/velocity control period in ms, set to 0 for highest possible frequency
-    QVector3D vxyw;             ///< Robot velocities: x,y in mm/s, z in rad/s (representing w)
+    /**
+     * @brief Marks the velocity estimate to be reset on the next received pose
+     */
+    void resetVelEstimate();
 
     /**
      * @brief Initializes the robot to the settings necessary to run the controllers, initializes controllers
      */
     void initialize();
+
+    /**
+     * @brief Calculates new velocity estimates, new goals for velocity and pose
+     */
+    void spinControllers();
+
+public slots:
+
+    /**
+     * @brief Sets the simultaneous pose and velocity goal of the robot, i.e the robot tries to be at the pose and move with the desired velocity while there
+     *
+     * @param x X coordinate (larger than 0mm)
+     * @param y Y coordinate (larger than 0mm)
+     * @param theta Orientation (between -180 degrees and 180 degrees)
+     * @param Vx X velocity (between -185 mm/s and and 185 mm/s)
+     * @param Vy Y velocity (between -185 mm/s and and 185 mm/s)
+     * @param w Angular velocity (between -7.5 rad/s and 7.5 rad/s)
+     */
+    void setGoalPoseAndVelocity(qreal x, qreal y, qreal theta, qreal Vx, qreal Vy, qreal w);
+
+private:
+
+    QVector3D vxyw;                       ///< Robot velocities: x,y in mm/s, z in rad/s (representing w)
+
+    bool poseVelControlEnabled;           ///< Whether the simultaneous pose and velocity controller is enabled, must be enabled by the user
+    int poseVelControlPeriod;             ///< Desired pose/velocity control period in ms, set to 0 for highest possible frequency
+
+    QVector3D poseVelControlKGoalVel;     ///< Goal velocity coefficients when tracking pose/velocity
+    QVector3D poseVelControlKGoalVelErr;  ///< Goal velocity error coefficients when tracking pose/velocity
+    QVector3D poseVelControlKGoalPoseErr; ///< Goal pose error coefficients when tracking pose/velocity
+
+    QVector3D poseVelControlGoalPose;     ///< Latest x, y, theta goal
+    QVector3D poseVelControlGoalVel;      ///< Latest Vx, Vy, w goal
+    bool velEstimateNeedsReset;           ///< If true, velocity estimate variables will be reset in the next cycle
+    QVector3D lastPose;                   ///< Previous robot pose
+    qreal lastLastTimestamp;              ///< Previous timestamp
+
+    static const qreal maxEstimatedXYVel; ///< Clamp limit for the estimated linear robot velocity, in mm/s
+    static const qreal maxEstimatedW;     ///< Clamp limit for the estimated angular robot velocity, in rad/s
+    static const qreal vMu;               ///< Smoothing coefficient for velocity estimate
+
+    /**
+     * @brief Pose broadcast with less than this period will be discarded when calculating the velocity
+     *
+     * @return Pose broadcast with less than this period will be discarded when calculating the velocity
+     */
+    qreal getBcastPeriodMin() const { return poseVelControlPeriod - 50; }
+
+    /**
+     * @brief Pose broadcast with more than this period will be discarded when calculating the velocity
+     *
+     * @return Pose broadcast with more than this period will be discarded when calculating the velocity
+     */
+    qreal getBcastPeriodMax() const { return poseVelControlPeriod + 100; }
 
     /**
      * @brief Estimates the robot velocities
@@ -160,7 +212,7 @@ private:
     /**
      * @brief Calculates goal velocities to simultaneously reach pose and velocity goals, sends them as command
      */
-    void commandVelocities();
+    void poseVelControlCommandVelocities();
 
 };
 

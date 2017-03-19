@@ -17,6 +17,7 @@ linux:!android {
 
 HEADERS += \
     src/CelluloPlugin.h \
+    src/robot/CelluloRobot.h \
     src/comm/CelluloBluetooth.h \
     src/comm/CelluloCommUtil.h \
     src/comm/CelluloRelayServer.h \
@@ -51,6 +52,7 @@ HEADERS += \
 
 SOURCES += \
     src/CelluloPlugin.cpp \
+    src/robot/CelluloRobot.cpp \
     src/comm/CelluloBluetooth.cpp \
     src/comm/CelluloCommUtil.cpp \
     src/comm/CelluloRelayServer.cpp \
@@ -89,8 +91,7 @@ INCLUDEPATH += \
 QML_SOURCES = \
     src/util/ui/MacAddrSelector.qml \
     src/util/ui/Toast.qml \
-    src/util/ui/ToastManager.qml \
-    src/util/robot/CelluloRobot.qml
+    src/util/ui/ToastManager.qml
 
 JS_SOURCES =
 

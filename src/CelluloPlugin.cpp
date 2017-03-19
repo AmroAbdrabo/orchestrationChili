@@ -27,6 +27,7 @@
 #include <QQmlEngine>
 #include <qqml.h>
 
+#include "robot/CelluloRobot.h"
 #include "comm/CelluloBluetooth.h"
 #include "comm/CelluloLocalRelayClient.h"
 #include "comm/CelluloLocalRelayServer.h"
@@ -55,6 +56,8 @@
 #include "util/lang/TranslationTool.h"
 
 void CelluloPlugin::registerTypes(const char *uri){
+    qmlRegisterType<CelluloRobot>(uri, 1, 0, "CelluloRobot");
+
     qmlRegisterType<CelluloBluetooth>(uri, 1, 0, "CelluloBluetooth");
     qmlRegisterType<CelluloLocalRelayClient>(uri, 1, 0, "CelluloLocalRelayClient");
     qmlRegisterType<CelluloLocalRelayServer>(uri, 1, 0, "CelluloLocalRelayServer");
