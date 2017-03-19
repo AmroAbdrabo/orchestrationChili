@@ -566,15 +566,13 @@ void CelluloBluetooth::setPoseBcastPeriod(unsigned int period){
 }
 
 void CelluloBluetooth::setTimestampingEnabled(bool enabled){
-    if(enabled != timestampingEnabled){
-        timestampingEnabled = enabled;
+    timestampingEnabled = enabled;
 
-        sendPacket.clear();
-        sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeTimestampEnable);
-        sendPacket.load((quint8)enabled);
+    sendPacket.clear();
+    sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeTimestampEnable);
+    sendPacket.load((quint8)enabled);
 
-        sendCommand();
-    }
+    sendCommand();
 }
 
 void CelluloBluetooth::requestFrame(){
