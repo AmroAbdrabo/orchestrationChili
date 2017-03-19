@@ -3,7 +3,7 @@ qml-cellulo Documentation
 
 Here you will find the complete documentation of all QML objects offered by `qml-cellulo`, organized into categories.
 
-#### CelluloRobot [EXPERIMENTAL]
+#### CelluloRobot [extends CelluloBluetooth]
 
 The main object that represents a Cellulo robot. Inherits from `CelluloBluetooth` and has all its functionalities; these are not listed below.
 
