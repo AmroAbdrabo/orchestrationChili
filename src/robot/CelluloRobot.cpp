@@ -92,8 +92,6 @@ void CelluloRobot::initialize(){
         lastPose = QVector3D(0,0,0);
         lastLastTimestamp = 0;
 
-        qDebug() << "INIT FROM C++";
-
         emit nextGoalPoseVelRequested();
     }
 }
