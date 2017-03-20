@@ -52,7 +52,7 @@ Build & run unit tests
 
 ```
 mkdir build-test && cd build-test
-/path-to-qt-install-root/5.4/gcc_64/bin/qmake .. "CONFIG += test"
+/path-to-qt-install-root/5.8/gcc_64/bin/qmake .. "CONFIG += test"
 make -j5
 ./celluloplugintests
 ```

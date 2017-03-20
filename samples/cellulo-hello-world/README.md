@@ -3,7 +3,7 @@ cellulo-hello-world
 
 This is the most basic Cellulo application to get you started.
 
-Tested with Qt 5.6.2 on Ubuntu 16.04 and Android SDK 25 and NDK r10e.
+Tested with Qt 5.8.0 on Ubuntu 16.04 and Android SDK 25 and NDK r10e.
 
 Build
 -----
