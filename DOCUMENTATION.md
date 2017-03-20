@@ -18,6 +18,8 @@ The main object that represents a Cellulo robot. Inherits from `CelluloBluetooth
 >  - **poseVelControlKGoalVel** :       `vector3d` - Goal velocity coefficients when tracking pose/velocity, default (0.9, 0.9, 0.9), do not change if you don't have a good reason
 >  - **poseVelControlKGoalVelErr** :    `vector3d` - Goal velocity error coefficients when tracking pose/velocity, default (0.2, 0.2, 0.2), do not change if you don't have a good reason
 >  - **poseVelControlKGoalPoseErr** :   `vector3d` - Goal pose error coefficients when tracking pose/velocity, default (2.0, 2.0, 2.3), do not change if you don't have a good reason
+>  - **keysTouched** :                  `list<bool>` - Whether the 6 keys are touched
+>  - **keysLongTouched** :              `list<bool>` - Whether the 6 keys are long touched
 
 **Signals:**
 

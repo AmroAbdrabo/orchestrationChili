@@ -46,6 +46,9 @@ class CelluloRobot : public CelluloBluetooth {
     Q_PROPERTY(QVector3D poseVelControlKGoalVelErr MEMBER poseVelControlKGoalVelErr)
     Q_PROPERTY(QVector3D poseVelControlKGoalPoseErr MEMBER poseVelControlKGoalPoseErr)
 
+    Q_PROPERTY(QList<bool> keysTouched READ getKeysTouched NOTIFY keysTouchedChanged)
+    Q_PROPERTY(QList<bool> keysLongTouched READ getKeysLongTouched NOTIFY keysLongTouchedChanged)
+
 public:
 
     /**
@@ -116,6 +119,20 @@ public:
      */
     void setPoseVelControlPeriod(int period);
 
+    /**
+     * @brief Gets the list of whether the 6 touch keys are touched
+     *
+     * @return List of whether the 6 touch keys are touched
+     */
+    QList<bool> getKeysTouched() const { return keysTouched; }
+
+    /**
+     * @brief Gets the list of whether the 6 touch keys are long touched
+     *
+     * @return List of whether the 6 touch keys are long touched
+     */
+    QList<bool> getKeysLongTouched() const { return keysLongTouched; }
+
 signals:
 
     /**
@@ -134,9 +151,22 @@ signals:
     void poseVelControlPeriodChanged();
 
     /**
-     * @brief Emitted when the controller needs the next goal pose and velocity; setGoalPoseAndVelocity() should be called by the user upon receiving this signal if a user control loop that cycles on each received pose of the robot is present
+     * @brief Emitted when the controller needs the next goal pose and velocity
+     *
+     * Upon receiving this signal, setGoalPoseAndVelocity() should be called by the user if a user control loop that
+     * cycles on each received pose of the robot is present.
      */
     void nextGoalPoseVelRequested();
+
+    /**
+     * @brief Emitted when a key is touched/released
+     */
+    void keysTouchedChanged();
+
+    /**
+     * @brief Emitted when a key is long touched/released
+     */
+    void keysLongTouchedChanged();
 
 private slots:
 
@@ -154,6 +184,27 @@ private slots:
      * @brief Calculates new velocity estimates, new goals for velocity and pose
      */
     void spinControllers();
+
+    /**
+     * @brief Updates the key touched properties if necessary
+     *
+     * @param key Index of the key that is touched
+     */
+    void touchKey(int key);
+
+    /**
+     * @brief Updates the key touched properties if necessary
+     *
+     * @param key Index of the key that is released
+     */
+    void releaseKey(int key);
+
+    /**
+     * @brief Updates the key touched properties if necessary
+     *
+     * @param key Index of the key that is long touched
+     */
+    void longTouchKey(int key);
 
 public slots:
 
@@ -189,6 +240,9 @@ private:
     static const qreal maxEstimatedXYVel; ///< Clamp limit for the estimated linear robot velocity, in mm/s
     static const qreal maxEstimatedW;     ///< Clamp limit for the estimated angular robot velocity, in rad/s
     static const qreal vMu;               ///< Smoothing coefficient for velocity estimate
+
+    QList<bool> keysTouched;              ///< Whether keys are touched
+    QList<bool> keysLongTouched;          ///< Whether keys are touched
 
     /**
      * @brief Pose broadcast with less than this period will be discarded when calculating the velocity

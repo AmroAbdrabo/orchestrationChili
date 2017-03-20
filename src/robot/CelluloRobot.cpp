@@ -33,6 +33,13 @@ const qreal CelluloRobot::maxEstimatedW = 50.0;
 const qreal CelluloRobot::vMu = 0.0;
 
 CelluloRobot::CelluloRobot(QQuickItem* parent) : CelluloBluetooth(parent){
+    keysLongTouched << false << false << false << false << false << false;
+    keysTouched << false << false << false << false << false << false;
+
+    connect(this, SIGNAL(touchBegan(int)), this, SLOT(touchKey(int)));
+    connect(this, SIGNAL(longTouch(int)), this, SLOT(longTouchKey(int)));
+    connect(this, SIGNAL(touchReleased(int)), this, SLOT(releaseKey(int)));
+
     poseVelControlEnabled = false;
     poseVelControlPeriod = 20;
 
@@ -84,6 +91,9 @@ void CelluloRobot::setGoalPoseAndVelocity(qreal x, qreal y, qreal theta, qreal V
 }
 
 void CelluloRobot::initialize(){
+    for(int i=0;i<6;i++)
+        releaseKey(i);
+
     if(getConnectionStatus() == CelluloBluetoothEnums::ConnectionStatusConnected){
         setPoseBcastPeriod(poseVelControlPeriod);
         setTimestampingEnabled(true);
@@ -188,4 +198,29 @@ void CelluloRobot::poseVelControlCommandVelocities(){
         commandVel.setZ(-10);
 
     setGoalVelocity(commandVel.x(), commandVel.y(), commandVel.z());
+}
+
+void CelluloRobot::touchKey(int key){
+    if(!keysTouched[key]){
+        keysTouched[key] = true;
+        emit keysTouchedChanged();
+    }
+}
+
+void CelluloRobot::releaseKey(int key){
+    if(keysTouched[key]){
+        keysTouched[key] = false;
+        emit keysTouchedChanged();
+    }
+    if(keysLongTouched[key]){
+        keysLongTouched[key] = false;
+        emit keysLongTouchedChanged();
+    }
+}
+
+void CelluloRobot::longTouchKey(int key){
+    if(!keysLongTouched[key]){
+        keysLongTouched[key] = true;
+        emit keysLongTouchedChanged();
+    }
 }
