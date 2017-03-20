@@ -5,15 +5,23 @@ linux:!android {
 
     TARGET = cellulorelayserverd
 
-    #QT += qml quick bluetooth
+    QT += core bluetooth quick
 
     SOURCES += src/main_linux.cpp
 
-    #LIBS += -L/path/to/linux/libs
+    INCLUDEPATH += \
+        ../../src/comm/ \
+        ../../include/
+
+    LIBS += -L$$[QT_INSTALL_QML]/Cellulo/ -lcelluloplugin
+    QMAKE_RPATHDIR += $$[QT_INSTALL_QML]/Cellulo/
+
+    target.path = /usr/local/bin/
+    INSTALLS += target
 }
 
 android {
-    message("* Using settings for Android.")
+    message("Building for Android.")
     #LIBS += -L/path/to/android/libs
 }
 
