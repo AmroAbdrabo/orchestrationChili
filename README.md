@@ -1,9 +1,8 @@
 qml-cellulo
 ===========
 
-This is a qml module for communicating with Cellulo robots over bluetooth or
-simulated robots over web sockets for debugging purposes. It supports desktop
-and Android and was tested with Qt 5.8.0. Below are the USB Bluetooth dongles
+This is a qml module for communicating with Cellulo robots over bluetooth or simulated robots over web sockets for
+debugging purposes. It supports desktop and Android and was tested with Qt 5.8.0. Below are the USB Bluetooth dongles
 that were confirmed to work with the Cellulo robots under Ubuntu 16.04 with BlueZ 5.37:
 
   - Asus USB-BT400, reports a `Broadcom BCM20702A0` to be present, bought from http://www.conrad.ch/ce/fr/product/1090718/
@@ -57,6 +56,11 @@ mkdir build-test && cd build-test
 make -j5
 ./celluloplugintests
 ```
+
+Tools & Samples
+---------------
+
+Tools are under [tools/](tools/), samples are under [samples/](samples/). See their README's for instructions.
 
 QML API
 -------
