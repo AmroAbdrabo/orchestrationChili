@@ -151,6 +151,11 @@ ApplicationWindow {
                             addresses: [robot.macAddr]
                             connectionStatus: robot.connectionStatus
 
+                            onConnectionStatusChanged: {
+                                if(connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected)
+                                    robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectAlertAll,"#800080",3);
+                            }
+
                             onLocalAdapterMacAddrChanged: selectLocalAdapterAddress(localAdapterMacAddr.toUpperCase())
 
                             onConnectRequested: {
