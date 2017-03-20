@@ -24,7 +24,13 @@
 
 #include "CelluloCommUtil.h"
 
+#include "../util/system/CelluloSystemUtil.h"
+
 const QString CelluloCommUtil::DEFAULT_ROBOT_MAC_ADDR_PREFIX = "00:06:66:74:";
+
+CelluloCommUtil::CelluloCommUtil(QObject* parent) : QObject(parent){}
+
+CelluloCommUtil::~CelluloCommUtil(){}
 
 QList<quint8> CelluloCommUtil::getOctets(QString const& macAddr){
     QList<quint8> octets;
@@ -68,4 +74,28 @@ QString CelluloCommUtil::getMacAddr(QList<quint8> const& octets){
 
 QString CelluloCommUtil::getMacAddrSuffix(quint8 fifthOctet, quint8 sixthOctet){
     return (fifthOctet <= 0xF ? "0" : "") + QString::number(fifthOctet, 16) + ":" + (sixthOctet <= 0xF ? "0" : "") + QString::number(sixthOctet, 16);
+}
+
+bool CelluloCommUtil::testLocalRelayServer(){
+    //FIGURE OUT ON ANDROID
+
+
+
+    return CelluloSystemUtil::exec("test", QStringList() << "-f" << "/usr/local/bin/cellulorelayserverd") == 0;
+}
+
+bool CelluloCommUtil::startLocalRelayServer(){
+    //FIGURE OUT ON ANDROID
+
+
+    return CelluloSystemUtil::exec("start-stop-daemon", QStringList() << "--start" << "--exec" << "/usr/local/bin/cellulorelayserverd") == 0;
+}
+
+bool CelluloCommUtil::stopLocalRelayServer(){
+    //FIGURE OUT ON ANDROID
+
+
+
+
+    return CelluloSystemUtil::exec("start-stop-daemon", QStringList() << "--stop" << "--exec" << "/usr/local/bin/cellulorelayserverd") == 0;
 }

@@ -25,13 +25,20 @@
 #ifndef CELLULOCOMMUTIL_H
 #define CELLULOCOMMUTIL_H
 
+#include <QObject>
 #include <QString>
 #include <QList>
 #include <QDebug>
 
-class CelluloCommUtil{
+class CelluloCommUtil : public QObject {
+    /* *INDENT-OFF* */
+    Q_OBJECT
+    /* *INDENT-ON* */
 
 public:
+
+    CelluloCommUtil(QObject* parent = 0);
+    virtual ~CelluloCommUtil();
 
     static const int DEFAULT_RELAY_PORT = 2556;         ///< Default TCP port for Cellulo relay communication
     static const QString DEFAULT_ROBOT_MAC_ADDR_PREFIX; ///< Default prefix of Cellulo robot MAC addresses
@@ -68,6 +75,27 @@ public:
      * @return Bluetooth MAC address suffix in the form of "XX:XX"
      */
     static QString getMacAddrSuffix(quint8 fifthOctet, quint8 sixthOctet);
+
+    /**
+     * @brief Tests whether cellulorelayserverd is installed
+     *
+     * @return Whether cellulorelayserverd is installed
+     */
+    Q_INVOKABLE static bool testLocalRelayServer();
+
+    /**
+     * @brief Attempts to launch a cellulorelayserverd
+     *
+     * @return Whether successfully launched
+     */
+    Q_INVOKABLE static bool startLocalRelayServer();
+
+    /**
+     * @brief Attempts to stop the already existing cellulorelayserverd
+     *
+     * @return Whether successfully stopped
+     */
+    Q_INVOKABLE static bool stopLocalRelayServer();
 
 };
 

@@ -29,6 +29,7 @@
 
 #include "robot/CelluloRobot.h"
 #include "comm/CelluloBluetooth.h"
+#include "comm/CelluloCommUtil.h"
 #include "comm/CelluloLocalRelayClient.h"
 #include "comm/CelluloLocalRelayServer.h"
 #include "comm/CelluloTcpRelayClient.h"
@@ -73,6 +74,12 @@ void CelluloPlugin::registerTypes(const char *uri){
                                                         Q_UNUSED(jsEngine)
                                                         return new CelluloBluetoothEnums();
                                                     });
+    qmlRegisterSingletonType<CelluloCommUtil>(uri, 1, 0, "CelluloCommUtil",
+                                                [] (QQmlEngine* qmlEngine, QJSEngine* jsEngine)->QObject* {
+                                                    Q_UNUSED(qmlEngine)
+                                                    Q_UNUSED(jsEngine)
+                                                    return new CelluloCommUtil();
+                                                });
 
     qmlRegisterType<CelluloZoneClient>(uri, 1, 0, "CelluloZoneClient");
     qmlRegisterType<CelluloZoneEngine>(uri, 1, 0, "CelluloZoneEngine");
@@ -140,11 +147,11 @@ void CelluloPlugin::registerTypes(const char *uri){
     qmlRegisterType<TranslationTool>(uri, 1, 0, "TranslationTool");
 
     qmlRegisterSingletonType<CelluloSystemUtil>(uri, 1, 0, "CelluloSystemUtil",
-                                             [] (QQmlEngine* qmlEngine, QJSEngine* jsEngine)->QObject* {
-                                                 Q_UNUSED(qmlEngine)
-                                                 Q_UNUSED(jsEngine)
-                                                 return new CelluloSystemUtil();
-                                             });
+                                                [] (QQmlEngine* qmlEngine, QJSEngine* jsEngine)->QObject* {
+                                                    Q_UNUSED(qmlEngine)
+                                                    Q_UNUSED(jsEngine)
+                                                    return new CelluloSystemUtil();
+                                                });
 }
 
 void CelluloPlugin::initializeEngine(QQmlEngine *engine, const char *uri){

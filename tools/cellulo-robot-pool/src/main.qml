@@ -17,6 +17,23 @@ ApplicationWindow {
     minimumHeight: height
     //height: mobile ? Screen.desktopAvailableHeight : 0.7*Screen.height
 
+    Component.onCompleted: {
+        if(CelluloCommUtil.testLocalRelayServer()){
+            toast.show("/usr/local/bin/cellulorelayserverd found.");
+
+            if(CelluloCommUtil.startLocalRelayServer())
+                toast.show("/usr/local/bin/cellulorelayserverd started, connecting...");
+            else
+                toast.show("Cannot start /usr/local/bin/cellulorelayserverd, connecting anyway...");
+            client.connectToServer();
+        }
+        else{
+            var err = "/usr/local/bin/cellulorelayserverd not found, first build and install cellulo-relay-server under tools/.";
+            toast.show(err);
+            console.log(err);
+        }
+    }
+
     function createRobot(macAddr){
         var newRobot = Qt.createQmlObject("import Cellulo 1.0; CelluloBluetooth{}", window);
         newRobot.autoConnect = false;
@@ -26,8 +43,6 @@ ApplicationWindow {
 
     CelluloLocalRelayClient{
         id: client
-
-        Component.onCompleted: connectToServer()
 
         onConnected: toast.show("Connected to Server.")
         onDisconnected: toast.show("Disconnected from Server.")
@@ -58,12 +73,24 @@ ApplicationWindow {
                     spacing: 5
 
                     Button{
-                        text: "Launch Server"
+                        text: "Start Server"
                         anchors.verticalCenter: parent.verticalCenter
+                        onClicked: {
+                            if(CelluloCommUtil.startLocalRelayServer())
+                                toast.show("Started /usr/local/bin/cellulorelayserverd.");
+                            else
+                                toast.show("Cannot start /usr/local/bin/cellulorelayserverd, possibly already running.");
+                        }
                     }
                     Button{
-                        text: "Kill Server"
+                        text: "Stop Server"
                         anchors.verticalCenter: parent.verticalCenter
+                        onClicked: {
+                            if(CelluloCommUtil.stopLocalRelayServer())
+                                toast.show("Stopped /usr/local/bin/cellulorelayserverd.");
+                            else
+                                toast.show("Cannot stop /usr/local/bin/cellulorelayserverd, possibly not running.");
+                        }
                     }
                     Text{
                         text: client.connected ? "Connected to Server." : "Connecting to Server..."
