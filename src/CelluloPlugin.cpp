@@ -54,6 +54,7 @@
 #include "util/math/CelluloMathUtil.h"
 #include "util/svg/CelluloSVGUtil.h"
 #include "util/lang/TranslationTool.h"
+#include "util/system/CelluloSystemUtil.h"
 
 void CelluloPlugin::registerTypes(const char *uri){
     qmlRegisterType<CelluloRobot>(uri, 1, 0, "CelluloRobot");
@@ -137,6 +138,13 @@ void CelluloPlugin::registerTypes(const char *uri){
                                              });
 
     qmlRegisterType<TranslationTool>(uri, 1, 0, "TranslationTool");
+
+    qmlRegisterSingletonType<CelluloSystemUtil>(uri, 1, 0, "CelluloSystemUtil",
+                                             [] (QQmlEngine* qmlEngine, QJSEngine* jsEngine)->QObject* {
+                                                 Q_UNUSED(qmlEngine)
+                                                 Q_UNUSED(jsEngine)
+                                                 return new CelluloSystemUtil();
+                                             });
 }
 
 void CelluloPlugin::initializeEngine(QQmlEngine *engine, const char *uri){
