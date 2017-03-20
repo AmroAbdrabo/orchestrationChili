@@ -246,6 +246,14 @@ Relay client that operates over TCP sockets, i.e fast, networked channels.
 Utilities
 ---------
 
+#### CelluloSystemUtil [Singleton]
+
+Object that provides system utilities.
+
+**Slots:**
+
+>  - **int exec(string command, list&lt;string&gt; arguments)** : Executes a system command with the given arguments and returns the exit code
+
 #### TranslationTool
 
 Object that provides a language translation for the entire app. To use, create one `TranslationTool` named e.g `tr`, and concatenate every user-readable string in the app with `tr.estr`. For example, a text property in another object would look like `text: tr.estr + "Text that would normally be here."`
