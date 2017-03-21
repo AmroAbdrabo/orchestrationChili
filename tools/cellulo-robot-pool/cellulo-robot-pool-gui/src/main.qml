@@ -18,17 +18,15 @@ ApplicationWindow {
     //height: mobile ? Screen.desktopAvailableHeight : 0.7*Screen.height
 
     Component.onCompleted: {
-        if(CelluloCommUtil.testLocalRelayServer()){
-            toast.show("/usr/local/bin/cellulorelayserverd found.");
-
-            if(CelluloCommUtil.startLocalRelayServer())
-                toast.show("/usr/local/bin/cellulorelayserverd started, connecting...");
+        if(CelluloCommUtil.testRobotPoolDaemon()){
+            if(CelluloCommUtil.startRobotPoolDaemon())
+                toast.show("Robot pool daemon started, connecting...");
             else
-                toast.show("Cannot start /usr/local/bin/cellulorelayserverd, connecting anyway...");
+                toast.show("Robot pool daemon already running, connecting...");
             client.connectToServer();
         }
         else{
-            var err = "/usr/local/bin/cellulorelayserverd not found, first build and install cellulo-relay-server under tools/.";
+            var err = "/usr/local/bin/cellulorobotpoold not found!!!";
             toast.show(err);
             console.log(err);
         }
@@ -76,20 +74,20 @@ ApplicationWindow {
                         text: "Start Server"
                         anchors.verticalCenter: parent.verticalCenter
                         onClicked: {
-                            if(CelluloCommUtil.startLocalRelayServer())
-                                toast.show("Started /usr/local/bin/cellulorelayserverd.");
+                            if(CelluloCommUtil.startRobotPoolDaemon())
+                                toast.show("Started robot pool daemon.");
                             else
-                                toast.show("Cannot start /usr/local/bin/cellulorelayserverd, possibly already running.");
+                                toast.show("Cannot start robot pool daemon, possibly already running.");
                         }
                     }
                     Button{
                         text: "Stop Server"
                         anchors.verticalCenter: parent.verticalCenter
                         onClicked: {
-                            if(CelluloCommUtil.stopLocalRelayServer())
-                                toast.show("Stopped /usr/local/bin/cellulorelayserverd.");
+                            if(CelluloCommUtil.stopRobotPoolDaemon())
+                                toast.show("Stopped robot pool daemon.");
                             else
-                                toast.show("Cannot stop /usr/local/bin/cellulorelayserverd, possibly not running.");
+                                toast.show("Cannot stop robot pool daemon, possibly not running.");
                         }
                     }
                     Text{

@@ -76,26 +76,26 @@ QString CelluloCommUtil::getMacAddrSuffix(quint8 fifthOctet, quint8 sixthOctet){
     return (fifthOctet <= 0xF ? "0" : "") + QString::number(fifthOctet, 16) + ":" + (sixthOctet <= 0xF ? "0" : "") + QString::number(sixthOctet, 16);
 }
 
-bool CelluloCommUtil::testLocalRelayServer(){
-    //FIGURE OUT ON ANDROID
+bool CelluloCommUtil::testRobotPoolDaemon(){
+    //TODO: FIGURE OUT ON ANDROID
 
 
 
-    return CelluloSystemUtil::exec("test", QStringList() << "-f" << "/usr/local/bin/cellulorelayserverd") == 0;
+    return CelluloSystemUtil::exec("test", QStringList() << "-f" << "/usr/local/bin/cellulorobotpoold") == 0;
 }
 
-bool CelluloCommUtil::startLocalRelayServer(){
-    //FIGURE OUT ON ANDROID
+bool CelluloCommUtil::startRobotPoolDaemon(){
+    //TODO: FIGURE OUT ON ANDROID
 
 
-    return CelluloSystemUtil::exec("start-stop-daemon", QStringList() << "--start" << "--exec" << "/usr/local/bin/cellulorelayserverd") == 0;
+    return CelluloSystemUtil::exec("start-stop-daemon", QStringList() << "--start" << "--exec" << "/usr/local/bin/cellulorobotpoold") == 0;
 }
 
-bool CelluloCommUtil::stopLocalRelayServer(){
-    //FIGURE OUT ON ANDROID
+bool CelluloCommUtil::stopRobotPoolDaemon(){
+    //TODO: FIGURE OUT ON ANDROID
 
 
 
 
-    return CelluloSystemUtil::exec("start-stop-daemon", QStringList() << "--stop" << "--exec" << "/usr/local/bin/cellulorelayserverd") == 0;
+    return CelluloSystemUtil::exec("start-stop-daemon", QStringList() << "--stop" << "--exec" << "/usr/local/bin/cellulorobotpoold") == 0;
 }

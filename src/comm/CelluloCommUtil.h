@@ -77,25 +77,25 @@ public:
     static QString getMacAddrSuffix(quint8 fifthOctet, quint8 sixthOctet);
 
     /**
-     * @brief Tests whether cellulorelayserverd is installed
+     * @brief Tests whether cellulorobotpoold is installed
      *
-     * @return Whether cellulorelayserverd is installed
+     * @return Whether cellulorobotpoold is installed
      */
-    Q_INVOKABLE static bool testLocalRelayServer();
+    Q_INVOKABLE static bool testRobotPoolDaemon();
 
     /**
-     * @brief Attempts to launch a cellulorelayserverd
+     * @brief Attempts to launch a cellulorobotpoold
      *
      * @return Whether successfully launched
      */
-    Q_INVOKABLE static bool startLocalRelayServer();
+    Q_INVOKABLE static bool startRobotPoolDaemon();
 
     /**
-     * @brief Attempts to stop the already existing cellulorelayserverd
+     * @brief Attempts to stop the already existing cellulorobotpoold
      *
      * @return Whether successfully stopped
      */
-    Q_INVOKABLE static bool stopLocalRelayServer();
+    Q_INVOKABLE static bool stopRobotPoolDaemon();
 
 };
 

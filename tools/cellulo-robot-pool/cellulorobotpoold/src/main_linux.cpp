@@ -103,7 +103,7 @@ int main(int argc, char** argv){
 
     //pid == 0 in the child, i.e the daemon
 
-    openlog("cellulorelayserverd", LOG_CONS | LOG_NDELAY | LOG_PID, LOG_USER);
+    openlog("cellulorobotpoold", LOG_CONS | LOG_NDELAY | LOG_PID, LOG_USER);
 
     //Files created have 777 permissions
     umask(0);

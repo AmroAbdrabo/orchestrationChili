@@ -1,9 +1,12 @@
 cellulo-robot-pool
 ==================
 
-Controls a `CelluloLocalRelayServer` daemon, in other words, a pool of `CelluloBluetooth` connections that are
-persistent even if the application is closed. Includes the GUI to perform all controls on this daemon. Requires that
-this daemon, i.e [cellulo-relay-server](../cellulo-relay-server/), is built and installed.
+???? Daemon that encapsulates a `CelluloLocalRelayServer`, in other words, a server that stays alive and connected to the
+Cellulo robots. Robots can be added/removed to/from this server by the [cellulo-robot-pool](../cellulo-robot-pool) tool.
+While this daemon is alive, a `CelluloLocalRelayClient` in a Cellulo application can connect to the server and communicate
+with its previously connected robots.
+
+On desktop, all messages coming from the daemon are dumped via `syslog`. This is found in `/var/log/syslog` under Ubuntu.
 
 Desktop build
 -------------
@@ -11,7 +14,6 @@ Desktop build
 Tested on Ubuntu 16.04.
 
 1. Build and install [qml-cellulo](../../).
-1. Build and install [cellulo-relay-server](../cellulo-relay-server/).
 1. Run the following:
 
     ```
@@ -24,8 +26,18 @@ Tested on Ubuntu 16.04.
 Desktop usage
 -------------
 
+Prefer [cellulo-robot-pool](../cellulo-robot-pool) to control the daemon from a GUI.
+
+Alternatively, to start the daemon manually:
+
 ```
-cellulo-robot-pool
+start-stop-daemon --start --exec /usr/local/bin/cellulorelayserverd
+```
+
+To stop the daemon manually:
+
+```
+start-stop-daemon --stop --exec /usr/local/bin/cellulorelayserverd
 ```
 
 Android build
