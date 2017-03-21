@@ -24,6 +24,7 @@ HEADERS += \
     src/comm/CelluloRelayClient.h \
     src/comm/CelluloLocalRelayServer.h \
     src/comm/CelluloLocalRelayClient.h \
+    src/comm/CelluloRobotPoolClient.h \
     src/comm/CelluloTcpRelayServer.h \
     src/comm/CelluloTcpRelayClient.h \
     src/comm/CelluloBluetoothEMP.h \
@@ -60,6 +61,7 @@ SOURCES += \
     src/comm/CelluloRelayClient.cpp \
     src/comm/CelluloLocalRelayServer.cpp \
     src/comm/CelluloLocalRelayClient.cpp \
+    src/comm/CelluloRobotPoolClient.cpp \
     src/comm/CelluloTcpRelayServer.cpp \
     src/comm/CelluloTcpRelayClient.cpp \
     src/comm/CelluloBluetoothEMP.cpp \
