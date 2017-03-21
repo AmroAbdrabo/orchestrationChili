@@ -16,9 +16,9 @@ CelluloRobot{
      * Private
      */
 
+    poseVelControlPeriod: 100
+
     function init(){
-        setPoseBcastPeriod(100);
-        setTimestampingEnabled(false);
         setCasualBackdriveAssistEnabled(false);
         clearHapticFeedback();
         clearTracking();
@@ -27,7 +27,6 @@ CelluloRobot{
         setLocomotionInteractivityMode(CelluloBluetoothEnums.LocomotionInteractivityModeNormal);
         setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll,"#202020",0);
         setLEDResponseMode(CelluloBluetoothEnums.LEDResponseModeResponsiveIndividual);
-        keys = [false, false, false, false, false, false];
     }
 
     onBootCompleted: init()
@@ -37,21 +36,11 @@ CelluloRobot{
             init();
     }
 
-    onTouchBegan: {
-        keys[key] = true;
-        recalcTouchedRobots();
-    }
-
-    onTouchReleased: {
-        keys[key] = false;
-        recalcTouchedRobots();
-    }
-
-    property var keys: [false, false, false, false, false, false]
+    onKeysTouchedChanged: recalcTouchedRobots()
 
     function anyKey(){
         for(var i=0;i<6;i++)
-            if(keys[i])
+            if(keysTouched[i])
                 return true;
         return false;
     }

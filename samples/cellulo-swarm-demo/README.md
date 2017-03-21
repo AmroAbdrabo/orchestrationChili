@@ -1,9 +1,10 @@
 cellulo-swarm-demo
 ==================
 
-Demonstrates swarm formations with the Cellulo robots.
+Demonstrates swarm formations with the Cellulo robots. Demonstrates the use of `cellulo-robot-pool` to easily connect
+to many robots that can be used in any activity without disconnecting.
 
-Tested with Qt 5.8.0 on Ubuntu 16.04. **Will not work properly on Android with more than 5 robots due to Bluetooth limitations.**
+Tested with Qt 5.8.0 on Ubuntu 16.04.
 
 Build
 -----

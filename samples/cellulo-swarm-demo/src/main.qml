@@ -18,27 +18,17 @@ ApplicationWindow {
 
     property int nearestSquareEdge: Math.ceil(Math.sqrt(currentNumRobots))
 
-    property var robotComponent: Qt.createComponent("LatticeRobot.qml")
-
-    function createRobot(macAddr){
-        var newRobot = robotComponent.createObject(window);
-        newRobot.autoConnect = false;
-        newRobot.macAddr = macAddr;
-        newRobot.index = client.robots.length;
-        return newRobot;
-    }
-
-    CelluloLocalRelayClient{
+    CelluloRobotPoolClient{
         id: client
 
-        Component.onCompleted: connectToServer()
+        property var robotComponent: Qt.createComponent("LatticeRobot.qml")
 
-        //onConnected: toast.show("Connected to Server.")
-        //onDisconnected: toast.show("Disconnected from Server.")
-
-        onUnknownRobotAtServer: {
-            var robot = createRobot(macAddr);
-            addRobot(robot, true);
+        createRobot: function (macAddr){
+            var newRobot = robotComponent.createObject(window);
+            newRobot.autoConnect = false;
+            newRobot.macAddr = macAddr;
+            newRobot.index = robots.length;
+            return newRobot;
         }
     }
 
@@ -106,50 +96,6 @@ ApplicationWindow {
         title: "Robots"
 
         Column{
-            /*property variant addresses: [
-                "00:06:66:74:40:D2",
-                "00:06:66:74:40:D4",
-                "00:06:66:74:40:D5",
-                "00:06:66:74:40:DB",
-                "00:06:66:74:40:DC",
-                "00:06:66:74:40:E4",
-                "00:06:66:74:40:EC",
-                "00:06:66:74:40:EE",
-                "00:06:66:74:41:03",
-                "00:06:66:74:41:04",
-                "00:06:66:74:41:14",
-                "00:06:66:74:41:4C",
-                "00:06:66:74:43:00",
-                "00:06:66:74:43:01",
-                "00:06:66:74:46:58",
-                "00:06:66:74:46:60",
-                "00:06:66:74:48:A7"
-            ]
-
-            Repeater{
-                model: numRobots
-
-                MacAddrSelector{
-                    addresses: parent.addresses
-                    onConnectRequested: {
-                        robots[index].localAdapterMacAddr = selectedLocalAdapterAddress;
-                        robots[index].macAddr = selectedAddress;
-                        QMLCache.write("robot" + index + "LocalAdapterMacAddr", selectedLocalAdapterAddress);
-                        QMLCache.write("robot" + index + "MacAddr", selectedAddress);
-                    }
-                    onDisconnectRequested: {
-                        robots[index].disconnectFromServer();
-                        QMLCache.write("robot" + index + "MacAddr", "");
-                    }
-                    connectionStatus: robots[index].connectionStatus
-
-                    Component.onCompleted: {
-                        selectAddress(QMLCache.read("robot" + index + "MacAddr"));
-                        selectLocalAdapterAddress(QMLCache.read("robot" + index + "LocalAdapterMacAddr"));
-                    }
-                }
-            }*/
-
             Text{
                 text: client.connected ? "Connected to Server." : "Connecting to Server..."
                 color: client.connected ? "green" : "red"
