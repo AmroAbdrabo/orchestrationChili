@@ -99,7 +99,7 @@ ApplicationWindow {
             }
 
             GroupBox{
-                title: "Robot list controls"
+                title: "Manually add robot"
 
                 Row{
                     spacing: 5
