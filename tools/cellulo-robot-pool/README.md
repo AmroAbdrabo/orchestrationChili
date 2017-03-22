@@ -1,17 +1,18 @@
 cellulo-robot-pool
 ==================
 
-???? Daemon that encapsulates a `CelluloLocalRelayServer`, in other words, a server that stays alive and connected to the
-Cellulo robots. Robots can be added/removed to/from this server by the [cellulo-robot-pool](../cellulo-robot-pool) tool.
-While this daemon is alive, a `CelluloLocalRelayClient` in a Cellulo application can connect to the server and communicate
-with its previously connected robots.
+A suite of tools that provide a server that stays alive and connected to the Cellulo robots:
 
-On desktop, all messages coming from the daemon are dumped via `syslog`. This is found in `/var/log/syslog` under Ubuntu.
+  - `cellulorobotpoold`: Daemon that encapsulates a `CelluloLocalRelayServer` where the Bluetooth sockets to Cellulo robots stay connected. All messages coming from the daemon are dumped via `syslog`. This is found in `/var/log/syslog` under Ubuntu.
+  - `cellulo-robot-pool-gui`: Starts, stops and controls `cellulorobotpoold` to add or remove robots as well as connect to or disconnect from them.
+
+While `cellulorobotpoold` is alive, a `CelluloRobotPoolClient` in a Cellulo application can connect to the server and
+communicate with its already connected robots.
+
+Tested on Ubuntu 16.04. Does not yet work on Android.
 
 Desktop build
 -------------
-
-Tested on Ubuntu 16.04.
 
 1. Build and install [qml-cellulo](../../).
 1. Run the following:
@@ -26,26 +27,9 @@ Tested on Ubuntu 16.04.
 Desktop usage
 -------------
 
-Prefer [cellulo-robot-pool](../cellulo-robot-pool) to control the daemon from a GUI.
-
-Alternatively, to start the daemon manually:
-
-```
-start-stop-daemon --start --exec /usr/local/bin/cellulorelayserverd
-```
-
-To stop the daemon manually:
-
-```
-start-stop-daemon --stop --exec /usr/local/bin/cellulorelayserverd
-```
-
-Android build
--------------
-
-Coming soon...
-
-Android usage
--------------
-
-Coming soon...
+Run `cellulo-robot-pool-gui` to launch the pool control panel. At startup, `cellulorobotpoold` will be started
+automatically, which can be manually stopped or started as well from the "Server controls" panel. "Scan for robots"
+panel can be used to scan and add available robots to the pool. Once added, they can be connected to using the "Robots
+on server" panel. Once all desired robots are added and connected to, `cellulo-robot-pool-gui` can be closed. Then,
+these robots in the pool can be used in an application through `CelluloRobotPoolClient`, see
+[samples/cellulo-swarm-demo/](../../samples/cellulo-swarm-demo/) for an example.
