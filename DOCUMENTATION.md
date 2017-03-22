@@ -300,6 +300,9 @@ Mathematical utilities.
 >  - **int c_rand(int max)** : Call to c's `rand()`, returns a random integer in [0, **max** - 1]
 >  - **bool collinear(vector2d a, vector2d b, vector2d c)** : Returns whether given points are collinear (enough)
 >  - **list shuffle(list list)** : Calls `std::random_shuffle` with the given list. Returns the shuffled list.
+>  - **vector2d rotateVector(vector2d vector, real angleRad)** : Returns the given vector rotated by the given angle
+>  - **real degToRad(real deg)** : Converts degrees to radians
+>  - **real radToDeg(real rad)** : Converts radians to degrees
 
 #### CelluloSVGUtil [Singleton]
 

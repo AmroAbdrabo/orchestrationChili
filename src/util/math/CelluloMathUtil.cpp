@@ -30,6 +30,8 @@
 #include <cstdlib>
 #include <ctime>
 
+#include <QtMath>
+
 CelluloMathUtil::CelluloMathUtil(QObject* parent) : QObject(parent){
     c_srand(time(NULL));
 }
@@ -235,4 +237,16 @@ QVariantList CelluloMathUtil::shuffle(const QVariantList& list){
     QVariantList shuffled = list;
     std::random_shuffle(shuffled.begin(), shuffled.end());
     return shuffled;
+}
+
+QVector2D CelluloMathUtil::rotateVector(QVector2D const& vector, qreal angleRad){
+    return QVector2D(qCos(angleRad)*vector.x() - qSin(angleRad)*vector.y(), qSin(angleRad)*vector.x() + qCos(angleRad)*vector.y());
+}
+
+qreal CelluloMathUtil::degToRad(qreal deg){
+    return deg*M_PI/180.0;
+}
+
+qreal CelluloMathUtil::radToDeg(qreal rad){
+    return rad*180.0/M_PI;
 }

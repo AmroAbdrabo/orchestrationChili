@@ -168,6 +168,31 @@ public:
      */
     Q_INVOKABLE static QVariantList shuffle(const QVariantList& list);
 
+    /**
+     * @brief Returns the given vector rotated by the given angle
+     *
+     * @param vector Vector to rotate
+     * @param angleRad Angle to rotate by
+     * @return Rotated vector
+     */
+    Q_INVOKABLE static QVector2D rotateVector(QVector2D const& vector, qreal angleRad);
+
+    /**
+     * @brief Converts degrees to radians
+     *
+     * @param deg Angle in degrees
+     * @return Corresponding angle in radians
+     */
+    Q_INVOKABLE static qreal degToRad(qreal deg);
+
+    /**
+     * @brief Converts radians to degrees
+     *
+     * @param deg Angle in radians
+     * @return Corresponding angle in degrees
+     */
+    Q_INVOKABLE static qreal radToDeg(qreal rad);
+
 private:
 
     static constexpr qreal COLLINEAR_EPSILON = 1e-2;   ///< Epsilon to use during collinear check
