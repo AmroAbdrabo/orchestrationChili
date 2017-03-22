@@ -148,6 +148,14 @@ Object that communicates with a Cellulo robot over Bluetooth. Inherits from `Cel
 >  - **void vibrateOnMotion(real iCoeff, int period)**: Enables vibration against user motion with given period (ms, maximum is `0xFFFF`) with given intensity for all DOF. Intensity is given as a coefficient to be multiplied with the drive velocities.
 >  - **void clearHapticFeedback()**: Clears **vibrateOnMotion** and **simpleVibrate**
 
+#### CelluloRobotPoolClient [extends CelluloLocalRelayClient]
+
+Object that uses the robots connected to a `cellulorobotpoold`. Inherits from `CelluloLocalRelayClient`, which in turn inherits from `CelluloRelayClient`, which means that their properties, signals and slots can be used. The most useful among these is the `robots` property that exposes the list of currently available robots in this pool.
+
+**Properties:**
+
+>  - **createRobot** : `function` - Must be set to a user-defined function that takes the MAC address (string) of an already connected robot and returns a CelluloBluetooth object or CelluloBluetooth-derived object
+
 #### CelluloBluetoothEMP
 
 Object that shuts down or resets multiple robots simultaneously.
@@ -245,6 +253,16 @@ Relay client that operates over TCP sockets, i.e fast, networked channels.
 
 Utilities
 ---------
+
+#### CelluloCommUtil [Singleton]
+
+Object that provides communication utilities.
+
+**Slots:**
+
+>  - **bool testRobotPoolDaemon()** : Returns whether `cellulorobotpoold` is installed
+>  - **bool startRobotPoolDaemon()** : Attempts to start `cellulorobotpoold`, returns whether successful
+>  - **bool stopRobotPoolDaemon()** : Attempts to stop the already running `cellulorobotpoold`, returns whether successful
 
 #### CelluloSystemUtil [Singleton]
 
