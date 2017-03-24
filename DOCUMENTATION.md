@@ -23,11 +23,11 @@ The main object that represents a Cellulo robot. Inherits from `CelluloBluetooth
 
 **Signals:**
 
->  - **nextGoalPoseVelRequested()**: Emitted when the controller needs the next goal pose and velocity; `setGoalPoseAndVelocity()` should be called by the user upon receiving this signal if a user control loop that cycles on each received pose of the robot is present
+>  - **nextGoalPoseVelRequested(real deltaTime)**: Emitted when the controller needs the next goal pose and velocity; `setGoalPoseAndVelocity()` should be called by the user upon receiving this signal if a user control loop that cycles on each received pose of the robot is present. deltaTime (in milliseconds) can be used to differentiate or integrate values in control loops that are triggered by this signal
 
 **Slots:**
 
->  - **void setGoalPoseAndVelocity(real x, real y, real theta, real Vx, real Vy, real w)**: Sets the simultaneous pose and velocity goal of the robot, i.e the robot tries to be at the desired pose and move with the desired velocity while there; x/y are in mm, theta is in degrees, Vx/Vy are in mm/s, w is in rad/s
+>  - **void setGoalPoseAndVelocity(real x, real y, real theta, real Vx, real Vy, real w, bool xEnabled = true, bool yEnabled = true, bool thetaEnabled = true)**: Sets the simultaneous pose and velocity goal of the robot, i.e the robot tries to be at the desired pose and move with the desired velocity while there; x/y are in mm, theta is in degrees, Vx/Vy are in mm/s, w is in rad/s. Control on each component can be enabled/disabled individually, or left empty to be enabled by default.
 
 Communication
 -------------

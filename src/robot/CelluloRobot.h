@@ -155,8 +155,10 @@ signals:
      *
      * Upon receiving this signal, setGoalPoseAndVelocity() should be called by the user if a user control loop that
      * cycles on each received pose of the robot is present.
+     *
+     * @param deltaTime Delta time in milliseconds that should be used if a controller differentiates or integrates in a loop triggered by this signal
      */
-    void nextGoalPoseVelRequested();
+    void nextGoalPoseVelRequested(qreal deltaTime);
 
     /**
      * @brief Emitted when a key is touched/released
@@ -217,32 +219,37 @@ public slots:
      * @param Vx X velocity (between -185 mm/s and and 185 mm/s)
      * @param Vy Y velocity (between -185 mm/s and and 185 mm/s)
      * @param w Angular velocity (between -7.5 rad/s and 7.5 rad/s)
+     * @param xEnabled Whether to enable control on x
+     * @param yEnabled Whether to enable control on y
+     * @param thetaEnabled Whether to enable control on theta
      */
-    void setGoalPoseAndVelocity(qreal x, qreal y, qreal theta, qreal Vx, qreal Vy, qreal w);
+    void setGoalPoseAndVelocity(qreal x, qreal y, qreal theta, qreal Vx, qreal Vy, qreal w, bool xEnabled = true, bool yEnabled = true, bool thetaEnabled = true);
 
 private:
 
-    QVector3D vxyw;                       ///< Robot velocities: x,y in mm/s, z in rad/s (representing w)
+    qreal deltaTime;                           ///< Last deltaTime used for velocity calculations, in milliseconds
+    QVector3D vxyw;                            ///< Robot velocities: x,y in mm/s, z in rad/s (representing w)
 
-    bool poseVelControlEnabled;           ///< Whether the simultaneous pose and velocity controller is enabled, must be enabled by the user
-    int poseVelControlPeriod;             ///< Desired pose/velocity control period in ms, set to 0 for highest possible frequency
+    bool poseVelControlEnabled;                ///< Whether the simultaneous pose and velocity controller is enabled, must be enabled by the user
+    int poseVelControlPeriod;                  ///< Desired pose/velocity control period in ms, set to 0 for highest possible frequency
+    QVector3D poseVelControlEnabledComponents; ///< Contains 1.0 or 0.0 on each element depending on whether control is enabled on components
 
-    QVector3D poseVelControlKGoalVel;     ///< Goal velocity coefficients when tracking pose/velocity
-    QVector3D poseVelControlKGoalVelErr;  ///< Goal velocity error coefficients when tracking pose/velocity
-    QVector3D poseVelControlKGoalPoseErr; ///< Goal pose error coefficients when tracking pose/velocity
+    QVector3D poseVelControlKGoalVel;          ///< Goal velocity coefficients when tracking pose/velocity
+    QVector3D poseVelControlKGoalVelErr;       ///< Goal velocity error coefficients when tracking pose/velocity
+    QVector3D poseVelControlKGoalPoseErr;      ///< Goal pose error coefficients when tracking pose/velocity
 
-    QVector3D poseVelControlGoalPose;     ///< Latest x, y, theta goal
-    QVector3D poseVelControlGoalVel;      ///< Latest Vx, Vy, w goal
-    bool velEstimateNeedsReset;           ///< If true, velocity estimate variables will be reset in the next cycle
-    QVector3D lastPose;                   ///< Previous robot pose
-    qreal lastLastTimestamp;              ///< Previous timestamp
+    QVector3D poseVelControlGoalPose;          ///< Latest x, y, theta goal
+    QVector3D poseVelControlGoalVel;           ///< Latest Vx, Vy, w goal
+    bool velEstimateNeedsReset;                ///< If true, velocity estimate variables will be reset in the next cycle
+    QVector3D lastPose;                        ///< Previous robot pose
+    qreal lastLastTimestamp;                   ///< Previous timestamp
 
-    static const qreal maxEstimatedXYVel; ///< Clamp limit for the estimated linear robot velocity, in mm/s
-    static const qreal maxEstimatedW;     ///< Clamp limit for the estimated angular robot velocity, in rad/s
-    static const qreal vMu;               ///< Smoothing coefficient for velocity estimate
+    static const qreal maxEstimatedXYVel;      ///< Clamp limit for the estimated linear robot velocity, in mm/s
+    static const qreal maxEstimatedW;          ///< Clamp limit for the estimated angular robot velocity, in rad/s
+    static const qreal vMu;                    ///< Smoothing coefficient for velocity estimate
 
-    QList<bool> keysTouched;              ///< Whether keys are touched
-    QList<bool> keysLongTouched;          ///< Whether keys are touched
+    QList<bool> keysTouched;                   ///< Whether keys are touched
+    QList<bool> keysLongTouched;               ///< Whether keys are touched
 
     /**
      * @brief Pose broadcast with less than this period will be discarded when calculating the velocity

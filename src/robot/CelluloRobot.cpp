@@ -42,6 +42,7 @@ CelluloRobot::CelluloRobot(QQuickItem* parent) : CelluloBluetooth(parent){
 
     poseVelControlEnabled = false;
     poseVelControlPeriod = 20;
+    poseVelControlEnabledComponents = QVector3D(1, 1, 1);
 
     vxyw = QVector3D(0,0,0);
 
@@ -49,6 +50,7 @@ CelluloRobot::CelluloRobot(QQuickItem* parent) : CelluloBluetooth(parent){
 
     lastPose = QVector3D(0,0,0);
     lastLastTimestamp = 0;
+    deltaTime = 0;
 
     poseVelControlKGoalVel = QVector3D(0.9, 0.9, 0.9);
     poseVelControlKGoalVelErr = QVector3D(0.2, 0.2, 0.2);
@@ -67,6 +69,7 @@ void CelluloRobot::setPoseVelControlEnabled(bool enabled){
         initialize();
         poseVelControlEnabled = enabled;
         emit poseVelControlEnabledChanged();
+        emit nextGoalPoseVelRequested(deltaTime);
     }
 }
 
@@ -83,9 +86,10 @@ void CelluloRobot::setPoseVelControlPeriod(int period){
     }
 }
 
-void CelluloRobot::setGoalPoseAndVelocity(qreal x, qreal y, qreal theta, qreal Vx, qreal Vy, qreal w){
+void CelluloRobot::setGoalPoseAndVelocity(qreal x, qreal y, qreal theta, qreal Vx, qreal Vy, qreal w, bool xEnabled, bool yEnabled, bool thetaEnabled){
     poseVelControlGoalPose = QVector3D(x, y, theta);
     poseVelControlGoalVel = QVector3D(Vx, Vy, w);
+    poseVelControlEnabledComponents = QVector3D(xEnabled ? 1.0 : 0.0, yEnabled ? 1.0 : 0.0, thetaEnabled ? 1.0 : 0.0);
     if(!poseVelControlEnabled)
         qWarning() << "CelluloRobot::setGoalPoseAndVelocity(): Warning, poseVelControlEnabled is not true, nothing will happen.";
 }
@@ -101,8 +105,9 @@ void CelluloRobot::initialize(){
         velEstimateNeedsReset = true;
         lastPose = QVector3D(0,0,0);
         lastLastTimestamp = 0;
+        deltaTime = 0;
 
-        emit nextGoalPoseVelRequested();
+        emit nextGoalPoseVelRequested(deltaTime);
     }
 }
 
@@ -118,7 +123,7 @@ void CelluloRobot::spinControllers(){
 
 void CelluloRobot::estimateVelocities(){
     qreal newTime = getLastTimestamp();
-    qreal deltaTime = newTime - lastLastTimestamp;
+    deltaTime = newTime - lastLastTimestamp;
     QVector3D newPose = QVector3D(getX(), getY(), getTheta());
 
     QVector3D newVxyw = newPose - lastPose;
@@ -164,7 +169,7 @@ void CelluloRobot::estimateVelocities(){
 }
 
 void CelluloRobot::poseVelControlCommandVelocities(){
-    emit nextGoalPoseVelRequested();
+    emit nextGoalPoseVelRequested(deltaTime);
 
     //Goal velocity component
     QVector3D commandVel = poseVelControlKGoalVel*poseVelControlGoalVel;
@@ -196,6 +201,8 @@ void CelluloRobot::poseVelControlCommandVelocities(){
         commandVel.setZ(10);
     else if(commandVel.z() < -10)
         commandVel.setZ(-10);
+
+    commandVel *= poseVelControlEnabledComponents;
 
     setGoalVelocity(commandVel.x(), commandVel.y(), commandVel.z());
 }
