@@ -59,11 +59,13 @@ CelluloRelayServer::~CelluloRelayServer(){
         case CelluloCommUtil::RelayProtocol::Local:
             localServer->close();
             delete localServer;
+            localServer = NULL;
             break;
 
         case CelluloCommUtil::RelayProtocol::Tcp:
             tcpServer->close();
             delete tcpServer;
+            tcpServer = NULL;
             break;
     }
     disconnectClient();
@@ -89,17 +91,21 @@ void CelluloRelayServer::setListening(bool enable){
             switch(protocol){
                 case CelluloCommUtil::RelayProtocol::Local:
                     QLocalServer::removeServer(address);
-                    if(!localServer->listen(address))
-                        qWarning() << "CelluloRelayServer::setListening(): Couldn't start listening: " << localServer->errorString();
-                    else
-                        qDebug() << "CelluloRelayServer::setListening(): Started listening on " << localServer->fullServerName();
+                    if(localServer != NULL){
+                        if(!localServer->listen(address))
+                            qWarning() << "CelluloRelayServer::setListening(): Couldn't start listening: " << localServer->errorString();
+                        else
+                            qDebug() << "CelluloRelayServer::setListening(): Started listening on " << localServer->fullServerName();
+                    }
                     break;
 
                 case CelluloCommUtil::RelayProtocol::Tcp:
-                    if(!tcpServer->listen(QHostAddress(address), port))
-                        qWarning() << "CelluloRelayServer::setListening(): Couldn't start listening: " << tcpServer->errorString();
-                    else
-                        qDebug() << "CelluloRelayServer::setListening(): Started listening on " << tcpServer->serverAddress() << ":" << tcpServer->serverPort();
+                    if(tcpServer != NULL){
+                        if(!tcpServer->listen(QHostAddress(address), port))
+                            qWarning() << "CelluloRelayServer::setListening(): Couldn't start listening: " << tcpServer->errorString();
+                        else
+                            qDebug() << "CelluloRelayServer::setListening(): Started listening on " << tcpServer->serverAddress() << ":" << tcpServer->serverPort();
+                    }
                     break;
             }
         }
