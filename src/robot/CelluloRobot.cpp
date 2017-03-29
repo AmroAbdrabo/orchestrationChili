@@ -166,6 +166,8 @@ void CelluloRobot::estimateVelocities(){
 
     lastPose = newPose;
     lastLastTimestamp = newTime;
+
+    emit vxywChanged();
 }
 
 void CelluloRobot::poseVelControlCommandVelocities(){
