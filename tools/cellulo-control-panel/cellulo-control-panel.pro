@@ -6,6 +6,15 @@ SOURCES += src/main.cpp
 
 RESOURCES += qml.qrc
 
+linux:!android {
+    message("Building for Linux")
+
+    TARGET = cellulo-control-panel
+
+    target.path = /usr/local/bin/
+    INSTALLS += target
+}
+
 android {
     target.path = /libs/armeabi-v7a
     export(target.path)
