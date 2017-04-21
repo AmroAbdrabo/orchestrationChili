@@ -51,7 +51,8 @@ HEADERS += \
     src/util/svg/CelluloSVGUtil.h \
     src/util/lang/TranslationTool.h \
     src/util/system/CelluloSystemUtil.h \
-    src/util/ds/AssociativeArray.h
+    src/util/ds/AssociativeArray.h \
+    src/util/ui/CelluloUIUtil.h
 
 SOURCES += \
     src/CelluloPlugin.cpp \
@@ -89,7 +90,8 @@ SOURCES += \
     src/util/svg/CelluloSVGUtil.cpp \
     src/util/lang/TranslationTool.cpp \
     src/util/system/CelluloSystemUtil.cpp \
-    src/util/ds/AssociativeArray.cpp
+    src/util/ds/AssociativeArray.cpp \
+    src/util/ui/CelluloUIUtil.cpp
 
 INCLUDEPATH += \
     include/
