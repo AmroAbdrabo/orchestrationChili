@@ -285,6 +285,21 @@ Object that provides a language translation for the entire app. To use, create o
 
 >  - **void selectLanguage(string language)** : A language given in **languageList** or `"default"` to unload the translator
 
+#### AssociativeArray
+
+Associative array data structure.
+
+**Properties:**
+
+>  - **defaultValue** : `var` - Default value to get if a key doesn't exist
+
+**Slots:**
+
+>  - **AssociativeArray copy()** : Returns a shallow copy of the array, internal array is shared so this slot is cheap. Can be used to get a copy to be modified set back to an AssociativeArray property to trigger its onChanged event.
+>  - **void clear()** : Removes all key-value pairs from the array
+>  - **var get(string key)** : Gets the value associated with a key
+>  - **void set(string key, var value)** Sets the value associated with the key
+
 #### CelluloMathUtil [Singleton]
 
 Mathematical utilities.
