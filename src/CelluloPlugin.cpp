@@ -57,6 +57,7 @@
 #include "util/svg/CelluloSVGUtil.h"
 #include "util/lang/TranslationTool.h"
 #include "util/system/CelluloSystemUtil.h"
+#include "util/ds/AssociativeArray.h"
 
 void CelluloPlugin::registerTypes(const char *uri){
     qmlRegisterType<CelluloRobot>(uri, 1, 0, "CelluloRobot");
@@ -157,6 +158,8 @@ void CelluloPlugin::registerTypes(const char *uri){
                                                     Q_UNUSED(jsEngine)
                                                     return new CelluloSystemUtil();
                                                 });
+
+    qmlRegisterType<AssociativeArray>(uri, 1, 0, "AssociativeArray");
 }
 
 void CelluloPlugin::initializeEngine(QQmlEngine *engine, const char *uri){

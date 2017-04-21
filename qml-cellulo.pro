@@ -50,7 +50,8 @@ HEADERS += \
     src/util/math/CubicBezier.h \
     src/util/svg/CelluloSVGUtil.h \
     src/util/lang/TranslationTool.h \
-    src/util/system/CelluloSystemUtil.h
+    src/util/system/CelluloSystemUtil.h \
+    src/util/ds/AssociativeArray.h
 
 SOURCES += \
     src/CelluloPlugin.cpp \
@@ -87,7 +88,8 @@ SOURCES += \
     src/util/math/CubicBezier.cpp \
     src/util/svg/CelluloSVGUtil.cpp \
     src/util/lang/TranslationTool.cpp \
-    src/util/system/CelluloSystemUtil.cpp
+    src/util/system/CelluloSystemUtil.cpp \
+    src/util/ds/AssociativeArray.cpp
 
 INCLUDEPATH += \
     include/

@@ -90,7 +90,7 @@ void CelluloRelayServer::setListening(bool enable){
         else{
             switch(protocol){
                 case CelluloCommUtil::RelayProtocol::Local:
-                    QLocalServer::removeServer(address);
+                    //QLocalServer::removeServer(address);
                     if(localServer != NULL){
                         if(!localServer->listen(address))
                             qWarning() << "CelluloRelayServer::setListening(): Couldn't start listening: " << localServer->errorString();
