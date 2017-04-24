@@ -250,3 +250,7 @@ qreal CelluloMathUtil::degToRad(qreal deg){
 qreal CelluloMathUtil::radToDeg(qreal rad){
     return rad*180.0/M_PI;
 }
+
+qreal CelluloMathUtil::sigmoid(qreal L, qreal beta, qreal r_0, qreal r){
+    return L/(1 + qExp(beta*(r - r_0)));
+}

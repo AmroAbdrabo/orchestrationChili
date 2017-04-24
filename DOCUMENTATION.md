@@ -318,6 +318,7 @@ Mathematical utilities.
 >  - **vector2d rotateVector(vector2d vector, real angleRad)** : Returns the given vector rotated by the given angle
 >  - **real degToRad(real deg)** : Converts degrees to radians
 >  - **real radToDeg(real rad)** : Converts radians to degrees
+>  - **real sigmoid(real L, real beta, real r_0, real r)** : Calculates L/(1 + exp(beta*(r - r_0)))
 
 #### CelluloSVGUtil [Singleton]
 

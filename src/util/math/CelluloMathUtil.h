@@ -193,6 +193,17 @@ public:
      */
     Q_INVOKABLE static qreal radToDeg(qreal rad);
 
+    /**
+     * @brief Calculates a parametric sigmoid function value
+     *
+     * @param L Magnitude parameter
+     * @param beta Steepness parameter
+     * @param r_0 Horizontal offset parameter
+     * @param r Input
+     * @return L/(1 + exp(beta*(r - r_0)))
+     */
+    Q_INVOKABLE static qreal sigmoid(qreal L, qreal beta, qreal r_0, qreal r);
+
 private:
 
     static constexpr qreal COLLINEAR_EPSILON = 1e-2;   ///< Epsilon to use during collinear check
