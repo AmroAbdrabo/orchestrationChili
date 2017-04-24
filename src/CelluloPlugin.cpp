@@ -58,6 +58,7 @@
 #include "util/lang/TranslationTool.h"
 #include "util/system/CelluloSystemUtil.h"
 #include "util/ds/AssociativeArray.h"
+#include "util/ui/CelluloUIUtil.h"
 
 void CelluloPlugin::registerTypes(const char *uri){
     qmlRegisterType<CelluloRobot>(uri, 1, 0, "CelluloRobot");
@@ -160,6 +161,13 @@ void CelluloPlugin::registerTypes(const char *uri){
                                                 });
 
     qmlRegisterType<AssociativeArray>(uri, 1, 0, "AssociativeArray");
+
+    qmlRegisterSingletonType<CelluloUIUtil>(uri, 1, 0, "CelluloUIUtil",
+                                                [] (QQmlEngine* qmlEngine, QJSEngine* jsEngine)->QObject* {
+                                                    Q_UNUSED(qmlEngine)
+                                                    Q_UNUSED(jsEngine)
+                                                    return new CelluloUIUtil();
+                                                });
 }
 
 void CelluloPlugin::initializeEngine(QQmlEngine *engine, const char *uri){
