@@ -254,3 +254,12 @@ qreal CelluloMathUtil::radToDeg(qreal rad){
 qreal CelluloMathUtil::sigmoid(qreal L, qreal beta, qreal r_0, qreal r){
     return L/(1 + qExp(beta*(r - r_0)));
 }
+
+qreal CelluloMathUtil::clamp(qreal val, qreal min, qreal max){
+    if(val < min)
+        return min;
+    else if(val > max)
+        return max;
+    else
+        return val;
+}

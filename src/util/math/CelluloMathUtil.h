@@ -204,6 +204,16 @@ public:
      */
     Q_INVOKABLE static qreal sigmoid(qreal L, qreal beta, qreal r_0, qreal r);
 
+    /**
+     * @brief Clamps value in an interval
+     *
+     * @param val Value to clamp
+     * @param min Minimum allowed value
+     * @param max Maximum allowed value
+     * @return Value in [min, max]
+     */
+    Q_INVOKABLE static qreal clamp(qreal val, qreal min, qreal max);
+
 private:
 
     static constexpr qreal COLLINEAR_EPSILON = 1e-2;   ///< Epsilon to use during collinear check
