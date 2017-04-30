@@ -52,6 +52,7 @@ HEADERS += \
     src/util/lang/TranslationTool.h \
     src/util/system/CelluloSystemUtil.h \
     src/util/ds/AssociativeArray.h \
+    src/util/ds/CircularBuffer.h \
     src/util/ui/CelluloUIUtil.h
 
 SOURCES += \
@@ -91,6 +92,7 @@ SOURCES += \
     src/util/lang/TranslationTool.cpp \
     src/util/system/CelluloSystemUtil.cpp \
     src/util/ds/AssociativeArray.cpp \
+    src/util/ds/CircularBuffer.cpp \
     src/util/ui/CelluloUIUtil.cpp
 
 INCLUDEPATH += \
