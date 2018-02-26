@@ -70,9 +70,11 @@ void CelluloBluetoothScanner::decideRestart(){
 }
 
 void CelluloBluetoothScanner::onDeviceDiscovered(QBluetoothDeviceInfo const& info){
+    QString name = info.name();
     QString macAddr = info.address().toString().toUpper();
-    if(macAddr.startsWith(CelluloCommUtil::DEFAULT_ROBOT_MAC_ADDR_PREFIX) && !foundRobots.contains(macAddr)){
+    if(name.toLower().startsWith("cellulo") && !foundRobots.contains(macAddr)){
         foundRobots.append(macAddr);
         emit foundRobotsChanged();
+        emit robotDiscovered(macAddr);
     }
 }

@@ -94,12 +94,12 @@ ApplicationWindow {
     onBlastTypeChanged: {
         switch(blastType){
         case BlastType.None:
-            discoverer.running = false;
+            scanner.stop();
             emp.clear();
             break;
         case BlastType.BlastReset:
         case BlastType.BlastShutdown:
-            discoverer.running = true;
+            scanner.start();
             break;
         default:
             break;
@@ -113,37 +113,19 @@ ApplicationWindow {
         continuous: continuousCheckbox.checked
     }
 
-    BluetoothDiscoveryModel{
-        id: discoverer
-
-        property string macAddrPrefix: "00:06:66:74"
-        running: false
-        discoveryMode: BluetoothDiscoveryModel.DeviceDiscovery
-
-        onRunningChanged: {
-            if(!running)
-                switch(blastType){
-                case BlastType.BlastReset:
-                case BlastType.BlastShutdown:
-                    running = true;
-                    break;
-                default:
-                    break;
-                }
-        }
-
-        onDeviceDiscovered: {
-            if(device.indexOf(macAddrPrefix) === 0){
-                switch(blastType){
-                case BlastType.BlastReset:
-                    emp.resetLater(device);
-                    break;
-                case BlastType.BlastShutdown:
-                    emp.shutdownLater(device);
-                    break;
-                default:
-                    break;
-                }
+    CelluloBluetoothScanner{
+        id: scanner
+        continuous: continuousCheckbox.checked
+        onRobotDiscovered: {
+            switch(blastType){
+            case BlastType.BlastReset:
+                emp.resetLater(macAddr);
+                break;
+            case BlastType.BlastShutdown:
+                emp.shutdownLater(macAddr);
+                break;
+            default:
+                break;
             }
         }
     }

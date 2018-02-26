@@ -68,6 +68,13 @@ public:
 signals:
 
     /**
+     * @brief Emitted when a new Cellulo robot is discovered
+     *
+     * @param macAddr Mac address of the newly discovered robot
+     */
+    void robotDiscovered(QString const& macAddr);
+
+    /**
      * @brief Emitted when scanning finishes
      */
     void finished();
