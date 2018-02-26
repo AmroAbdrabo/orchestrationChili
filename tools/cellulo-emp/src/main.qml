@@ -57,7 +57,13 @@ ApplicationWindow {
         }
 
         CheckBox{
-            id: continuousCheckbox
+            id: continuousScanCheckbox
+            text: "Scan continuously"
+            checked: true
+        }
+
+        CheckBox{
+            id: continuousBlastCheckbox
             text: "Blast continuously"
             checked: false
         }
@@ -110,12 +116,12 @@ ApplicationWindow {
 
     CelluloBluetoothEMP{
         id: emp
-        continuous: continuousCheckbox.checked
+        continuous: continuousBlastCheckbox.checked
     }
 
     CelluloBluetoothScanner{
         id: scanner
-        continuous: continuousCheckbox.checked
+        continuous: continuousScanCheckbox.checked
         onRobotDiscovered: {
             switch(blastType){
             case BlastType.BlastReset:
