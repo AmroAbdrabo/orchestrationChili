@@ -57,12 +57,10 @@ ApplicationWindow {
         radius: 5
 
         Image{
-            property real gridSpacing: 0.5
-
             source: robotComm.kidnapped ? "../assets/redHexagon.svg" : "../assets/greenHexagon.svg"
             rotation: robotComm.theta
-            x: robotComm.x*gridSpacing*parent.scaleCoeff - width/2
-            y: robotComm.y*gridSpacing*parent.scaleCoeff - height/2
+            x: robotComm.x*parent.scaleCoeff - width/2
+            y: robotComm.y*parent.scaleCoeff - height/2
             sourceSize.width: 55*parent.scaleCoeff
             sourceSize.height: 60*parent.scaleCoeff
         }
