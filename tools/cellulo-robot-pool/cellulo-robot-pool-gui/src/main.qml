@@ -140,6 +140,8 @@ ApplicationWindow {
                     id: robotList
 
                     Repeater{
+                        id: robotListMacAddrSelectors
+
                         model: client.robots.length
 
                         MacAddrSelector{
@@ -166,13 +168,50 @@ ApplicationWindow {
                         }
                     }
 
-                    Button{
-                        text: "Equally distribute local adapters"
-                        onClicked:{
-                            var localAdapters = BluetoothLocalDeviceStatic.allDevices();
-                            for(var i=0;i<client.robots.length;i++){
-                                console.log(localAdapters[Math.floor(localAdapters.length*i/client.robots.length)]);
-                                client.robots[i].localAdapterMacAddr = localAdapters[Math.floor(localAdapters.length*i/client.robots.length)];
+                    Row{
+                        spacing: 5
+
+                        Button{
+                            text: "Equally distribute local adapters"
+                            onClicked:{
+                                var localAdapters = BluetoothLocalDeviceStatic.allDevices();
+                                for(var i=0;i<client.robots.length;i++)
+                                    client.robots[i].localAdapterMacAddr = localAdapters[i % localAdapters.length];
+                            }
+                        }
+
+                        Button{
+                            text: "Connect to all, 3s delay between connects"
+
+                            property int currentIndex: 0
+
+                            function autoconnectTo(){
+                                if(currentIndex < client.robots.length){
+                                    var robot = client.robots[currentIndex];
+                                    var macAddrSelector = robotListMacAddrSelectors.itemAt(currentIndex);
+                                    robot.localAdapterMacAddr = macAddrSelector.selectedLocalAdapterAddress;
+                                    robot.macAddr = macAddrSelector.selectedAddress;
+                                    robot.connectToServer();
+                                    currentIndex++;
+                                }
+                            }
+
+                            Timer{
+                                id: autoconnectTimer
+                                interval: 3000
+                                running: false
+                                repeat: true
+                                onTriggered: {
+                                    parent.autoconnectTo();
+                                    if(parent.currentIndex >= client.robots.length)
+                                        stop();
+                                }
+                            }
+
+                            onClicked:{
+                                currentIndex = 0;
+                                autoconnectTo();
+                                autoconnectTimer.start();
                             }
                         }
                     }
