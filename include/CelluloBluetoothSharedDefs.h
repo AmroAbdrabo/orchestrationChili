@@ -136,7 +136,7 @@
         CmdPacketTypeSetGoalPolyBezierAligned,       /** Same as CmdPacketTypeSetGoalPolyBezier while keeping orientation aligned to curve */ \
         CmdPacketTypeReset,                          /** Request reset */ \
         CmdPacketTypeShutdown,                       /** Request shutdown */ \
-        CmdPacketTypeSetAddress,                     /** Set address of all following packets (only last 2 octets are sent, only used by relay clients/servers) */ \
+        CmdPacketTypeSetAddress,                     /** Set address of all following packets (only used by relay clients/servers) */ \
         CmdPacketTypeSetConnectionStatus,            /** Set connection status of the robot on the server (only used by relay clients) */ \
         CmdPacketTypeNumElements, \
 }
@@ -217,7 +217,7 @@
         2 + 2 + 2,         /** CmdPacketTypeSetGoalPolyBezierAligned: uint16 v, uint16 theta, uint16 w */ \
         0,                 /** CmdPacketTypeReset */ \
         0,                 /** CmdPacketTypeShutdown */ \
-        1 + 1,             /** CmdPacketTypeSetAddress: uint8 fifthOctet, uint8 sixthOctet */ \
+        6*1,               /** CmdPacketTypeSetAddress: uint8 firstOctet, uint8 secondOctet, uint8 thirdOctet, uint8 fourthOctet, uint8 fifthOctet, uint8 sixthOctet */ \
         1 + 6*1            /** CmdPacketTypeSetConnectionStatus: uint8 status, uint8 localAdapterAddrOctet1, uint8 localAdapterAddrOctet2, uint8 localAdapterAddrOctet3, uint8 localAdapterAddrOctet4, uint8 localAdapterAddrOctet5, uint8 localAdapterAddrOctet6 */ \
 }
 
@@ -240,7 +240,7 @@
         EventPacketTypeAcknowledged,             /** Acknowledged */ \
         EventPacketTypeFrameLine,                /** Camera frame line is sent */ \
         EventPacketTypeDebug,                    /** Debug message */ \
-        EventPacketTypeSetAddress,               /** Specify address of all following packets (only last 2 octets are sent, only used by relay clients/servers) */ \
+        EventPacketTypeSetAddress,               /** Specify address of all following packets (only used by relay clients/servers) */ \
         EventPacketTypeAnnounceConnectionStatus, /** Announce connection status of the robot (only used by relay servers) */ \
         EventPacketTypeNumElements \
 }
@@ -287,7 +287,7 @@
         0,                    /** EventPacketTypeAcknowledged */ \
         2 + IMG_WIDTH_SHARED, /** EventPacketTypeFrameLine: uint16 currentLineIndex, IMG_WIDTH*uint8 grayscalePixel */ \
         8,                    /** EventPacketTypeDebug */ \
-        1 + 1,                /** EventPacketTypeSetAddress */ \
+        6*1,                  /** EventPacketTypeSetAddress: uint8 firstOctet, uint8 secondOctet, uint8 thirdOctet, uint8 fourthOctet, uint8 fifthOctet, uint8 sixthOctet */ \
         1 + 6*1               /** EventPacketTypeAnnounceConnectionStatus: uint8 status, uint8 localAdapterAddrOctet1, uint8 localAdapterAddrOctet2, uint8 localAdapterAddrOctet3, uint8 localAdapterAddrOctet4, uint8 localAdapterAddrOctet5, uint8 localAdapterAddrOctet6 */ \
 }
 

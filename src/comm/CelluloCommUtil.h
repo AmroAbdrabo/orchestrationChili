@@ -41,7 +41,6 @@ public:
     virtual ~CelluloCommUtil();
 
     static const int DEFAULT_RELAY_PORT = 2556;         ///< Default TCP port for Cellulo relay communication
-    static const QString DEFAULT_ROBOT_MAC_ADDR_PREFIX; ///< Default prefix of Cellulo robot MAC addresses
 
     /**
      * @brief Underlying transfer protocols supported by the relay servers and clients
@@ -66,15 +65,6 @@ public:
      * @return Bluetooth MAC address in the form of "XX:XX:XX:XX:XX:XX"; returns empty string if octets not valid or the address is 00:00:00:00:00:00
      */
     static QString getMacAddr(QList<quint8> const& octets);
-
-    /**
-     * @brief Gets the MAC address suffix made of the last two octets
-     *
-     * @param fifthOctet Fifth octet
-     * @param sixthOctet Sixth octet
-     * @return Bluetooth MAC address suffix in the form of "XX:XX"
-     */
-    static QString getMacAddrSuffix(quint8 fifthOctet, quint8 sixthOctet);
 
     /**
      * @brief Tests whether cellulorobotpoold is installed

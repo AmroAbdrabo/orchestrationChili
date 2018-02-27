@@ -26,8 +26,6 @@
 
 #include "../util/system/CelluloSystemUtil.h"
 
-const QString CelluloCommUtil::DEFAULT_ROBOT_MAC_ADDR_PREFIX = "00:06:66:74:";
-
 CelluloCommUtil::CelluloCommUtil(QObject* parent) : QObject(parent){}
 
 CelluloCommUtil::~CelluloCommUtil(){}
@@ -70,10 +68,6 @@ QString CelluloCommUtil::getMacAddr(QList<quint8> const& octets){
         macAddr = "";
 
     return macAddr;
-}
-
-QString CelluloCommUtil::getMacAddrSuffix(quint8 fifthOctet, quint8 sixthOctet){
-    return (fifthOctet <= 0xF ? "0" : "") + QString::number(fifthOctet, 16) + ":" + (sixthOctet <= 0xF ? "0" : "") + QString::number(sixthOctet, 16);
 }
 
 bool CelluloCommUtil::testRobotPoolDaemon(){

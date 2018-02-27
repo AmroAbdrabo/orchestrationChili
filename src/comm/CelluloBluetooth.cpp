@@ -522,8 +522,8 @@ void CelluloBluetooth::processResponse(CelluloBluetoothPacket& externalPacket){
             case CelluloBluetoothPacket::EventPacketTypeSetAddress:
 
                 //Ignore, should never come from a robot
-                externalPacket.unloadUInt8();
-                externalPacket.unloadUInt8();
+                for(int i=0;i<6;i++)
+                    externalPacket.unloadUInt8();
                 qDebug() << "CelluloBluetoothPacket::processResponse(): EventPacketTypeSetAddress received, should not happen!";
                 break;
 

@@ -219,20 +219,24 @@ void CelluloRelayClient::processServerPacket(){
 
     //Set target robot command
     if(packetType == CelluloBluetoothPacket::EventPacketTypeSetAddress){
+        quint8 firstOctet = serverPacket.unloadUInt8();
+        quint8 secondOctet = serverPacket.unloadUInt8();
+        quint8 thirdOctet = serverPacket.unloadUInt8();
+        quint8 fourthOctet = serverPacket.unloadUInt8();
         quint8 fifthOctet = serverPacket.unloadUInt8();
         quint8 sixthOctet = serverPacket.unloadUInt8();
-        QString suffix = CelluloCommUtil::getMacAddrSuffix(fifthOctet, sixthOctet);
+        QString incomingAddr = CelluloCommUtil::getMacAddr(QList<quint8>({firstOctet, secondOctet, thirdOctet, fourthOctet, fifthOctet, sixthOctet}));
 
         int newRobot = -1;
         for(int i=0; i<robots.size(); i++)
-            if(robots[i]->getMacAddr().endsWith(suffix, Qt::CaseInsensitive)){
+            if(robots[i]->getMacAddr().compare(incomingAddr, Qt::CaseInsensitive) == 0){
                 newRobot = i;
                 break;
             }
 
         if(newRobot < 0){
             currentRobot = -1;
-            emit unknownRobotAtServer(CelluloCommUtil::DEFAULT_ROBOT_MAC_ADDR_PREFIX + suffix);
+            emit unknownRobotAtServer(incomingAddr);
         }
         else
             currentRobot = newRobot;
@@ -278,6 +282,10 @@ void CelluloRelayClient::sendToServer(QString macAddr, CelluloBluetoothPacket co
 
         CelluloBluetoothPacket setAddressPacket;
         setAddressPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeSetAddress);
+        setAddressPacket.load(octets[0]);
+        setAddressPacket.load(octets[1]);
+        setAddressPacket.load(octets[2]);
+        setAddressPacket.load(octets[3]);
         setAddressPacket.load(octets[4]);
         setAddressPacket.load(octets[5]);
         serverSocket->write(setAddressPacket.getCmdSendData());

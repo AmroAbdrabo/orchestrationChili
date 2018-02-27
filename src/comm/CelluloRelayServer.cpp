@@ -296,13 +296,17 @@ void CelluloRelayServer::processClientPacket(){
 
     //Set target robot command
     if(packetType == CelluloBluetoothPacket::CmdPacketTypeSetAddress){
+        quint8 firstOctet = clientPacket.unloadUInt8();
+        quint8 secondOctet = clientPacket.unloadUInt8();
+        quint8 thirdOctet = clientPacket.unloadUInt8();
+        quint8 fourthOctet = clientPacket.unloadUInt8();
         quint8 fifthOctet = clientPacket.unloadUInt8();
         quint8 sixthOctet = clientPacket.unloadUInt8();
-        QString suffix = CelluloCommUtil::getMacAddrSuffix(fifthOctet, sixthOctet);
+        QString incomingAddr = CelluloCommUtil::getMacAddr(QList<quint8>({firstOctet, secondOctet, thirdOctet, fourthOctet, fifthOctet, sixthOctet}));
 
         int newRobot = -1;
         for(int i=0; i<robots.size(); i++)
-            if(robots[i]->getMacAddr().endsWith(suffix, Qt::CaseInsensitive)){
+            if(robots[i]->getMacAddr().compare(incomingAddr, Qt::CaseInsensitive) == 0){
                 newRobot = i;
                 break;
             }
@@ -310,7 +314,7 @@ void CelluloRelayServer::processClientPacket(){
         if(newRobot < 0){
             CelluloBluetooth* robot = new CelluloBluetooth(this);
             robot->setAutoConnect(false);
-            robot->setMacAddr(CelluloCommUtil::DEFAULT_ROBOT_MAC_ADDR_PREFIX + suffix);
+            robot->setMacAddr(incomingAddr);
             robot->setAutoConnect(true);
             addRobot(robot);
             currentRobot = robots.size() - 1;
@@ -376,6 +380,10 @@ void CelluloRelayServer::sendToClient(QString macAddr, CelluloBluetoothPacket co
 
             CelluloBluetoothPacket setAddressPacket;
             setAddressPacket.setEventPacketType(CelluloBluetoothPacket::EventPacketTypeSetAddress);
+            setAddressPacket.load(octets[0]);
+            setAddressPacket.load(octets[1]);
+            setAddressPacket.load(octets[2]);
+            setAddressPacket.load(octets[3]);
             setAddressPacket.load(octets[4]);
             setAddressPacket.load(octets[5]);
             clientSocket->write(setAddressPacket.getEventSendData());
