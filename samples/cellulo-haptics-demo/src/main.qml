@@ -138,7 +138,7 @@ ApplicationWindow {
             robotComm.setHapticBackdriveAssist(currentHaptics.xyAssist, currentHaptics.xyAssist, currentHaptics.thetaAssist);
             robotComm.vibrateOnMotion(currentHaptics.vibrateIntensity, 40);
 
-            console.log(currentHaptics.xyAssist + " " + currentHaptics.thetaAssist + " " + currentHaptics.vibrateIntensity);
+            console.info(currentHaptics.xyAssist + " " + currentHaptics.thetaAssist + " " + currentHaptics.vibrateIntensity);
         }
     }
 

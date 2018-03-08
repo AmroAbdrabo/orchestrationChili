@@ -101,14 +101,14 @@ function drawNewPolygon(color, vertices, margin, stackingOrder, childNumber, pla
 
 function drawNewZone(type, properties, childnumber, playgroundWidth, playgroundHeight){
     if(parent == null){
-        console.log("You forgot to set a visual parent with setVisualParent or your parent is null")
+        console.info("You forgot to set a visual parent with setVisualParent or your parent is null")
 
     }else{
 
-        console.log("AFTER SIGNAL: Type " + type + " Properties " + properties + " playground width " + playgroundWidth + " playgroundHeight " + playgroundHeight)
+        console.info("AFTER SIGNAL: Type " + type + " Properties " + properties + " playground width " + playgroundWidth + " playgroundHeight " + playgroundHeight)
 
         for (var prop in properties) {
-            console.log("Object item:", prop, "=", properties[prop])
+            console.info("Object item:", prop, "=", properties[prop])
         }
 
         switch(type){

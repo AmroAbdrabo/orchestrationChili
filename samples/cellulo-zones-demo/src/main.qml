@@ -126,7 +126,7 @@ ApplicationWindow {
             robot.zoneDistances = distances;
             break;
         default:
-            console.log("Unknown zone change");
+            console.info("Unknown zone change");
             break;
         }
     }
