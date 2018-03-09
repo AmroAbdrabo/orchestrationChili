@@ -29,27 +29,52 @@
 
 #include "../comm/CelluloBluetooth.h"
 
+namespace Cellulo{
+
+/**
+ * @brief The main object that represents a Cellulo robot. Inherits from `CelluloBluetooth` and has all its functionalities (not listed here).
+ */
 class CelluloRobot : public CelluloBluetooth {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
 
+    /** @brief Robot's estimated velocity in mm/s, mm/s, rad/s, read-only */
     Q_PROPERTY(QVector3D vxyw READ getVxyw NOTIFY vxywChanged)
+
+    /** @brief Robot's estimated X velocity in mm/s, read-only */
     Q_PROPERTY(qreal vx READ getVx NOTIFY vxywChanged)
+
+    /** @brief Robot's estimated Y velocity in mm/s, read-only */
     Q_PROPERTY(qreal vy READ getVy NOTIFY vxywChanged)
+
+    /** @brief Robot's estimated angular velocity in rad/s, read-only */
     Q_PROPERTY(qreal w READ getW NOTIFY vxywChanged)
 
+    /** @brief Whether the simultaneous pose/velocity is enabled, must be set by the user, default false */
     Q_PROPERTY(bool poseVelControlEnabled READ getPoseVelControlEnabled WRITE setPoseVelControlEnabled NOTIFY poseVelControlEnabledChanged)
+
+    /** @brief Desired pose/velocity control period in ms, set to 0 for highest possible frequency, default 20 */
     Q_PROPERTY(int poseVelControlPeriod READ getPoseVelControlPeriod WRITE setPoseVelControlPeriod NOTIFY poseVelControlPeriodChanged)
 
+    /** @brief Goal velocity coefficients when tracking pose/velocity, default (0.9, 0.9, 0.9), do not change if you don't have a good reason */
     Q_PROPERTY(QVector3D poseVelControlKGoalVel MEMBER poseVelControlKGoalVel)
+
+    /** @brief Goal velocity error coefficients when tracking pose/velocity, default (0.2, 0.2, 0.2), do not change if you don't have a good reason */
     Q_PROPERTY(QVector3D poseVelControlKGoalVelErr MEMBER poseVelControlKGoalVelErr)
+
+    /** @brief Goal pose error coefficients when tracking pose/velocity, default (2.0, 2.0, 2.3), do not change if you don't have a good reason */
     Q_PROPERTY(QVector3D poseVelControlKGoalPoseErr MEMBER poseVelControlKGoalPoseErr)
 
+    /** @brief Whether the 6 keys are touched */
     Q_PROPERTY(QList<bool> keysTouched READ getKeysTouched NOTIFY keysTouchedChanged)
+
+    /** @brief Whether the 6 keys are long touched */
     Q_PROPERTY(QList<bool> keysLongTouched READ getKeysLongTouched NOTIFY keysLongTouchedChanged)
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Creates a new Cellulo robot representation
@@ -133,7 +158,11 @@ public:
      */
     QList<bool> getKeysLongTouched() const { return keysLongTouched; }
 
+    /** @endcond */
+
 signals:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Emitted when the linear/angular velocity changes
@@ -151,16 +180,6 @@ signals:
     void poseVelControlPeriodChanged();
 
     /**
-     * @brief Emitted when the controller needs the next goal pose and velocity
-     *
-     * Upon receiving this signal, setGoalPoseAndVelocity() should be called by the user if a user control loop that
-     * cycles on each received pose of the robot is present.
-     *
-     * @param deltaTime Delta time in milliseconds that should be used if a controller differentiates or integrates in a loop triggered by this signal
-     */
-    void nextGoalPoseVelRequested(qreal deltaTime);
-
-    /**
      * @brief Emitted when a key is touched/released
      */
     void keysTouchedChanged();
@@ -169,6 +188,18 @@ signals:
      * @brief Emitted when a key is long touched/released
      */
     void keysLongTouchedChanged();
+
+    /** @endcond */
+
+    /**
+     * @brief Emitted when the controller needs the next goal pose and velocity
+     *
+     * Upon receiving this signal, setGoalPoseAndVelocity() should be called by the user if a user control loop that
+     * cycles on each received pose of the robot is present.
+     *
+     * @param deltaTime Delta time in milliseconds that should be used if a controller differentiates or integrates in a loop triggered by this signal
+     */
+    void nextGoalPoseVelRequested(qreal deltaTime);
 
 private slots:
 
@@ -219,9 +250,9 @@ public slots:
      * @param Vx X velocity (between -185 mm/s and and 185 mm/s)
      * @param Vy Y velocity (between -185 mm/s and and 185 mm/s)
      * @param w Angular velocity (between -7.5 rad/s and 7.5 rad/s)
-     * @param xEnabled Whether to enable control on x
-     * @param yEnabled Whether to enable control on y
-     * @param thetaEnabled Whether to enable control on theta
+     * @param xEnabled Whether to enable control on x, default true
+     * @param yEnabled Whether to enable control on y, default true
+     * @param thetaEnabled Whether to enable control on theta, default true
      */
     void setGoalPoseAndVelocity(qreal x, qreal y, qreal theta, qreal Vx, qreal Vy, qreal w, bool xEnabled = true, bool yEnabled = true, bool thetaEnabled = true);
 
@@ -276,5 +307,7 @@ private:
     void poseVelControlCommandVelocities();
 
 };
+
+}
 
 #endif // CELLULOROBOT_H

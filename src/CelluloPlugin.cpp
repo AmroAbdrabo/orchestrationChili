@@ -59,6 +59,8 @@
 #include "util/system/CelluloSystemUtil.h"
 #include "util/ui/CelluloUIUtil.h"
 
+namespace Cellulo{
+
 void CelluloPlugin::registerTypes(const char *uri){
     qmlRegisterType<CelluloRobot>(uri, 1, 0, "CelluloRobot");
 
@@ -170,4 +172,6 @@ void CelluloPlugin::registerTypes(const char *uri){
 void CelluloPlugin::initializeEngine(QQmlEngine *engine, const char *uri){
     Q_UNUSED(uri)
     engine->addImageProvider("cameraFrame", new CameraFrameImageProvider());
+}
+
 }

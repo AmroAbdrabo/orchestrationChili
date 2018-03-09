@@ -12,6 +12,10 @@ that were confirmed to work with the Cellulo robots under Ubuntu 16.04 with Blue
   - Digitus DN-30210-1, reports a `Cambridge Silicon Radio, Ltd` to be present, bought from https://www.conrad.ch/ce/fr/product/395775/
   - Renkforce Bluetooth® 4.0 stick, reports a `Cambridge Silicon Radio, Ltd` to be present, bought from https://www.conrad.ch/ce/fr/product/1483951/
 
+Tools are under [tools/](tools/), samples are under [samples/](samples/). See their README's for instructions.
+
+See [doc/DOCUMENTATION.md](doc/DOCUMENTATION.md) for the API.
+
 Dependencies
 -------------
 
@@ -65,12 +69,11 @@ make -j5
 ./celluloplugintests
 ```
 
-Tools & Samples
----------------
+Build & run documentation
+-------------------------
 
-Tools are under [tools/](tools/), samples are under [samples/](samples/). See their README's for instructions.
-
-QML API
--------
-
-See [DOCUMENTATION.md](DOCUMENTATION.md).
+```
+doxygen
+mkdir -p doc/
+moxygen --output doc/DOCUMENTATION.md xml
+```

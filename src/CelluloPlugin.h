@@ -27,6 +27,10 @@
 
 #include <QQmlExtensionPlugin>
 
+namespace Cellulo{
+
+/** @cond DO_NOT_DOCUMENT */
+
 /**
  * @brief Object that exposes all relevant Cellulo objects as QML objects
  */
@@ -40,5 +44,9 @@ public:
     void registerTypes(const char *uri);
     void initializeEngine(QQmlEngine *engine, const char *uri);
 };
+
+/** @endcond */
+
+}
 
 #endif // CELLULOPLUGIN_H

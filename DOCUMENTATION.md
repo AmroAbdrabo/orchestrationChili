@@ -5,29 +5,8 @@ Here you will find the complete documentation of all QML objects offered by `qml
 
 #### CelluloRobot [extends CelluloBluetooth]
 
-The main object that represents a Cellulo robot. Inherits from `CelluloBluetooth` and has all its functionalities; these are not listed below.
 
-**Properties:**
 
->  - **poseVelControlEnabled** :        `bool` - Whether the simultaneous pose/velocity is enabled, must be set by the user, default false
->  - **poseVelControlPeriod** :         `int` - Desired pose/velocity control period in ms, set to 0 for highest possible frequency, default 20
->  - **vxyw** :                         `readonly vector3d` - Robot's estimated velocity in mm/s, mm/s, rad/s
->  - **vx** :                           `readonly real` - Robot's estimated X velocity in mm/s
->  - **vy** :                           `readonly real` - Robot's estimated Y velocity in mm/s
->  - **w** :                            `readonly real` - Robot's estimated angular velocity in rad/s
->  - **poseVelControlKGoalVel** :       `vector3d` - Goal velocity coefficients when tracking pose/velocity, default (0.9, 0.9, 0.9), do not change if you don't have a good reason
->  - **poseVelControlKGoalVelErr** :    `vector3d` - Goal velocity error coefficients when tracking pose/velocity, default (0.2, 0.2, 0.2), do not change if you don't have a good reason
->  - **poseVelControlKGoalPoseErr** :   `vector3d` - Goal pose error coefficients when tracking pose/velocity, default (2.0, 2.0, 2.3), do not change if you don't have a good reason
->  - **keysTouched** :                  `list<bool>` - Whether the 6 keys are touched
->  - **keysLongTouched** :              `list<bool>` - Whether the 6 keys are long touched
-
-**Signals:**
-
->  - **nextGoalPoseVelRequested(real deltaTime)**: Emitted when the controller needs the next goal pose and velocity; `setGoalPoseAndVelocity()` should be called by the user upon receiving this signal if a user control loop that cycles on each received pose of the robot is present. deltaTime (in milliseconds) can be used to differentiate or integrate values in control loops that are triggered by this signal
-
-**Slots:**
-
->  - **void setGoalPoseAndVelocity(real x, real y, real theta, real Vx, real Vy, real w, bool xEnabled = true, bool yEnabled = true, bool thetaEnabled = true)**: Sets the simultaneous pose and velocity goal of the robot, i.e the robot tries to be at the desired pose and move with the desired velocity while there; x/y are in mm, theta is in degrees, Vx/Vy are in mm/s, w is in rad/s. Control on each component can be enabled/disabled individually, or left empty to be enabled by default.
 
 Communication
 -------------

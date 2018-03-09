@@ -28,6 +28,8 @@
 
 #include "../comm/CelluloBluetoothEnums.h"
 
+namespace Cellulo{
+
 const qreal CelluloRobot::maxEstimatedXYVel = 1000.0;
 const qreal CelluloRobot::maxEstimatedW = 50.0;
 const qreal CelluloRobot::vMu = 0.0;
@@ -232,4 +234,6 @@ void CelluloRobot::longTouchKey(int key){
         keysLongTouched[key] = true;
         emit keysLongTouchedChanged();
     }
+}
+
 }

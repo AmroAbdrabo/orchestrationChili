@@ -2,6 +2,6 @@
 *.user
 build*/
 *~
+xml/
 
 .directory
-
