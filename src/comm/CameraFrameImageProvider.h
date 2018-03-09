@@ -30,6 +30,10 @@
 
 #include<QQuickImageProvider>
 
+namespace Cellulo{
+
+/** @cond DO_NOT_DOCUMENT */
+
 /**
  * @brief QImage provider from QByteArray
  */
@@ -46,5 +50,9 @@ private:
     unsigned char frameCharBuffer[IMG_WIDTH_SHARED*IMG_HEIGHT_SHARED*4];
 
 };
+
+/** @endcond */
+
+}
 
 #endif // CAMERAFRAMEIMAGEPROVIDER_H

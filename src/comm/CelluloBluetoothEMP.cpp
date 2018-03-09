@@ -26,6 +26,8 @@
 
 #include <QTimer>
 
+namespace Cellulo{
+
 CelluloBluetoothEMP::CelluloBluetoothEMP(QQuickItem* parent) : QQuickItem(parent){
     continuous = false;
 }
@@ -158,4 +160,6 @@ bool CelluloBluetoothEMP::inLists(QString macAddr){
         if(waitingAddr == macAddr)
             return true;
     return false;
+}
+
 }

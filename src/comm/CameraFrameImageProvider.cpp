@@ -26,6 +26,8 @@
 
 #include<QImage>
 
+namespace Cellulo{
+
 CameraFrameImageProvider::CameraFrameImageProvider():
     QQuickImageProvider(QQuickImageProvider::Image){ }
 
@@ -44,4 +46,6 @@ QImage CameraFrameImageProvider::requestImage(QString const& id, QSize* size, QS
     }
 
     return QImage(frameCharBuffer, IMG_WIDTH_SHARED, IMG_HEIGHT_SHARED, QImage::Format_ARGB32);
+}
+
 }

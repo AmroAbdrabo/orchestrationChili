@@ -27,16 +27,28 @@
 
 #include "CelluloBluetooth.h"
 
+namespace Cellulo{
+
+/**
+ * @brief Object that mass reset/shuts down all robots
+ */
 class CelluloBluetoothEMP : public QQuickItem {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
 
+    /** @brief Whether to shut down or reset the same robots over and over, default false */
     Q_PROPERTY(bool continuous READ getContinuous WRITE setContinuous NOTIFY continuousChanged)
+
+    /** @brief List of robots waiting to be shut down or reset */
     Q_PROPERTY(QStringList macAddrToBlast READ getMacAddrToBlast NOTIFY macAddrToBlastChanged)
+
+    /** @brief List of robots already shut down or reset */
     Q_PROPERTY(QStringList macAddrBlasted READ getMacAddrBlasted NOTIFY macAddrBlastedChanged)
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Creates a new EMP blaster
@@ -71,7 +83,11 @@ public:
      */
     QStringList getMacAddrBlasted() const { return macAddrBlasted; }
 
+    /** @endcond */
+
 signals:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Whether to blast same robots strategy changed
@@ -88,7 +104,11 @@ signals:
      */
     void macAddrBlastedChanged();
 
+    /** @endcond */
+
 public slots:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Sets whether to blast same robots
@@ -96,6 +116,8 @@ public slots:
      * @param continuous Whether to blast same robots
      */
     void setContinuous(bool continuous);
+
+    /** @endcond */
 
     /**
      * @brief Initiates connection to the robot to reset it when it's connected
@@ -159,5 +181,7 @@ private:
     void startConnections();
 
 };
+
+}
 
 #endif // CELLULOBLUETOOTHEMP_H
