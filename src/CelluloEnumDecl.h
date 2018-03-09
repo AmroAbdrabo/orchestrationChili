@@ -37,6 +37,8 @@
 #include <QVariantList>
 #include <QString>
 
+/** @cond DO_NOT_DOCUMENT */
+
 #define CELLULO_ENUM_DECL(ENUMNAME) \
     Q_INVOKABLE static QString ENUMNAME ## String(ENUMNAME value){ \
         static QMetaEnum ENUMNAME ## _MetaEnum = QMetaEnum::fromType<ENUMNAME>(); \
@@ -51,5 +53,7 @@
             list << ENUMNAME ## String((ENUMNAME)(ENUMNAME ## _MetaEnum).value(i)); \
         return list; \
     }
+
+/** @endcond */
 
 #endif // CELLULOENUMDECL_H

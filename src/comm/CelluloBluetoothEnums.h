@@ -30,8 +30,11 @@
 #include "CelluloBluetoothSharedDefs.h"
 #include "../CelluloEnumDecl.h"
 
+namespace Cellulo{
+
 /**
  * @brief Wrapper containing all the enums of CelluloBluetooth
+ * @singleton
  */
 class CelluloBluetoothEnums : public QObject {
     /* *INDENT-OFF* */
@@ -40,8 +43,12 @@ class CelluloBluetoothEnums : public QObject {
 
 public:
 
+    /** @cond DO_NOT_DOCUMENT */
+
     CelluloBluetoothEnums(QObject* parent = 0);
     ~CelluloBluetoothEnums();
+
+    /** @endcond */
 
     /**
      * @brief Bluetooth connection status
@@ -86,11 +93,13 @@ public:
     CELLULO_ENUM_DECL(Gesture)
 };
 
-Q_DECLARE_METATYPE(CelluloBluetoothEnums::ConnectionStatus)
-Q_DECLARE_METATYPE(CelluloBluetoothEnums::BatteryState)
-Q_DECLARE_METATYPE(CelluloBluetoothEnums::LEDResponseMode)
-Q_DECLARE_METATYPE(CelluloBluetoothEnums::LocomotionInteractivityMode)
-Q_DECLARE_METATYPE(CelluloBluetoothEnums::VisualEffect)
-Q_DECLARE_METATYPE(CelluloBluetoothEnums::Gesture)
+}
+
+Q_DECLARE_METATYPE(Cellulo::CelluloBluetoothEnums::ConnectionStatus)
+Q_DECLARE_METATYPE(Cellulo::CelluloBluetoothEnums::BatteryState)
+Q_DECLARE_METATYPE(Cellulo::CelluloBluetoothEnums::LEDResponseMode)
+Q_DECLARE_METATYPE(Cellulo::CelluloBluetoothEnums::LocomotionInteractivityMode)
+Q_DECLARE_METATYPE(Cellulo::CelluloBluetoothEnums::VisualEffect)
+Q_DECLARE_METATYPE(Cellulo::CelluloBluetoothEnums::Gesture)
 
 #endif // CELLULOBLUETOOTHENUMS_H

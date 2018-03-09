@@ -24,6 +24,10 @@
 
 #include "CelluloBluetoothEnums.h"
 
+namespace Cellulo{
+
 CelluloBluetoothEnums::CelluloBluetoothEnums(QObject* parent) : QObject(parent){}
 
 CelluloBluetoothEnums::~CelluloBluetoothEnums(){}
+
+}

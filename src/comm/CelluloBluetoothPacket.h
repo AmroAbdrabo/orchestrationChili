@@ -31,6 +31,10 @@
 
 #include "CelluloBluetoothSharedDefs.h"
 
+namespace Cellulo{
+
+/** @cond DO_NOT_DOCUMENT */
+
 /**
  * @brief Bluetooth communicator for a Cellulo robot
  */
@@ -288,5 +292,9 @@ private:
     QByteArray payload;                    ///< Payload of the actual packet
     int unloadIndex;                       ///< Current index to unload from the payload
 };
+
+/** @endcond */
+
+}
 
 #endif // CELLULOBLUETOOTHPACKET_H

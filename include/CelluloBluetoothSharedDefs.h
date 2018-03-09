@@ -36,9 +36,9 @@
  * @brief Connection status, not used by the robot but passed around between relay clients and servers
  */
 #define CONNECTION_STATUS_ENUM_SHARED enum ConnectionStatus { \
-        ConnectionStatusDisconnected = 0, /** Idle and not connected */ \
-        ConnectionStatusConnecting = 1,   /** Actively trying to connect */ \
-        ConnectionStatusConnected = 2,    /** Connected */ \
+        /** Idle and not connected     */ ConnectionStatusDisconnected = 0, \
+        /** Actively trying to connect */ ConnectionStatusConnecting = 1, \
+        /** Connected                  */ ConnectionStatusConnected = 2, \
         ConnectionStatusNumElements \
 }
 
@@ -46,12 +46,12 @@
  * @brief Battery states
  */
 #define BATTERY_STATE_ENUM_SHARED enum BatteryState { \
-        BatteryStateDischarging = 0, /** No charger present, battery draining */ \
-        BatteryStateLow = 1,         /** No charger present, battery low, will shut down */ \
-        BatteryStateCharging = 2,    /** Charger present, battery charging */ \
-        BatteryStateCharged = 3,     /** Charger present, battery full */ \
-        BatteryStateShutdown = 4,    /** Charger charging disabled, voltage too low or battery not present */ \
-        BatteryStateError = 5,       /** Thermal fault or charge timeout */ \
+        /** No charger present, battery draining                                */ BatteryStateDischarging = 0,  \
+        /** No charger present, battery low, will shut down                     */ BatteryStateLow = 1, \
+        /** Charger present, battery charging                                   */ BatteryStateCharging = 2, \
+        /** Charger present, battery full                                       */ BatteryStateCharged = 3, \
+        /** Charger charging disabled, voltage too low or battery not present   */ BatteryStateShutdown = 4, \
+        /** Thermal fault or charge timeout                                     */ BatteryStateError = 5, \
         BatteryStateNumElements \
 }
 
@@ -59,9 +59,9 @@
  * @brief LED response modes
  */
 #define LED_RESPONSE_MODE_ENUM_SHARED enum LEDResponseMode { \
-        LEDResponseModeResponsiveIndividual = 0, /** LEDs respond to touches by slightly increasing brightness */ \
-        LEDResponseModeAbsolute = 1,             /** LEDs don't respond to touches */ \
-        LEDResponseModeResponsiveHold = 2,       /** LEDs respond to hold by all changing color */ \
+        /** LEDs respond to touches by slightly increasing brightness   */ LEDResponseModeResponsiveIndividual = 0, \
+        /** LEDs don't respond to touches                               */ LEDResponseModeAbsolute = 1, \
+        /** LEDs respond to hold by all changing color                  */ LEDResponseModeResponsiveHold = 2, \
         LEDResponseModeNumElements \
 }
 
@@ -69,8 +69,8 @@
  * @brief Locomotion response modes
  */
 #define LOCOMOTION_INTERACTIVITY_MODE_ENUM_SHARED enum LocomotionInteractivityMode { \
-        LocomotionInteractivityModeNormal = 0,       /** Robot moves normally */ \
-        LocomotionInteractivityModeRequiresHold = 1, /** Robot requires Hold gesture */ \
+        /** Robot moves normally        */ LocomotionInteractivityModeNormal = 0, \
+        /** Robot requires Hold gesture */ LocomotionInteractivityModeRequiresHold = 1, \
         LocomotionInteractivityModeNumElements \
 }
 
@@ -78,16 +78,16 @@
  * @brief Visual effect types
  */
 #define VISUAL_EFFECT_ENUM_SHARED enum VisualEffect { \
-        VisualEffectConstAll = 0,    /** Set all LED colors (value unused) */ \
-        VisualEffectConstSingle = 1, /** Set one LED color (value is LED index) */ \
-        VisualEffectAlertAll = 2,    /** Alert animation for all LEDs (value unused) */ \
-        VisualEffectAlertSingle = 3, /** Alert animation for one LED (value is LED index) */ \
-        VisualEffectProgress = 4,    /** Static progress circularly (value 0-255 maps to 0-100%) */ \
-        VisualEffectWaiting = 5,     /** Circular waiting/processing animation (value unused) */ \
-        VisualEffectDirection = 6,   /** Point toward one direction (value 0-255 maps to 0-360 degrees) */ \
-        VisualEffectBlink = 7,       /** Alert forever (value*20 is LED on time in milliseconds) */ \
-        VisualEffectBreathe = 8,     /** Breathe animation (value unused) */ \
-        VisualEffectPulse = 9,       /** Slower breathe-like animation (value unused) */ \
+        /** Set all LED colors (value unused)                               */ VisualEffectConstAll = 0, \
+        /** Set one LED color (value is LED index)                          */ VisualEffectConstSingle = 1, \
+        /** Alert animation for all LEDs (value unused)                     */ VisualEffectAlertAll = 2, \
+        /** Alert animation for one LED (value is LED index)                */ VisualEffectAlertSingle = 3, \
+        /** Static progress circularly (value 0-255 maps to 0-100%)         */ VisualEffectProgress = 4, \
+        /** Circular waiting/processing animation (value unused)            */ VisualEffectWaiting = 5, \
+        /** Point toward one direction (value 0-255 maps to 0-360 degrees)  */ VisualEffectDirection = 6, \
+        /** Alert forever (value*20 is LED on time in milliseconds)         */ VisualEffectBlink = 7, \
+        /** Breathe animation (value unused)                                */ VisualEffectBreathe = 8,  \
+        /** Slower breathe-like animation (value unused)                    */ VisualEffectPulse = 9, \
         VisualEffectNumElements \
 }
 
@@ -95,8 +95,8 @@
  * @brief Gesture types
  */
 #define GESTURE_ENUM_SHARED enum Gesture { \
-        GestureNone = 0, /** No gesture */ \
-        GestureHold = 1, /** Robot is held */ \
+        /** No gesture      */ GestureNone = 0, \
+        /** Robot is held   */ GestureHold = 1, \
         GestureNumElements \
 }
 

@@ -26,6 +26,8 @@
 #include <QMetaObject>
 #include <QMetaEnum>
 
+namespace Cellulo{
+
 const char* CelluloBluetoothPacket::cmdPacketTypeStr[] = COMMAND_PACKET_STR_SHARED;
 const int CelluloBluetoothPacket::cmdPacketPayloadLen[] = COMMAND_PACKET_PAYLOAD_LEN_SHARED;
 const char* CelluloBluetoothPacket::eventPacketTypeStr[] = EVENT_PACKET_STR_SHARED;
@@ -444,4 +446,6 @@ float CelluloBluetoothPacket::unloadFloat(){
         float* num = (float*)(&unum);
         return *num;
     }
+}
+
 }
