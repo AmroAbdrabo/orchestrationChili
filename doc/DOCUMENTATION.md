@@ -3,9 +3,7 @@
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
 `namespace `[`Cellulo`](#namespaceCellulo) | 
-`class `[`CameraFrameImageProvider`](#classCameraFrameImageProvider) | QImage provider from QByteArray.
 `class `[`CelluloBluetooth`](#classCelluloBluetooth) | Bluetooth communicator for a Cellulo robot.
-`class `[`CelluloBluetoothEMP`](#classCelluloBluetoothEMP) | 
 `class `[`CelluloBluetoothScanner`](#classCelluloBluetoothScanner) | 
 `class `[`CelluloCommUtil`](#classCelluloCommUtil) | 
 `class `[`CelluloLocalRelayClient`](#classCelluloLocalRelayClient) | 
@@ -22,8 +20,61 @@
 
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
+`class `[`Cellulo::CelluloBluetoothEMP`](#classCellulo_1_1CelluloBluetoothEMP) | Object that mass reset/shuts down all robots.
 `class `[`Cellulo::CelluloBluetoothEnums`](#classCellulo_1_1CelluloBluetoothEnums) | Wrapper containing all the enums of [CelluloBluetooth](#classCelluloBluetooth).
 `class `[`Cellulo::CelluloRobot`](#classCellulo_1_1CelluloRobot) | The main object that represents a Cellulo robot. Inherits from `[CelluloBluetooth](#classCelluloBluetooth)` and has all its functionalities (not listed here).
+
+# class `Cellulo::CelluloBluetoothEMP` 
+
+```
+class Cellulo::CelluloBluetoothEMP
+  : public QQuickItem
+```  
+
+Object that mass reset/shuts down all robots.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+`{property} bool `[`continuous`](#classCellulo_1_1CelluloBluetoothEMP_1aa0ffa9fb0d5d25770529ddfb231e5ec4) | Whether to shut down or reset the same robots over and over, default false.
+`{property} QStringList `[`macAddrToBlast`](#classCellulo_1_1CelluloBluetoothEMP_1a948d8212e52c2514a0329cfcbfabeff3) | List of robots waiting to be shut down or reset.
+`{property} QStringList `[`macAddrBlasted`](#classCellulo_1_1CelluloBluetoothEMP_1a1af9f3d90c9cf47bd112d8a453d3a6da) | List of robots already shut down or reset.
+`{slot} public void `[`resetLater`](#classCellulo_1_1CelluloBluetoothEMP_1ab12436c821fecc2050cc3c37925229b2)`(QString macAddr)` | Initiates connection to the robot to reset it when it's connected.
+`{slot} public void `[`shutdownLater`](#classCellulo_1_1CelluloBluetoothEMP_1a72fe2ad6c136c80f7e685b5620a5d394)`(QString macAddr)` | Initiates connection to the robot to shut it down when it's connected.
+`{slot} public void `[`clear`](#classCellulo_1_1CelluloBluetoothEMP_1a9dda86060b992a8104ad9f13e4030a1f)`()` | Clears both lists, drops all connections.
+
+## Members
+
+#### `{property} bool `[`continuous`](#classCellulo_1_1CelluloBluetoothEMP_1aa0ffa9fb0d5d25770529ddfb231e5ec4) 
+
+Whether to shut down or reset the same robots over and over, default false.
+
+Whether to blast same robots.
+
+#### `{property} QStringList `[`macAddrToBlast`](#classCellulo_1_1CelluloBluetoothEMP_1a948d8212e52c2514a0329cfcbfabeff3) 
+
+List of robots waiting to be shut down or reset.
+
+List of mac addresses that are being blasted.
+
+#### `{property} QStringList `[`macAddrBlasted`](#classCellulo_1_1CelluloBluetoothEMP_1a1af9f3d90c9cf47bd112d8a453d3a6da) 
+
+List of robots already shut down or reset.
+
+List of mac addresses that are confirmed to be blasted.
+
+#### `{slot} public void `[`resetLater`](#classCellulo_1_1CelluloBluetoothEMP_1ab12436c821fecc2050cc3c37925229b2)`(QString macAddr)` 
+
+Initiates connection to the robot to reset it when it's connected.
+
+#### `{slot} public void `[`shutdownLater`](#classCellulo_1_1CelluloBluetoothEMP_1a72fe2ad6c136c80f7e685b5620a5d394)`(QString macAddr)` 
+
+Initiates connection to the robot to shut it down when it's connected.
+
+#### `{slot} public void `[`clear`](#classCellulo_1_1CelluloBluetoothEMP_1a9dda86060b992a8104ad9f13e4030a1f)`()` 
+
+Clears both lists, drops all connections.
 
 # class `Cellulo::CelluloBluetoothEnums` 
 
@@ -243,28 +294,6 @@ Sets the simultaneous pose and velocity goal of the robot, i.e the robot tries t
 * `yEnabled` Whether to enable control on y, default true 
 
 * `thetaEnabled` Whether to enable control on theta, default true
-
-# class `CameraFrameImageProvider` 
-
-```
-class CameraFrameImageProvider
-  : public QQuickImageProvider
-```  
-
-QImage provider from QByteArray.
-
-## Summary
-
- Members                        | Descriptions                                
---------------------------------|---------------------------------------------
-`public  `[`CameraFrameImageProvider`](#classCameraFrameImageProvider_1a0cb30c9805d79426a683afe45ec4a4b9)`()` | 
-`public QImage `[`requestImage`](#classCameraFrameImageProvider_1a8aa2a18b29502db727a32027c5a839d3)`(QString const & id,QSize * size,QSize const & requestedSize)` | 
-
-## Members
-
-#### `public  `[`CameraFrameImageProvider`](#classCameraFrameImageProvider_1a0cb30c9805d79426a683afe45ec4a4b9)`()` 
-
-#### `public QImage `[`requestImage`](#classCameraFrameImageProvider_1a8aa2a18b29502db727a32027c5a839d3)`(QString const & id,QSize * size,QSize const & requestedSize)` 
 
 # class `CelluloBluetooth` 
 
@@ -952,110 +981,6 @@ Initiates a software reset on the robot.
 #### `{slot} public void `[`shutdown`](#classCelluloBluetooth_1a8115abd66d4acd9aaf7d8e1aeab91fae)`()` 
 
 Initiates sleep on the robot.
-
-# class `CelluloBluetoothEMP` 
-
-```
-class CelluloBluetoothEMP
-  : public QQuickItem
-```  
-
-## Summary
-
- Members                        | Descriptions                                
---------------------------------|---------------------------------------------
-`{property} bool `[`continuous`](#classCelluloBluetoothEMP_1a57fbcba07a125504001d358ecf2b6e48) | Whether to blast same robots.
-`{property} QStringList `[`macAddrToBlast`](#classCelluloBluetoothEMP_1a80301e3720211a0ca339467fd9f556f9) | List of mac addresses that are being blasted.
-`{property} QStringList `[`macAddrBlasted`](#classCelluloBluetoothEMP_1a8674de706d8466f9aeb62aabdeb4830f) | List of mac addresses that are confirmed to be blasted.
-`public  explicit `[`CelluloBluetoothEMP`](#classCelluloBluetoothEMP_1a07e7c6e15ac3f974aceed7d6786da4a2)`(QQuickItem * parent)` | Creates a new EMP blaster.
-`public virtual  `[`~CelluloBluetoothEMP`](#classCelluloBluetoothEMP_1ab3080112b93ad6214c468b9ff77550de)`()` | Destroys this EMP blaster.
-`public inline bool `[`getContinuous`](#classCelluloBluetoothEMP_1aa53dc4d25230e7b264b09358cc27b8db)`()` | Gets whether to blast same robots.
-`public inline QStringList `[`getMacAddrToBlast`](#classCelluloBluetoothEMP_1a29aba45acbc2fe169c0852c227717238)`() const` | Gets the mac addresses of robots that are waiting to be blasted.
-`public inline QStringList `[`getMacAddrBlasted`](#classCelluloBluetoothEMP_1a4a35114a80408b9ffb7b6ed2fc4ad978)`() const` | Gets the mac addresses of robots that are confirmed to be blasted.
-`{signal} public void `[`continuousChanged`](#classCelluloBluetoothEMP_1a597015df3660046071aa724cce896ea0)`()` | Whether to blast same robots strategy changed.
-`{signal} public void `[`macAddrToBlastChanged`](#classCelluloBluetoothEMP_1a69dec88fba645f57ebaa617a427e02f2)`()` | Emitted when list of mac addresses waiting to be blasted changes.
-`{signal} public void `[`macAddrBlastedChanged`](#classCelluloBluetoothEMP_1a558865a1d22781809a5c52f84529fedf)`()` | Emitted when list of mac addresses confirmed to be blasted changes.
-`{slot} public void `[`setContinuous`](#classCelluloBluetoothEMP_1a698b6d37c0f91733e9a375b2257608a6)`(bool continuous)` | Sets whether to blast same robots.
-`{slot} public void `[`resetLater`](#classCelluloBluetoothEMP_1a57e79f8d43eac34a719a9daea9660403)`(QString macAddr)` | Initiates connection to the robot to reset it when it's connected.
-`{slot} public void `[`shutdownLater`](#classCelluloBluetoothEMP_1a15e0cbfa49c37ed7fafbac491dda1a71)`(QString macAddr)` | Initiates connection to the robot to shut it down when it's connected.
-`{slot} public void `[`clear`](#classCelluloBluetoothEMP_1af9369395d05fb3fb41fe0a80e156b43b)`()` | Clears both lists, drops all connections.
-
-## Members
-
-#### `{property} bool `[`continuous`](#classCelluloBluetoothEMP_1a57fbcba07a125504001d358ecf2b6e48) 
-
-Whether to blast same robots.
-
-#### `{property} QStringList `[`macAddrToBlast`](#classCelluloBluetoothEMP_1a80301e3720211a0ca339467fd9f556f9) 
-
-List of mac addresses that are being blasted.
-
-#### `{property} QStringList `[`macAddrBlasted`](#classCelluloBluetoothEMP_1a8674de706d8466f9aeb62aabdeb4830f) 
-
-List of mac addresses that are confirmed to be blasted.
-
-#### `public  explicit `[`CelluloBluetoothEMP`](#classCelluloBluetoothEMP_1a07e7c6e15ac3f974aceed7d6786da4a2)`(QQuickItem * parent)` 
-
-Creates a new EMP blaster.
-
-#### Parameters
-* `parent` Parent of this QML item
-
-#### `public virtual  `[`~CelluloBluetoothEMP`](#classCelluloBluetoothEMP_1ab3080112b93ad6214c468b9ff77550de)`()` 
-
-Destroys this EMP blaster.
-
-#### `public inline bool `[`getContinuous`](#classCelluloBluetoothEMP_1aa53dc4d25230e7b264b09358cc27b8db)`()` 
-
-Gets whether to blast same robots.
-
-#### Returns
-Whether to blast same robots
-
-#### `public inline QStringList `[`getMacAddrToBlast`](#classCelluloBluetoothEMP_1a29aba45acbc2fe169c0852c227717238)`() const` 
-
-Gets the mac addresses of robots that are waiting to be blasted.
-
-#### Returns
-Mac addresses of robots that are waiting to be blasted
-
-#### `public inline QStringList `[`getMacAddrBlasted`](#classCelluloBluetoothEMP_1a4a35114a80408b9ffb7b6ed2fc4ad978)`() const` 
-
-Gets the mac addresses of robots that are confirmed to be blasted.
-
-#### Returns
-Mac addresses of robots that are confirmed to be blasted
-
-#### `{signal} public void `[`continuousChanged`](#classCelluloBluetoothEMP_1a597015df3660046071aa724cce896ea0)`()` 
-
-Whether to blast same robots strategy changed.
-
-#### `{signal} public void `[`macAddrToBlastChanged`](#classCelluloBluetoothEMP_1a69dec88fba645f57ebaa617a427e02f2)`()` 
-
-Emitted when list of mac addresses waiting to be blasted changes.
-
-#### `{signal} public void `[`macAddrBlastedChanged`](#classCelluloBluetoothEMP_1a558865a1d22781809a5c52f84529fedf)`()` 
-
-Emitted when list of mac addresses confirmed to be blasted changes.
-
-#### `{slot} public void `[`setContinuous`](#classCelluloBluetoothEMP_1a698b6d37c0f91733e9a375b2257608a6)`(bool continuous)` 
-
-Sets whether to blast same robots.
-
-#### Parameters
-* `continuous` Whether to blast same robots
-
-#### `{slot} public void `[`resetLater`](#classCelluloBluetoothEMP_1a57e79f8d43eac34a719a9daea9660403)`(QString macAddr)` 
-
-Initiates connection to the robot to reset it when it's connected.
-
-#### `{slot} public void `[`shutdownLater`](#classCelluloBluetoothEMP_1a15e0cbfa49c37ed7fafbac491dda1a71)`(QString macAddr)` 
-
-Initiates connection to the robot to shut it down when it's connected.
-
-#### `{slot} public void `[`clear`](#classCelluloBluetoothEMP_1af9369395d05fb3fb41fe0a80e156b43b)`()` 
-
-Clears both lists, drops all connections.
 
 # class `CelluloBluetoothScanner` 
 

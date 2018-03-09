@@ -1,59 +1,4 @@
-qml-cellulo Documentation
-=========================
 
-Here you will find the complete documentation of all QML objects offered by `qml-cellulo`, organized into categories.
-
-#### CelluloRobot [extends CelluloBluetooth]
-
-
-
-
-Communication
--------------
-
-#### CelluloBluetoothEnums [Singleton]
-
-Object that contains enums used across the Cellulo objects.
-
-**Enums:**
-
-`ConnectionStatus` - Robot connection status
-> - `ConnectionStatusDisconnected` - Idle and not connected
-> - `ConnectionStatusConnecting` - Actively trying to connect
-> - `ConnectionStatusConnected` - Connected
-
-`BatteryState` - Robot battery state
-> - `BatteryStateDischarging` - No charger present, battery draining
-> - `BatteryStateLow` - No charger present, battery low, will shut down
-> - `BatteryStateCharging` - Charger present, battery charging
-> - `BatteryStateCharged` - Charger present, battery full
-> - `BatteryStateShutdown` - Charger charging disabled, voltage too low or battery not present
-> - `BatteryStateError` - Thermal fault or charge timeout
-
-`LEDResponseMode` - Robot LED response mode to touch
-> - `LEDResponseModeResponsiveIndividual` - LEDs respond to touches by slightly increasing brightness
-> - `LEDResponseModeAbsolute` - LEDs don't respond to touches
-> - `LEDResponseModeResponsiveHold` - LEDs respond to Hold gesture by all changing color
-
-`LocomotionInteractivityMode` - Robot locomotion relation to touches
-> - `LocomotionInteractivityModeNormal` - Robot moves normally
-> - `LocomotionInteractivityModeRequiresHold` - Robot doesn't move unless Hold gesture is present
-
-`VisualEffect` - Robot LED effects
-> - `VisualEffectConstAll` - Set all LED colors (value unused)
-> - `VisualEffectConstSingle` - Set one LED color (value is LED index)
-> - `VisualEffectAlertAll` - Alert animation for all LEDs (value unused)
-> - `VisualEffectAlertSingle` - Alert animation for one LED (value is LED index)
-> - `VisualEffectProgress` - Static progress circularly (value 0-255 maps to 0-100%)
-> - `VisualEffectWaiting` - Circular waiting/processing animation (value unused)
-> - `VisualEffectDirection` - Point toward one direction (value 0-255 maps to 0-360 degrees)
-> - `VisualEffectBlink` - Alert forever (value*20 is LED on time in milliseconds)
-> - `VisualEffectBreathe` - Breathe animation (value unused)
-> - `VisualEffectPulse` - Slower breathe-like animation (value unused)
-
-`Gesture` - Special robot key touch states
-> - `GestureNone` - No gesture
-> - `GestureHold` - Robot is "held" (a general presence is detected on the keys)
 
 #### CelluloBluetooth [extends CelluloZoneClient]
 
@@ -135,21 +80,7 @@ Object that uses the robots connected to a `cellulorobotpoold`. Inherits from `C
 
 >  - **createRobot** : `function` - Must be set to a user-defined function that takes the MAC address (string) of an already connected robot and returns a CelluloBluetooth object or CelluloBluetooth-derived object
 
-#### CelluloBluetoothEMP
 
-Object that shuts down or resets multiple robots simultaneously.
-
-**Properties:**
-
->  - **continuous** :      `bool` - Whether to shut down or reset the same robots over and over, default false
->  - **macAddrToBlast** :  `readonly list<string>` - List of robots waiting to be shut down or reset
->  - **macAddrBlasted** :  `readonly list<string>` - List of robots already shut down or reset
-
-**Slots**:
-
->  - **void resetLater(string macAddr)** : Starts a connection to the given robot and schedules a reset
->  - **void shutdownLater(string macAddr)** : Starts a connection to the given robot and schedules a shutdown
->  - **void clear()**: Clears both lists (macAddrToBlast and macAddrBlasted) and drops all connections
 
 Communication - Relays
 ----------------------
