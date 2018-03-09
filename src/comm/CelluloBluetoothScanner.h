@@ -30,16 +30,26 @@
 
 namespace Cellulo{
 
+/**
+ * @brief Object that scans for Cellulo robots
+ */
 class CelluloBluetoothScanner : public QQuickItem {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
 
+    /** @brief Whether to scan continuously, default false */
     Q_PROPERTY(bool continuous MEMBER continuous)
+
+    /** @brief Whether scanning now, read-only */
     Q_PROPERTY(bool scanning READ isScanning NOTIFY scanningChanged)
+
+    /** @brief List of found robots, read-only */
     Q_PROPERTY(QStringList foundRobots READ getFoundRobots NOTIFY foundRobotsChanged)
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Creates a new Cellulo robot scanner
@@ -67,6 +77,8 @@ public:
      */
     QStringList getFoundRobots() const { return foundRobots; }
 
+    /** @endcond */
+
 signals:
 
     /**
@@ -81,6 +93,8 @@ signals:
      */
     void finished();
 
+    /** @cond DO_NOT_DOCUMENT */
+
     /**
      * @brief Emitted when scan stops or starts
      */
@@ -90,6 +104,8 @@ signals:
      * @brief Emitted when list of found robot MAC addresses changes
      */
     void foundRobotsChanged();
+
+    /** @endcond */
 
 public slots:
 

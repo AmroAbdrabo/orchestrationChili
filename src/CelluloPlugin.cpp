@@ -59,6 +59,9 @@
 #include "util/system/CelluloSystemUtil.h"
 #include "util/ui/CelluloUIUtil.h"
 
+/**
+ * @brief Scope for core Cellulo objects
+ */
 namespace Cellulo{
 
 void CelluloPlugin::registerTypes(const char *uri){

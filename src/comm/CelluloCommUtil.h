@@ -32,12 +32,18 @@
 
 namespace Cellulo{
 
+/**
+ * @brief Cellulo communication utilities
+ * @singleton
+ */
 class CelluloCommUtil : public QObject {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     CelluloCommUtil(QObject* parent = 0);
     virtual ~CelluloCommUtil();
@@ -67,6 +73,8 @@ public:
      * @return Bluetooth MAC address in the form of "XX:XX:XX:XX:XX:XX"; returns empty string if octets not valid or the address is 00:00:00:00:00:00
      */
     static QString getMacAddr(QList<quint8> const& octets);
+
+    /** @endcond */
 
     /**
      * @brief Tests whether cellulorobotpoold is installed

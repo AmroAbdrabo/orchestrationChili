@@ -69,11 +69,9 @@ make -j5
 ./celluloplugintests
 ```
 
-Build & run documentation
--------------------------
+Build documentation
+-------------------
 
 ```
-doxygen
-mkdir -p doc/
-moxygen --output doc/DOCUMENTATION.md xml
+./generate-doc.sh
 ```
