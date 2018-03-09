@@ -15,8 +15,16 @@ that were confirmed to work with the Cellulo robots under Ubuntu 16.04 with Blue
 Dependencies
 -------------
 
+Mandatory:
+
   - `nanosvg` to convert SVG paths into Cellulo zone paths, run `git submodule init && git submodule update` on the root directory to obtain it.
-  - [qml-bluetooth-extras](https://github.com/chili-epfl/qml-bluetooth-extras) must be installed to obtain the list of local Bluetooth adapters, see the repository for installation instructions.
+  - [qml-bluetooth-extras](https://github.com/chili-epfl/qml-bluetooth-extras): Must be installed to obtain the list of local Bluetooth adapters, see the repository for installation instructions.
+
+Optional (but probably needed by some application that uses qml-plugin):
+
+  - [qml-extra-data-structures](https://github.com/chili-epfl/qml-extra-data-structures): Data structures missing from the QML world, see the repository for installation instructions.
+  - [qml-cache](https://github.com/chili-epfl/qml-cache): Persistent app-specific key-value store, see the repository for installation instructions.
+  - [qml-logger](https://github.com/chili-epfl/qml-logger): File logging utilities that we commonly used for data collection in experiments, see the repository for installation instructions.
 
 Desktop build
 -------------
