@@ -33,14 +33,26 @@
 
 namespace Cellulo{
 
+/**
+ * @brief Object that uses the robots connected to a `cellulorobotpoold`.
+ *
+ * Inherits from `CelluloLocalRelayClient`, which in turn inherits from `CelluloRelayClient`, which means that their
+ * properties, signals and slots can be used. The most useful among these is the `robots` property that exposes the
+ * list of currently available robots in this pool.
+ */
 class CelluloRobotPoolClient : public CelluloLocalRelayClient {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
 
+    /**
+     * @brief Must be set to a user-defined javascript function that takes the MAC address (string) of an already connected robot and returns a CelluloBluetooth object or CelluloBluetooth-derived object
+     */
     Q_PROPERTY(QJSValue createRobot READ getCreateRobot WRITE setCreateRobot NOTIFY createRobotChanged)
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Creates a new CelluloRobotPoolClient with the given QML parent
@@ -68,12 +80,18 @@ public:
      */
     void setCreateRobot(QJSValue const& function);
 
+    /** @endcond */
+
 signals:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Emitted when the createRobot function changes
      */
     void createRobotChanged();
+
+    /** @endcond */
 
 private slots:
 

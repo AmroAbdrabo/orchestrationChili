@@ -10,7 +10,7 @@
 
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
-`class `[`Cellulo::CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth) | 
+`class `[`Cellulo::CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth) | Object that communicates with one Cellulo robot over Bluetooth.
 `class `[`Cellulo::CelluloBluetoothEMP`](#classCellulo_1_1CelluloBluetoothEMP) | Object that mass reset/shuts down all robots.
 `class `[`Cellulo::CelluloBluetoothEnums`](#classCellulo_1_1CelluloBluetoothEnums) | Wrapper containing all the enums of [CelluloBluetooth](#classCellulo_1_1CelluloBluetooth).
 `class `[`Cellulo::CelluloBluetoothScanner`](#classCellulo_1_1CelluloBluetoothScanner) | Object that scans for Cellulo robots.
@@ -19,7 +19,7 @@
 `class `[`Cellulo::CelluloRelayClient`](#classCellulo_1_1CelluloRelayClient) | Object that relays packets between a `[CelluloRelayServer](#classCellulo_1_1CelluloRelayServer)` and virtual robot objects.
 `class `[`Cellulo::CelluloRelayServer`](#classCellulo_1_1CelluloRelayServer) | Object that relays packets between a `[CelluloRelayClient](#classCellulo_1_1CelluloRelayClient)` and physical robots.
 `class `[`Cellulo::CelluloRobot`](#classCellulo_1_1CelluloRobot) | The main object that represents a Cellulo robot. Inherits from `[CelluloBluetooth](#classCellulo_1_1CelluloBluetooth)` and has all its functionalities (not listed here).
-`class `[`Cellulo::CelluloRobotPoolClient`](#classCellulo_1_1CelluloRobotPoolClient) | 
+`class `[`Cellulo::CelluloRobotPoolClient`](#classCellulo_1_1CelluloRobotPoolClient) | Object that uses the robots connected to a `cellulorobotpoold`.
 `class `[`Cellulo::CelluloTcpRelayClient`](#classCellulo_1_1CelluloTcpRelayClient) | Relays packets between a server and virtual robot objects over a TCP socket. Connects to a `[CelluloTcpRelayServer](#classCellulo_1_1CelluloTcpRelayServer)`.
 `class `[`Cellulo::CelluloTcpRelayServer`](#classCellulo_1_1CelluloTcpRelayServer) | Relays packets between a client and physical robots over a TCP socket. Accepts connections from a `[CelluloTcpRelayClient](#classCellulo_1_1CelluloTcpRelayClient)`.
 
@@ -30,70 +30,38 @@ class Cellulo::CelluloBluetooth
   : public CelluloZoneClient
 ```  
 
+Object that communicates with one Cellulo robot over Bluetooth.
+
+Inherits from `CelluloZoneClient` and therefore can be used as one.
+
 ## Summary
 
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
-`{property} QString `[`localAdapterMacAddr`](#classCellulo_1_1CelluloBluetooth_1a31ca21c1a395893cbfe0e4ea4bb6e590) | MAC address of the local adapter to use when connecting to the robot, only works on Linux.
-`{property} bool `[`autoConnect`](#classCellulo_1_1CelluloBluetooth_1a2c2f916967bee8e06038b92f46bb4248) | Whether the socket will try to reconnect every time it drops, will connect when mac address is set.
-`{property} QString `[`macAddr`](#classCellulo_1_1CelluloBluetooth_1a3a4f9fd2da2440be2368bd4b9e74f0f2) | Bluetooth MAC address of the server.
-`{property} `[`CelluloBluetoothEnums::ConnectionStatus`](#classCellulo_1_1CelluloBluetoothEnums_1a9bdbb91140cd33c3daa779af49c7ed97)` `[`connectionStatus`](#classCellulo_1_1CelluloBluetooth_1a9520239e44d19dd120c6779a126a543f) | Bluetooth connection status.
-`{property} `[`CelluloBluetoothEnums::BatteryState`](#classCellulo_1_1CelluloBluetoothEnums_1a895a56801308039dd778b0a0fb6809b8)` `[`batteryState`](#classCellulo_1_1CelluloBluetooth_1a87f7b19fe478e73346094a8208c00ea5) | Current battery state.
-`{property} float `[`x`](#classCellulo_1_1CelluloBluetooth_1af13c47b29e25220131c182d963e41034) | Current x position in mm.
-`{property} float `[`y`](#classCellulo_1_1CelluloBluetooth_1ac1276ac29b10f1f28fa0f6a00416fa60) | Current y position in mm.
-`{property} float `[`theta`](#classCellulo_1_1CelluloBluetooth_1acaee9ee4adc6528bcaae8c9577790d02) | Current orientation in degrees.
-`{property} bool `[`kidnapped`](#classCellulo_1_1CelluloBluetooth_1a4be50315021f3a8df91275ee89bccfa5) | Whether currently kidnapped.
-`{property} `[`CelluloBluetoothEnums::Gesture`](#classCellulo_1_1CelluloBluetoothEnums_1aac0e86c82f086708674759431d6ff0fb)` `[`gesture`](#classCellulo_1_1CelluloBluetooth_1af9c3ebbd5cd9b40135f3b0289b8189ab) | Current gesture.
-`{property} bool `[`timestampingEnabled`](#classCellulo_1_1CelluloBluetooth_1ab93e751696cdaa7635681bb05b5598f5) | Whether timestamping along with pose is enabled and idling disabled.
-`{property} int `[`lastTimestamp`](#classCellulo_1_1CelluloBluetooth_1a7884ff94eaf821db9310d20f95024ad5) | Latest received onboard timestamp (in milliseconds)
-`{property} float `[`framerate`](#classCellulo_1_1CelluloBluetooth_1aa64ae00fc5683f384940db4b9e72ac8d) | Framerate calculated over time.
-`{property} float `[`cameraImageProgress`](#classCellulo_1_1CelluloBluetooth_1ad43dcd9448019dce0434876e23793bbe) | Camera image streaming progress.
-`public  explicit `[`CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth_1af50010e5adb32c83c27200462a4c104b)`(QQuickItem * parent)` | Creates a new Cellulo robot communicator.
-`public virtual  `[`~CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth_1a5c45532687acb52ea639ff8a37aadf84)`()` | Destroys this Cellulo robot communicator.
-`public inline QString `[`getLocalAdapterMacAddr`](#classCellulo_1_1CelluloBluetooth_1a9bc228937dfbb09045109d3bdd1594af)`() const` | Get the chosen local adapter's MAC address.
-`public inline bool `[`getAutoConnect`](#classCellulo_1_1CelluloBluetooth_1a71a91cdcd4d950c23eef1e8fd510b50a)`()` | Gets whether the socket tries to reconnect when it drops, connects when mac address is set.
-`public QVariantList `[`getFrame`](#classCellulo_1_1CelluloBluetooth_1afcff752bb94e79d900f0e3704aa2e882)`() const` | Gets the latest camera frame.
-`public inline QString `[`getMacAddr`](#classCellulo_1_1CelluloBluetooth_1a3a1912ef059bc7bc1114a92e10643b32)`()` | Gets the current MAC address.
-`public inline `[`CelluloBluetoothEnums::ConnectionStatus`](#classCellulo_1_1CelluloBluetoothEnums_1a9bdbb91140cd33c3daa779af49c7ed97)` `[`getConnectionStatus`](#classCellulo_1_1CelluloBluetooth_1a909502a79d438fe9910f56282dbd4768)`()` | Gets current Bluetooth connection status.
-`public inline bool `[`getTimestampingEnabled`](#classCellulo_1_1CelluloBluetooth_1ad5efc22a3e69ec93ec6a2d6351b52df7)`()` | Gets whether timestamping along with pose is currently enabled.
-`public inline `[`CelluloBluetoothEnums::BatteryState`](#classCellulo_1_1CelluloBluetoothEnums_1a895a56801308039dd778b0a0fb6809b8)` `[`getBatteryState`](#classCellulo_1_1CelluloBluetooth_1a958d9333a2c2b5fb58cbf439bb1d385d)`()` | Gets the latest battery state.
-`public inline float `[`getX`](#classCellulo_1_1CelluloBluetooth_1a3ec842d9f6df308013241f30906fef57)`()` | Gets the latest x position.
-`public inline float `[`getY`](#classCellulo_1_1CelluloBluetooth_1ad264e51e11e1cf52b4d1dd82af3ee278)`()` | Gets the latest y position.
-`public inline float `[`getTheta`](#classCellulo_1_1CelluloBluetooth_1a6c634933bbe566d6a60f98b72e2cf29c)`()` | Gets the latest orientation.
-`public inline int `[`getLastTimestamp`](#classCellulo_1_1CelluloBluetooth_1a5447db196bd1242b6085687a05a455b2)`()` | Gets the latest available timestamp.
-`public inline float `[`getFramerate`](#classCellulo_1_1CelluloBluetooth_1afb4cb1b812234e2be143d1c9cbeee10b)`()` | Gets the localization framerate.
-`public inline bool `[`getKidnapped`](#classCellulo_1_1CelluloBluetooth_1a29a007dbabd2857ef8ef527e42b6a165)`()` | Gets the latest kidnapped state.
-`public inline `[`CelluloBluetoothEnums::Gesture`](#classCellulo_1_1CelluloBluetoothEnums_1aac0e86c82f086708674759431d6ff0fb)` `[`getGesture`](#classCellulo_1_1CelluloBluetooth_1a4d7f67abca0aefa4cfcfb7c15d4e3038)`()` | Gets the current gesture.
-`public inline float `[`getCameraImageProgress`](#classCellulo_1_1CelluloBluetooth_1a9a2876bedb9702242c0b55d42dcd2ecf)`()` | Gets the camera image progress.
-`{signal} public void `[`localAdapterMacAddrChanged`](#classCellulo_1_1CelluloBluetooth_1a290cb96318e7bdcd3125208de46ab1cb)`()` | Emitted when the desired local adapter changes.
-`{signal} public void `[`autoConnectChanged`](#classCellulo_1_1CelluloBluetooth_1a284ad9c9199a3a9964e3cf162407a2f2)`()` | Auto connect strategy changed.
-`{signal} public void `[`macAddrChanged`](#classCellulo_1_1CelluloBluetooth_1ad750c5a11942ba9f3f843750613d6fa6)`()` | Emitted when the MAC address changes.
-`{signal} public void `[`connectionStatusChanged`](#classCellulo_1_1CelluloBluetooth_1a80416d92b574cb6ede503406b349ab1e)`()` | Emitted when Bluetooth connection status changes.
+`{property} QString `[`localAdapterMacAddr`](#classCellulo_1_1CelluloBluetooth_1a31ca21c1a395893cbfe0e4ea4bb6e590) | Local adapter's MAC address chosen to connect to the robot, empty string if using default adapter; only works on Linux and if the plugin is built with BlueZ.
+`{property} bool `[`autoConnect`](#classCellulo_1_1CelluloBluetooth_1a2c2f916967bee8e06038b92f46bb4248) | Whether to start connecting immediately as soon as **macAddr** is set and to reconnect if connection drops, default true.
+`{property} QString `[`macAddr`](#classCellulo_1_1CelluloBluetooth_1a3a4f9fd2da2440be2368bd4b9e74f0f2) | Robot MAC address in the form "XX:XX:XX:XX:XX:XX".
+`{property} `[`CelluloBluetoothEnums::ConnectionStatus`](#classCellulo_1_1CelluloBluetoothEnums_1a9bdbb91140cd33c3daa779af49c7ed97)` `[`connectionStatus`](#classCellulo_1_1CelluloBluetooth_1a9520239e44d19dd120c6779a126a543f) | Current connection status to the robot, read-only.
+`{property} `[`CelluloBluetoothEnums::BatteryState`](#classCellulo_1_1CelluloBluetoothEnums_1a895a56801308039dd778b0a0fb6809b8)` `[`batteryState`](#classCellulo_1_1CelluloBluetooth_1a87f7b19fe478e73346094a8208c00ea5) | Robot's current battery state, read-only.
+`{property} float `[`x`](#classCellulo_1_1CelluloBluetooth_1af13c47b29e25220131c182d963e41034) | Robot's x coordinate in mm, read-only.
+`{property} float `[`y`](#classCellulo_1_1CelluloBluetooth_1ac1276ac29b10f1f28fa0f6a00416fa60) | Robot's y coordinate in mm, read-only.
+`{property} float `[`theta`](#classCellulo_1_1CelluloBluetooth_1acaee9ee4adc6528bcaae8c9577790d02) | Robot's orientation in degrees, read-only.
+`{property} bool `[`kidnapped`](#classCellulo_1_1CelluloBluetooth_1a4be50315021f3a8df91275ee89bccfa5) | Whether the robot is not on encoded paper, read-only.
+`{property} `[`CelluloBluetoothEnums::Gesture`](#classCellulo_1_1CelluloBluetoothEnums_1aac0e86c82f086708674759431d6ff0fb)` `[`gesture`](#classCellulo_1_1CelluloBluetooth_1af9c3ebbd5cd9b40135f3b0289b8189ab) | Current robot gesture (if gesture detection is enabled), read-only.
+`{property} bool `[`timestampingEnabled`](#classCellulo_1_1CelluloBluetooth_1ab93e751696cdaa7635681bb05b5598f5) | Whether the robot will send its own timestamp along with its pose, default false.
+`{property} int `[`lastTimestamp`](#classCellulo_1_1CelluloBluetooth_1a7884ff94eaf821db9310d20f95024ad5) | Last local timestamp received along with pose (is valid if **timestampingEnabled** is true), read-only.
+`{property} float `[`framerate`](#classCellulo_1_1CelluloBluetooth_1aa64ae00fc5683f384940db4b9e72ac8d) | Localization framerate calculated from local timestamps received along with pose (is valid if **timestampingEnabled** is true), read-only.
 `{signal} public void `[`bootCompleted`](#classCellulo_1_1CelluloBluetooth_1a29af380c02321d800dd3325fda88faa6)`()` | Emitted when the robot is ready after a power up or a reset.
 `{signal} public void `[`shuttingDown`](#classCellulo_1_1CelluloBluetooth_1a43c60e18d72c5189ab8df6a7e2270c27)`()` | Emitted when the robot is about to sleep (shutdown) due to the user command via touch keys.
 `{signal} public void `[`lowBattery`](#classCellulo_1_1CelluloBluetooth_1a843abaab9ef1d26ecea9f6328e522e38)`()` | Emitted when the robot is about to sleep (shutdown) due to low battery.
-`{signal} public void `[`batteryStateChanged`](#classCellulo_1_1CelluloBluetooth_1af1b9989b3b46a0b76045ca3ec57f9a58)`()` | Emitted when the battery state changes.
 `{signal} public void `[`touchBegan`](#classCellulo_1_1CelluloBluetooth_1a017c36976bf9e3859cb8fa7f5af2b721)`(int key)` | Emitted when a key is touched.
 `{signal} public void `[`longTouch`](#classCellulo_1_1CelluloBluetooth_1afdc4c2e93958e1402e1adc55a1883b37)`(int key)` | Emitted when a key is touched for more than the long touch time.
 `{signal} public void `[`touchReleased`](#classCellulo_1_1CelluloBluetooth_1a743b1d878e052108259a119993f32cdb)`(int key)` | Emitted when a key is released.
-`{signal} public void `[`gestureChanged`](#classCellulo_1_1CelluloBluetooth_1aeec99da73b7d61b646bfef2a16de4a74)`()` | Emitted when the gesture on the robot changes.
-`{signal} public void `[`poseChanged_inherited`](#classCellulo_1_1CelluloBluetooth_1a76412491f647df2979f90ba5f4f4c9d2)`()` | DO NOT USE EXPLICITLY.
-`{signal} public void `[`timestampChanged`](#classCellulo_1_1CelluloBluetooth_1af7da52982d9285fcaaee4260607c2029)`()` | A new onboard localization timestamp has been received.
-`{signal} public void `[`kidnappedChanged`](#classCellulo_1_1CelluloBluetooth_1a58f6e751d2f9e845471e7bc8040c454c)`()` | Emitted when the kidnap state of the robot changes.
+`{signal} public void `[`poseChanged_inherited`](#classCellulo_1_1CelluloBluetooth_1a76412491f647df2979f90ba5f4f4c9d2)`()` | DO NOT USE EXPLICITLY, use poseChanged(x,y,theta) instead.
 `{signal} public void `[`trackingGoalReached`](#classCellulo_1_1CelluloBluetooth_1ad14b579cf835ce856f624f2d258243c7)`()` | Emitted when pose/position/orientation goal is reached.
-`{signal} public void `[`cameraImageProgressChanged`](#classCellulo_1_1CelluloBluetooth_1ac60837e93a1932a7955ca1bab95cae21)`()` | Emitted when a new camera image line is received.
-`{signal} public void `[`frameReady`](#classCellulo_1_1CelluloBluetooth_1a389fca7b2d83d736b0e3e342f0595bc8)`()` | Emitted when a camera frame from the robot is ready to read.
-`{slot} public void `[`setLocalAdapterMacAddr`](#classCellulo_1_1CelluloBluetooth_1a7813f5acfb403769930ecb4c5f733369)`(QString localAdapterMacAddr)` | Sets the MAC address of the local adapter to use when connecting to the robot.
-`{slot} public void `[`setAutoConnect`](#classCellulo_1_1CelluloBluetooth_1a3a640e03977b9c2c1499d0ba3ffecbd0)`(bool autoConnect)` | Sets whether the socket will try to reconnect when it drops, connects when mac address is set.
-`{slot} public void `[`setMacAddr`](#classCellulo_1_1CelluloBluetooth_1aeec64eff368ecb18adaf51dab56db52d)`(QString macAddr)` | Sets the MAC address of the server and immediately connects to it.
 `{slot} public void `[`connectToServer`](#classCellulo_1_1CelluloBluetooth_1a0872bdaa7029f7e95b224a60469492bf)`()` | Creates socket and connects to the current target MAC address.
 `{slot} public void `[`disconnectFromServer`](#classCellulo_1_1CelluloBluetooth_1a791aad74e895f39654df85dde102f55b)`()` | Disconnects from the currently connected device and destroys the socket if possible.
 `{slot} public void `[`setPoseBcastPeriod`](#classCellulo_1_1CelluloBluetooth_1a59a2db962b5be2c2565e96ff279cb3ea)`(unsigned int period)` | Sets the pose broadcast period.
-`{slot} public void `[`setTimestampingEnabled`](#classCellulo_1_1CelluloBluetooth_1a73d5d702d213802736ba61aea6e7dc88)`(bool enabled)` | Enables timestamping along with pose and disables pose idling or vice-versa.
-`{slot} public void `[`setMotor1Output`](#classCellulo_1_1CelluloBluetooth_1a3f6952863bcd0b97218406e3fe94f9cd)`(int output)` | Sets output of motor 1.
-`{slot} public void `[`setMotor2Output`](#classCellulo_1_1CelluloBluetooth_1af2c0553e56be87689598e88b49fe74c5)`(int output)` | Sets output of motor 2.
-`{slot} public void `[`setMotor3Output`](#classCellulo_1_1CelluloBluetooth_1aca3190a74c8bdfd9c66a1aa27e7aad98)`(int output)` | Sets output of motor 3.
-`{slot} public void `[`setAllMotorOutputs`](#classCellulo_1_1CelluloBluetooth_1af12ea6af59d1e84a29698d422bc6f4a8)`(int m1output,int m2output,int m3output)` | Sets outputs of all motors.
 `{slot} public void `[`setGoalVelocity`](#classCellulo_1_1CelluloBluetooth_1a793b9865dd747f67523ea08749f1e7c9)`(float vx,float vy,float w)` | Sets robot goal velocity in global world frame.
 `{slot} public void `[`setGoalPose`](#classCellulo_1_1CelluloBluetooth_1a5330b254b2c308865103f5019eb80b49)`(float x,float y,float theta,float v,float w)` | Sets a pose goal to track.
 `{slot} public void `[`setGoalPosition`](#classCellulo_1_1CelluloBluetooth_1ac6e6054144920961c7fa23d0fb505c4a)`(float x,float y,float v)` | Sets a position goal to track.
@@ -106,8 +74,6 @@ class Cellulo::CelluloBluetooth
 `{slot} public void `[`simpleVibrate`](#classCellulo_1_1CelluloBluetooth_1a545e683162225e73ed3a6a2220396a00)`(float iX,float iY,float iTheta,unsigned int period,unsigned int duration)` | Constantly vibrates the robot.
 `{slot} public void `[`vibrateOnMotion`](#classCellulo_1_1CelluloBluetooth_1a0b0ce5e1c237cbbc7d0ffc00e8b08192)`(float iCoeff,unsigned int period)` | Enables vibration against motion.
 `{slot} public void `[`clearHapticFeedback`](#classCellulo_1_1CelluloBluetooth_1aae5231423781a97d4a21ff219750b95d)`()` | Clears all haptic feedbacks.
-`{slot} public void `[`ping`](#classCellulo_1_1CelluloBluetooth_1a512834f8c15d986cb7e61964a1cfb954)`()` | Sends a ping, expecting an acknowledge.
-`{slot} public void `[`requestFrame`](#classCellulo_1_1CelluloBluetooth_1a307fa3f2b30ae670eb26086c1821a031)`()` | Requests a camera frame to be sent.
 `{slot} public void `[`setExposureTime`](#classCellulo_1_1CelluloBluetooth_1a9c451386f116d48aebd5c4a0f09e02cf)`(int pixels)` | Sets the exposure time for super-fast unkidnap detection for uniform and known paper colors known or enables autoexposure.
 `{slot} public void `[`queryBatteryState`](#classCellulo_1_1CelluloBluetooth_1af4ba396b5d36fd2c5c23abe9bb1262c8)`()` | Sends a battery state query.
 `{slot} public void `[`setLEDResponseMode`](#classCellulo_1_1CelluloBluetooth_1aa56fe3eed954d834321fab5763142cba)`(`[`CelluloBluetoothEnums::LEDResponseMode`](#classCellulo_1_1CelluloBluetoothEnums_1a57ece08557723b6428a74ba3b1265b29)` mode)` | Sets the LED response mode, i.e the LED visual response of the robot to touches.
@@ -128,191 +94,81 @@ class Cellulo::CelluloBluetooth
 
 #### `{property} QString `[`localAdapterMacAddr`](#classCellulo_1_1CelluloBluetooth_1a31ca21c1a395893cbfe0e4ea4bb6e590) 
 
+Local adapter's MAC address chosen to connect to the robot, empty string if using default adapter; only works on Linux and if the plugin is built with BlueZ.
+
 MAC address of the local adapter to use when connecting to the robot, only works on Linux.
 
 #### `{property} bool `[`autoConnect`](#classCellulo_1_1CelluloBluetooth_1a2c2f916967bee8e06038b92f46bb4248) 
+
+Whether to start connecting immediately as soon as **macAddr** is set and to reconnect if connection drops, default true.
 
 Whether the socket will try to reconnect every time it drops, will connect when mac address is set.
 
 #### `{property} QString `[`macAddr`](#classCellulo_1_1CelluloBluetooth_1a3a4f9fd2da2440be2368bd4b9e74f0f2) 
 
+Robot MAC address in the form "XX:XX:XX:XX:XX:XX".
+
 Bluetooth MAC address of the server.
 
 #### `{property} `[`CelluloBluetoothEnums::ConnectionStatus`](#classCellulo_1_1CelluloBluetoothEnums_1a9bdbb91140cd33c3daa779af49c7ed97)` `[`connectionStatus`](#classCellulo_1_1CelluloBluetooth_1a9520239e44d19dd120c6779a126a543f) 
+
+Current connection status to the robot, read-only.
 
 Bluetooth connection status.
 
 #### `{property} `[`CelluloBluetoothEnums::BatteryState`](#classCellulo_1_1CelluloBluetoothEnums_1a895a56801308039dd778b0a0fb6809b8)` `[`batteryState`](#classCellulo_1_1CelluloBluetooth_1a87f7b19fe478e73346094a8208c00ea5) 
 
+Robot's current battery state, read-only.
+
 Current battery state.
 
 #### `{property} float `[`x`](#classCellulo_1_1CelluloBluetooth_1af13c47b29e25220131c182d963e41034) 
+
+Robot's x coordinate in mm, read-only.
 
 Current x position in mm.
 
 #### `{property} float `[`y`](#classCellulo_1_1CelluloBluetooth_1ac1276ac29b10f1f28fa0f6a00416fa60) 
 
+Robot's y coordinate in mm, read-only.
+
 Current y position in mm.
 
 #### `{property} float `[`theta`](#classCellulo_1_1CelluloBluetooth_1acaee9ee4adc6528bcaae8c9577790d02) 
+
+Robot's orientation in degrees, read-only.
 
 Current orientation in degrees.
 
 #### `{property} bool `[`kidnapped`](#classCellulo_1_1CelluloBluetooth_1a4be50315021f3a8df91275ee89bccfa5) 
 
+Whether the robot is not on encoded paper, read-only.
+
 Whether currently kidnapped.
 
 #### `{property} `[`CelluloBluetoothEnums::Gesture`](#classCellulo_1_1CelluloBluetoothEnums_1aac0e86c82f086708674759431d6ff0fb)` `[`gesture`](#classCellulo_1_1CelluloBluetooth_1af9c3ebbd5cd9b40135f3b0289b8189ab) 
+
+Current robot gesture (if gesture detection is enabled), read-only.
 
 Current gesture.
 
 #### `{property} bool `[`timestampingEnabled`](#classCellulo_1_1CelluloBluetooth_1ab93e751696cdaa7635681bb05b5598f5) 
 
+Whether the robot will send its own timestamp along with its pose, default false.
+
 Whether timestamping along with pose is enabled and idling disabled.
 
 #### `{property} int `[`lastTimestamp`](#classCellulo_1_1CelluloBluetooth_1a7884ff94eaf821db9310d20f95024ad5) 
+
+Last local timestamp received along with pose (is valid if **timestampingEnabled** is true), read-only.
 
 Latest received onboard timestamp (in milliseconds)
 
 #### `{property} float `[`framerate`](#classCellulo_1_1CelluloBluetooth_1aa64ae00fc5683f384940db4b9e72ac8d) 
 
+Localization framerate calculated from local timestamps received along with pose (is valid if **timestampingEnabled** is true), read-only.
+
 Framerate calculated over time.
-
-#### `{property} float `[`cameraImageProgress`](#classCellulo_1_1CelluloBluetooth_1ad43dcd9448019dce0434876e23793bbe) 
-
-Camera image streaming progress.
-
-#### `public  explicit `[`CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth_1af50010e5adb32c83c27200462a4c104b)`(QQuickItem * parent)` 
-
-Creates a new Cellulo robot communicator.
-
-#### Parameters
-* `parent` Parent of this QML item
-
-#### `public virtual  `[`~CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth_1a5c45532687acb52ea639ff8a37aadf84)`()` 
-
-Destroys this Cellulo robot communicator.
-
-#### `public inline QString `[`getLocalAdapterMacAddr`](#classCellulo_1_1CelluloBluetooth_1a9bc228937dfbb09045109d3bdd1594af)`() const` 
-
-Get the chosen local adapter's MAC address.
-
-#### Returns
-Chosen local adapter's MAC address, empty string if using default adapter
-
-#### `public inline bool `[`getAutoConnect`](#classCellulo_1_1CelluloBluetooth_1a71a91cdcd4d950c23eef1e8fd510b50a)`()` 
-
-Gets whether the socket tries to reconnect when it drops, connects when mac address is set.
-
-#### Returns
-Whether the socket tries to reconnect when it drops, connects when mac address is set
-
-#### `public QVariantList `[`getFrame`](#classCellulo_1_1CelluloBluetooth_1afcff752bb94e79d900f0e3704aa2e882)`() const` 
-
-Gets the latest camera frame.
-
-#### Returns
-The latest camera frame; IMG_WIDTH*IMG_HEIGHT many ints in grayscale, 0 to 255
-
-#### `public inline QString `[`getMacAddr`](#classCellulo_1_1CelluloBluetooth_1a3a1912ef059bc7bc1114a92e10643b32)`()` 
-
-Gets the current MAC address.
-
-#### Returns
-The current MAC address
-
-#### `public inline `[`CelluloBluetoothEnums::ConnectionStatus`](#classCellulo_1_1CelluloBluetoothEnums_1a9bdbb91140cd33c3daa779af49c7ed97)` `[`getConnectionStatus`](#classCellulo_1_1CelluloBluetooth_1a909502a79d438fe9910f56282dbd4768)`()` 
-
-Gets current Bluetooth connection status.
-
-#### Returns
-Current Bluetooth connection status
-
-#### `public inline bool `[`getTimestampingEnabled`](#classCellulo_1_1CelluloBluetooth_1ad5efc22a3e69ec93ec6a2d6351b52df7)`()` 
-
-Gets whether timestamping along with pose is currently enabled.
-
-#### Returns
-Whether timestamping is enabled
-
-#### `public inline `[`CelluloBluetoothEnums::BatteryState`](#classCellulo_1_1CelluloBluetoothEnums_1a895a56801308039dd778b0a0fb6809b8)` `[`getBatteryState`](#classCellulo_1_1CelluloBluetooth_1a958d9333a2c2b5fb58cbf439bb1d385d)`()` 
-
-Gets the latest battery state.
-
-#### Returns
-Battery state
-
-#### `public inline float `[`getX`](#classCellulo_1_1CelluloBluetooth_1a3ec842d9f6df308013241f30906fef57)`()` 
-
-Gets the latest x position.
-
-#### Returns
-Latest x position in mm
-
-#### `public inline float `[`getY`](#classCellulo_1_1CelluloBluetooth_1ad264e51e11e1cf52b4d1dd82af3ee278)`()` 
-
-Gets the latest y position.
-
-#### Returns
-Latest y position in mm
-
-#### `public inline float `[`getTheta`](#classCellulo_1_1CelluloBluetooth_1a6c634933bbe566d6a60f98b72e2cf29c)`()` 
-
-Gets the latest orientation.
-
-#### Returns
-Latest orientation in degrees
-
-#### `public inline int `[`getLastTimestamp`](#classCellulo_1_1CelluloBluetooth_1a5447db196bd1242b6085687a05a455b2)`()` 
-
-Gets the latest available timestamp.
-
-#### Returns
-The latest received timestamp in milliseconds
-
-#### `public inline float `[`getFramerate`](#classCellulo_1_1CelluloBluetooth_1afb4cb1b812234e2be143d1c9cbeee10b)`()` 
-
-Gets the localization framerate.
-
-#### Returns
-Localization framerate in milliseconds
-
-#### `public inline bool `[`getKidnapped`](#classCellulo_1_1CelluloBluetooth_1a29a007dbabd2857ef8ef527e42b6a165)`()` 
-
-Gets the latest kidnapped state.
-
-#### Returns
-Whether kidnapped or on encoded paper
-
-#### `public inline `[`CelluloBluetoothEnums::Gesture`](#classCellulo_1_1CelluloBluetoothEnums_1aac0e86c82f086708674759431d6ff0fb)` `[`getGesture`](#classCellulo_1_1CelluloBluetooth_1a4d7f67abca0aefa4cfcfb7c15d4e3038)`()` 
-
-Gets the current gesture.
-
-#### Returns
-Current gesture
-
-#### `public inline float `[`getCameraImageProgress`](#classCellulo_1_1CelluloBluetooth_1a9a2876bedb9702242c0b55d42dcd2ecf)`()` 
-
-Gets the camera image progress.
-
-#### Returns
-Between 0.0 and 1.0
-
-#### `{signal} public void `[`localAdapterMacAddrChanged`](#classCellulo_1_1CelluloBluetooth_1a290cb96318e7bdcd3125208de46ab1cb)`()` 
-
-Emitted when the desired local adapter changes.
-
-#### `{signal} public void `[`autoConnectChanged`](#classCellulo_1_1CelluloBluetooth_1a284ad9c9199a3a9964e3cf162407a2f2)`()` 
-
-Auto connect strategy changed.
-
-#### `{signal} public void `[`macAddrChanged`](#classCellulo_1_1CelluloBluetooth_1ad750c5a11942ba9f3f843750613d6fa6)`()` 
-
-Emitted when the MAC address changes.
-
-#### `{signal} public void `[`connectionStatusChanged`](#classCellulo_1_1CelluloBluetooth_1a80416d92b574cb6ede503406b349ab1e)`()` 
-
-Emitted when Bluetooth connection status changes.
 
 #### `{signal} public void `[`bootCompleted`](#classCellulo_1_1CelluloBluetooth_1a29af380c02321d800dd3325fda88faa6)`()` 
 
@@ -325,10 +181,6 @@ Emitted when the robot is about to sleep (shutdown) due to the user command via 
 #### `{signal} public void `[`lowBattery`](#classCellulo_1_1CelluloBluetooth_1a843abaab9ef1d26ecea9f6328e522e38)`()` 
 
 Emitted when the robot is about to sleep (shutdown) due to low battery.
-
-#### `{signal} public void `[`batteryStateChanged`](#classCellulo_1_1CelluloBluetooth_1af1b9989b3b46a0b76045ca3ec57f9a58)`()` 
-
-Emitted when the battery state changes.
 
 #### `{signal} public void `[`touchBegan`](#classCellulo_1_1CelluloBluetooth_1a017c36976bf9e3859cb8fa7f5af2b721)`(int key)` 
 
@@ -351,58 +203,15 @@ Emitted when a key is released.
 #### Parameters
 * `key` The key that is released
 
-#### `{signal} public void `[`gestureChanged`](#classCellulo_1_1CelluloBluetooth_1aeec99da73b7d61b646bfef2a16de4a74)`()` 
-
-Emitted when the gesture on the robot changes.
-
 #### `{signal} public void `[`poseChanged_inherited`](#classCellulo_1_1CelluloBluetooth_1a76412491f647df2979f90ba5f4f4c9d2)`()` 
 
-DO NOT USE EXPLICITLY.
+DO NOT USE EXPLICITLY, use poseChanged(x,y,theta) instead.
 
 Emitted when the base class emits poseChanged() since NOTIFY cannot be used with inherited signals
-
-#### `{signal} public void `[`timestampChanged`](#classCellulo_1_1CelluloBluetooth_1af7da52982d9285fcaaee4260607c2029)`()` 
-
-A new onboard localization timestamp has been received.
-
-#### `{signal} public void `[`kidnappedChanged`](#classCellulo_1_1CelluloBluetooth_1a58f6e751d2f9e845471e7bc8040c454c)`()` 
-
-Emitted when the kidnap state of the robot changes.
 
 #### `{signal} public void `[`trackingGoalReached`](#classCellulo_1_1CelluloBluetooth_1ad14b579cf835ce856f624f2d258243c7)`()` 
 
 Emitted when pose/position/orientation goal is reached.
-
-#### `{signal} public void `[`cameraImageProgressChanged`](#classCellulo_1_1CelluloBluetooth_1ac60837e93a1932a7955ca1bab95cae21)`()` 
-
-Emitted when a new camera image line is received.
-
-#### `{signal} public void `[`frameReady`](#classCellulo_1_1CelluloBluetooth_1a389fca7b2d83d736b0e3e342f0595bc8)`()` 
-
-Emitted when a camera frame from the robot is ready to read.
-
-#### `{slot} public void `[`setLocalAdapterMacAddr`](#classCellulo_1_1CelluloBluetooth_1a7813f5acfb403769930ecb4c5f733369)`(QString localAdapterMacAddr)` 
-
-Sets the MAC address of the local adapter to use when connecting to the robot.
-
-Only works on Linux; must be built with bluez.
-
-#### Parameters
-* `localAdapterMacAddr` MAC address of the local adapter, must exist; set to empty string to connect with default adapter
-
-#### `{slot} public void `[`setAutoConnect`](#classCellulo_1_1CelluloBluetooth_1a3a640e03977b9c2c1499d0ba3ffecbd0)`(bool autoConnect)` 
-
-Sets whether the socket will try to reconnect when it drops, connects when mac address is set.
-
-#### Parameters
-* `autoReconnect` Whether the socket will try to reconnect when it drops, connects when mac address is set
-
-#### `{slot} public void `[`setMacAddr`](#classCellulo_1_1CelluloBluetooth_1aeec64eff368ecb18adaf51dab56db52d)`(QString macAddr)` 
-
-Sets the MAC address of the server and immediately connects to it.
-
-#### Parameters
-* `macAddr` Bluetooth MAC address of the server (robot)
 
 #### `{slot} public void `[`connectToServer`](#classCellulo_1_1CelluloBluetooth_1a0872bdaa7029f7e95b224a60469492bf)`()` 
 
@@ -417,46 +226,7 @@ Disconnects from the currently connected device and destroys the socket if possi
 Sets the pose broadcast period.
 
 #### Parameters
-* `period` Desired period in milliseconds
-
-#### `{slot} public void `[`setTimestampingEnabled`](#classCellulo_1_1CelluloBluetooth_1a73d5d702d213802736ba61aea6e7dc88)`(bool enabled)` 
-
-Enables timestamping along with pose and disables pose idling or vice-versa.
-
-#### Parameters
-* `enabled` Whether to enable timestamping
-
-#### `{slot} public void `[`setMotor1Output`](#classCellulo_1_1CelluloBluetooth_1a3f6952863bcd0b97218406e3fe94f9cd)`(int output)` 
-
-Sets output of motor 1.
-
-#### Parameters
-* `output` Value between -0xFFF and 0xFFF
-
-#### `{slot} public void `[`setMotor2Output`](#classCellulo_1_1CelluloBluetooth_1af2c0553e56be87689598e88b49fe74c5)`(int output)` 
-
-Sets output of motor 2.
-
-#### Parameters
-* `output` Value between -0xFFF and 0xFFF
-
-#### `{slot} public void `[`setMotor3Output`](#classCellulo_1_1CelluloBluetooth_1aca3190a74c8bdfd9c66a1aa27e7aad98)`(int output)` 
-
-Sets output of motor 3.
-
-#### Parameters
-* `output` Value between -0xFFF and 0xFFF
-
-#### `{slot} public void `[`setAllMotorOutputs`](#classCellulo_1_1CelluloBluetooth_1af12ea6af59d1e84a29698d422bc6f4a8)`(int m1output,int m2output,int m3output)` 
-
-Sets outputs of all motors.
-
-#### Parameters
-* `m1output` Value between -0xFFF and 0xFFF 
-
-* `m2output` Value between -0xFFF and 0xFFF 
-
-* `m3output` Value between -0xFFF and 0xFFF
+* `period` Desired period in milliseconds, set to 0 for as fast as possible, i.e around 93Hz
 
 #### `{slot} public void `[`setGoalVelocity`](#classCellulo_1_1CelluloBluetooth_1a793b9865dd747f67523ea08749f1e7c9)`(float vx,float vy,float w)` 
 
@@ -579,14 +349,6 @@ Enables vibration against motion.
 #### `{slot} public void `[`clearHapticFeedback`](#classCellulo_1_1CelluloBluetooth_1aae5231423781a97d4a21ff219750b95d)`()` 
 
 Clears all haptic feedbacks.
-
-#### `{slot} public void `[`ping`](#classCellulo_1_1CelluloBluetooth_1a512834f8c15d986cb7e61964a1cfb954)`()` 
-
-Sends a ping, expecting an acknowledge.
-
-#### `{slot} public void `[`requestFrame`](#classCellulo_1_1CelluloBluetooth_1a307fa3f2b30ae670eb26086c1821a031)`()` 
-
-Requests a camera frame to be sent.
 
 #### `{slot} public void `[`setExposureTime`](#classCellulo_1_1CelluloBluetooth_1a9c451386f116d48aebd5c4a0f09e02cf)`(int pixels)` 
 
@@ -1295,49 +1057,21 @@ class Cellulo::CelluloRobotPoolClient
   : public CelluloLocalRelayClient
 ```  
 
+Object that uses the robots connected to a `cellulorobotpoold`.
+
+Inherits from `CelluloLocalRelayClient`, which in turn inherits from `[CelluloRelayClient](#classCellulo_1_1CelluloRelayClient)`, which means that their properties, signals and slots can be used. The most useful among these is the `robots` property that exposes the list of currently available robots in this pool.
+
 ## Summary
 
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
-`{property} QJSValue `[`createRobot`](#classCellulo_1_1CelluloRobotPoolClient_1a54e7e3a28f5ca7902b2834f836e1b6f2) | 
-`public  `[`CelluloRobotPoolClient`](#classCellulo_1_1CelluloRobotPoolClient_1a1458bcd8a72ba11eb061123efd3e0cb3)`(QQuickItem * parent)` | Creates a new [CelluloRobotPoolClient](#classCellulo_1_1CelluloRobotPoolClient) with the given QML parent.
-`public virtual  `[`~CelluloRobotPoolClient`](#classCellulo_1_1CelluloRobotPoolClient_1a386f80036a47e1adaecfc16d6641553c)`()` | Destroys this [CelluloRobotPoolClient](#classCellulo_1_1CelluloRobotPoolClient).
-`public inline QJSValue `[`getCreateRobot`](#classCellulo_1_1CelluloRobotPoolClient_1af6998bba144d17234d85ec34ad32353f)`() const` | Gets the createRobot function.
-`public void `[`setCreateRobot`](#classCellulo_1_1CelluloRobotPoolClient_1ab5a3986eff4cb977d89b9b4314be38db)`(QJSValue const & function)` | Sets the createRobot function.
-`{signal} public void `[`createRobotChanged`](#classCellulo_1_1CelluloRobotPoolClient_1ae59917d22aad9f6a2fbc70ddd663c103)`()` | Emitted when the createRobot function changes.
+`{property} QJSValue `[`createRobot`](#classCellulo_1_1CelluloRobotPoolClient_1a54e7e3a28f5ca7902b2834f836e1b6f2) | Must be set to a user-defined javascript function that takes the MAC address (string) of an already connected robot and returns a [CelluloBluetooth](#classCellulo_1_1CelluloBluetooth) object or CelluloBluetooth-derived object.
 
 ## Members
 
 #### `{property} QJSValue `[`createRobot`](#classCellulo_1_1CelluloRobotPoolClient_1a54e7e3a28f5ca7902b2834f836e1b6f2) 
 
-#### `public  `[`CelluloRobotPoolClient`](#classCellulo_1_1CelluloRobotPoolClient_1a1458bcd8a72ba11eb061123efd3e0cb3)`(QQuickItem * parent)` 
-
-Creates a new [CelluloRobotPoolClient](#classCellulo_1_1CelluloRobotPoolClient) with the given QML parent.
-
-#### Parameters
-* `parent` The QML parent
-
-#### `public virtual  `[`~CelluloRobotPoolClient`](#classCellulo_1_1CelluloRobotPoolClient_1a386f80036a47e1adaecfc16d6641553c)`()` 
-
-Destroys this [CelluloRobotPoolClient](#classCellulo_1_1CelluloRobotPoolClient).
-
-#### `public inline QJSValue `[`getCreateRobot`](#classCellulo_1_1CelluloRobotPoolClient_1af6998bba144d17234d85ec34ad32353f)`() const` 
-
-Gets the createRobot function.
-
-#### Returns
-The createRobot function
-
-#### `public void `[`setCreateRobot`](#classCellulo_1_1CelluloRobotPoolClient_1ab5a3986eff4cb977d89b9b4314be38db)`(QJSValue const & function)` 
-
-Sets the createRobot function.
-
-#### Parameters
-* `function` The createRobot function that takes a string and returns a [CelluloBluetooth](#classCellulo_1_1CelluloBluetooth) pointer or CelluloBluetooth-derived object pointer
-
-#### `{signal} public void `[`createRobotChanged`](#classCellulo_1_1CelluloRobotPoolClient_1ae59917d22aad9f6a2fbc70ddd663c103)`()` 
-
-Emitted when the createRobot function changes.
+Must be set to a user-defined javascript function that takes the MAC address (string) of an already connected robot and returns a [CelluloBluetooth](#classCellulo_1_1CelluloBluetooth) object or CelluloBluetooth-derived object.
 
 # class `Cellulo::CelluloTcpRelayClient` 
 

@@ -45,35 +45,67 @@ namespace Cellulo{
 class CelluloRelayClient;
 class CelluloRelayServer;
 
+/**
+ * @brief Object that communicates with one Cellulo robot over Bluetooth.
+ *
+ * Inherits from `CelluloZoneClient` and therefore can be used as one.
+ */
 class CelluloBluetooth : public CelluloZoneClient {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
 
+    /** @brief Local adapter's MAC address chosen to connect to the robot, empty string if using default adapter; only works on Linux and if the plugin is built with BlueZ */
     Q_PROPERTY(QString localAdapterMacAddr WRITE setLocalAdapterMacAddr READ getLocalAdapterMacAddr NOTIFY localAdapterMacAddrChanged)
+
+    /** @brief Whether to start connecting immediately as soon as **macAddr** is set and to reconnect if connection drops, default true */
     Q_PROPERTY(bool autoConnect WRITE setAutoConnect READ getAutoConnect NOTIFY autoConnectChanged)
+
+    /** @brief Robot MAC address in the form "XX:XX:XX:XX:XX:XX" */
     Q_PROPERTY(QString macAddr WRITE setMacAddr READ getMacAddr NOTIFY macAddrChanged)
+
+    /** @brief Current connection status to the robot, read-only */
     Q_PROPERTY(CelluloBluetoothEnums::ConnectionStatus connectionStatus READ getConnectionStatus NOTIFY connectionStatusChanged)
 
+    /** @brief Robot's current battery state, read-only */
     Q_PROPERTY(CelluloBluetoothEnums::BatteryState batteryState READ getBatteryState NOTIFY batteryStateChanged)
 
+    /** @brief Robot's x coordinate in mm, read-only */
     Q_PROPERTY(float x READ getX NOTIFY poseChanged_inherited)
+
+    /** @brief Robot's y coordinate in mm, read-only */
     Q_PROPERTY(float y READ getY NOTIFY poseChanged_inherited)
+
+    /** @brief Robot's orientation in degrees, read-only */
     Q_PROPERTY(float theta READ getTheta NOTIFY poseChanged_inherited)
+
+    /** @brief Whether the robot is not on encoded paper, read-only */
     Q_PROPERTY(bool kidnapped READ getKidnapped NOTIFY kidnappedChanged)
 
+    /** @brief Current robot gesture (if gesture detection is enabled), read-only */
     Q_PROPERTY(CelluloBluetoothEnums::Gesture gesture READ getGesture NOTIFY gestureChanged)
 
+    /** @brief Whether the robot will send its own timestamp along with its pose, default false */
     Q_PROPERTY(bool timestampingEnabled WRITE setTimestampingEnabled READ getTimestampingEnabled)
+
+    /** @brief Last local timestamp received along with pose (is valid if **timestampingEnabled** is true), read-only */
     Q_PROPERTY(int lastTimestamp READ getLastTimestamp NOTIFY timestampChanged)
+
+    /** @brief Localization framerate calculated from local timestamps received along with pose (is valid if **timestampingEnabled** is true), read-only */
     Q_PROPERTY(float framerate READ getFramerate NOTIFY timestampChanged)
 
+    /** @cond DO_NOT_DOCUMENT */
+
     Q_PROPERTY(float cameraImageProgress READ getCameraImageProgress NOTIFY cameraImageProgressChanged)
+
+    /** @endcond */
 
     friend class CelluloRelayServer;
     friend class CelluloRelayClient;
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     static const int BT_CONNECT_TIMEOUT_MILLIS = 30000;       ///< Will try to reconnect after this much time
     static const int BT_CONNECT_TIMEOUT_MILLIS_PM = 5000;     ///< Variation in reconnect timeout
@@ -200,6 +232,8 @@ public:
      */
     float getCameraImageProgress(){ return cameraImageProgress; }
 
+    /** @endcond */
+
 private slots:
 
     /**
@@ -224,6 +258,8 @@ private slots:
 
 public slots:
 
+    /** @cond DO_NOT_DOCUMENT */
+
     /**
      * @brief Sets the MAC address of the local adapter to use when connecting to the robot
      *
@@ -247,6 +283,8 @@ public slots:
      */
     void setMacAddr(QString macAddr);
 
+    /** @endcond */
+
     /**
      * @brief Creates socket and connects to the current target MAC address
      */
@@ -260,9 +298,11 @@ public slots:
     /**
      * @brief Sets the pose broadcast period
      *
-     * @param period Desired period in milliseconds
+     * @param period Desired period in milliseconds, set to 0 for as fast as possible, i.e around 93Hz
      */
     void setPoseBcastPeriod(unsigned int period);
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Enables timestamping along with pose and disables pose idling or vice-versa
@@ -300,6 +340,8 @@ public slots:
      * @param m3output Value between -0xFFF and 0xFFF
      */
     void setAllMotorOutputs(int m1output, int m2output, int m3output);
+
+    /** @endcond */
 
     /**
      * @brief Sets robot goal velocity in global world frame
@@ -403,6 +445,8 @@ public slots:
      */
     void clearHapticFeedback();
 
+    /** @cond DO_NOT_DOCUMENT */
+
     /**
      * @brief Sends a ping, expecting an acknowledge
      */
@@ -412,6 +456,8 @@ public slots:
      * @brief Requests a camera frame to be sent
      */
     void requestFrame();
+
+    /** @endcond */
 
     /**
      * @brief Sets the exposure time for super-fast unkidnap detection for uniform and known paper colors known or enables autoexposure
@@ -530,6 +576,8 @@ public slots:
 
 signals:
 
+    /** @cond DO_NOT_DOCUMENT */
+
     /**
      * @brief Emitted when the desired local adapter changes
      */
@@ -550,6 +598,8 @@ signals:
      */
     void connectionStatusChanged();
 
+    /** @endcond */
+
     /**
      * @brief Emitted when the robot is ready after a power up or a reset
      */
@@ -565,10 +615,14 @@ signals:
      */
     void lowBattery();
 
+    /** @cond DO_NOT_DOCUMENT */
+
     /**
      * @brief Emitted when the battery state changes
      */
     void batteryStateChanged();
+
+    /** @endcond */
 
     /**
      * @brief Emitted when a key is touched
@@ -591,32 +645,17 @@ signals:
      */
     void touchReleased(int key);
 
+    /** @cond DO_NOT_DOCUMENT */
+
     /**
      * @brief Emitted when the gesture on the robot changes
      */
     void gestureChanged();
 
     /**
-     * @brief DO NOT USE EXPLICITLY
-     *
-     * Emitted when the base class emits poseChanged() since NOTIFY cannot be used with inherited signals
-     */
-    void poseChanged_inherited();
-
-    /**
      * @brief A new onboard localization timestamp has been received
      */
     void timestampChanged();
-
-    /**
-     * @brief Emitted when the kidnap state of the robot changes
-     */
-    void kidnappedChanged();
-
-    /**
-     * @brief Emitted when pose/position/orientation goal is reached
-     */
-    void trackingGoalReached();
 
     /**
      * @brief Emitted when a new camera image line is received
@@ -627,6 +666,25 @@ signals:
      * @brief Emitted when a camera frame from the robot is ready to read
      */
     void frameReady();
+
+    /**
+     * @brief Emitted when the kidnap state of the robot changes
+     */
+    void kidnappedChanged();
+
+    /** @endcond */
+
+    /**
+     * @brief DO NOT USE EXPLICITLY, use poseChanged(x,y,theta) instead
+     *
+     * Emitted when the base class emits poseChanged() since NOTIFY cannot be used with inherited signals
+     */
+    void poseChanged_inherited();
+
+    /**
+     * @brief Emitted when pose/position/orientation goal is reached
+     */
+    void trackingGoalReached();
 
 private:
 
