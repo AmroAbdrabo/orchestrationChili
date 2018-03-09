@@ -2,29 +2,26 @@
 
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
-`namespace `[`Cellulo`](#namespaceCellulo) | Scope for core [Cellulo](#namespaceCellulo) objects.
+`namespace `[`Cellulo`](#namespaceCellulo) | 
 
 # namespace `Cellulo` 
-
-Scope for core [Cellulo](#namespaceCellulo) objects.
 
 ## Summary
 
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
-`class `[`Cellulo::CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth) | Bluetooth communicator for a [Cellulo](#namespaceCellulo) robot.
+`class `[`Cellulo::CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth) | 
 `class `[`Cellulo::CelluloBluetoothEMP`](#classCellulo_1_1CelluloBluetoothEMP) | Object that mass reset/shuts down all robots.
 `class `[`Cellulo::CelluloBluetoothEnums`](#classCellulo_1_1CelluloBluetoothEnums) | Wrapper containing all the enums of [CelluloBluetooth](#classCellulo_1_1CelluloBluetooth).
-`class `[`Cellulo::CelluloBluetoothScanner`](#classCellulo_1_1CelluloBluetoothScanner) | Object that scans for [Cellulo](#namespaceCellulo) robots.
-`class `[`Cellulo::CelluloCommUtil`](#classCellulo_1_1CelluloCommUtil) | [Cellulo](#namespaceCellulo) communication utilities.
-`class `[`Cellulo::CelluloLocalRelayClient`](#classCellulo_1_1CelluloLocalRelayClient) | 
-`class `[`Cellulo::CelluloLocalRelayServer`](#classCellulo_1_1CelluloLocalRelayServer) | 
+`class `[`Cellulo::CelluloBluetoothScanner`](#classCellulo_1_1CelluloBluetoothScanner) | Object that scans for Cellulo robots.
+`class `[`Cellulo::CelluloCommUtil`](#classCellulo_1_1CelluloCommUtil) | Cellulo communication utilities.
+`class `[`Cellulo::CelluloLocalRelayServer`](#classCellulo_1_1CelluloLocalRelayServer) | Relays packets between a client and physical robots over a Unix domain socket. Accepts connections from a `CelluloLocalRelayClient`.
 `class `[`Cellulo::CelluloRelayClient`](#classCellulo_1_1CelluloRelayClient) | 
 `class `[`Cellulo::CelluloRelayServer`](#classCellulo_1_1CelluloRelayServer) | 
-`class `[`Cellulo::CelluloRobot`](#classCellulo_1_1CelluloRobot) | The main object that represents a [Cellulo](#namespaceCellulo) robot. Inherits from `[CelluloBluetooth](#classCellulo_1_1CelluloBluetooth)` and has all its functionalities (not listed here).
+`class `[`Cellulo::CelluloRobot`](#classCellulo_1_1CelluloRobot) | The main object that represents a Cellulo robot. Inherits from `[CelluloBluetooth](#classCellulo_1_1CelluloBluetooth)` and has all its functionalities (not listed here).
 `class `[`Cellulo::CelluloRobotPoolClient`](#classCellulo_1_1CelluloRobotPoolClient) | 
-`class `[`Cellulo::CelluloTcpRelayClient`](#classCellulo_1_1CelluloTcpRelayClient) | 
-`class `[`Cellulo::CelluloTcpRelayServer`](#classCellulo_1_1CelluloTcpRelayServer) | 
+`class `[`Cellulo::CelluloTcpRelayClient`](#classCellulo_1_1CelluloTcpRelayClient) | Relays packets between a server and virtual robot objects over a TCP socket. Connects to a `[CelluloTcpRelayServer](#classCellulo_1_1CelluloTcpRelayServer)`.
+`class `[`Cellulo::CelluloTcpRelayServer`](#classCellulo_1_1CelluloTcpRelayServer) | Relays packets between a client and physical robots over a TCP socket. Accepts connections from a `[CelluloTcpRelayClient](#classCellulo_1_1CelluloTcpRelayClient)`.
 
 # class `Cellulo::CelluloBluetooth` 
 
@@ -32,8 +29,6 @@ Scope for core [Cellulo](#namespaceCellulo) objects.
 class Cellulo::CelluloBluetooth
   : public CelluloZoneClient
 ```  
-
-Bluetooth communicator for a [Cellulo](#namespaceCellulo) robot.
 
 ## Summary
 
@@ -53,8 +48,8 @@ Bluetooth communicator for a [Cellulo](#namespaceCellulo) robot.
 `{property} int `[`lastTimestamp`](#classCellulo_1_1CelluloBluetooth_1a7884ff94eaf821db9310d20f95024ad5) | Latest received onboard timestamp (in milliseconds)
 `{property} float `[`framerate`](#classCellulo_1_1CelluloBluetooth_1aa64ae00fc5683f384940db4b9e72ac8d) | Framerate calculated over time.
 `{property} float `[`cameraImageProgress`](#classCellulo_1_1CelluloBluetooth_1ad43dcd9448019dce0434876e23793bbe) | Camera image streaming progress.
-`public  explicit `[`CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth_1af50010e5adb32c83c27200462a4c104b)`(QQuickItem * parent)` | Creates a new [Cellulo](#namespaceCellulo) robot communicator.
-`public virtual  `[`~CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth_1a5c45532687acb52ea639ff8a37aadf84)`()` | Destroys this [Cellulo](#namespaceCellulo) robot communicator.
+`public  explicit `[`CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth_1af50010e5adb32c83c27200462a4c104b)`(QQuickItem * parent)` | Creates a new Cellulo robot communicator.
+`public virtual  `[`~CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth_1a5c45532687acb52ea639ff8a37aadf84)`()` | Destroys this Cellulo robot communicator.
 `public inline QString `[`getLocalAdapterMacAddr`](#classCellulo_1_1CelluloBluetooth_1a9bc228937dfbb09045109d3bdd1594af)`() const` | Get the chosen local adapter's MAC address.
 `public inline bool `[`getAutoConnect`](#classCellulo_1_1CelluloBluetooth_1a71a91cdcd4d950c23eef1e8fd510b50a)`()` | Gets whether the socket tries to reconnect when it drops, connects when mac address is set.
 `public QVariantList `[`getFrame`](#classCellulo_1_1CelluloBluetooth_1afcff752bb94e79d900f0e3704aa2e882)`() const` | Gets the latest camera frame.
@@ -189,14 +184,14 @@ Camera image streaming progress.
 
 #### `public  explicit `[`CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth_1af50010e5adb32c83c27200462a4c104b)`(QQuickItem * parent)` 
 
-Creates a new [Cellulo](#namespaceCellulo) robot communicator.
+Creates a new Cellulo robot communicator.
 
 #### Parameters
 * `parent` Parent of this QML item
 
 #### `public virtual  `[`~CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth_1a5c45532687acb52ea639ff8a37aadf84)`()` 
 
-Destroys this [Cellulo](#namespaceCellulo) robot communicator.
+Destroys this Cellulo robot communicator.
 
 #### `public inline QString `[`getLocalAdapterMacAddr`](#classCellulo_1_1CelluloBluetooth_1a9bc228937dfbb09045109d3bdd1594af)`() const` 
 
@@ -870,7 +865,7 @@ class Cellulo::CelluloBluetoothScanner
   : public QQuickItem
 ```  
 
-Object that scans for [Cellulo](#namespaceCellulo) robots.
+Object that scans for Cellulo robots.
 
 ## Summary
 
@@ -879,7 +874,7 @@ Object that scans for [Cellulo](#namespaceCellulo) robots.
 `{property} bool `[`continuous`](#classCellulo_1_1CelluloBluetoothScanner_1a31ff7b1923a5fd0164407a10bde44667) | Whether to scan continuously, default false.
 `{property} bool `[`scanning`](#classCellulo_1_1CelluloBluetoothScanner_1af415501e8197aff4cb8705b5743451f4) | Whether scanning now, read-only.
 `{property} QStringList `[`foundRobots`](#classCellulo_1_1CelluloBluetoothScanner_1ac93b05ef41326660bd48f6eca8a2ffb2) | List of found robots, read-only.
-`{signal} public void `[`robotDiscovered`](#classCellulo_1_1CelluloBluetoothScanner_1a3107786d8400a26b0cf8f5ef970f3ca4)`(QString const & macAddr)` | Emitted when a new [Cellulo](#namespaceCellulo) robot is discovered.
+`{signal} public void `[`robotDiscovered`](#classCellulo_1_1CelluloBluetoothScanner_1a3107786d8400a26b0cf8f5ef970f3ca4)`(QString const & macAddr)` | Emitted when a new Cellulo robot is discovered.
 `{signal} public void `[`finished`](#classCellulo_1_1CelluloBluetoothScanner_1a35d79f8e7315ad2fc807bbb482e7ee1b)`()` | Emitted when scanning finishes.
 `{slot} public void `[`start`](#classCellulo_1_1CelluloBluetoothScanner_1aa1d2d32cfc92e514c0e901556b81fafc)`()` | Starts scanning.
 `{slot} public void `[`stop`](#classCellulo_1_1CelluloBluetoothScanner_1a929b9cbdd80e6408606a6aa89072475e)`()` | Stops scanning.
@@ -905,7 +900,7 @@ List of robot MAC addresses that are found.
 
 #### `{signal} public void `[`robotDiscovered`](#classCellulo_1_1CelluloBluetoothScanner_1a3107786d8400a26b0cf8f5ef970f3ca4)`(QString const & macAddr)` 
 
-Emitted when a new [Cellulo](#namespaceCellulo) robot is discovered.
+Emitted when a new Cellulo robot is discovered.
 
 #### Parameters
 * `macAddr` Mac address of the newly discovered robot
@@ -933,7 +928,7 @@ class Cellulo::CelluloCommUtil
   : public QObject
 ```  
 
-[Cellulo](#namespaceCellulo) communication utilities.
+Cellulo communication utilities.
 
 This class is **singleton**, you can call `ThisClass.anyFunction()` and use `ThisClass.anyProperty` directly.
 
@@ -968,33 +963,6 @@ Attempts to stop the already existing cellulorobotpoold.
 #### Returns
 Whether successfully stopped
 
-# class `Cellulo::CelluloLocalRelayClient` 
-
-```
-class Cellulo::CelluloLocalRelayClient
-  : public Cellulo::CelluloRelayClient
-```  
-
-## Summary
-
- Members                        | Descriptions                                
---------------------------------|---------------------------------------------
-`public  `[`CelluloLocalRelayClient`](#classCellulo_1_1CelluloLocalRelayClient_1a07357343e9c1ed8c0cc3bd767d62a4cf)`(QQuickItem * parent)` | Creates a new [CelluloLocalRelayClient](#classCellulo_1_1CelluloLocalRelayClient) with the given QML parent.
-`public virtual  `[`~CelluloLocalRelayClient`](#classCellulo_1_1CelluloLocalRelayClient_1a9371be32458906523eb7ce2dcb269358)`()` | Destroys this [CelluloLocalRelayClient](#classCellulo_1_1CelluloLocalRelayClient).
-
-## Members
-
-#### `public  `[`CelluloLocalRelayClient`](#classCellulo_1_1CelluloLocalRelayClient_1a07357343e9c1ed8c0cc3bd767d62a4cf)`(QQuickItem * parent)` 
-
-Creates a new [CelluloLocalRelayClient](#classCellulo_1_1CelluloLocalRelayClient) with the given QML parent.
-
-#### Parameters
-* `parent` The QML parent
-
-#### `public virtual  `[`~CelluloLocalRelayClient`](#classCellulo_1_1CelluloLocalRelayClient_1a9371be32458906523eb7ce2dcb269358)`()` 
-
-Destroys this [CelluloLocalRelayClient](#classCellulo_1_1CelluloLocalRelayClient).
-
 # class `Cellulo::CelluloLocalRelayServer` 
 
 ```
@@ -1002,25 +970,14 @@ class Cellulo::CelluloLocalRelayServer
   : public Cellulo::CelluloRelayServer
 ```  
 
+Relays packets between a client and physical robots over a Unix domain socket. Accepts connections from a `CelluloLocalRelayClient`.
+
 ## Summary
 
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
-`public  `[`CelluloLocalRelayServer`](#classCellulo_1_1CelluloLocalRelayServer_1a3687c6216c74e86ae9e6528a1266a0fd)`(QQuickItem * parent)` | Creates a new [CelluloLocalRelayServer](#classCellulo_1_1CelluloLocalRelayServer) with the given QML parent.
-`public virtual  `[`~CelluloLocalRelayServer`](#classCellulo_1_1CelluloLocalRelayServer_1af075c4d3f39e478c1bd6d5b7d834dfab)`()` | Destroys this [CelluloLocalRelayServer](#classCellulo_1_1CelluloLocalRelayServer).
 
 ## Members
-
-#### `public  `[`CelluloLocalRelayServer`](#classCellulo_1_1CelluloLocalRelayServer_1a3687c6216c74e86ae9e6528a1266a0fd)`(QQuickItem * parent)` 
-
-Creates a new [CelluloLocalRelayServer](#classCellulo_1_1CelluloLocalRelayServer) with the given QML parent.
-
-#### Parameters
-* `parent` The QML parent
-
-#### `public virtual  `[`~CelluloLocalRelayServer`](#classCellulo_1_1CelluloLocalRelayServer_1af075c4d3f39e478c1bd6d5b7d834dfab)`()` 
-
-Destroys this [CelluloLocalRelayServer](#classCellulo_1_1CelluloLocalRelayServer).
 
 # class `Cellulo::CelluloRelayClient` 
 
@@ -1352,7 +1309,7 @@ class Cellulo::CelluloRobot
   : public Cellulo::CelluloBluetooth
 ```  
 
-The main object that represents a [Cellulo](#namespaceCellulo) robot. Inherits from `[CelluloBluetooth](#classCellulo_1_1CelluloBluetooth)` and has all its functionalities (not listed here).
+The main object that represents a Cellulo robot. Inherits from `[CelluloBluetooth](#classCellulo_1_1CelluloBluetooth)` and has all its functionalities (not listed here).
 
 ## Summary
 
@@ -1470,7 +1427,7 @@ Sets the simultaneous pose and velocity goal of the robot, i.e the robot tries t
 
 ```
 class Cellulo::CelluloRobotPoolClient
-  : public Cellulo::CelluloLocalRelayClient
+  : public CelluloLocalRelayClient
 ```  
 
 ## Summary
@@ -1524,25 +1481,14 @@ class Cellulo::CelluloTcpRelayClient
   : public Cellulo::CelluloRelayClient
 ```  
 
+Relays packets between a server and virtual robot objects over a TCP socket. Connects to a `[CelluloTcpRelayServer](#classCellulo_1_1CelluloTcpRelayServer)`.
+
 ## Summary
 
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
-`public  `[`CelluloTcpRelayClient`](#classCellulo_1_1CelluloTcpRelayClient_1ad0354ceb36520b6007ccfcdc1ef13c76)`(QQuickItem * parent)` | Creates a new [CelluloTcpRelayClient](#classCellulo_1_1CelluloTcpRelayClient) with the given QML parent.
-`public virtual  `[`~CelluloTcpRelayClient`](#classCellulo_1_1CelluloTcpRelayClient_1a2677a6b67145b5fa7e0466e9dfbf0d4f)`()` | Destroys this [CelluloTcpRelayClient](#classCellulo_1_1CelluloTcpRelayClient).
 
 ## Members
-
-#### `public  `[`CelluloTcpRelayClient`](#classCellulo_1_1CelluloTcpRelayClient_1ad0354ceb36520b6007ccfcdc1ef13c76)`(QQuickItem * parent)` 
-
-Creates a new [CelluloTcpRelayClient](#classCellulo_1_1CelluloTcpRelayClient) with the given QML parent.
-
-#### Parameters
-* `parent` The QML parent
-
-#### `public virtual  `[`~CelluloTcpRelayClient`](#classCellulo_1_1CelluloTcpRelayClient_1a2677a6b67145b5fa7e0466e9dfbf0d4f)`()` 
-
-Destroys this [CelluloTcpRelayClient](#classCellulo_1_1CelluloTcpRelayClient).
 
 # class `Cellulo::CelluloTcpRelayServer` 
 
@@ -1551,24 +1497,13 @@ class Cellulo::CelluloTcpRelayServer
   : public Cellulo::CelluloRelayServer
 ```  
 
+Relays packets between a client and physical robots over a TCP socket. Accepts connections from a `[CelluloTcpRelayClient](#classCellulo_1_1CelluloTcpRelayClient)`.
+
 ## Summary
 
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
-`public  `[`CelluloTcpRelayServer`](#classCellulo_1_1CelluloTcpRelayServer_1a5a6a2d9bd9ecfe9abf6b824779be72c9)`(QQuickItem * parent)` | Creates a new [CelluloTcpRelayServer](#classCellulo_1_1CelluloTcpRelayServer) with the given QML parent.
-`public virtual  `[`~CelluloTcpRelayServer`](#classCellulo_1_1CelluloTcpRelayServer_1a6ff533edca4673d34bd24c3da17f60c2)`()` | Destroys this [CelluloTcpRelayServer](#classCellulo_1_1CelluloTcpRelayServer).
 
 ## Members
-
-#### `public  `[`CelluloTcpRelayServer`](#classCellulo_1_1CelluloTcpRelayServer_1a5a6a2d9bd9ecfe9abf6b824779be72c9)`(QQuickItem * parent)` 
-
-Creates a new [CelluloTcpRelayServer](#classCellulo_1_1CelluloTcpRelayServer) with the given QML parent.
-
-#### Parameters
-* `parent` The QML parent
-
-#### `public virtual  `[`~CelluloTcpRelayServer`](#classCellulo_1_1CelluloTcpRelayServer_1a6ff533edca4673d34bd24c3da17f60c2)`()` 
-
-Destroys this [CelluloTcpRelayServer](#classCellulo_1_1CelluloTcpRelayServer).
 
 Generated by [Moxygen](https://sourcey.com/moxygen)

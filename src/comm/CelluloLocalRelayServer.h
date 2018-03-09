@@ -17,7 +17,7 @@
 
 /**
  * @file CelluloLocalRelayServer.h
- * @brief Relays packets between a client and virtual robot objects over a Unix domain socket
+ * @brief Relays packets between a client and physical robot objects over a Unix domain socket
  * @author Ayberk Özgür
  * @date 2017-03-16
  */
@@ -31,12 +31,17 @@ namespace Cellulo{
 
 class CelluloBluetooth;
 
+/**
+ * @brief Relays packets between a client and physical robots over a Unix domain socket. Accepts connections from a `CelluloLocalRelayClient`.
+ */
 class CelluloLocalRelayServer : public CelluloRelayServer {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Creates a new CelluloLocalRelayServer with the given QML parent
@@ -49,6 +54,8 @@ public:
      * @brief Destroys this CelluloLocalRelayServer
      */
     virtual ~CelluloLocalRelayServer();
+
+    /** @endcond */
 
 };
 

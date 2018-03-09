@@ -31,12 +31,17 @@ namespace Cellulo{
 
 class CelluloBluetooth;
 
+/**
+ * @brief Relays packets between a server and virtual robot objects over a TCP socket. Connects to a `CelluloTcpRelayServer`.
+ */
 class CelluloTcpRelayClient : public CelluloRelayClient {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Creates a new CelluloTcpRelayClient with the given QML parent
@@ -49,6 +54,8 @@ public:
      * @brief Destroys this CelluloTcpRelayClient
      */
     virtual ~CelluloTcpRelayClient();
+
+    /** @endcond */
 
 };
 

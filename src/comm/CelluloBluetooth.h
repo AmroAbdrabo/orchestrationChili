@@ -45,9 +45,6 @@ namespace Cellulo{
 class CelluloRelayClient;
 class CelluloRelayServer;
 
-/**
- * @brief Bluetooth communicator for a Cellulo robot
- */
 class CelluloBluetooth : public CelluloZoneClient {
     /* *INDENT-OFF* */
     Q_OBJECT
