@@ -40,17 +40,31 @@ namespace Cellulo{
 
 class CelluloBluetooth;
 
+/**
+ * @brief Object that relays packets between a `CelluloRelayClient` and physical robots.
+ *
+ * The robots that are connected to this object (i.e having their relay server set as this object) have all their events
+ * routed to the `CelluloRelayClient` that is connected to this server. Listens for incoming connections from a client
+ * upon creation.
+ *
+ * @abstract
+ */
 class CelluloRelayServer : public QQuickItem {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
 
+    /** @brief Host address, i.e name of the domain socket (default is "cellulo_relay") or the IP address of the TCP socket (default is "localhost") */
     Q_PROPERTY(QString address READ getAddress WRITE setAddress NOTIFY addressChanged)
+
+    /** @brief Port to listen to in TCP (default is 2556), unused in local sockets */
     Q_PROPERTY(int port READ getPort WRITE setPort NOTIFY portChanged)
 
     friend class CelluloBluetooth;
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Creates a new CelluloRelayServer with the given QML parent
@@ -64,20 +78,6 @@ public:
      * @brief Destroys this CelluloRelayServer
      */
     ~CelluloRelayServer();
-
-    /**
-     * @brief Gets whether the server is listening
-     *
-     * @return Whether the server is listening
-     */
-    bool isListening() const;
-
-    /**
-     * @brief Enables/disables listening
-     *
-     * @param enable Whether to listen or close the server and stop listening
-     */
-    void setListening(bool enable);
 
     /**
      * @brief Gets the current host address
@@ -107,7 +107,11 @@ public:
      */
     void setPort(int port);
 
+    /** @endcond */
+
 signals:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Emitted when the host address changes
@@ -118,6 +122,8 @@ signals:
      * @brief Emitted whe the port changes
      */
     void portChanged();
+
+    /** @endcond */
 
     /**
      * @brief Emitted when a new client connects
@@ -144,6 +150,20 @@ signals:
     void robotRemoved(QString macAddr);
 
 public slots:
+
+    /**
+     * @brief Gets whether the server is listening
+     *
+     * @return Whether the server is listening
+     */
+    bool isListening() const;
+
+    /**
+     * @brief Enables/disables listening
+     *
+     * @param enable Whether to listen or close the server and stop listening
+     */
+    void setListening(bool enable);
 
     /**
      * @brief Adds robot to the robots list, sets the robot's relay server to this object

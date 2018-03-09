@@ -40,20 +40,41 @@ namespace Cellulo{
 
 class CelluloBluetooth;
 
+/**
+ * @brief Object that relays packets between a `CelluloRelayServer` and virtual robot objects.
+ *
+ * The robots that are connected to this object (i.e having their relay client set as this object) have all their
+ * commands routed to the `CelluloRelayServer` that is connected to this client, effectively making the
+ * `CelluloBluetooth`s under control of this client to become virtual robots that represent the physical robots
+ * connected to the server side.
+ *
+ * @abstract
+ */
 class CelluloRelayClient : public QQuickItem {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
 
+    /** @brief Whether currently connected to the server, read-only */
     Q_PROPERTY(bool connected READ isConnected NOTIFY connectedChanged)
+
+    /** @brief Address to connect to, i.e name of the domain socket (default is "cellulo_relay") or the IP address of the TCP socket (default is "localhost") */
     Q_PROPERTY(QString serverAddress READ getServerAddress WRITE setServerAddress NOTIFY serverAddressChanged)
+
+    /** @brief Port to connect to in TCP (default is 2556), unused in local sockets */
     Q_PROPERTY(int port READ getPort WRITE setPort NOTIFY portChanged)
+
+    /** @brief Whether to try to reconnect when the connection drops or in the beginning, default is true */
     Q_PROPERTY(int autoConnect READ getAutoConnect WRITE setAutoConnect NOTIFY autoConnectChanged)
+
+    /** @brief List of virtual robots currently under control of this client, read-only */
     Q_PROPERTY(QVariantList robots READ getRobots NOTIFY robotsChanged)
 
     friend class CelluloBluetooth;
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Creates a new CelluloRelayClient with the given QML parent
@@ -124,6 +145,8 @@ public:
      */
     QVariantList getRobots() const;
 
+    /** @endcond */
+
 public slots:
 
     /**
@@ -153,6 +176,8 @@ public slots:
 
 signals:
 
+    /** @cond DO_NOT_DOCUMENT */
+
     /**
      * @brief Emitted when connected/disconnected to/from server
      */
@@ -174,6 +199,13 @@ signals:
     void portChanged();
 
     /**
+     * @brief Emitted when the robot list changes
+     */
+    void robotsChanged();
+
+    /** @endcond */
+
+    /**
      * @brief Emitted when the server socket is connected
      */
     void connected();
@@ -182,11 +214,6 @@ signals:
      * @brief Emitted when the server socket is disconected
      */
     void disconnected();
-
-    /**
-     * @brief Emitted when the robot list changes
-     */
-    void robotsChanged();
 
     /**
      * @brief Emitted when the server has a robot already connected that is not in the robots list covered by this client
