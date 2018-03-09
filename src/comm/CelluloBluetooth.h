@@ -40,6 +40,8 @@
 #include "../zones/CelluloZoneClient.h"
 #include "../zones/CelluloZonePolyBezier.h"
 
+namespace Cellulo{
+
 class CelluloRelayClient;
 class CelluloRelayServer;
 
@@ -730,5 +732,7 @@ private:
      */
     void processResponse(CelluloBluetoothPacket& externalPacket);
 };
+
+}
 
 #endif // CELLULOBLUETOOTH_H

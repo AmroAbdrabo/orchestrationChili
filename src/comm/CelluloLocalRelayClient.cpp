@@ -25,6 +25,10 @@
 #include "CelluloLocalRelayClient.h"
 #include "CelluloCommUtil.h"
 
+namespace Cellulo{
+
 CelluloLocalRelayClient::CelluloLocalRelayClient(QQuickItem* parent) : CelluloRelayClient(CelluloCommUtil::RelayProtocol::Local, parent){}
 
 CelluloLocalRelayClient::~CelluloLocalRelayClient(){}
+
+}

@@ -24,6 +24,8 @@
 
 #include "CelluloRelayServer.h"
 
+namespace Cellulo{
+
 CelluloRelayServer::CelluloRelayServer(CelluloCommUtil::RelayProtocol protocol, QQuickItem* parent) :
     QQuickItem(parent)
 {
@@ -396,4 +398,6 @@ void CelluloRelayServer::sendToClient(QString macAddr, CelluloBluetoothPacket co
     }
     else
         qWarning() << "CelluloRelayServer::sendToClient(): Trying to relay packet but no client connected yet.";
+}
+
 }

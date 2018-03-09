@@ -25,6 +25,10 @@
 #include "CelluloTcpRelayServer.h"
 #include "CelluloCommUtil.h"
 
+namespace Cellulo{
+
 CelluloTcpRelayServer::CelluloTcpRelayServer(QQuickItem* parent) : CelluloRelayServer(CelluloCommUtil::RelayProtocol::Tcp, parent){}
 
 CelluloTcpRelayServer::~CelluloTcpRelayServer(){}
+
+}

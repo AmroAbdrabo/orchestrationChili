@@ -27,6 +27,8 @@
 #include <QMetaObject>
 #include <QVariant>
 
+namespace Cellulo{
+
 CelluloRobotPoolClient::CelluloRobotPoolClient(QQuickItem* parent) : CelluloLocalRelayClient(parent){
     createRobotFunction = QJSValue(QJSValue::NullValue);
     connect(this, SIGNAL(unknownRobotAtServer(QString)), this, SLOT(createAddSelectRobot(QString)));
@@ -70,4 +72,6 @@ void CelluloRobotPoolClient::createAddSelectRobot(QString macAddr){
     }
 
     addRobot(robot, true);
+}
+
 }

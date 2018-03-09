@@ -28,6 +28,8 @@
 #include <QQuickItem>
 #include <QBluetoothDeviceDiscoveryAgent>
 
+namespace Cellulo{
+
 class CelluloBluetoothScanner : public QQuickItem {
     /* *INDENT-OFF* */
     Q_OBJECT
@@ -127,5 +129,7 @@ private:
     QStringList foundRobots;                ///< List of robot MAC addresses that are found
 
 };
+
+}
 
 #endif // CELLULOBLUETOOTHSCANNER_H

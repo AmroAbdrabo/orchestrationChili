@@ -36,6 +36,8 @@
 #include "CelluloBluetooth.h"
 #include "CelluloCommUtil.h"
 
+namespace Cellulo{
+
 class CelluloBluetooth;
 
 class CelluloRelayServer : public QQuickItem {
@@ -210,5 +212,7 @@ private:
     QString lastMacAddr;                     ///< MAC address of the last EventPacketTypeSetAddress packet sent to the server
 
 };
+
+}
 
 #endif // CELLULORELAYSERVER_H

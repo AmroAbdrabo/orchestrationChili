@@ -27,6 +27,8 @@
 
 #include "CelluloRelayServer.h"
 
+namespace Cellulo{
+
 class CelluloBluetooth;
 
 class CelluloTcpRelayServer : public CelluloRelayServer {
@@ -49,5 +51,7 @@ public:
     virtual ~CelluloTcpRelayServer();
 
 };
+
+}
 
 #endif // CELLULOTCPRELAYSERVER_H

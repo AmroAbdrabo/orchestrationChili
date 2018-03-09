@@ -36,6 +36,8 @@
     #include <bluetooth/rfcomm.h>
 #endif
 
+namespace Cellulo{
+
 QByteArray CelluloBluetooth::frameBuffer;
 
 CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) : CelluloZoneClient(parent){
@@ -1146,4 +1148,6 @@ void CelluloBluetooth::shutdown(){
     sendPacket.clear();
     sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeShutdown);
     sendCommand();
+}
+
 }

@@ -24,6 +24,8 @@
 
 #include "CelluloRelayClient.h"
 
+namespace Cellulo{
+
 CelluloRelayClient::CelluloRelayClient(CelluloCommUtil::RelayProtocol protocol, QQuickItem* parent) :
     QQuickItem(parent)
 {
@@ -299,4 +301,6 @@ void CelluloRelayClient::sendToServer(QString macAddr, CelluloBluetoothPacket co
 
     //Send actual packet
     serverSocket->write(packet.getCmdSendData());
+}
+
 }

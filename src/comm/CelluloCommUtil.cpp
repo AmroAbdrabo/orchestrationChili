@@ -26,6 +26,8 @@
 
 #include "../util/system/CelluloSystemUtil.h"
 
+namespace Cellulo{
+
 CelluloCommUtil::CelluloCommUtil(QObject* parent) : QObject(parent){}
 
 CelluloCommUtil::~CelluloCommUtil(){}
@@ -92,4 +94,6 @@ bool CelluloCommUtil::stopRobotPoolDaemon(){
 
 
     return CelluloSystemUtil::exec("start-stop-daemon", QStringList() << "--stop" << "--exec" << "/usr/local/bin/cellulorobotpoold") == 0;
+}
+
 }

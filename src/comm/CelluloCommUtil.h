@@ -30,6 +30,8 @@
 #include <QList>
 #include <QDebug>
 
+namespace Cellulo{
+
 class CelluloCommUtil : public QObject {
     /* *INDENT-OFF* */
     Q_OBJECT
@@ -88,5 +90,7 @@ public:
     Q_INVOKABLE static bool stopRobotPoolDaemon();
 
 };
+
+}
 
 #endif // CELLULOCOMMUTIL_H

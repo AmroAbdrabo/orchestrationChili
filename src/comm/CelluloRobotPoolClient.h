@@ -31,6 +31,8 @@
 
 #include <QJSValue>
 
+namespace Cellulo{
+
 class CelluloRobotPoolClient : public CelluloLocalRelayClient {
     /* *INDENT-OFF* */
     Q_OBJECT
@@ -87,5 +89,7 @@ private:
      QJSValue createRobotFunction;  ///< A Javascript function that takes a string and returns a CelluloBluetooth pointer or CelluloBluetooth-derived object pointer
 
 };
+
+}
 
 #endif // CELLULOROBOTPOOLCLIENT_H

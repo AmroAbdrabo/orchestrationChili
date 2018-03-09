@@ -26,6 +26,8 @@
 
 #include "CelluloCommUtil.h"
 
+namespace Cellulo{
+
 CelluloBluetoothScanner::CelluloBluetoothScanner(QQuickItem* parent) : QQuickItem(parent){
     continuous = false;
 
@@ -77,4 +79,6 @@ void CelluloBluetoothScanner::onDeviceDiscovered(QBluetoothDeviceInfo const& inf
         emit foundRobotsChanged();
         emit robotDiscovered(macAddr);
     }
+}
+
 }
