@@ -17,7 +17,6 @@ Dependencies
 
 Mandatory:
 
-  - `nanosvg` to convert SVG paths into Cellulo zone paths, run `git submodule init && git submodule update` on the root directory to obtain it.
   - [qml-bluetooth-extras](https://github.com/chili-epfl/qml-bluetooth-extras): Must be installed to obtain the list of local Bluetooth adapters, see the repository for installation instructions.
 
 Optional (but probably needed by some application that uses qml-plugin):
