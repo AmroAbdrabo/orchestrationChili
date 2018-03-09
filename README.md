@@ -5,11 +5,12 @@ This is a qml module for communicating with Cellulo robots over bluetooth or sim
 debugging purposes. It supports desktop and Android and was tested with Qt 5.8.0. Below are the USB Bluetooth dongles
 that were confirmed to work with the Cellulo robots under Ubuntu 16.04 with BlueZ 5.37:
 
-  - Asus USB-BT400, reports a `Broadcom BCM20702A0` to be present, bought from http://www.conrad.ch/ce/fr/product/1090718/
-  - Vivanco 30447, reports a `Broadcom BCM20702A0` to be present, bought from http://www.conrad.ch/ce/fr/product/673433/
-  - No-brand pcDuino USB dongle, reports a `Cambridge Silicon Radio, Ltd` to be present, bought from http://www.conrad.ch/ce/fr/product/1233685/
-  - Conrad 448876, reports a `Cambridge Silicon Radio, Ltd` to be present, bought from http://www.conrad.ch/ce/fr/product/448876/
-  - Digitus DN-30210-1, reports a `Cambridge Silicon Radio, Ltd` to be present, bought from http://www.conrad.ch/ce/fr/product/395775/
+  - Asus USB-BT400, reports a `Broadcom BCM20702A0` to be present, bought from https://www.conrad.ch/ce/fr/product/1090718/
+  - Vivanco 30447, reports a `Broadcom BCM20702A0` to be present, bought from https://www.conrad.ch/ce/fr/product/673433/
+  - No-brand pcDuino USB dongle, reports a `Cambridge Silicon Radio, Ltd` to be present, bought from https://www.conrad.ch/ce/fr/product/1233685/
+  - Conrad 448876, reports a `Cambridge Silicon Radio, Ltd` to be present, bought from https://www.conrad.ch/ce/fr/product/448876/
+  - Digitus DN-30210-1, reports a `Cambridge Silicon Radio, Ltd` to be present, bought from https://www.conrad.ch/ce/fr/product/395775/
+  - Renkforce Bluetooth® 4.0 stick, reports a `Cambridge Silicon Radio, Ltd` to be present, bought from https://www.conrad.ch/ce/fr/product/1483951/
 
 Dependencies
 -------------
