@@ -57,8 +57,6 @@
 #include "util/svg/CelluloSVGUtil.h"
 #include "util/lang/TranslationTool.h"
 #include "util/system/CelluloSystemUtil.h"
-#include "util/ds/AssociativeArray.h"
-#include "util/ds/CircularBuffer.h"
 #include "util/ui/CelluloUIUtil.h"
 
 void CelluloPlugin::registerTypes(const char *uri){
@@ -160,9 +158,6 @@ void CelluloPlugin::registerTypes(const char *uri){
                                                     Q_UNUSED(jsEngine)
                                                     return new CelluloSystemUtil();
                                                 });
-
-    qmlRegisterType<AssociativeArray>(uri, 1, 0, "AssociativeArray");
-    qmlRegisterType<CircularBuffer>(uri, 1, 0, "CircularBuffer");
 
     qmlRegisterSingletonType<CelluloUIUtil>(uri, 1, 0, "CelluloUIUtil",
                                                 [] (QQmlEngine* qmlEngine, QJSEngine* jsEngine)->QObject* {
