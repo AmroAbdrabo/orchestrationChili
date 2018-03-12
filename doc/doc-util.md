@@ -6,7 +6,7 @@
 --------------------------------|---------------------------------------------
 `class `[`Cellulo::TranslationTool`](doc/doc-util.md#classCellulo_1_1TranslationTool) | Object that provides a language translation for the entire app.
 `class `[`Cellulo::CelluloMathUtil`](doc/doc-util.md#classCellulo_1_1CelluloMathUtil) | Mathematical utilities used throughout Celullo activities.
-`class `[`Cellulo::CelluloSVGUtil`](doc/doc-util.md#classCellulo_1_1CelluloSVGUtil) | Utilities for converting SVG files into [CelluloZone](#classCelluloZone) description files.
+`class `[`Cellulo::CelluloSVGUtil`](doc/doc-util.md#classCellulo_1_1CelluloSVGUtil) | Utilities for converting SVG files into [CelluloZone](#classCellulo_1_1CelluloZone) description files.
 `class `[`Cellulo::CelluloSystemUtil`](doc/doc-util.md#classCellulo_1_1CelluloSystemUtil) | Object that provides system utilities.
 `class `[`Cellulo::CelluloUIUtil`](doc/doc-util.md#classCellulo_1_1CelluloUIUtil) | User interface utilities used throughout Celullo activities.
 `class `[`Cellulo::MacAddrSelector`](doc/doc-util.md#classCellulo_1_1MacAddrSelector) | MAC address selection GUI.
@@ -262,7 +262,7 @@ class Cellulo::CelluloSVGUtil
   : public QObject
 ```  
 
-Utilities for converting SVG files into [CelluloZone](#classCelluloZone) description files.
+Utilities for converting SVG files into [CelluloZone](#classCellulo_1_1CelluloZone) description files.
 
 This class is **singleton**, you can call `ThisClass.anyFunction()` and use `ThisClass.anyProperty` directly.
 
@@ -270,14 +270,14 @@ This class is **singleton**, you can call `ThisClass.anyFunction()` and use `Thi
 
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
-`public static Q_INVOKABLE QString `[`dumpAllPathsToJSON`](#classCellulo_1_1CelluloSVGUtil_1a03ff9f602eed155d9c49a8106b36a304)`(const QString & inSVGFile,const QString & outJSONFile,const QString & type,const QString & name,float dpi,bool optimized)` | Parses the given SVG file and dumps all paths into the given JSON file in the [CelluloZonePolyBezierClosestT](#classCelluloZonePolyBezierClosestT) type.
+`public static Q_INVOKABLE QString `[`dumpAllPathsToJSON`](#classCellulo_1_1CelluloSVGUtil_1a03ff9f602eed155d9c49a8106b36a304)`(const QString & inSVGFile,const QString & outJSONFile,const QString & type,const QString & name,float dpi,bool optimized)` | Parses the given SVG file and dumps all paths into the given JSON file in the [CelluloZonePolyBezierClosestT](#classCellulo_1_1CelluloZonePolyBezierClosestT) type.
 `public static Q_INVOKABLE QVariantList `[`loadZonesQML`](#classCellulo_1_1CelluloSVGUtil_1ab2e7db8bc5c58aa058f42cef70ce78c9)`(const QString & inSVGFile,const QString & name,float dpi,bool optimized)` | Parses the given SVG file into zones.
 
 ## Members
 
 #### `public static Q_INVOKABLE QString `[`dumpAllPathsToJSON`](#classCellulo_1_1CelluloSVGUtil_1a03ff9f602eed155d9c49a8106b36a304)`(const QString & inSVGFile,const QString & outJSONFile,const QString & type,const QString & name,float dpi,bool optimized)` 
 
-Parses the given SVG file and dumps all paths into the given JSON file in the [CelluloZonePolyBezierClosestT](#classCelluloZonePolyBezierClosestT) type.
+Parses the given SVG file and dumps all paths into the given JSON file in the [CelluloZonePolyBezierClosestT](#classCellulo_1_1CelluloZonePolyBezierClosestT) type.
 
 If optimize is true, tries to parsed into a more accurate shape and outputs in the distance type of the more accurately parsed zone.
 

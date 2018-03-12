@@ -33,6 +33,15 @@ namespace Cellulo{
 
 class CelluloZone;
 
+/**
+ * @addtogroup zone
+ * @{
+ */
+
+/**
+ * @brief `CelluloZone` type enum and utilities.
+ * @singleton
+ */
 class CelluloZoneTypes : public QObject {
     /* *INDENT-OFF* */
     Q_OBJECT
@@ -40,39 +49,43 @@ class CelluloZoneTypes : public QObject {
 
 public:
 
+    /** @cond DO_NOT_DOCUMENT */
+
     CelluloZoneTypes(QObject* parent = 0);
     ~CelluloZoneTypes();
+
+    /** @endcond */
 
     /**
      * @brief List of possible zones
      */
     enum ZoneType {
-        ANGLEDIFFERENCE = 0,
-        ANGLEINTERVALINNER,
-        ANGLEINTERVALBORDER,
-        ANGLEINTERVALDISTANCE,
-        CIRCLEINNER,
-        CIRCLEBORDER,
-        CIRCLEDISTANCE,
-        RECTANGLEINNER,
-        RECTANGLEBORDER,
-        RECTANGLEDISTANCE,
-        LINESEGMENTDISTANCE,
-        LINEDISTANCESIGNED,
-        LINEBORDER,
-        POINTDISTANCE,
-        RPOLYGONINNER,
-        RPOLYGONBORDER,
-        RPOLYGONDISTANCE,
-        IRPOLYGONINNER,
-        IRPOLYGONBORDER,
-        IRPOLYGONDISTANCE,
-        POLYBEZIERCLOSESTT,
-        POLYBEZIERXT,
-        POLYBEZIERYT,
-        POLYBEZIERDISTANCE,
-        POLYBEZIERBORDER,
-        POLYBEZIERINNER,
+        /** @brief CelluloZoneAngleDifference           */ ANGLEDIFFERENCE = 0,
+        /** @brief CelluloZoneAngleIntervalInner        */ ANGLEINTERVALINNER,
+        /** @brief CelluloZoneAngleIntervalBorder       */ ANGLEINTERVALBORDER,
+        /** @brief CelluloZoneAngleIntervalDistance     */ ANGLEINTERVALDISTANCE,
+        /** @brief CelluloZoneCircleInner               */ CIRCLEINNER,
+        /** @brief CelluloZoneCircleBorder              */ CIRCLEBORDER,
+        /** @brief CelluloZoneCircleDistance            */ CIRCLEDISTANCE,
+        /** @brief CelluloZoneRectangleInner            */ RECTANGLEINNER,
+        /** @brief CelluloZoneRectangleBorder           */ RECTANGLEBORDER,
+        /** @brief CelluloZoneRectangleDistance         */ RECTANGLEDISTANCE,
+        /** @brief CelluloZoneLineSegmentDistance       */ LINESEGMENTDISTANCE,
+        /** @brief CelluloZoneLineDistanceSigned        */ LINEDISTANCESIGNED,
+        /** @brief CelluloZoneLineBorder                */ LINEBORDER,
+        /** @brief CelluloZonePointDistance             */ POINTDISTANCE,
+        /** @brief CelluloZoneRegularPolygonInner       */ RPOLYGONINNER,
+        /** @brief CelluloZoneRegularPolygonBorder      */ RPOLYGONBORDER,
+        /** @brief CelluloZoneRegularPolygonDistance    */ RPOLYGONDISTANCE,
+        /** @brief CelluloZoneIrregularPolygonInner     */ IRPOLYGONINNER,
+        /** @brief CelluloZoneIrregularPolygonBorder    */ IRPOLYGONBORDER,
+        /** @brief CelluloZoneIrregularPolygonDistance  */ IRPOLYGONDISTANCE,
+        /** @brief CelluloZonePolyBezierClosestT        */ POLYBEZIERCLOSESTT,
+        /** @brief CelluloZonePolyBezierXT              */ POLYBEZIERXT,
+        /** @brief CelluloZonePolyBezierYT              */ POLYBEZIERYT,
+        /** @brief CelluloZonePolyBezierDistance        */ POLYBEZIERDISTANCE,
+        /** @brief CelluloZonePolyBezierBorder          */ POLYBEZIERBORDER,
+        /** @brief CelluloZonePolyBezierInner           */ POLYBEZIERINNER,
         ZoneTypeNumElements
     };
     Q_ENUM(ZoneType)
@@ -95,6 +108,8 @@ public:
     Q_INVOKABLE static CelluloZone* newZoneFromType(ZoneType type);
 
 };
+
+/** @} */
 
 }
 

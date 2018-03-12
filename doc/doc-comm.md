@@ -14,12 +14,12 @@
 
 ```
 class Cellulo::CelluloBluetooth
-  : public CelluloZoneClient
+  : public Cellulo::CelluloZoneClient
 ```  
 
 Object that communicates with one [Cellulo](#namespaceCellulo) robot over Bluetooth.
 
-Inherits from `[CelluloZoneClient](#classCelluloZoneClient)` and therefore can be used as one.
+Inherits from `[CelluloZoneClient](#classCellulo_1_1CelluloZoneClient)` and therefore can be used as one.
 
 ## Summary
 
@@ -71,7 +71,7 @@ Inherits from `[CelluloZoneClient](#classCelluloZoneClient)` and therefore can b
 `{slot} public void `[`setVisualEffect`](#classCellulo_1_1CelluloBluetooth_1a87d834bff1ddded9c83e427802acf2d8)`(`[`CelluloBluetoothEnums::VisualEffect`](#classCellulo_1_1CelluloBluetoothEnums_1a810aca61e84c1e31fb751335cd776361)` effect,QColor color,int value)` | Sets the visual effect on the robot, changing LED illumination.
 `{slot} public void `[`polyBezierInit`](#classCellulo_1_1CelluloBluetooth_1a5943ebcea0fe39fb517fff8ec3c26d0f)`(const QVector2D & point0)` | Sends the first control point of the composite Bézier curve for motion tracking.
 `{slot} public void `[`polyBezierAppend`](#classCellulo_1_1CelluloBluetooth_1ac6034aa0cea06d6843281e8ecda357fd)`(const QVector2D & point1,const QVector2D & point2,const QVector2D & point3)` | Adds a segment to the composite Bézier curve for motion tracking; [polyBezierInit()](doc/doc-comm.md#classCellulo_1_1CelluloBluetooth_1a5943ebcea0fe39fb517fff8ec3c26d0f) must be called before.
-`{slot} public void `[`polyBezierSetFromZone`](#classCellulo_1_1CelluloBluetooth_1ad183a2dd9341750e9449532ea9a6880a)`(`[`CelluloZone`](#classCelluloZone)` * zone)` | Sends the composite Bézier curve in the zone to the robot.
+`{slot} public void `[`polyBezierSetFromZone`](#classCellulo_1_1CelluloBluetooth_1ad183a2dd9341750e9449532ea9a6880a)`(`[`CelluloZone`](#classCellulo_1_1CelluloZone)` * zone)` | Sends the composite Bézier curve in the zone to the robot.
 `{slot} public void `[`setGoalPolyBezier`](#classCellulo_1_1CelluloBluetooth_1aa225ca6d3c15fe4461f16e9fb873299b)`(float v,float w)` | Starts tracking the previously set composite Bézier curve.
 `{slot} public void `[`setGoalPolyBezierAligned`](#classCellulo_1_1CelluloBluetooth_1afbda284c48ef1cae82357cd2a6afc83d)`(float v,float theta,float w)` | Starts tracking the previously set composite Bézier curve while keeping orientation aligned to the curve.
 `{slot} public void `[`reset`](#classCellulo_1_1CelluloBluetooth_1ab29c7d9cce6b8ec5e5b8f82da6332886)`()` | Initiates a software reset on the robot.
@@ -194,7 +194,7 @@ Emitted when a key is released.
 
 DO NOT USE EXPLICITLY, use poseChanged(x,y,theta) instead.
 
-Emitted when the base class emits [poseChanged()](#classCelluloZoneClient_1a0ff05b6e35773b4a9a3b83a956f176f6) since NOTIFY cannot be used with inherited signals
+Emitted when the base class emits [poseChanged()](#classCellulo_1_1CelluloZoneClient_1abaf30200131353c16cde52b53aa68409) since NOTIFY cannot be used with inherited signals
 
 #### `{signal} public void `[`trackingGoalReached`](#classCellulo_1_1CelluloBluetooth_1ad14b579cf835ce856f624f2d258243c7)`()` 
 
@@ -422,7 +422,7 @@ The first control point is the last control point of the previously added segmen
 
 * `point3` The fourth control point for the curve
 
-#### `{slot} public void `[`polyBezierSetFromZone`](#classCellulo_1_1CelluloBluetooth_1ad183a2dd9341750e9449532ea9a6880a)`(`[`CelluloZone`](#classCelluloZone)` * zone)` 
+#### `{slot} public void `[`polyBezierSetFromZone`](#classCellulo_1_1CelluloBluetooth_1ad183a2dd9341750e9449532ea9a6880a)`(`[`CelluloZone`](#classCellulo_1_1CelluloZone)` * zone)` 
 
 Sends the composite Bézier curve in the zone to the robot.
 

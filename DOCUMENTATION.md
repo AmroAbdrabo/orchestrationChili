@@ -68,45 +68,6 @@ Utilities to load/save `CelluloZone`s to to/from files in JSON format.
 >  - **void saveZones(list&lt;CelluloZone&gt; zones, string path)** : Saves all given zones to the given file
 >  - **list&lt;CelluloZone&gt; loadZonesQML(string path)** : Loads zones from the given file
 
-#### CelluloZoneTypes [Singleton]
-
-`CelluloZone` type enum and utilities.
-
-**Enums:**
-
-`ZoneType` - All instantiatable zone types
-> - `ANGLEDIFFERENCE` - Type for `CelluloZoneAngleDifference`
-> - `ANGLEINTERVALINNER` - Type for `CelluloZoneAngleIntervalInner`
-> - `ANGLEINTERVALBORDER` - Type for `CelluloZoneAngleIntervalBorder`
-> - `ANGLEINTERVALDISTANCE` - Type for `CelluloZoneAngleIntervalDistance`
-> - `CIRCLEINNER` - Type for `CelluloZoneCircleInner`
-> - `CIRCLEBORDER` - Type for `CelluloZoneCircleBorder`
-> - `CIRCLEDISTANCE` - Type for `CelluloZoneCircleDistance`
-> - `RECTANGLEINNER` - Type for `CelluloZoneRectangleInner`
-> - `RECTANGLEBORDER` - Type for `CelluloZoneRectangleBorder`
-> - `RECTANGLEDISTANCE` - Type for `CelluloZoneRectangleDistance`
-> - `LINESEGMENTDISTANCE` - Type for `CelluloZoneLineSegmentDistance`
-> - `LINEDISTANCESIGNED` - Type for `CelluloZoneLineDistanceSigned`
-> - `LINEBORDER` - Type for `CelluloZoneLineBorder`
-> - `POINTDISTANCE` - Type for `CelluloZonePointDistance`
-> - `RPOLYGONINNER` - Type for `CelluloZoneRegularPolygonDistance`
-> - `RPOLYGONBORDER` - Type for `CelluloZoneRegularPolygonBorder`
-> - `RPOLYGONDISTANCE` - Type for `CelluloZoneRegularPolygonDistance`
-> - `IRPOLYGONINNER` - Type for `CelluloZoneIrregularPolygonInner`
-> - `IRPOLYGONBORDER` - Type for `CelluloZoneIrregularPolygonBorder`
-> - `IRPOLYGONDISTANCE` - Type for `CelluloZoneIrregularPolygonDistance`
-> - `POLYBEZIERCLOSESTT` - Type for `CelluloZonePolyBezierClosestT`
-> - `POLYBEZIERXT` - Type for `CelluloZonePolyBezierXT`
-> - `POLYBEZIERYT` - Type for `CelluloZonePolyBezierYT`
-> - `POLYBEZIERDISTANCE` - Type for `CelluloZonePolyBezierDistance`
-> - `POLYBEZIERBORDER` - Type for `CelluloZonePolyBezierBorder`
-> - `POLYBEZIERINNER` - Type for `CelluloZonePolyBezierInner`
-
-**Slots:**
-
->  - **ZoneType typeFromString(string typeName)** : Gets the enum zone type from its string representation
->  - **CelluloZone newZoneFromType(ZoneType type)** : Creates a new CelluloZone with the given type
-
 #### CelluloZoneAngleDifference
 
 Calculates the signed difference of the client orientation angles to the zone's angle, value is in `]-180, 180]`.
