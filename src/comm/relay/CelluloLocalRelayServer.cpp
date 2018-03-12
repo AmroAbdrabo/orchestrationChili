@@ -16,19 +16,19 @@
  */
 
 /**
- * @file CelluloTcpRelayServer.cpp
- * @brief Relays packets between a client and virtual robot objects over a TCP socket
+ * @file CelluloLocalRelayServer.cpp
+ * @brief Relays packets between a client and virtual robot objects over a Unix domain socket
  * @author Ayberk Özgür
  * @date 2017-03-16
  */
 
-#include "CelluloTcpRelayServer.h"
-#include "CelluloCommUtil.h"
+#include "CelluloLocalRelayServer.h"
+#include "../CelluloCommUtil.h"
 
 namespace Cellulo{
 
-CelluloTcpRelayServer::CelluloTcpRelayServer(QQuickItem* parent) : CelluloRelayServer(CelluloCommUtil::RelayProtocol::Tcp, parent){}
+CelluloLocalRelayServer::CelluloLocalRelayServer(QQuickItem* parent) : CelluloRelayServer(CelluloCommUtil::RelayProtocol::Local, parent){}
 
-CelluloTcpRelayServer::~CelluloTcpRelayServer(){}
+CelluloLocalRelayServer::~CelluloLocalRelayServer(){}
 
 }

@@ -27,7 +27,7 @@
 
 #include "CelluloLocalRelayClient.h"
 
-#include "CelluloBluetooth.h"
+#include "../CelluloBluetooth.h"
 
 #include <QJSValue>
 

@@ -35,8 +35,8 @@
 
 #include "CelluloBluetoothEnums.h"
 #include "CelluloBluetoothPacket.h"
-#include "CelluloRelayClient.h"
-#include "CelluloRelayServer.h"
+#include "relay/CelluloRelayClient.h"
+#include "relay/CelluloRelayServer.h"
 #include "../zones/CelluloZoneClient.h"
 #include "../zones/CelluloZonePolyBezier.h"
 

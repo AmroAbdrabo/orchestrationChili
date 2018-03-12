@@ -32,9 +32,9 @@
 #include <QLocalServer>
 #include <QLocalSocket>
 
-#include "CelluloBluetooth.h"
-#include "CelluloBluetoothPacket.h"
-#include "CelluloCommUtil.h"
+#include "../CelluloBluetooth.h"
+#include "../CelluloBluetoothPacket.h"
+#include "../CelluloCommUtil.h"
 
 namespace Cellulo{
 
