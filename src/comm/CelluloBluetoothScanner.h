@@ -31,6 +31,11 @@
 namespace Cellulo{
 
 /**
+ * @addtogroup comm
+ * @{
+ */
+
+/**
  * @brief Object that scans for Cellulo robots
  */
 class CelluloBluetoothScanner : public QQuickItem {
@@ -145,6 +150,8 @@ private:
     QStringList foundRobots;                ///< List of robot MAC addresses that are found
 
 };
+
+/** @} */
 
 }
 

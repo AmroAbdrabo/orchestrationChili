@@ -11,8 +11,8 @@ node -e "
     options.filters.members.push('public-static-func');
     options.filters.members.push('protected-static-func');
     options.directory = 'xml/';
-    options.output = 'doc/DOCUMENTATION.md';
-    options.groups = false;
+    options.output = 'doc/doc-%s.md';
+    options.groups = true;
     options.noindex = false;
     options.anchors = false;
     options.language = 'cpp';

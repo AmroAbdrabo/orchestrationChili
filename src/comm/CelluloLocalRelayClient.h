@@ -32,6 +32,11 @@ namespace Cellulo{
 class CelluloBluetooth;
 
 /**
+ * @addtogroup comm-relay
+ * @{
+ */
+
+/**
  * @brief Relays packets between a server and virtual robot objects over a Unix domain socket. Connects to a `CelluloLocalRelayServer`.
  */
 class CelluloLocalRelayClient : public CelluloRelayClient {
@@ -55,9 +60,11 @@ public:
      */
     virtual ~CelluloLocalRelayClient();
 
-    /** endcond */
+    /** @endcond */
 
 };
+
+/** @} */
 
 }
 

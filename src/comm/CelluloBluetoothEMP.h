@@ -30,6 +30,11 @@
 namespace Cellulo{
 
 /**
+ * @addtogroup comm
+ * @{
+ */
+
+/**
  * @brief Object that mass reset/shuts down all robots
  */
 class CelluloBluetoothEMP : public QQuickItem {
@@ -181,6 +186,8 @@ private:
     void startConnections();
 
 };
+
+/** @} */
 
 }
 

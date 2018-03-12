@@ -33,6 +33,11 @@
 namespace Cellulo{
 
 /**
+ * @addtogroup main
+ * @{
+ */
+
+/**
  * @brief Wrapper containing all the enums of CelluloBluetooth
  * @singleton
  */
@@ -92,6 +97,8 @@ public:
     Q_ENUM(Gesture)
     CELLULO_ENUM_DECL(Gesture)
 };
+
+/** @} */
 
 }
 

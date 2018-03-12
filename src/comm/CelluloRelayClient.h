@@ -41,6 +41,11 @@ namespace Cellulo{
 class CelluloBluetooth;
 
 /**
+ * @addtogroup comm-relay
+ * @{
+ */
+
+/**
  * @brief Object that relays packets between a `CelluloRelayServer` and virtual robot objects.
  *
  * The robots that are connected to this object (i.e having their relay client set as this object) have all their
@@ -268,6 +273,8 @@ private:
     QString lastMacAddr;                                  ///< MAC address of the last CmdPacketTypeSetAddress packet sent to the server
 
 };
+
+/** @} */
 
 }
 

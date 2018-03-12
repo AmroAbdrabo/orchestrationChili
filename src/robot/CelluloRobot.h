@@ -32,6 +32,11 @@
 namespace Cellulo{
 
 /**
+ * @addtogroup robot
+ * @{
+ */
+
+/**
  * @brief The main object that represents a Cellulo robot. Inherits from `CelluloBluetooth` and has all its functionalities (not listed here).
  */
 class CelluloRobot : public CelluloBluetooth {
@@ -307,6 +312,7 @@ private:
     void poseVelControlCommandVelocities();
 
 };
+/** @} */
 
 }
 

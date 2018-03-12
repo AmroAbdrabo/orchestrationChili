@@ -46,6 +46,11 @@ class CelluloRelayClient;
 class CelluloRelayServer;
 
 /**
+ * @addtogroup comm
+ * @{
+ */
+
+/**
  * @brief Object that communicates with one Cellulo robot over Bluetooth.
  *
  * Inherits from `CelluloZoneClient` and therefore can be used as one.
@@ -787,6 +792,8 @@ private:
      */
     void processResponse(CelluloBluetoothPacket& externalPacket);
 };
+
+/** @} */
 
 }
 

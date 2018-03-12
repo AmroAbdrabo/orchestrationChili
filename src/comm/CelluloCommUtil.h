@@ -33,6 +33,11 @@
 namespace Cellulo{
 
 /**
+ * @addtogroup comm
+ * @{
+ */
+
+/**
  * @brief Cellulo communication utilities
  * @singleton
  */
@@ -98,6 +103,8 @@ public:
     Q_INVOKABLE static bool stopRobotPoolDaemon();
 
 };
+
+/** @} */
 
 }
 

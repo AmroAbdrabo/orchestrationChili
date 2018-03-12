@@ -34,6 +34,11 @@
 namespace Cellulo{
 
 /**
+ * @addtogroup comm-relay
+ * @{
+ */
+
+/**
  * @brief Object that uses the robots connected to a `cellulorobotpoold`.
  *
  * Inherits from `CelluloLocalRelayClient`, which in turn inherits from `CelluloRelayClient`, which means that their
@@ -107,6 +112,8 @@ private:
      QJSValue createRobotFunction;  ///< A Javascript function that takes a string and returns a CelluloBluetooth pointer or CelluloBluetooth-derived object pointer
 
 };
+
+/** @} */
 
 }
 
