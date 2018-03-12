@@ -135,39 +135,24 @@ Calculates the client's distance to the zone's border.
 >  - **y** : `real` - Y coordinate of this zone (mm)
 >  - **r** : `real` - Radius of this zone (mm)
 
-#### CelluloZoneRectangleInner [extends CelluloZone]
 
-Calculates whether the client's position is within the rectangle, value is `0.0` or `1.0`.
 
-**Properties:**
 
->  - **x** : `real` - X coordinate of the top left corner (mm)
->  - **y** : `real` - Y coordinate of the top left corner (mm)
->  - **width** : `real` - Width of the rectangle (mm)
->  - **height** : `real` - Height of the rectangle (mm)
 
-#### CelluloZoneRectangleBorder [extends CelluloZone]
 
-Calculates whether the client's position is within **borderThickness** of the zone's border, value is `0.0` or `1.0`.
 
-**Properties:**
 
->  - **x** : `real` - X coordinate of the top left corner (mm)
->  - **y** : `real` - Y coordinate of the top left corner (mm)
->  - **width** : `real` - Width of the rectangle (mm)
->  - **height** : `real` - Height of the rectangle (mm)
->  - **borderThickness** : `real` - Thickness of the sensitivity (mm)
 
-#### CelluloZoneRectangleDistance [extends CelluloZone]
 
-Calculates the client's distance to the zone's border.
 
-**Properties:**
 
->  - **x** : `real` - X coordinate of the top left corner (mm)
->  - **y** : `real` - Y coordinate of the top left corner (mm)
->  - **width** : `real` - Width of the rectangle (mm)
->  - **height** : `real` - Height of the rectangle (mm)
+
+
+
+
+
+
+
 
 #### CelluloZoneLineSegmentDistance [extends CelluloZone]
 

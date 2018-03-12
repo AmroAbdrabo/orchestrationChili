@@ -30,18 +30,34 @@
 namespace Cellulo{
 
 /**
+ * @addtogroup zone
+ * @{
+ */
+
+/**
  * @brief CelluloZone Base Class for rectangular zones
+ * @abstract
  */
 class CelluloZoneRectangle : public CelluloZone {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
+
+    /** @brief X coordinate of the top left corner (mm) */
     Q_PROPERTY(float x WRITE setX READ getX NOTIFY xChanged)
+
+    /** @brief Y coordinate of the top left corner (mm) */
     Q_PROPERTY(float y WRITE setY READ getY NOTIFY yChanged)
+
+    /** @brief Width of the rectangle (mm) */
     Q_PROPERTY(float height WRITE setHeight READ getHeight NOTIFY heightChanged)
+
+    /** @brief Height of the rectangle (mm) */
     Q_PROPERTY(float width WRITE setWidth READ getWidth NOTIFY widthChanged)
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Creates a new Cellulo rectangular zone
@@ -120,6 +136,8 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
     /**
      * @brief Get if the mouse position is inside the zone or not
      *
@@ -134,6 +152,8 @@ public:
     Q_INVOKABLE virtual bool isMouseInside(QVector2D  mousePosition, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
 protected:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Get if the point is inside the zone or not
@@ -150,7 +170,11 @@ protected:
     float height;                           ///< height of the rectangle
     float width;                            ///< width of the rectangle
 
+    /** @endcond */
+
 signals:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Emitted when the x position of the upper left corner of the rectangular zone's center changes
@@ -172,10 +196,12 @@ signals:
      */
     void widthChanged();
 
+    /** @endcond */
+
 };
 
 /**
- * @brief CelluloZone Specific Class for rectangular zones inner determination
+ * @brief CelluloZone Specific Class for rectangular zones inner determination; calculates whether the client's position is within the rectangle, value is `0.0` or `1.0`.
  */
 class CelluloZoneRectangleInner : public CelluloZoneRectangle {
     /* *INDENT-OFF* */
@@ -184,10 +210,16 @@ class CelluloZoneRectangleInner : public CelluloZoneRectangle {
 
 public:
 
+    /** @cond DO_NOT_DOCUMENT */
+
     CelluloZoneRectangleInner();
 
+    /** @endcond */
+
     /**
-     * @brief Calculate whether the robot lies inside this rectangular zone
+     * @brief Calculate whether the robot lies inside this rectangular zone.
+     *
+     * This function is normally called automatically, but can be manually called as well.
      *
      * @param xRobot x position of the robot
      * @param yRobot y position of the robot
@@ -196,6 +228,8 @@ public:
      * @return 1 if the robot is inside this rectangular zone 0 otherwise
      */
     Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) override;
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Draws this zone onto the painter
@@ -208,18 +242,24 @@ public:
      * @param physicalHeight Physical height of the canvas in mm
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
+
+    /** @endcond */
 };
 
 /**
- * @brief CelluloZone Specific Class for rectangular zones border determination
+ * @brief CelluloZone Specific Class for rectangular zones border determination; calculates whether the client's position is within **borderThickness** of the zone's border, value is `0.0` or `1.0`.
  */
 class CelluloZoneRectangleBorder : public CelluloZoneRectangle {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
+
+    /** @brief Total thickness of the border (mm) */
     Q_PROPERTY(qreal borderThickness WRITE setBorderThickness READ getBorderThickness NOTIFY borderThicknessChanged)
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     CelluloZoneRectangleBorder();
 
@@ -249,8 +289,12 @@ public:
      */
     virtual void read(const QJsonObject &json) override;
 
+    /** @endcond */
+
     /**
      * @brief Calculate whether the robot lies on the border of this rectangular zone (given the zone's margin)
+     *
+     * This function is normally called automatically, but can be manually called as well.
      *
      * @param xRobot x position of the robot
      * @param yRobot y position of the robot
@@ -260,6 +304,8 @@ public:
      */
     Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) override;
 
+    /** @cond DO_NOT_DOCUMENT */
+
     /**
      * @brief Draws this zone onto the painter
      *
@@ -272,12 +318,18 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 signals:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Emitted when border thickness changes
      */
     void borderThicknessChanged();
+
+    /** @endcond */
 
 private:
 
@@ -286,7 +338,7 @@ private:
 };
 
 /**
- * @brief CelluloZone Specific Class for rectangular zones distance determination
+ * @brief CelluloZone Specific Class for rectangular zones distance determination; calculates the client's distance to the zone's border.
  */
 class CelluloZoneRectangleDistance : public CelluloZoneRectangle {
     /* *INDENT-OFF* */
@@ -295,10 +347,16 @@ class CelluloZoneRectangleDistance : public CelluloZoneRectangle {
 
 public:
 
+    /** @cond DO_NOT_DOCUMENT */
+
     CelluloZoneRectangleDistance();
 
+    /** @endcond */
+
     /**
-     * @brief Calculate the distance between the robot pose and the border of this rectangular zone
+     * @brief Calculate the distance between the robot pose and the border of this rectangular zone.
+     *
+     * This function is normally called automatically, but can be manually called as well.
      *
      * @param xRobot x position of the robot
      * @param yRobot y position of the robot
@@ -308,6 +366,8 @@ public:
      */
     Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) override;
 
+    /** @cond DO_NOT_DOCUMENT */
+
     /**
      * @brief Draws this zone onto the painter
      *
@@ -320,7 +380,11 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 };
+
+/** @} */
 
 }
 
