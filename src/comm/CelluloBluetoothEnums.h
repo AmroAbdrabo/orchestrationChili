@@ -33,7 +33,7 @@
 namespace Cellulo{
 
 /**
- * @addtogroup main
+ * @addtogroup comm
  * @{
  */
 
