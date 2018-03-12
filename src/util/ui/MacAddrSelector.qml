@@ -6,6 +6,11 @@ import QMLBluetoothExtras 1.0
 import Cellulo 1.0
 
 /**
+ * @addtogroup util
+ * @{
+ */
+
+/**
  * @brief MAC address selection GUI
  *
  * TODO: Replace selectedAddress, connectionStatus, connectRequested() and disconnectRequested() with property CelluloBluetooth robot: null
@@ -16,15 +21,22 @@ Row{
      * Public
      */
 
-    property var addresses: []                                                                  ///< List of possible MAC addresses, set by the user
-    readonly property string selectedAddress: selectionBox.currentText                          ///< Currently selected addresses
-    readonly property string selectedLocalAdapterAddress: localAdapterSelectionBox.currentText   ///< Currently selected local adapter address (only available in Linux)
-    property var connectionStatus: CelluloBluetooth.ConnectionStatusDisconnected                ///< Current connection status to display, set by the user
+    /** type:list<string> List of possible MAC addresses, set by the user */
+    property var addresses: []
+
+    /** type:string Currently selected address. */
+    readonly property string selectedAddress: selectionBox.currentText
+
+    /** type:string Currently selected local adapter address (only available in Linux). */
+    readonly property string selectedLocalAdapterAddress: localAdapterSelectionBox.currentText
+
+    /** type:enum Current connection status to display, set by the user, one of CelluloBluetoothEnums.ConnectionStatus */
+    property var connectionStatus: CelluloBluetooth.ConnectionStatusDisconnected
 
     /**
      * @brief Selects the given address if it exists in the list of addresses
      *
-     * @param {string} address Address to look for in the list of addresses
+     * @param type:string address Address to look for in the list of addresses
      */
     function selectAddress(address){
         for(var i=0;i<addresses.length;i++)
@@ -37,7 +49,7 @@ Row{
     /**
      * @brief Selects the given local adapter address if it exists in the list of addresses
      *
-     * @param {string} address Address to look for in the list of addresses
+     * @param type:string address Address to look for in the list of addresses
      */
     function selectLocalAdapterAddress(address){
         for(var i=0;i<localAdapterAddresses.length;i++)
@@ -47,12 +59,17 @@ Row{
             }
     }
 
-    signal connectRequested()                                                       ///< Emitted when the connect button is pressed
-    signal disconnectRequested()                                                    ///< Emitted when the disconnect button is pressed
+    /** @brief Emitted when the connect button is pressed */
+    signal connectRequested()
+
+    /** @brief Emitted when the disconnect button is pressed */
+    signal disconnectRequested()
 
     /*
      * Private
      */
+
+    /** @cond DO_NOT_DOCUMENT */
 
     spacing: 5
 
@@ -149,4 +166,8 @@ Row{
             }
         }
     }
+
+    /** @endcond */
 }
+
+/** @} */

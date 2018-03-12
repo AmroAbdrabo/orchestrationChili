@@ -30,6 +30,17 @@
 #include <QVector2D>
 #include <QVariantList>
 
+namespace Cellulo{
+
+/**
+ * @addtogroup util
+ * @{
+ */
+
+/**
+ * @brief Mathematical utilities used throughout Celullo activities.
+ * @singleton
+ */
 class CelluloMathUtil : public QObject {
     /* *INDENT-OFF* */
     Q_OBJECT
@@ -37,8 +48,12 @@ class CelluloMathUtil : public QObject {
 
 public:
 
+    /** @cond DO_NOT_DOCUMENT */
+
     CelluloMathUtil(QObject* parent = 0);
     ~CelluloMathUtil();
+
+    /** @endcond */
 
     /**
      * @brief Calculates the distance of a point to a line segment in 2D
@@ -77,6 +92,8 @@ public:
      * @return The distance of the point to the polygon border
      */
     Q_INVOKABLE static qreal pointToPolyBorderDist(const QVector2D& p, const QList<QVector2D>& v);
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Calculates the roots of ax + b = 0
@@ -122,6 +139,8 @@ public:
      * @return Whether the number is within -epsilon,+epsilon
      */
     static bool isZero(qreal val, qreal epsilon);
+
+    /** @endcond */
 
     /**
      * @brief Calculates whether a horizontal ray starting from r and continuing towards +infinity crosses the line segment
@@ -221,5 +240,9 @@ private:
     static constexpr qreal SOLVE_QUAD_EPSILON = 1e-4;  ///< Epsilon to use during isZero by the quadratic equation solver
 
 };
+
+/** @} */
+
+}
 
 #endif // CELLULOMATHUTIL_H

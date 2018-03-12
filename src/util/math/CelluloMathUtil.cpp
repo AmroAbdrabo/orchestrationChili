@@ -32,6 +32,8 @@
 
 #include <QtMath>
 
+namespace Cellulo{
+
 CelluloMathUtil::CelluloMathUtil(QObject* parent) : QObject(parent){
     c_srand(time(NULL));
 }
@@ -262,4 +264,6 @@ qreal CelluloMathUtil::clamp(qreal val, qreal min, qreal max){
         return max;
     else
         return val;
+}
+
 }

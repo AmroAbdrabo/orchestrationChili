@@ -22,10 +22,17 @@
  * @date 2016-07-21
  */
 
+#ifndef CUBICBEZIER_H
+#define CUBICBEZIER_H
+
 #include <QVector2D>
 
+namespace Cellulo{
+
+/** @cond DO_NOT_DOCUMENT */
+
 /**
- * @brief Describes a cubic Bézier curve B(t) = (1 - t)^3*p0 + 3*(1 - t)^2*t*p1 + 3*(1 - t)*t^2*p2 + t^3*p3
+ * @brief Describes a cubic Bézier curve, B(t) = (1 - t)^3*p0 + 3*(1 - t)^2*t*p1 + 3*(1 - t)*t^2*p2 + t^3*p3
  */
 class CubicBezier {
 
@@ -227,3 +234,9 @@ private:
     qreal maxY = std::numeric_limits<qreal>::min();                           ///< Maximum y bound for the curve
 
 };
+
+/** @endcond */
+
+}
+
+#endif // CUBICBEZIER_H

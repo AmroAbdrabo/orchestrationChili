@@ -36,7 +36,7 @@
 #include "../math/CelluloMathUtil.h"
 #include "../../zones/CelluloZoneJsonHandler.h"
 
-
+namespace Cellulo{
 
 CelluloSVGUtil::CelluloSVGUtil(QObject* parent) : QObject(parent){}
 
@@ -254,4 +254,6 @@ CelluloZonePolyBezierClosestT* CelluloSVGUtil::getBezierFromControlPoints(QList<
     }
     newZonePolyBezier->setControlPoints(variantControlPoints);
     return newZonePolyBezier;
+}
+
 }

@@ -24,6 +24,8 @@
 
 #include "CelluloUIUtil.h"
 
+namespace Cellulo{
+
 CelluloUIUtil::CelluloUIUtil(QObject* parent) : QObject(parent){}
 
 CelluloUIUtil::~CelluloUIUtil(){}
@@ -38,4 +40,6 @@ QColor CelluloUIUtil::colorInterpolate(QColor const& color1, QColor const& color
         (int)(color1Weight*color1.green() + (1 - color1Weight)*color2.green()),
         (int)(color1Weight*color1.blue() +  (1 - color1Weight)*color2.blue())
     );
+}
+
 }

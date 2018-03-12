@@ -1,7 +1,12 @@
 import QtQuick 2.0
 
 /**
- * @brief Manager that creates Toasts dynamically
+ * @addtogroup util
+ * @{
+ */
+
+/**
+ * @brief Creates on-screen banner texts, like Android's `Toast`s. Ensures that multiple toasts show correctly together.
  */
 Column{
 
@@ -12,8 +17,8 @@ Column{
     /**
      * @brief Shows a Toast
      *
-     * @param {string} text Text to show
-     * @param {real} duration Duration to show in milliseconds, defaults to 3000
+     * @param type:string text Text to show
+     * @param type:real duration Duration to show in milliseconds, defaults to 3000
      */
     function show(text, duration){
         var toast = toastComponent.createObject(root);
@@ -25,6 +30,8 @@ Column{
      * Private
      */
 
+    /** @cond DO_NOT_DOCUMENT */
+
     id: root
 
     z: Infinity
@@ -34,4 +41,8 @@ Column{
     property var toastComponent
 
     Component.onCompleted: toastComponent = Qt.createComponent("Toast.qml")
+
+    /** @endcond */
 }
+
+/** @} */

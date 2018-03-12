@@ -1,6 +1,11 @@
 import QtQuick 2.0
 
 /**
+ * @addtogroup util
+ * @{
+ */
+
+/**
  * @brief An Android-like timed message text in a box that selfdestroys when finished if desired
  */
 Rectangle{
@@ -12,8 +17,8 @@ Rectangle{
     /**
      * @brief Shows this Toast
      *
-     * @param {string} text Text to show
-     * @param {real} duration Duration to show in milliseconds, defaults to 3000
+     * @param type:string text Text to show
+     * @param type:real duration Duration to show in milliseconds, defaults to 3000
      */
     function show(text, duration){
         theText.text = text;
@@ -28,11 +33,14 @@ Rectangle{
         anim.start();
     }
 
-    property bool selfDestroying: false ///< Whether this Toast will selfdestroy when it is finished
+    /** Whether this Toast will selfdestroy when it is finished */
+    property bool selfDestroying: false
 
     /**
      * Private
      */
+
+    /** @cond DO_NOT_DOCUMENT */
 
     id: root
 
@@ -82,4 +90,8 @@ Rectangle{
                 root.destroy();
         }
     }
+
+    /** @endcond */
 }
+
+/** @} */

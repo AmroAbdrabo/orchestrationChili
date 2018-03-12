@@ -28,6 +28,8 @@
 
 #include <cmath>
 
+namespace Cellulo{
+
 CubicBezier::CubicBezier(){}
 
 CubicBezier::CubicBezier(const QVector2D& p0, const QVector2D& p1, const QVector2D& p2, const QVector2D& p3){
@@ -343,4 +345,6 @@ int CubicBezier::getNumCrossings(const QVector2D& m){
 
         return numCrossings;
     }
+}
+
 }

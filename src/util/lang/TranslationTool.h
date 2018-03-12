@@ -27,17 +27,34 @@
 
 #include <QtGui>
 
+namespace Cellulo{
+
 /**
- * @brief Tool to provide translation for entire app
+ * @addtogroup util
+ * @{
+ */
+
+/**
+ * @brief Object that provides a language translation for the entire app.
+ *
+ * To use, create one `TranslationTool` named e.g `tr`, and concatenate every user-readable string in the app with
+ * `tr.estr`. For example, a text property in another object would look like `text: tr.estr + "Text that would
+ * normally be here."`
  */
 class TranslationTool : public QObject {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
+
+    /** @brief List of languages (e.g `"en"`) versus their translation resource files loaded into the app */
     Q_PROPERTY(QVariantMap languageList READ getLanguageList WRITE setLanguageList NOTIFY languageListChanged)
+
+    /** @brief An empty string (read-only) to be concatenated to all user-visible strings in the app to be translated if dynamic modification of the language during runtime is desired */
     Q_PROPERTY(QString estr READ getEmptyString NOTIFY languageChanged)
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Creates new translation tool and QTranslator and attaches it to this object
@@ -70,7 +87,11 @@ public:
      */
     QString getEmptyString(){ return ""; }
 
+    /* @endcond */
+
 signals:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Emitted when the language to translation file list changes
@@ -81,6 +102,8 @@ signals:
      * @brief Emitted when language has changed
      */
     void languageChanged();
+
+    /** @endcond */
 
 public slots:
 
@@ -97,5 +120,9 @@ private:
     QVariantMap languageList; ///< Language (QString) to translation file (QString) list
 
 };
+
+/** @} */
+
+}
 
 #endif

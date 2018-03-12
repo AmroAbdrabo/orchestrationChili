@@ -29,6 +29,17 @@
 #include<QColor>
 #include<QString>
 
+namespace Cellulo{
+
+/**
+ * @addtogroup util
+ * @{
+ */
+
+/**
+ * @brief User interface utilities used throughout Celullo activities
+ * @singleton
+ */
 class CelluloUIUtil : public QObject {
     /* *INDENT-OFF* */
     Q_OBJECT
@@ -36,8 +47,12 @@ class CelluloUIUtil : public QObject {
 
 public:
 
+    /** @cond DO_NOT_DOCUMENT */
+
     CelluloUIUtil(QObject* parent = 0);
     ~CelluloUIUtil();
+
+    /** @endcond */
 
     /**
      * @brief Converts string representation of color to actual color
@@ -58,5 +73,9 @@ public:
     Q_INVOKABLE static QColor colorInterpolate(const QColor& color1, const QColor& color2, qreal color1Weight);
 
 };
+
+/** @} */
+
+}
 
 #endif // CELLULOUIUTIL_H

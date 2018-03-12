@@ -27,6 +27,17 @@
 
 #include <QObject>
 
+namespace Cellulo{
+
+/**
+ * @addtogroup util
+ * @{
+ */
+
+/**
+ * @brief Object that provides system utilities
+ * @singleton
+ */
 class CelluloSystemUtil : public QObject {
     /* *INDENT-OFF* */
     Q_OBJECT
@@ -34,8 +45,12 @@ class CelluloSystemUtil : public QObject {
 
 public:
 
+    /** @cond DO_NOT_DOCUMENT */
+
     CelluloSystemUtil(QObject* parent = 0);
     ~CelluloSystemUtil();
+
+    /** @endcond */
 
     /**
      * @brief Executes a system command
@@ -47,5 +62,9 @@ public:
     Q_INVOKABLE static int exec(QString const& command, QStringList const& arguments);
 
 };
+
+/** @} */
+
+}
 
 #endif // CELLULOSYSTEMUTIL_H

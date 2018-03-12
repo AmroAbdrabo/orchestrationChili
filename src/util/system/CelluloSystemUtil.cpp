@@ -26,6 +26,8 @@
 
 #include <QProcess>
 
+namespace Cellulo{
+
 CelluloSystemUtil::CelluloSystemUtil(QObject* parent) : QObject(parent){}
 
 CelluloSystemUtil::~CelluloSystemUtil(){}
@@ -35,4 +37,6 @@ int CelluloSystemUtil::exec(QString const& command, QStringList const& arguments
     proc.start(command, arguments);
     proc.waitForFinished(-1);
     return proc.exitCode();
+}
+
 }

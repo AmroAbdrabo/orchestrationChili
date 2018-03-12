@@ -24,6 +24,8 @@
 
 #include "TranslationTool.h"
 
+namespace Cellulo{
+
 TranslationTool::TranslationTool(QObject* parent) :
     QObject(parent),
     translator(this)
@@ -54,4 +56,6 @@ void TranslationTool::selectLanguage(const QString& language){
         else
             qWarning() << "TranslationTool::selectLanguage(): Invalid language provided.";
     }
+}
+
 }

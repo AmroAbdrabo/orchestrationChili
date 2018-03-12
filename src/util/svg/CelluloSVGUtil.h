@@ -35,6 +35,17 @@
 #include "../../zones/CelluloZoneCircle.h"
 #include "../../zones/CelluloZonePolyBezier.h"
 
+namespace Cellulo{
+
+/**
+ * @addtogroup util
+ * @{
+ */
+
+/**
+ * @brief Utilities for converting SVG files into CelluloZone description files
+ * @singleton
+ */
 class CelluloSVGUtil : public QObject {
     /* *INDENT-OFF* */
     Q_OBJECT
@@ -42,8 +53,12 @@ class CelluloSVGUtil : public QObject {
 
 public:
 
+    /** @cond DO_NOT_DOCUMENT */
+
     CelluloSVGUtil(QObject* parent = 0);
     ~CelluloSVGUtil();
+
+    /** @endcond */
 
     //TODO remove choice of type for polybezier or tell also other types
 
@@ -55,9 +70,9 @@ public:
      * @param inSVGFile Full path to the local SVG file, can be in QUrl form
      * @param outJSONFile Full path to the local JSON file, will be overwritten, can be in QUrl form
      * @param type UNUSED
-     * @param name Name prefix for all zones
+     * @param name Name prefix for all zones, consecutive zones are suffixed with "_1", "_2" etc
      * @param dpi Dots Per Inch to be used during conversion to millimeters (90 is the default for inkscape)
-     * @param optimize Whether to try to extract as lines, points, circles, rectangles or polygons instead of polybezier zones, if possible
+     * @param optimize Whether to try to extract as lines, points, circles, rectangles or polygons instead of polybezier zones, if possible (default, but EXPERIMENTAL). If disabled, all zones are converted into `POLBEZIERCLOSESTT`.
      * @return Human readable result message
      */
     Q_INVOKABLE static QString dumpAllPathsToJSON(
@@ -85,6 +100,8 @@ public:
         bool optimized = true
         );
 
+    /** @cond DO_NOT_DOCUMENT */
+
     /**
      * @brief Parses the given SVG file into zones
      *
@@ -92,7 +109,7 @@ public:
      * @param name Name prefix for all zones
      * @param dpi Dots Per Inch to be used during conversion to millimeters (90 is the default for inkscape)
      * @param optimize Whether to try to extract as lines, points, circles, rectangles or polygons instead of polybezier zones, if possible
-     * @return Parsed zones (QML-compatible)
+     * @return Parsed zones (not QML-compatible)
      */
     Q_INVOKABLE static QList<CelluloZone*> loadZonesCPP(
         const QString& inSVGFile,
@@ -100,6 +117,8 @@ public:
         float dpi = 90.0f,
         bool optimized = true
         );
+
+    /** @endcond */
 
 private:
 
@@ -231,5 +250,9 @@ private:
      */
     static CelluloZonePolyBezierClosestT* getBezierFromControlPoints(QList<QVector2D> controlPoints);
 };
+
+/** @} */
+
+}
 
 #endif // CELLULOSVGUTIL_H
