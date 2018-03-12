@@ -28,6 +28,8 @@
 #include "CelluloZone.h"
 #include <math.h>
 
+namespace Cellulo{
+
 /**
  * @brief CelluloZone Base Class for polygonal zones
  */
@@ -658,5 +660,7 @@ public:
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
 };
+
+}
 
 #endif // CELLULOZONEPOLYGON_H

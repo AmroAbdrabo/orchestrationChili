@@ -33,6 +33,8 @@
 
 #include "CelluloZone.h"
 
+namespace Cellulo{
+
 class CelluloZoneJsonHandler : public QObject {
     /* *INDENT-OFF* */
     Q_OBJECT
@@ -94,5 +96,7 @@ private:
     static QList<CelluloZone*> read(const QJsonArray& json);
 
 };
+
+}
 
 #endif // CELLULOZONEJSONHANDLER_H

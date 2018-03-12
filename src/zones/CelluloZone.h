@@ -36,6 +36,8 @@
 #include "CelluloZoneClient.h"
 #include "CelluloZonePaintedItem.h"
 
+namespace Cellulo{
+
 class CelluloZonePaintedItem;
 
 /**
@@ -221,6 +223,8 @@ private:
 
 };
 
-Q_DECLARE_METATYPE(CelluloZone*)
+}
+
+Q_DECLARE_METATYPE(Cellulo::CelluloZone*)
 
 #endif // CELLULOZONE_H

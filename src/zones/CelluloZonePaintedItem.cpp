@@ -26,6 +26,8 @@
 
 #include <QVariant>
 
+namespace Cellulo{
+
 CelluloZonePaintedItem::CelluloZonePaintedItem(QQuickItem* parent) : QQuickPaintedItem(parent){
     associatedZone = NULL;
     color = QColor(128,128,128,128);
@@ -104,4 +106,6 @@ void CelluloZonePaintedItem::paint(QPainter* painter){
     }
     else
         qWarning() << "CelluloZonePaintedItem::paint(): No associatedZone set.";
+}
+
 }

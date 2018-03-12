@@ -33,6 +33,8 @@
 #include "CelluloZonePolygon.h"
 #include "CelluloZonePolyBezier.h"
 
+namespace Cellulo{
+
 CelluloZoneTypes::CelluloZoneTypes(QObject* parent) : QObject(parent){}
 
 CelluloZoneTypes::~CelluloZoneTypes(){}
@@ -104,4 +106,6 @@ CelluloZone* CelluloZoneTypes::newZoneFromType(ZoneType type){
             qWarning() << "CelluloZoneTypes::newZoneFromType(): Unknown type.";
             return NULL;
     }
+}
+
 }

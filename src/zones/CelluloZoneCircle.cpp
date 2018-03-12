@@ -27,6 +27,8 @@
 
 #include <cmath>
 
+namespace Cellulo{
+
 /**
  * CelluloZoneCircle
  */
@@ -189,4 +191,6 @@ void CelluloZoneCircleDistance::paint(QPainter* painter, QColor color, qreal can
     qreal verticalScaleCoeff = canvasHeight/physicalHeight;
 
     painter->drawEllipse(QPointF(x*horizontalScaleCoeff, y*verticalScaleCoeff), r*horizontalScaleCoeff, r*verticalScaleCoeff);
+}
+
 }

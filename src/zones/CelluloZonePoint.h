@@ -27,6 +27,8 @@
 
 #include "CelluloZone.h"
 
+namespace Cellulo{
+
 /**
  * @brief CelluloZone Base Class for point zones
  */
@@ -164,5 +166,7 @@ public:
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
 };
+
+}
 
 #endif // CELLULOZONEPOINT_H

@@ -29,6 +29,8 @@
 #include "../util/math/CubicBezier.h"
 #include "../comm/CelluloBluetooth.h"
 
+namespace Cellulo{
+
 class CelluloBluetooth;
 
 /**
@@ -476,5 +478,7 @@ public:
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
 };
+
+}
 
 #endif // CELLULOZONEPOLYBEZIER_H

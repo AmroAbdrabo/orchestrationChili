@@ -27,6 +27,8 @@
 
 #include "CelluloZone.h"
 
+namespace Cellulo{
+
 /**
  * @brief Describes a single angle
  */
@@ -141,5 +143,7 @@ public:
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
 };
+
+}
 
 #endif // CELLULOZONEANGLE_H

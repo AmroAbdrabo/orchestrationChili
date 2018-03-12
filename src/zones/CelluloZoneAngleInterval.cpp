@@ -28,6 +28,8 @@
 
 #include "../util/math/CelluloMathUtil.h"
 
+namespace Cellulo{
+
 /**
  * CelluloZoneAngleInterval
  */
@@ -257,4 +259,6 @@ void CelluloZoneAngleIntervalDistance::paint(QPainter* painter, QColor color, qr
 
     //TODO: FIGURE THIS OUT
     //painter->drawRect(x*horizontalScaleCoeff, y*verticalScaleCoeff, width*horizontalScaleCoeff, height*verticalScaleCoeff);
+}
+
 }

@@ -26,6 +26,8 @@
 
 #include <cmath>
 
+namespace Cellulo{
+
 /**
  * CelluloZonePoint
  */
@@ -112,4 +114,6 @@ void CelluloZonePointDistance::paint(QPainter* painter, QColor color, qreal canv
     painter->drawLine(
         QPointF((x - 3)*horizontalScaleCoeff, (y + 3)*verticalScaleCoeff),
         QPointF((x + 3)*horizontalScaleCoeff, (y - 3)*verticalScaleCoeff));
+}
+
 }

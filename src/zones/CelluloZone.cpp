@@ -25,6 +25,8 @@
 #include "CelluloZone.h"
 #include "CelluloZoneClient.h"
 
+namespace Cellulo{
+
 CelluloZone::CelluloZone(QQuickItem* parent) : QQuickItem(parent){
     active = true;
     name = "anonymousZone";
@@ -108,4 +110,6 @@ CelluloZonePaintedItem* CelluloZone::createPaintedItem(QQuickItem* parent, QColo
 
 void CelluloZone::setPaintedItem(CelluloZonePaintedItem* newPaintedItem){
     paintedItem = newPaintedItem;
+}
+
 }

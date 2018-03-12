@@ -39,6 +39,8 @@
 #include "CelluloZonePolygon.h"
 #include "CelluloZoneJsonHandler.h"
 
+namespace Cellulo{
+
 class CelluloZoneEngine : public QQuickItem {
     /* *INDENT-OFF* */
     Q_OBJECT
@@ -181,6 +183,8 @@ private:
 
 };
 
-Q_DECLARE_METATYPE(QList<CelluloZone*>)
+}
+
+Q_DECLARE_METATYPE(QList<Cellulo::CelluloZone*>)
 
 #endif // CELLULOZONEENGINE_H

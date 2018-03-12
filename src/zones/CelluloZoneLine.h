@@ -27,6 +27,8 @@
 
 #include "CelluloZone.h"
 
+namespace Cellulo{
+
 /**
  * @brief CelluloZone Base Class for line zones
  */
@@ -314,5 +316,7 @@ private:
         qreal borderThickness;  ///< The border thickness in mm
 
 };
+
+}
 
 #endif // CELLULOZONELINE_H

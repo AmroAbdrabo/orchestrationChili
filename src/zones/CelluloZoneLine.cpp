@@ -29,6 +29,8 @@
 #include "../util/math/CelluloMathUtil.h"
 #include <math.h>
 
+namespace Cellulo{
+
 /**
  * CelluloZoneLine
  */
@@ -223,4 +225,6 @@ void CelluloZoneLineBorder::paint(QPainter* painter, QColor color, qreal canvasW
 
     //TODO: PAINT INFINITE LINE WITH BORDER
     //painter->drawLine(QPointF(x1*horizontalScaleCoeff, y1*verticalScaleCoeff), QPointF(x2*horizontalScaleCoeff, y2*verticalScaleCoeff));
+}
+
 }

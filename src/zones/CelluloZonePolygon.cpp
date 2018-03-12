@@ -29,6 +29,8 @@
 
 #include "../util/math/CelluloMathUtil.h"
 
+namespace Cellulo{
+
 /**
  * CelluloZonePolygon
  */
@@ -440,4 +442,6 @@ void CelluloZoneRegularPolygonDistance::paint(QPainter* painter, QColor color, q
         poly.append(QPointF(vertex.x()*horizontalScaleCoeff, vertex.y()*verticalScaleCoeff));
 
     painter->drawPolygon(poly);
+}
+
 }

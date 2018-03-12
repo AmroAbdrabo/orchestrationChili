@@ -28,6 +28,8 @@
 
 #include "CelluloZoneEngine.h"
 
+namespace Cellulo{
+
 CelluloZoneEngine::CelluloZoneEngine(QQuickItem* parent) : QQuickItem(parent){
     active = true;
 }
@@ -148,4 +150,6 @@ void CelluloZoneEngine::addNewZones(QList<CelluloZone*> newZones){
 void CelluloZoneEngine::addNewZones(QVariantList newZones){
     for(const auto& zone : newZones)
         addNewZone(zone.value<CelluloZone*>());
+}
+
 }

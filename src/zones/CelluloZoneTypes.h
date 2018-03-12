@@ -28,6 +28,9 @@
 #include <QObject>
 
 #include "../CelluloEnumDecl.h"
+
+namespace Cellulo{
+
 class CelluloZone;
 
 class CelluloZoneTypes : public QObject {
@@ -93,6 +96,8 @@ public:
 
 };
 
-Q_DECLARE_METATYPE(CelluloZoneTypes::ZoneType)
+}
+
+Q_DECLARE_METATYPE(Cellulo::CelluloZoneTypes::ZoneType)
 
 #endif // CELLULOZONETYPES_H

@@ -26,6 +26,8 @@
 
 #include "../util/math/CelluloMathUtil.h"
 
+namespace Cellulo{
+
 /**
  * CelluloZoneRectangle
  */
@@ -221,4 +223,6 @@ void CelluloZoneRectangleDistance::paint(QPainter* painter, QColor color, qreal 
     qreal verticalScaleCoeff = canvasHeight/physicalHeight;
 
     painter->drawRect(x*horizontalScaleCoeff, y*verticalScaleCoeff, width*horizontalScaleCoeff, height*verticalScaleCoeff);
+}
+
 }

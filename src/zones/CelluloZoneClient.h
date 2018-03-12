@@ -27,6 +27,8 @@
 
 #include <QQuickItem>
 
+namespace Cellulo{
+
 class CelluloZone;
 
 /**
@@ -66,5 +68,7 @@ signals:
     void poseChanged(qreal x, qreal y, qreal theta);
 
 };
+
+}
 
 #endif //CELLULOZONECLIENT_H

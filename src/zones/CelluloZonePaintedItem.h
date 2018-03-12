@@ -31,6 +31,8 @@
 
 #include "CelluloZone.h"
 
+namespace Cellulo{
+
 class CelluloZone;
 
 /**
@@ -186,5 +188,7 @@ private:
     QMetaObject::Connection parentWidthConnection;  ///< Connection to bind this object's width to the parent
     QMetaObject::Connection parentHeightConnection; ///< Connection to bind this object's height to the parent
 };
+
+}
 
 #endif // CELLULOZONEPAINTEDITEM_H

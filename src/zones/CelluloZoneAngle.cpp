@@ -28,6 +28,8 @@
 
 #include "../util/math/CelluloMathUtil.h"
 
+namespace Cellulo{
+
 /**
  * CelluloZoneAngle
  */
@@ -119,4 +121,6 @@ void CelluloZoneAngleDifference::paint(QPainter* painter, QColor color, qreal ca
 
     //TODO: FIGURE THIS OUT
     //painter->drawRect(x*horizontalScaleCoeff, y*verticalScaleCoeff, width*horizontalScaleCoeff, height*verticalScaleCoeff);
+}
+
 }

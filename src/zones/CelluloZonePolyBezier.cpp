@@ -29,6 +29,8 @@
 #include <QPointF>
 #include <QDebug>
 
+namespace Cellulo{
+
 CelluloZonePolyBezier::CelluloZonePolyBezier() : CelluloZone(){}
 
 QVariantList CelluloZonePolyBezier::getControlPoints(){
@@ -506,4 +508,6 @@ void CelluloZonePolyBezierInner::paint(QPainter* painter, QColor color, qreal ca
 
         painter->drawPath(path);
     }
+}
+
 }

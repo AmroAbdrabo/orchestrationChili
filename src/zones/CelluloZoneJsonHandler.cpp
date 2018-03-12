@@ -30,6 +30,8 @@
 #include "CelluloZonePoint.h"
 #include "CelluloZonePolygon.h"
 
+namespace Cellulo{
+
 CelluloZoneJsonHandler::CelluloZoneJsonHandler(QObject* parent) : QObject(parent){
 }
 
@@ -96,4 +98,6 @@ QList<CelluloZone*> CelluloZoneJsonHandler::read(const QJsonArray& jsonZones){
             qWarning() << "CelluloZoneJsonHandler::read(): Could not create zone, unknown or undefined type.";
     }
     return zones;
+}
+
 }

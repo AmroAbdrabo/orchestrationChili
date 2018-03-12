@@ -24,7 +24,11 @@
 
 #include "CelluloZoneClient.h"
 
+namespace Cellulo{
+
 CelluloZoneClient::CelluloZoneClient(QQuickItem* parent) :
     QQuickItem(parent)
 {
+}
+
 }
