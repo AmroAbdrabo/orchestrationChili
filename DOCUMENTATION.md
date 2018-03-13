@@ -1,16 +1,5 @@
 
 
-#### CelluloZoneAngleDifference
-
-Calculates the signed difference of the client orientation angles to the zone's angle, value is in `]-180, 180]`.
-
-**Properties:**
-
->  - **angle** : `real` - Zone's angle (deg)
-
-
-
-
 #### CelluloZoneCircleInner [extends CelluloZone]
 
 Calculates whether the client's position is within the circle, value is `0.0` or `1.0`.

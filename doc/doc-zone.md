@@ -5,6 +5,8 @@
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
 `class `[`Cellulo::CelluloZone`](doc/doc-zone.md#classCellulo_1_1CelluloZone) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Base Class for zones.
+`class `[`Cellulo::CelluloZoneAngle`](doc/doc-zone.md#classCellulo_1_1CelluloZoneAngle) | Describes a single angle.
+`class `[`Cellulo::CelluloZoneAngleDifference`](doc/doc-zone.md#classCellulo_1_1CelluloZoneAngleDifference) | Describes an angular zone sensitive to the client angle difference.
 `class `[`Cellulo::CelluloZoneAngleInterval`](doc/doc-zone.md#classCellulo_1_1CelluloZoneAngleInterval) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Base for angular interval zones.
 `class `[`Cellulo::CelluloZoneAngleIntervalInner`](doc/doc-zone.md#classCellulo_1_1CelluloZoneAngleIntervalInner) | Describes an angular zone sensitive to the client angle being in/out of the interval.
 `class `[`Cellulo::CelluloZoneAngleIntervalBorder`](doc/doc-zone.md#classCellulo_1_1CelluloZoneAngleIntervalBorder) | Describes an angular zone sensitive to the client angle being on the border of the interval.
@@ -122,6 +124,45 @@ Get painted item associated with this zone so that its properties can be changed
 
 #### Returns
 The PaintedItem that is the visual representation of this zone
+
+# class `Cellulo::CelluloZoneAngle` 
+
+```
+class Cellulo::CelluloZoneAngle
+  : public Cellulo::CelluloZone
+```  
+
+Describes a single angle.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+`{property} float `[`angle`](#group__zone_1ga27b340a93612c7f287afee2b47e6fe68) | Angle that this zone is concerned with (deg)
+
+## Members
+
+#### `{property} float `[`angle`](#group__zone_1ga27b340a93612c7f287afee2b47e6fe68) 
+
+Angle that this zone is concerned with (deg)
+
+# class `Cellulo::CelluloZoneAngleDifference` 
+
+```
+class Cellulo::CelluloZoneAngleDifference
+  : public Cellulo::CelluloZoneAngle
+```  
+
+Describes an angular zone sensitive to the client angle difference.
+
+Calculates the signed difference of the client orientation angles to the zone's angle, value is in `]-180, 180]`.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+
+## Members
 
 # class `Cellulo::CelluloZoneAngleInterval` 
 
@@ -540,7 +581,7 @@ This class is **singleton**, you can call `ThisClass.anyFunction()` and use `Thi
 
  Values                         | Descriptions                                
 --------------------------------|---------------------------------------------
-ANGLEDIFFERENCE            | [CelluloZoneAngleDifference](#classCellulo_1_1CelluloZoneAngleDifference).
+ANGLEDIFFERENCE            | [CelluloZoneAngleDifference](doc/doc-zone.md#classCellulo_1_1CelluloZoneAngleDifference).
 ANGLEINTERVALINNER            | [CelluloZoneAngleIntervalInner](doc/doc-zone.md#classCellulo_1_1CelluloZoneAngleIntervalInner).
 ANGLEINTERVALBORDER            | [CelluloZoneAngleIntervalBorder](doc/doc-zone.md#classCellulo_1_1CelluloZoneAngleIntervalBorder).
 ANGLEINTERVALDISTANCE            | [CelluloZoneAngleIntervalDistance](doc/doc-zone.md#classCellulo_1_1CelluloZoneAngleIntervalDistance).

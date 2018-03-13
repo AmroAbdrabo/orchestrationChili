@@ -30,15 +30,24 @@
 namespace Cellulo{
 
 /**
+ * @addtogroup zone
+ * @{
+ */
+
+/**
  * @brief Describes a single angle
  */
 class CelluloZoneAngle : public CelluloZone {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
+
+    /** @brief Angle that this zone is concerned with (deg) */
     Q_PROPERTY(float angle WRITE setAngle READ getAngle NOTIFY angleChanged)
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Creates a new Cellulo angular zone
@@ -94,21 +103,33 @@ public:
      */
     Q_INVOKABLE virtual bool isMouseInside(QVector2D  mousePosition, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 protected:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     qreal angle;    ///< The angle
 
+    /** @endcond */
+
 signals:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Emitted when the angle changes
      */
     void angleChanged();
 
+    /** @endcond */
+
 };
 
 /**
  * @brief Describes an angular zone sensitive to the client angle difference
+ *
+ * Calculates the signed difference of the client orientation angles to the zone's angle, value is in `]-180, 180]`.
  */
 class CelluloZoneAngleDifference : public CelluloZoneAngle {
     /* *INDENT-OFF* */
@@ -116,6 +137,8 @@ class CelluloZoneAngleDifference : public CelluloZoneAngle {
     /* *INDENT-ON* */
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     CelluloZoneAngleDifference();
 
@@ -141,6 +164,8 @@ public:
      * @param physicalHeight Physical height of the canvas in mm
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
+
+    /** @endcond */
 
 };
 
