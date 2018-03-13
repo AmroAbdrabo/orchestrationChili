@@ -1,24 +1,3 @@
-#### CelluloZone [Abstract]
-
-Abstract description of a "zone" on a 2D plane. These zones could be closed curves, polygons, open curves, even points.
-
-They are meant interact with `CelluloZoneClient`s (such as a robot, or a virtual robot on a screen), calculating a real value with respect to each client (for example, the distance to the client in the case of a point zone). With the help of `CelluloZoneEngine`, a zone emits each client's `zoneValueChanged()` signal upon the changing of the value with respect to that client.
-
-This object cannot be used on its own but all usable Cellulo zones inherit from this object and possess the properties, signals and slots described here unless stated otherwise.
-
-**Properties:**
-
->  - **active** : `bool` - Whether this zone is active, i.e generates `zoneValueChanged` signals on `CelluloZoneClient`s, default true
->  - **name** : `string` - Name of this zone, must be unique, default is `"anonymousZone"`
->  - **type** : `readonly CelluloZoneTypes.ZoneType` - Type of this zone
-
-**Slots:**
-
->  - **CelluloZonePaintedItem createPaintedItem(item parent, color color, real physicalPlaygroundWidth, real physicalPlaygroundHeight)** : Creates a visual representation of this zone with the given parent (will be the canvas to draw this representation) and the given color. Physical playground width and height (in mm) must also be given to map the physical zone coordinates to the on-screen canvas item.
->  - **void setPaintedItem(CelluloZonePaintedItem newPaintedItem)** : Assigns an already existing CelluloZonePaintedItem to be the visual representation of this zone
->  - **CelluloZonePaintedItem getPaintedItem()** : Gets the visual representation of this zone so that its properties can be changed.
->  - **bool isMouseInside(vector2d mousePosition, real canvasWidth, real canvasHeight, real physicalWidth, real physicalHeight)** : Returns whether the given mouse position (in pixels within the canvas) is in the visual zone representation or not. Needs the canvas size (in pixels) and the physical playground size (in mm).
-
 #### CelluloZonePaintedItem
 
 Visual representation of a `CelluloZone`; can be used to draw `CelluloZone`s in e.g `Rectangle`s. Visually covers its parent (from `[0, 0]` to `[parent.width, parent.height]`), using it as a canvas and drawing the zone at the appropriate place.

@@ -41,17 +41,38 @@ namespace Cellulo{
 class CelluloZonePaintedItem;
 
 /**
+ * @addtogroup zone
+ * @{
+ */
+
+/**
  * @brief CelluloZone Base Class for zones
+ *
+ * Abstract description of a "zone" on a 2D plane. These zones could be closed curves, polygons, open curves,
+ * even points.
+ *
+ * They are meant interact with `CelluloZoneClient`s (such as a robot, or a virtual robot on a screen), calculating a
+ * real value with respect to each client (for example, the distance to the client in the case of a point zone). With
+ * the help of `CelluloZoneEngine`, a zone emits each client's `zoneValueChanged()` signal upon the changing of the
+ * value with respect to that client.
  */
 class CelluloZone : public QQuickItem {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
+
+    /** @brief Whether this zone is active, i.e generates `zoneValueChanged` signals on `CelluloZoneClient`s, default true */
     Q_PROPERTY(bool active WRITE setActive READ isActive NOTIFY activeChanged)
+
+    /** @brief Name of this zone, must be unique, default is `"anonymousZone"` */
     Q_PROPERTY(QString name WRITE setName READ getName NOTIFY nameChanged)
+
+    /** @brief Type of this zone, read-only */
     Q_PROPERTY(CelluloZoneTypes::ZoneType type READ getType NOTIFY typeChanged)
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Creates a new Cellulo zone
@@ -98,6 +119,8 @@ public:
      */
     void setActive(float newActive);
 
+    /** @endcond */
+
     /**
      * @brief Calculate the zone quantity of this zone according to the robot's pose
      *
@@ -108,6 +131,8 @@ public:
      * @return Zone quantity for this zone and this robot's pose
      */
     Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) = 0;
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Write the zone infos to the given json Object
@@ -134,6 +159,8 @@ public:
      * @param physicalHeight Physical height of the canvas in mm
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) = 0;
+
+    /** @endcond */
 
     /**
      * @brief Get if the mouse position is inside the zone or not
@@ -174,8 +201,9 @@ public:
      */
     Q_INVOKABLE CelluloZonePaintedItem* getPaintedItem(){ return paintedItem; }
 
-
 public slots:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Slot associated to the CelluloZoneClient signal poseChanged
@@ -188,7 +216,11 @@ public slots:
      */
     void onClientPoseChanged(qreal x, qreal y, qreal theta);
 
+    /** @endcond */
+
 protected:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     QString name;                               ///< Name of the zone
     CelluloZoneTypes::ZoneType type;            ///< Type of the zone
@@ -198,7 +230,11 @@ protected:
      */
     void updatePaintedItem();
 
+    /** @endcond */
+
 signals:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Emitted when the active state of the zone changes
@@ -215,6 +251,8 @@ signals:
      */
     void typeChanged();
 
+    /** @endcond */
+
 private:
 
     QHash<CelluloZoneClient*, qreal> clientsLastValues;  ///< Stores the most recent values calculated for clients
@@ -222,6 +260,8 @@ private:
     bool active;                                         ///< Whether the zone is active
 
 };
+
+/** @} */
 
 }
 

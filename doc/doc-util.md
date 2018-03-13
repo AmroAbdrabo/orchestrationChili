@@ -6,7 +6,7 @@
 --------------------------------|---------------------------------------------
 `class `[`Cellulo::TranslationTool`](doc/doc-util.md#classCellulo_1_1TranslationTool) | Object that provides a language translation for the entire app.
 `class `[`Cellulo::CelluloMathUtil`](doc/doc-util.md#classCellulo_1_1CelluloMathUtil) | Mathematical utilities used throughout Celullo activities.
-`class `[`Cellulo::CelluloSVGUtil`](doc/doc-util.md#classCellulo_1_1CelluloSVGUtil) | Utilities for converting SVG files into [CelluloZone](#classCellulo_1_1CelluloZone) description files.
+`class `[`Cellulo::CelluloSVGUtil`](doc/doc-util.md#classCellulo_1_1CelluloSVGUtil) | Utilities for converting SVG files into [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) description files.
 `class `[`Cellulo::CelluloSystemUtil`](doc/doc-util.md#classCellulo_1_1CelluloSystemUtil) | Object that provides system utilities.
 `class `[`Cellulo::CelluloUIUtil`](doc/doc-util.md#classCellulo_1_1CelluloUIUtil) | User interface utilities used throughout Celullo activities.
 `class `[`Cellulo::MacAddrSelector`](doc/doc-util.md#classCellulo_1_1MacAddrSelector) | MAC address selection GUI.

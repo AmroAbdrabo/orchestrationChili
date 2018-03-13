@@ -4,11 +4,116 @@
 
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
-`class `[`Cellulo::CelluloZoneRectangle`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangle) | [CelluloZone](#classCellulo_1_1CelluloZone) Base Class for rectangular zones.
-`class `[`Cellulo::CelluloZoneRectangleInner`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangleInner) | [CelluloZone](#classCellulo_1_1CelluloZone) Specific Class for rectangular zones inner determination; calculates whether the client's position is within the rectangle, value is `0.0` or `1.0`.
-`class `[`Cellulo::CelluloZoneRectangleBorder`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangleBorder) | [CelluloZone](#classCellulo_1_1CelluloZone) Specific Class for rectangular zones border determination; calculates whether the client's position is within **borderThickness** of the zone's border, value is `0.0` or `1.0`.
-`class `[`Cellulo::CelluloZoneRectangleDistance`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangleDistance) | [CelluloZone](#classCellulo_1_1CelluloZone) Specific Class for rectangular zones distance determination; calculates the client's distance to the zone's border.
-`class `[`Cellulo::CelluloZoneTypes`](doc/doc-zone.md#classCellulo_1_1CelluloZoneTypes) | `[CelluloZone](#classCellulo_1_1CelluloZone)` type enum and utilities.
+`class `[`Cellulo::CelluloZone`](doc/doc-zone.md#classCellulo_1_1CelluloZone) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Base Class for zones.
+`class `[`Cellulo::CelluloZoneRectangle`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangle) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Base Class for rectangular zones.
+`class `[`Cellulo::CelluloZoneRectangleInner`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangleInner) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for rectangular zones inner determination; calculates whether the client's position is within the rectangle, value is `0.0` or `1.0`.
+`class `[`Cellulo::CelluloZoneRectangleBorder`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangleBorder) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for rectangular zones border determination; calculates whether the client's position is within **borderThickness** of the zone's border, value is `0.0` or `1.0`.
+`class `[`Cellulo::CelluloZoneRectangleDistance`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangleDistance) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for rectangular zones distance determination; calculates the client's distance to the zone's border.
+`class `[`Cellulo::CelluloZoneTypes`](doc/doc-zone.md#classCellulo_1_1CelluloZoneTypes) | `[CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone)` type enum and utilities.
+
+# class `Cellulo::CelluloZone` 
+
+```
+class Cellulo::CelluloZone
+  : public QQuickItem
+```  
+
+[CelluloZone](#classCellulo_1_1CelluloZone) Base Class for zones.
+
+Abstract description of a "zone" on a 2D plane. These zones could be closed curves, polygons, open curves, even points.
+
+They are meant interact with `[CelluloZoneClient](#classCellulo_1_1CelluloZoneClient)`s (such as a robot, or a virtual robot on a screen), calculating a real value with respect to each client (for example, the distance to the client in the case of a point zone). With the help of `[CelluloZoneEngine](#classCellulo_1_1CelluloZoneEngine)`, a zone emits each client's `zoneValueChanged()` signal upon the changing of the value with respect to that client.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+`{property} bool `[`active`](doc/doc-zone.md#classCellulo_1_1CelluloZone_1adb2c9434ea04be38ddb53c06632ce3db) | Whether this zone is active, i.e generates `zoneValueChanged` signals on `[CelluloZoneClient](#classCellulo_1_1CelluloZoneClient)`s, default true.
+`{property} QString `[`name`](doc/doc-zone.md#classCellulo_1_1CelluloZone_1abb58a78cd5ce7c499a0926710862f188) | Name of this zone, must be unique, default is `"anonymousZone"`
+`{property} `[`CelluloZoneTypes::ZoneType`](#classCellulo_1_1CelluloZoneTypes_1acb24a099726e8d59124afd691c86f9cf)` `[`type`](#classCellulo_1_1CelluloZone_1a703f7329dc9e335356e62ff90f6a3228) | Type of this zone, read-only.
+`public Q_INVOKABLE float `[`calculate`](#classCellulo_1_1CelluloZone_1a404b8449396ad290e001370810b2a62f)`(float xRobot,float yRobot,float thetaRobot)` | Calculate the zone quantity of this zone according to the robot's pose.
+`public Q_INVOKABLE bool `[`isMouseInside`](#classCellulo_1_1CelluloZone_1ae58727d9928c7ed7085902cd46bcfdd0)`(QVector2D mousePosition,qreal canvasWidth,qreal canvasHeight,qreal physicalWidth,qreal physicalHeight)` | Get if the mouse position is inside the zone or not.
+`public Q_INVOKABLE `[`CelluloZonePaintedItem`](#classCellulo_1_1CelluloZonePaintedItem)` * `[`createPaintedItem`](#classCellulo_1_1CelluloZone_1a305df5424bddb23ddb7f0935561b3206)`(QQuickItem * parent,QColor color,qreal physicalPlaygroundWidth,qreal physicalPlaygroundHeight)` | Creates a PaintedItem that is the visual representation of this zone.
+`public Q_INVOKABLE void `[`setPaintedItem`](#classCellulo_1_1CelluloZone_1acd24c54985b7d0d3ebadcbe24ee4ecbd)`(`[`CelluloZonePaintedItem`](#classCellulo_1_1CelluloZonePaintedItem)` * newPaintedItem)` | Associates a painted item with this zone so that it can be redrawn if the zone changes.
+`public inline Q_INVOKABLE `[`CelluloZonePaintedItem`](#classCellulo_1_1CelluloZonePaintedItem)` * `[`getPaintedItem`](#classCellulo_1_1CelluloZone_1ac28f3c3e1cd508b206b6a8937c5c87fd)`()` | Get painted item associated with this zone so that its properties can be changed.
+
+## Members
+
+#### `{property} bool `[`active`](doc/doc-zone.md#classCellulo_1_1CelluloZone_1adb2c9434ea04be38ddb53c06632ce3db) 
+
+Whether this zone is active, i.e generates `zoneValueChanged` signals on `[CelluloZoneClient](#classCellulo_1_1CelluloZoneClient)`s, default true.
+
+Whether the zone is active.
+
+#### `{property} QString `[`name`](doc/doc-zone.md#classCellulo_1_1CelluloZone_1abb58a78cd5ce7c499a0926710862f188) 
+
+Name of this zone, must be unique, default is `"anonymousZone"`
+
+#### `{property} `[`CelluloZoneTypes::ZoneType`](#classCellulo_1_1CelluloZoneTypes_1acb24a099726e8d59124afd691c86f9cf)` `[`type`](#classCellulo_1_1CelluloZone_1a703f7329dc9e335356e62ff90f6a3228) 
+
+Type of this zone, read-only.
+
+#### `public Q_INVOKABLE float `[`calculate`](#classCellulo_1_1CelluloZone_1a404b8449396ad290e001370810b2a62f)`(float xRobot,float yRobot,float thetaRobot)` 
+
+Calculate the zone quantity of this zone according to the robot's pose.
+
+#### Parameters
+* `xRobot` x position of the robot 
+
+* `yRobot` y position of the robot 
+
+* `thetaRobot` theta position of the robot
+
+#### Returns
+Zone quantity for this zone and this robot's pose
+
+#### `public Q_INVOKABLE bool `[`isMouseInside`](#classCellulo_1_1CelluloZone_1ae58727d9928c7ed7085902cd46bcfdd0)`(QVector2D mousePosition,qreal canvasWidth,qreal canvasHeight,qreal physicalWidth,qreal physicalHeight)` 
+
+Get if the mouse position is inside the zone or not.
+
+#### Parameters
+* `mousePosition` (x,y) coordinates of the mouse in pixels 
+
+* `canvasWidth` Screen width of the canvas in pixels 
+
+* `canvasHeight` Screen height of the canvas in pixels 
+
+* `physicalWidth` Physical width of the canvas in mm 
+
+* `physicalHeight` Physical height of the canvas in mm
+
+#### Returns
+Whether the mouse position is inside the zone or not
+
+#### `public Q_INVOKABLE `[`CelluloZonePaintedItem`](#classCellulo_1_1CelluloZonePaintedItem)` * `[`createPaintedItem`](#classCellulo_1_1CelluloZone_1a305df5424bddb23ddb7f0935561b3206)`(QQuickItem * parent,QColor color,qreal physicalPlaygroundWidth,qreal physicalPlaygroundHeight)` 
+
+Creates a PaintedItem that is the visual representation of this zone.
+
+#### Parameters
+* `parent` Visual QML parent that this item will fill 
+
+* `color` Color to paint with 
+
+* `physicalPlaygroundWidth` Playground width in mm 
+
+* `physicalPlaygroundHeight` Playground height in mm
+
+#### Returns
+A PaintedItem that is the visual representation of this zone
+
+#### `public Q_INVOKABLE void `[`setPaintedItem`](#classCellulo_1_1CelluloZone_1acd24c54985b7d0d3ebadcbe24ee4ecbd)`(`[`CelluloZonePaintedItem`](#classCellulo_1_1CelluloZonePaintedItem)` * newPaintedItem)` 
+
+Associates a painted item with this zone so that it can be redrawn if the zone changes.
+
+#### Parameters
+* `newPaintedItem` New painted item
+
+#### `public inline Q_INVOKABLE `[`CelluloZonePaintedItem`](#classCellulo_1_1CelluloZonePaintedItem)` * `[`getPaintedItem`](#classCellulo_1_1CelluloZone_1ac28f3c3e1cd508b206b6a8937c5c87fd)`()` 
+
+Get painted item associated with this zone so that its properties can be changed.
+
+#### Returns
+The PaintedItem that is the visual representation of this zone
 
 # class `Cellulo::CelluloZoneRectangle` 
 
@@ -29,7 +134,6 @@ This class is **abstract**, you cannot instantiate it directly. Refer to classes
 `{property} float `[`y`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangle_1ad0e8c8be54bbb4dcf4e8f751993088b8) | Y coordinate of the top left corner (mm)
 `{property} float `[`height`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangle_1a936828d957424f788e89152b5349b33c) | Width of the rectangle (mm)
 `{property} float `[`width`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangle_1a02f1b9f0667164115c62cad18109f96d) | Height of the rectangle (mm)
-`public virtual Q_INVOKABLE bool `[`isMouseInside`](#classCellulo_1_1CelluloZoneRectangle_1a875fdd669c61b19de646fa090e48bb3f)`(QVector2D mousePosition,qreal canvasWidth,qreal canvasHeight,qreal physicalWidth,qreal physicalHeight)` | Get if the mouse position is inside the zone or not.
 
 ## Members
 
@@ -49,24 +153,6 @@ Width of the rectangle (mm)
 
 Height of the rectangle (mm)
 
-#### `public virtual Q_INVOKABLE bool `[`isMouseInside`](#classCellulo_1_1CelluloZoneRectangle_1a875fdd669c61b19de646fa090e48bb3f)`(QVector2D mousePosition,qreal canvasWidth,qreal canvasHeight,qreal physicalWidth,qreal physicalHeight)` 
-
-Get if the mouse position is inside the zone or not.
-
-#### Parameters
-* `mousePosition` (x,y) coordinates of the mouse in pixels 
-
-* `canvasWidth` Screen width of the canvas in pixels 
-
-* `canvasHeight` Screen height of the canvas in pixels 
-
-* `physicalWidth` Physical width of the canvas in mm 
-
-* `physicalHeight` Physical height of the canvas in mm
-
-#### Returns
-Whether the mouse position is inside the zone or not
-
 # class `Cellulo::CelluloZoneRectangleInner` 
 
 ```
@@ -80,25 +166,8 @@ class Cellulo::CelluloZoneRectangleInner
 
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
-`public virtual Q_INVOKABLE float `[`calculate`](#classCellulo_1_1CelluloZoneRectangleInner_1a0a12226191bcdd77f6c3b29ea713a5a7)`(float xRobot,float yRobot,float thetaRobot)` | Calculate whether the robot lies inside this rectangular zone.
 
 ## Members
-
-#### `public virtual Q_INVOKABLE float `[`calculate`](#classCellulo_1_1CelluloZoneRectangleInner_1a0a12226191bcdd77f6c3b29ea713a5a7)`(float xRobot,float yRobot,float thetaRobot)` 
-
-Calculate whether the robot lies inside this rectangular zone.
-
-This function is normally called automatically, but can be manually called as well.
-
-#### Parameters
-* `xRobot` x position of the robot 
-
-* `yRobot` y position of the robot 
-
-* `thetaRobot` theta position of the robot
-
-#### Returns
-1 if the robot is inside this rectangular zone 0 otherwise
 
 # class `Cellulo::CelluloZoneRectangleBorder` 
 
@@ -114,7 +183,6 @@ class Cellulo::CelluloZoneRectangleBorder
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
 `{property} qreal `[`borderThickness`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangleBorder_1a1f08060c512e11e672f515f3b8d5c66a) | Total thickness of the border (mm)
-`public virtual Q_INVOKABLE float `[`calculate`](#classCellulo_1_1CelluloZoneRectangleBorder_1abfaa27e1faf1dcf4c8fcc1892fbd2b14)`(float xRobot,float yRobot,float thetaRobot)` | Calculate whether the robot lies on the border of this rectangular zone (given the zone's margin)
 
 ## Members
 
@@ -123,22 +191,6 @@ class Cellulo::CelluloZoneRectangleBorder
 Total thickness of the border (mm)
 
 The border thickness in mm.
-
-#### `public virtual Q_INVOKABLE float `[`calculate`](#classCellulo_1_1CelluloZoneRectangleBorder_1abfaa27e1faf1dcf4c8fcc1892fbd2b14)`(float xRobot,float yRobot,float thetaRobot)` 
-
-Calculate whether the robot lies on the border of this rectangular zone (given the zone's margin)
-
-This function is normally called automatically, but can be manually called as well.
-
-#### Parameters
-* `xRobot` x position of the robot 
-
-* `yRobot` y position of the robot 
-
-* `thetaRobot` theta position of the robot
-
-#### Returns
-1 if the robot is on the border of this rectangular zone (given the zone's margin) 0 otherwise
 
 # class `Cellulo::CelluloZoneRectangleDistance` 
 
@@ -153,25 +205,8 @@ class Cellulo::CelluloZoneRectangleDistance
 
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
-`public virtual Q_INVOKABLE float `[`calculate`](#classCellulo_1_1CelluloZoneRectangleDistance_1a50d401b7841ca7b50a5affaa54400d71)`(float xRobot,float yRobot,float thetaRobot)` | Calculate the distance between the robot pose and the border of this rectangular zone.
 
 ## Members
-
-#### `public virtual Q_INVOKABLE float `[`calculate`](#classCellulo_1_1CelluloZoneRectangleDistance_1a50d401b7841ca7b50a5affaa54400d71)`(float xRobot,float yRobot,float thetaRobot)` 
-
-Calculate the distance between the robot pose and the border of this rectangular zone.
-
-This function is normally called automatically, but can be manually called as well.
-
-#### Parameters
-* `xRobot` x position of the robot 
-
-* `yRobot` y position of the robot 
-
-* `thetaRobot` theta position of the robot
-
-#### Returns
-the distance between the robot pose and the border of this rectangular zone
 
 # class `Cellulo::CelluloZoneTypes` 
 

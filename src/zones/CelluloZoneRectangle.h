@@ -136,8 +136,6 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
-    /** @endcond */
-
     /**
      * @brief Get if the mouse position is inside the zone or not
      *
@@ -150,6 +148,8 @@ public:
      * @return Whether the mouse position is inside the zone or not
      */
     Q_INVOKABLE virtual bool isMouseInside(QVector2D  mousePosition, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
+
+    /** @endcond */
 
 protected:
 
@@ -214,8 +214,6 @@ public:
 
     CelluloZoneRectangleInner();
 
-    /** @endcond */
-
     /**
      * @brief Calculate whether the robot lies inside this rectangular zone.
      *
@@ -228,8 +226,6 @@ public:
      * @return 1 if the robot is inside this rectangular zone 0 otherwise
      */
     Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) override;
-
-    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Draws this zone onto the painter
@@ -289,8 +285,6 @@ public:
      */
     virtual void read(const QJsonObject &json) override;
 
-    /** @endcond */
-
     /**
      * @brief Calculate whether the robot lies on the border of this rectangular zone (given the zone's margin)
      *
@@ -303,8 +297,6 @@ public:
      * @return 1 if the robot is on the border of this rectangular zone (given the zone's margin) 0 otherwise
      */
     Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) override;
-
-    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Draws this zone onto the painter
@@ -351,8 +343,6 @@ public:
 
     CelluloZoneRectangleDistance();
 
-    /** @endcond */
-
     /**
      * @brief Calculate the distance between the robot pose and the border of this rectangular zone.
      *
@@ -365,8 +355,6 @@ public:
      * @return the distance between the robot pose and the border of this rectangular zone
      */
     Q_INVOKABLE virtual float calculate(float xRobot, float yRobot, float thetaRobot) override;
-
-    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Draws this zone onto the painter
