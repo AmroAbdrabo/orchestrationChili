@@ -6,6 +6,7 @@
 --------------------------------|---------------------------------------------
 `class `[`Cellulo::CelluloZone`](doc/doc-zone.md#classCellulo_1_1CelluloZone) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Base Class for zones.
 `class `[`Cellulo::CelluloZoneClient`](doc/doc-zone.md#classCellulo_1_1CelluloZoneClient) | Describes an object with a physical pose (e.g a robot) that may interact with [Cellulo](#namespaceCellulo) zones.
+`class `[`Cellulo::CelluloZoneEngine`](doc/doc-zone.md#classCellulo_1_1CelluloZoneEngine) | Object that ensures `[CelluloZone](#classCellulo_1_1CelluloZone)` and `[CelluloZoneClient](#classCellulo_1_1CelluloZoneClient)` interaction.
 `class `[`Cellulo::CelluloZonePaintedItem`](doc/doc-zone.md#classCellulo_1_1CelluloZonePaintedItem) | A QML compatible QQuickPaintedItem for CelluloZones.
 `class `[`Cellulo::CelluloZoneRectangle`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangle) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Base Class for rectangular zones.
 `class `[`Cellulo::CelluloZoneRectangleInner`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangleInner) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for rectangular zones inner determination; calculates whether the client's position is within the rectangle, value is `0.0` or `1.0`.
@@ -158,6 +159,89 @@ User is responsible for emitting this signal when this client's pose (in mm, mm,
 * `y` New y coordinate in mm 
 
 * `theta` New orientation in degrees
+
+# class `Cellulo::CelluloZoneEngine` 
+
+```
+class Cellulo::CelluloZoneEngine
+  : public QQuickItem
+```  
+
+Object that ensures `[CelluloZone](#classCellulo_1_1CelluloZone)` and `[CelluloZoneClient](#classCellulo_1_1CelluloZoneClient)` interaction.
+
+All `[CelluloZoneClient](#classCellulo_1_1CelluloZoneClient)`s in this engine have their `zoneValueChanged()` signals emitted when the value of a `[CelluloZone](#classCellulo_1_1CelluloZone)` (within this engine) with respect to the client changes.
+
+`[CelluloZone](#classCellulo_1_1CelluloZone)`s instantiated as children of a `[CelluloZoneEngine](#classCellulo_1_1CelluloZoneEngine)` will be automatically added to it. `[CelluloZoneClient](#classCellulo_1_1CelluloZoneClient)`s must be manually added.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+`{property} bool `[`active`](doc/doc-zone.md#classCellulo_1_1CelluloZoneEngine_1a1e2587b08c68a365d8c6dc390499589f) | Whether the zones in this engine are active, default true.
+`public Q_INVOKABLE QStringList `[`getAllZoneNames`](#classCellulo_1_1CelluloZoneEngine_1a413681bb7c91dbcf200ac969ef0ae99a)`()` | Get list of names of all zones handled by this engine.
+`public Q_INVOKABLE QObject * `[`getZoneByName`](#classCellulo_1_1CelluloZoneEngine_1a861ca939c835d2cf1dde8dcfe9e6a78e)`(QString name)` | Get zone handled by this engine having the corresponding name.
+`public Q_INVOKABLE QVariantList `[`getZonesList`](#classCellulo_1_1CelluloZoneEngine_1a9515cf7877d12c7515012f382cc4f6a0)`()` | Returns the list of all zones in this engine.
+`public Q_INVOKABLE void `[`addNewZones`](#classCellulo_1_1CelluloZoneEngine_1a9f79e986a9d71058904fe51ab563eaf6)`(QVariantList newZones)` | Adds the given list of zones to the already existing zones.
+`{slot} public void `[`addNewClient`](#classCellulo_1_1CelluloZoneEngine_1af38e21f7dcad9cbfdce597144b45a7c7)`(`[`CelluloZoneClient`](#classCellulo_1_1CelluloZoneClient)` * newClient)` | Adds a new client to the engine, binds to all existing zones.
+`{slot} public void `[`addNewZone`](#classCellulo_1_1CelluloZoneEngine_1a82cd4f0be60e28d5dfc28e62ad336066)`(`[`CelluloZone`](#classCellulo_1_1CelluloZone)` * newZone)` | Adds a new zone to the engine, binds to all existing clients.
+`{slot} public void `[`clearZones`](#classCellulo_1_1CelluloZoneEngine_1ac350f0f16d642b3144cdbbc23588ba6a)`()` | Deletes all zones.
+
+## Members
+
+#### `{property} bool `[`active`](doc/doc-zone.md#classCellulo_1_1CelluloZoneEngine_1a1e2587b08c68a365d8c6dc390499589f) 
+
+Whether the zones in this engine are active, default true.
+
+Whether clients' poseChanged events are connected to zones; true by default.
+
+#### `public Q_INVOKABLE QStringList `[`getAllZoneNames`](#classCellulo_1_1CelluloZoneEngine_1a413681bb7c91dbcf200ac969ef0ae99a)`()` 
+
+Get list of names of all zones handled by this engine.
+
+#### Returns
+Names of the zones handled by this engine
+
+#### `public Q_INVOKABLE QObject * `[`getZoneByName`](#classCellulo_1_1CelluloZoneEngine_1a861ca939c835d2cf1dde8dcfe9e6a78e)`(QString name)` 
+
+Get zone handled by this engine having the corresponding name.
+
+#### Parameters
+* `name` Lookup name for the zone 
+
+#### Returns
+First zone handled by this engine to have this name or NULL if not found
+
+#### `public Q_INVOKABLE QVariantList `[`getZonesList`](#classCellulo_1_1CelluloZoneEngine_1a9515cf7877d12c7515012f382cc4f6a0)`()` 
+
+Returns the list of all zones in this engine.
+
+#### Returns
+The list of all zones
+
+#### `public Q_INVOKABLE void `[`addNewZones`](#classCellulo_1_1CelluloZoneEngine_1a9f79e986a9d71058904fe51ab563eaf6)`(QVariantList newZones)` 
+
+Adds the given list of zones to the already existing zones.
+
+#### Parameters
+* `newZones` New zones (QML-compatible)
+
+#### `{slot} public void `[`addNewClient`](#classCellulo_1_1CelluloZoneEngine_1af38e21f7dcad9cbfdce597144b45a7c7)`(`[`CelluloZoneClient`](#classCellulo_1_1CelluloZoneClient)` * newClient)` 
+
+Adds a new client to the engine, binds to all existing zones.
+
+#### Parameters
+* `newClient` Client to add
+
+#### `{slot} public void `[`addNewZone`](#classCellulo_1_1CelluloZoneEngine_1a82cd4f0be60e28d5dfc28e62ad336066)`(`[`CelluloZone`](#classCellulo_1_1CelluloZone)` * newZone)` 
+
+Adds a new zone to the engine, binds to all existing clients.
+
+#### Parameters
+* `newZone` Zone to add
+
+#### `{slot} public void `[`clearZones`](#classCellulo_1_1CelluloZoneEngine_1ac350f0f16d642b3144cdbbc23588ba6a)`()` 
+
+Deletes all zones.
 
 # class `Cellulo::CelluloZonePaintedItem` 
 

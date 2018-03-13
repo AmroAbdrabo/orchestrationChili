@@ -41,13 +41,31 @@
 
 namespace Cellulo{
 
+/**
+ * @addtogroup zone
+ * @{
+ */
+
+/**
+ * @brief Object that ensures `CelluloZone` and `CelluloZoneClient` interaction.
+ *
+ * All `CelluloZoneClient`s in this engine have their `zoneValueChanged()` signals emitted when the value of a
+ * `CelluloZone` (within this engine) with respect to the client changes.
+ *
+ * `CelluloZone`s instantiated as children of a `CelluloZoneEngine` will be automatically added to it.
+ * `CelluloZoneClient`s must be manually added.
+ */
 class CelluloZoneEngine : public QQuickItem {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
+
+    /** @brief Whether the zones in this engine are active, default true */
     Q_PROPERTY(bool active READ getActive WRITE setActive NOTIFY activeChanged)
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Creates a new Cellulo zone engine
@@ -60,6 +78,15 @@ public:
      * @brief Destroys this Cellulo robot communicator
      */
     virtual ~CelluloZoneEngine();
+
+    /**
+     * @brief Adds the given list of zones to the already existing zones
+     *
+     * @param newZones New zones
+     */
+    void addNewZones(QList<CelluloZone*> newZones);
+
+    /** @endcond */
 
     /**
      * @brief Get list of names of all zones handled by this engine
@@ -86,18 +113,13 @@ public:
     /**
      * @brief Adds the given list of zones to the already existing zones
      *
-     * @param newZones New zones
-     */
-    void addNewZones(QList<CelluloZone*> newZones);
-
-    /**
-     * @brief Adds the given list of zones to the alreadt existing zones
-     *
      * @param newZones New zones (QML-compatible)
      */
     Q_INVOKABLE void addNewZones(QVariantList newZones);
 
 public slots:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Gets whether currently active
@@ -112,6 +134,8 @@ public slots:
      * @param newActive Whether the engine should be active
      */
     void setActive(bool newActive);
+
+    /** @endcond */
 
     /**
      * @brief Adds a new client to the engine, binds to all existing zones
@@ -134,10 +158,14 @@ public slots:
 
 signals:
 
+    /** @cond DO_NOT_DOCUMENT */
+
     /**
      * @brief Emitted when active changes
      */
     void activeChanged();
+
+    /** @endcond */
 
 private slots:
 
@@ -182,6 +210,8 @@ private:
     void itemChange(ItemChange change, const ItemChangeData& value) override;
 
 };
+
+/** @} */
 
 }
 
