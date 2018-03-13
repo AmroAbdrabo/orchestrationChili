@@ -8,33 +8,8 @@ Calculates the signed difference of the client orientation angles to the zone's 
 
 >  - **angle** : `real` - Zone's angle (deg)
 
-#### CelluloZoneAngleIntervalInner [extends CelluloZone]
 
-Calculates whether the client's orientation is within the zone's angle interval, value is `0.0` or `1.0`. The zone is described by the limits **fromAngle** to **toAngle**, in that order; e.g if `330` and `30` are provided, the zone interval includes `0` degrees and not `180` degrees.
 
-**Properties:**
-
->  - **fromAngle** : `real` - Beginning of this zone (deg)
->  - **toAngle** : `real` -  End of this zone (deg)
-
-#### CelluloZoneAngleIntervalBorder [extends CelluloZone]
-
-Calculates whether the client's orientation is within **borderThickness** of the zone's angle interval limits, value is `0.0` or `1.0`
-
-**Properties:**
-
->  - **fromAngle** : `real` - Beginning of this zone (deg)
->  - **toAngle** : `real` -  End of this zone (deg)
->  - **borderThickness** : `real` - Thickness of the sensitivity (deg)
-
-#### CelluloZoneAngleIntervalDistance [extends CelluloZone]
-
-Calculates the client's angular distance to the zone's angle interval. The zone is described by the limits **fromAngle** to **toAngle**, in that order; e.g if `330` and `30` are provided, the zone interval includes `0` degrees and not `180` degrees.
-
-**Properties:**
-
->  - **fromAngle** : `real` - Beginning of this zone (deg)
->  - **toAngle** : `real` -  End of this zone (deg)
 
 #### CelluloZoneCircleInner [extends CelluloZone]
 

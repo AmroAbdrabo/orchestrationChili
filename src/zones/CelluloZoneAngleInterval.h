@@ -30,19 +30,32 @@
 namespace Cellulo{
 
 /**
- * @brief Describes an angular interval
+ * @addtogroup zone
+ * @{
+ */
+
+/**
+ * @brief CelluloZone Base for angular interval zones
  *
  * The zone is described by the limits fromAngle to toAngle, in that order; e.g if 330 and 30 are provided, the zone
  * interval includes 0 degrees and not 180 degrees.
+ *
+ * @abstract
  */
 class CelluloZoneAngleInterval : public CelluloZone {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
+
+    /** @brief Beginning of this zone (deg) */
     Q_PROPERTY(float fromAngle WRITE setFromAngle READ getFromAngle NOTIFY fromAngleChanged)
+
+    /** @brief End of this zone (deg) */
     Q_PROPERTY(float toAngle WRITE setToAngle READ getToAngle NOTIFY toAngleChanged)
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Creates a new Cellulo angular zone
@@ -110,13 +123,20 @@ public:
      */
     Q_INVOKABLE virtual bool isMouseInside(QVector2D  mousePosition, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
 
 protected:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     qreal fromAngle;    ///< First limit angle
     qreal toAngle;      ///< Second limit angle
 
+    /** @endcond */
+
 signals:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Emitted when the first limit angle changes
@@ -128,10 +148,16 @@ signals:
      */
     void toAngleChanged();
 
+    /** @endcond */
+
 };
 
 /**
  * @brief Describes an angular zone sensitive to the client angle being in/out of the interval
+ *
+ * Calculates whether the client's orientation is within the zone's angle interval, value is `0.0` or `1.0`. The zone is
+ * described by the limits **fromAngle** to **toAngle**, in that order; e.g if `330` and `30` are provided, the zone
+ * interval includes `0` degrees and not `180` degrees.
  */
 class CelluloZoneAngleIntervalInner : public CelluloZoneAngleInterval {
     /* *INDENT-OFF* */
@@ -139,6 +165,8 @@ class CelluloZoneAngleIntervalInner : public CelluloZoneAngleInterval {
     /* *INDENT-ON* */
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     CelluloZoneAngleIntervalInner();
 
@@ -165,18 +193,27 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 };
 
 /**
  * @brief Describes an angular zone sensitive to the client angle being on the border of the interval
+ *
+ * Calculates whether the client's orientation is within **borderThickness** of the zone's angle interval limits, value
+ * is `0.0` or `1.0`
  */
 class CelluloZoneAngleIntervalBorder : public CelluloZoneAngleInterval {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
+
+    /** @brief Total thickness of the border (deg) */
     Q_PROPERTY(qreal borderThickness WRITE setBorderThickness READ getBorderThickness NOTIFY borderThicknessChanged)
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     CelluloZoneAngleIntervalBorder();
 
@@ -229,12 +266,18 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 signals:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Emitted when border thickness changes
      */
     void borderThicknessChanged();
+
+    /** @endcond */
 
 private:
 
@@ -245,7 +288,9 @@ private:
 /**
  * @brief Describes an angular zone sensitive to the client orientation distance to the interval
  *
- * Always calculates the shortest distance to the interval
+ * Calculates the client's angular distance to the zone's angle interval. The zone is described by the limits
+ * **fromAngle** to **toAngle**, in that order; e.g if `330` and `30` are provided, the zone interval includes `0`
+ * degrees and not `180` degrees. Always calculates the shortest distance to the interval.
  */
 class CelluloZoneAngleIntervalDistance : public CelluloZoneAngleInterval {
     /* *INDENT-OFF* */
@@ -253,6 +298,8 @@ class CelluloZoneAngleIntervalDistance : public CelluloZoneAngleInterval {
     /* *INDENT-ON* */
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     CelluloZoneAngleIntervalDistance();
 
@@ -279,7 +326,11 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 };
+
+/** @} */
 
 }
 

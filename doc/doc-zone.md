@@ -5,6 +5,10 @@
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
 `class `[`Cellulo::CelluloZone`](doc/doc-zone.md#classCellulo_1_1CelluloZone) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Base Class for zones.
+`class `[`Cellulo::CelluloZoneAngleInterval`](doc/doc-zone.md#classCellulo_1_1CelluloZoneAngleInterval) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Base for angular interval zones.
+`class `[`Cellulo::CelluloZoneAngleIntervalInner`](doc/doc-zone.md#classCellulo_1_1CelluloZoneAngleIntervalInner) | Describes an angular zone sensitive to the client angle being in/out of the interval.
+`class `[`Cellulo::CelluloZoneAngleIntervalBorder`](doc/doc-zone.md#classCellulo_1_1CelluloZoneAngleIntervalBorder) | Describes an angular zone sensitive to the client angle being on the border of the interval.
+`class `[`Cellulo::CelluloZoneAngleIntervalDistance`](doc/doc-zone.md#classCellulo_1_1CelluloZoneAngleIntervalDistance) | Describes an angular zone sensitive to the client orientation distance to the interval.
 `class `[`Cellulo::CelluloZoneClient`](doc/doc-zone.md#classCellulo_1_1CelluloZoneClient) | Describes an object with a physical pose (e.g a robot) that may interact with [Cellulo](#namespaceCellulo) zones.
 `class `[`Cellulo::CelluloZoneEngine`](doc/doc-zone.md#classCellulo_1_1CelluloZoneEngine) | Object that ensures `[CelluloZone](#classCellulo_1_1CelluloZone)` and `[CelluloZoneClient](#classCellulo_1_1CelluloZoneClient)` interaction.
 `class `[`Cellulo::CelluloZoneJsonHandler`](doc/doc-zone.md#classCellulo_1_1CelluloZoneJsonHandler) | Utilities to load/save `[CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone)`s to to/from files in JSON format.
@@ -118,6 +122,97 @@ Get painted item associated with this zone so that its properties can be changed
 
 #### Returns
 The PaintedItem that is the visual representation of this zone
+
+# class `Cellulo::CelluloZoneAngleInterval` 
+
+```
+class Cellulo::CelluloZoneAngleInterval
+  : public Cellulo::CelluloZone
+```  
+
+[CelluloZone](#classCellulo_1_1CelluloZone) Base for angular interval zones.
+
+The zone is described by the limits fromAngle to toAngle, in that order; e.g if 330 and 30 are provided, the zone interval includes 0 degrees and not 180 degrees.
+
+This class is **abstract**, you cannot instantiate it directly. Refer to classes derived from it.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+`{property} float `[`fromAngle`](doc/doc-zone.md#classCellulo_1_1CelluloZoneAngleInterval_1ae53f35485ff46c07d6e2128957a6b67c) | Beginning of this zone (deg)
+`{property} float `[`toAngle`](doc/doc-zone.md#classCellulo_1_1CelluloZoneAngleInterval_1a8b405d1a360070b5350368feec11c0e4) | End of this zone (deg)
+
+## Members
+
+#### `{property} float `[`fromAngle`](doc/doc-zone.md#classCellulo_1_1CelluloZoneAngleInterval_1ae53f35485ff46c07d6e2128957a6b67c) 
+
+Beginning of this zone (deg)
+
+#### `{property} float `[`toAngle`](doc/doc-zone.md#classCellulo_1_1CelluloZoneAngleInterval_1a8b405d1a360070b5350368feec11c0e4) 
+
+End of this zone (deg)
+
+# class `Cellulo::CelluloZoneAngleIntervalInner` 
+
+```
+class Cellulo::CelluloZoneAngleIntervalInner
+  : public Cellulo::CelluloZoneAngleInterval
+```  
+
+Describes an angular zone sensitive to the client angle being in/out of the interval.
+
+Calculates whether the client's orientation is within the zone's angle interval, value is `0.0` or `1.0`. The zone is described by the limits **fromAngle** to **toAngle**, in that order; e.g if `330` and `30` are provided, the zone interval includes `0` degrees and not `180` degrees.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+
+## Members
+
+# class `Cellulo::CelluloZoneAngleIntervalBorder` 
+
+```
+class Cellulo::CelluloZoneAngleIntervalBorder
+  : public Cellulo::CelluloZoneAngleInterval
+```  
+
+Describes an angular zone sensitive to the client angle being on the border of the interval.
+
+Calculates whether the client's orientation is within **borderThickness** of the zone's angle interval limits, value is `0.0` or `1.0`
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+`{property} qreal `[`borderThickness`](doc/doc-zone.md#classCellulo_1_1CelluloZoneAngleIntervalBorder_1a34ac0856ce5ef641b0ee37861d91f077) | Total thickness of the border (deg)
+
+## Members
+
+#### `{property} qreal `[`borderThickness`](doc/doc-zone.md#classCellulo_1_1CelluloZoneAngleIntervalBorder_1a34ac0856ce5ef641b0ee37861d91f077) 
+
+Total thickness of the border (deg)
+
+The border thickness in degrees.
+
+# class `Cellulo::CelluloZoneAngleIntervalDistance` 
+
+```
+class Cellulo::CelluloZoneAngleIntervalDistance
+  : public Cellulo::CelluloZoneAngleInterval
+```  
+
+Describes an angular zone sensitive to the client orientation distance to the interval.
+
+Calculates the client's angular distance to the zone's angle interval. The zone is described by the limits **fromAngle** to **toAngle**, in that order; e.g if `330` and `30` are provided, the zone interval includes `0` degrees and not `180` degrees. Always calculates the shortest distance to the interval.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+
+## Members
 
 # class `Cellulo::CelluloZoneClient` 
 
@@ -446,9 +541,9 @@ This class is **singleton**, you can call `ThisClass.anyFunction()` and use `Thi
  Values                         | Descriptions                                
 --------------------------------|---------------------------------------------
 ANGLEDIFFERENCE            | [CelluloZoneAngleDifference](#classCellulo_1_1CelluloZoneAngleDifference).
-ANGLEINTERVALINNER            | [CelluloZoneAngleIntervalInner](#classCellulo_1_1CelluloZoneAngleIntervalInner).
-ANGLEINTERVALBORDER            | [CelluloZoneAngleIntervalBorder](#classCellulo_1_1CelluloZoneAngleIntervalBorder).
-ANGLEINTERVALDISTANCE            | [CelluloZoneAngleIntervalDistance](#classCellulo_1_1CelluloZoneAngleIntervalDistance).
+ANGLEINTERVALINNER            | [CelluloZoneAngleIntervalInner](doc/doc-zone.md#classCellulo_1_1CelluloZoneAngleIntervalInner).
+ANGLEINTERVALBORDER            | [CelluloZoneAngleIntervalBorder](doc/doc-zone.md#classCellulo_1_1CelluloZoneAngleIntervalBorder).
+ANGLEINTERVALDISTANCE            | [CelluloZoneAngleIntervalDistance](doc/doc-zone.md#classCellulo_1_1CelluloZoneAngleIntervalDistance).
 CIRCLEINNER            | [CelluloZoneCircleInner](#classCellulo_1_1CelluloZoneCircleInner).
 CIRCLEBORDER            | [CelluloZoneCircleBorder](#classCellulo_1_1CelluloZoneCircleBorder).
 CIRCLEDISTANCE            | [CelluloZoneCircleDistance](#classCellulo_1_1CelluloZoneCircleDistance).
