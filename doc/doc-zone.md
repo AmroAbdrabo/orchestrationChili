@@ -7,6 +7,7 @@
 `class `[`Cellulo::CelluloZone`](doc/doc-zone.md#classCellulo_1_1CelluloZone) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Base Class for zones.
 `class `[`Cellulo::CelluloZoneClient`](doc/doc-zone.md#classCellulo_1_1CelluloZoneClient) | Describes an object with a physical pose (e.g a robot) that may interact with [Cellulo](#namespaceCellulo) zones.
 `class `[`Cellulo::CelluloZoneEngine`](doc/doc-zone.md#classCellulo_1_1CelluloZoneEngine) | Object that ensures `[CelluloZone](#classCellulo_1_1CelluloZone)` and `[CelluloZoneClient](#classCellulo_1_1CelluloZoneClient)` interaction.
+`class `[`Cellulo::CelluloZoneJsonHandler`](doc/doc-zone.md#classCellulo_1_1CelluloZoneJsonHandler) | Utilities to load/save `[CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone)`s to to/from files in JSON format.
 `class `[`Cellulo::CelluloZonePaintedItem`](doc/doc-zone.md#classCellulo_1_1CelluloZonePaintedItem) | A QML compatible QQuickPaintedItem for CelluloZones.
 `class `[`Cellulo::CelluloZoneRectangle`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangle) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Base Class for rectangular zones.
 `class `[`Cellulo::CelluloZoneRectangleInner`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangleInner) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for rectangular zones inner determination; calculates whether the client's position is within the rectangle, value is `0.0` or `1.0`.
@@ -242,6 +243,45 @@ Adds a new zone to the engine, binds to all existing clients.
 #### `{slot} public void `[`clearZones`](#classCellulo_1_1CelluloZoneEngine_1ac350f0f16d642b3144cdbbc23588ba6a)`()` 
 
 Deletes all zones.
+
+# class `Cellulo::CelluloZoneJsonHandler` 
+
+```
+class Cellulo::CelluloZoneJsonHandler
+  : public QObject
+```  
+
+Utilities to load/save `[CelluloZone](#classCellulo_1_1CelluloZone)`s to to/from files in JSON format.
+
+This class is **singleton**, you can call `ThisClass.anyFunction()` and use `ThisClass.anyProperty` directly.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+`public static Q_INVOKABLE void `[`saveZones`](#classCellulo_1_1CelluloZoneJsonHandler_1a8d1de072d692173999dde8748aef5850)`(const QVariantList & zones,QString path)` | Save zones in JSON file.
+`public static Q_INVOKABLE QVariantList `[`loadZonesQML`](#classCellulo_1_1CelluloZoneJsonHandler_1a5f7aeb79df9bcd76770f4661ed2b086e)`(QString path)` | Load zones from JSON file.
+
+## Members
+
+#### `public static Q_INVOKABLE void `[`saveZones`](#classCellulo_1_1CelluloZoneJsonHandler_1a8d1de072d692173999dde8748aef5850)`(const QVariantList & zones,QString path)` 
+
+Save zones in JSON file.
+
+#### Parameters
+* `zones` Zones to be saved (QML-compatible) 
+
+* `path` Path of the JSON file where to save the zones
+
+#### `public static Q_INVOKABLE QVariantList `[`loadZonesQML`](#classCellulo_1_1CelluloZoneJsonHandler_1a5f7aeb79df9bcd76770f4661ed2b086e)`(QString path)` 
+
+Load zones from JSON file.
+
+#### Parameters
+* `path` Path of the JSON file where to load the zones 
+
+#### Returns
+List of zones (QML-compatible)
 
 # class `Cellulo::CelluloZonePaintedItem` 
 

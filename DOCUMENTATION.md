@@ -1,14 +1,5 @@
 
 
-#### CelluloZoneJsonHandler [Singleton]
-
-Utilities to load/save `CelluloZone`s to to/from files in JSON format.
-
-**Slots:**
-
->  - **void saveZones(list&lt;CelluloZone&gt; zones, string path)** : Saves all given zones to the given file
->  - **list&lt;CelluloZone&gt; loadZonesQML(string path)** : Loads zones from the given file
-
 #### CelluloZoneAngleDifference
 
 Calculates the signed difference of the client orientation angles to the zone's angle, value is in `]-180, 180]`.

@@ -35,6 +35,15 @@
 
 namespace Cellulo{
 
+/**
+ * @addtogroup zone
+ * @{
+ */
+
+/**
+ * @brief Utilities to load/save `CelluloZone`s to to/from files in JSON format.
+ * @singleton
+ */
 class CelluloZoneJsonHandler : public QObject {
     /* *INDENT-OFF* */
     Q_OBJECT
@@ -42,16 +51,10 @@ class CelluloZoneJsonHandler : public QObject {
 
 public:
 
+    /** @cond DO_NOT_DOCUMENT */
+
     CelluloZoneJsonHandler(QObject* parent = 0);
     ~CelluloZoneJsonHandler();
-
-    /**
-     * @brief Save zones in JSON file
-     *
-     * @param zones Zones to be saved (QML-compatible)
-     * @param path Path of the JSON file where to save the zones
-     */
-    Q_INVOKABLE static void saveZones(const QVariantList& zones, QString path);
 
     /**
      * @brief Save zones in JSON file
@@ -64,18 +67,28 @@ public:
     /**
      * @brief Load zones from JSON file
      *
-     * @param path Path of the JSON file where to load the zones
-     * @return List of zones (QML-compatible)
-     */
-    Q_INVOKABLE static QVariantList loadZonesQML(QString path);
-
-    /**
-     * @brief Load zones from JSON file
-     *
      * @param Path path of the JSON file where to load the zones
      * @return List of zones
      */
     static QList<CelluloZone*> loadZonesCPP(QString path);
+
+    /** @endcond */
+
+    /**
+     * @brief Save zones in JSON file
+     *
+     * @param zones Zones to be saved (QML-compatible)
+     * @param path Path of the JSON file where to save the zones
+     */
+    Q_INVOKABLE static void saveZones(const QVariantList& zones, QString path);
+
+    /**
+     * @brief Load zones from JSON file
+     *
+     * @param path Path of the JSON file where to load the zones
+     * @return List of zones (QML-compatible)
+     */
+    Q_INVOKABLE static QVariantList loadZonesQML(QString path);
 
 private:
 
@@ -96,6 +109,8 @@ private:
     static QList<CelluloZone*> read(const QJsonArray& json);
 
 };
+
+/** @} */
 
 }
 
