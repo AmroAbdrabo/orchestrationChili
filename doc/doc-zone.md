@@ -18,6 +18,10 @@
 `class `[`Cellulo::CelluloZoneClient`](doc/doc-zone.md#classCellulo_1_1CelluloZoneClient) | Describes an object with a physical pose (e.g a robot) that may interact with [Cellulo](#namespaceCellulo) zones.
 `class `[`Cellulo::CelluloZoneEngine`](doc/doc-zone.md#classCellulo_1_1CelluloZoneEngine) | Object that ensures `[CelluloZone](#classCellulo_1_1CelluloZone)` and `[CelluloZoneClient](#classCellulo_1_1CelluloZoneClient)` interaction.
 `class `[`Cellulo::CelluloZoneJsonHandler`](doc/doc-zone.md#classCellulo_1_1CelluloZoneJsonHandler) | Utilities to load/save `[CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone)`s to to/from files in JSON format.
+`class `[`Cellulo::CelluloZoneLine`](doc/doc-zone.md#classCellulo_1_1CelluloZoneLine) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Base Class for line zones.
+`class `[`Cellulo::CelluloZoneLineSegmentDistance`](doc/doc-zone.md#classCellulo_1_1CelluloZoneLineSegmentDistance) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for line segment distance determination.
+`class `[`Cellulo::CelluloZoneLineDistanceSigned`](doc/doc-zone.md#classCellulo_1_1CelluloZoneLineDistanceSigned) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for signed line distance determination.
+`class `[`Cellulo::CelluloZoneLineBorder`](doc/doc-zone.md#classCellulo_1_1CelluloZoneLineBorder) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for determining whether a point is within a distance to an infinite line.
 `class `[`Cellulo::CelluloZonePaintedItem`](doc/doc-zone.md#classCellulo_1_1CelluloZonePaintedItem) | A QML compatible QQuickPaintedItem for CelluloZones.
 `class `[`Cellulo::CelluloZoneRectangle`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangle) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Base Class for rectangular zones.
 `class `[`Cellulo::CelluloZoneRectangleInner`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangleInner) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for rectangular zones inner determination; calculates whether the client's position is within the rectangle, value is `0.0` or `1.0`.
@@ -515,6 +519,103 @@ Load zones from JSON file.
 #### Returns
 List of zones (QML-compatible)
 
+# class `Cellulo::CelluloZoneLine` 
+
+```
+class Cellulo::CelluloZoneLine
+  : public Cellulo::CelluloZone
+```  
+
+[CelluloZone](#classCellulo_1_1CelluloZone) Base Class for line zones.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+`{property} float `[`x1`](doc/doc-zone.md#classCellulo_1_1CelluloZoneLine_1ac45f2632a93c3b15c876ce5465d42437) | X coordinate of the first line segment end (mm)
+`{property} float `[`y1`](doc/doc-zone.md#classCellulo_1_1CelluloZoneLine_1a6d508b6f2a00934d56181c4b38555483) | Y coordinate of the first line segment end (mm)
+`{property} float `[`x2`](doc/doc-zone.md#classCellulo_1_1CelluloZoneLine_1a42be2206fdbddbebc610bf2165f60b14) | X coordinate of the second line segment end (mm)
+`{property} float `[`y2`](doc/doc-zone.md#classCellulo_1_1CelluloZoneLine_1a97392501f00154b302e80eb6e1ee71d1) | Y coordinate of the second line segment end (mm)
+
+## Members
+
+#### `{property} float `[`x1`](doc/doc-zone.md#classCellulo_1_1CelluloZoneLine_1ac45f2632a93c3b15c876ce5465d42437) 
+
+X coordinate of the first line segment end (mm)
+
+#### `{property} float `[`y1`](doc/doc-zone.md#classCellulo_1_1CelluloZoneLine_1a6d508b6f2a00934d56181c4b38555483) 
+
+Y coordinate of the first line segment end (mm)
+
+#### `{property} float `[`x2`](doc/doc-zone.md#classCellulo_1_1CelluloZoneLine_1a42be2206fdbddbebc610bf2165f60b14) 
+
+X coordinate of the second line segment end (mm)
+
+#### `{property} float `[`y2`](doc/doc-zone.md#classCellulo_1_1CelluloZoneLine_1a97392501f00154b302e80eb6e1ee71d1) 
+
+Y coordinate of the second line segment end (mm)
+
+# class `Cellulo::CelluloZoneLineSegmentDistance` 
+
+```
+class Cellulo::CelluloZoneLineSegmentDistance
+  : public Cellulo::CelluloZoneLine
+```  
+
+[CelluloZone](#classCellulo_1_1CelluloZone) Specific Class for line segment distance determination.
+
+Calculates the client's distance to the zone that is a line segment.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+
+## Members
+
+# class `Cellulo::CelluloZoneLineDistanceSigned` 
+
+```
+class Cellulo::CelluloZoneLineDistanceSigned
+  : public Cellulo::CelluloZoneLine
+```  
+
+[CelluloZone](#classCellulo_1_1CelluloZone) Specific Class for signed line distance determination.
+
+Calculates the client's (signed) distance to the zone that is an infinite line. The two points of [CelluloZoneLine](#classCellulo_1_1CelluloZoneLine) are taken as the two points that this infinite line passes through.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+
+## Members
+
+# class `Cellulo::CelluloZoneLineBorder` 
+
+```
+class Cellulo::CelluloZoneLineBorder
+  : public Cellulo::CelluloZoneLine
+```  
+
+[CelluloZone](#classCellulo_1_1CelluloZone) Specific Class for determining whether a point is within a distance to an infinite line.
+
+Calculates whether the client's position is within **borderThickness** of the zone's border, value is `0.0` or `1.0`. The two points of [CelluloZoneLine](#classCellulo_1_1CelluloZoneLine) are taken as the two points that this infinite line passes through.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+`{property} qreal `[`borderThickness`](doc/doc-zone.md#classCellulo_1_1CelluloZoneLineBorder_1a476a512012471cfdb5b54b1366d017b6) | Total thickness of the border (mm)
+
+## Members
+
+#### `{property} qreal `[`borderThickness`](doc/doc-zone.md#classCellulo_1_1CelluloZoneLineBorder_1a476a512012471cfdb5b54b1366d017b6) 
+
+Total thickness of the border (mm)
+
+The border thickness in mm.
+
 # class `Cellulo::CelluloZonePaintedItem` 
 
 ```
@@ -687,9 +788,9 @@ CIRCLEDISTANCE            | [CelluloZoneCircleDistance](doc/doc-zone.md#classCel
 RECTANGLEINNER            | [CelluloZoneRectangleInner](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangleInner).
 RECTANGLEBORDER            | [CelluloZoneRectangleBorder](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangleBorder).
 RECTANGLEDISTANCE            | [CelluloZoneRectangleDistance](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangleDistance).
-LINESEGMENTDISTANCE            | [CelluloZoneLineSegmentDistance](#classCellulo_1_1CelluloZoneLineSegmentDistance).
-LINEDISTANCESIGNED            | [CelluloZoneLineDistanceSigned](#classCellulo_1_1CelluloZoneLineDistanceSigned).
-LINEBORDER            | [CelluloZoneLineBorder](#classCellulo_1_1CelluloZoneLineBorder).
+LINESEGMENTDISTANCE            | [CelluloZoneLineSegmentDistance](doc/doc-zone.md#classCellulo_1_1CelluloZoneLineSegmentDistance).
+LINEDISTANCESIGNED            | [CelluloZoneLineDistanceSigned](doc/doc-zone.md#classCellulo_1_1CelluloZoneLineDistanceSigned).
+LINEBORDER            | [CelluloZoneLineBorder](doc/doc-zone.md#classCellulo_1_1CelluloZoneLineBorder).
 POINTDISTANCE            | [CelluloZonePointDistance](#classCellulo_1_1CelluloZonePointDistance).
 RPOLYGONINNER            | [CelluloZoneRegularPolygonInner](#classCellulo_1_1CelluloZoneRegularPolygonInner).
 RPOLYGONBORDER            | [CelluloZoneRegularPolygonBorder](#classCellulo_1_1CelluloZoneRegularPolygonBorder).

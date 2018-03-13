@@ -30,18 +30,33 @@
 namespace Cellulo{
 
 /**
+ * @addtogroup zone
+ * @{
+ */
+
+/**
  * @brief CelluloZone Base Class for line zones
  */
 class CelluloZoneLine : public CelluloZone {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
+
+    /** @brief X coordinate of the first line segment end (mm) */
     Q_PROPERTY(float x1 WRITE setX1 READ getX1 NOTIFY x1Changed)
+
+    /** @brief Y coordinate of the first line segment end (mm) */
     Q_PROPERTY(float y1 WRITE setY1 READ getY1 NOTIFY y1Changed)
+
+    /** @brief X coordinate of the second line segment end (mm) */
     Q_PROPERTY(float x2 WRITE setX2 READ getX2 NOTIFY x2Changed)
+
+    /** @brief Y coordinate of the second line segment end (mm) */
     Q_PROPERTY(float y2 WRITE setY2 READ getY2 NOTIFY y2Changed)
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Creates a new Cellulo line zone
@@ -133,14 +148,22 @@ public:
      */
     Q_INVOKABLE virtual bool isMouseInside(QVector2D  mousePosition, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 protected:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     float x1;   ///< X coordinate of the line's first point
     float y1;   ///< Y coordinate of the line's first point
     float x2;   ///< X coordinate of the line's second point
     float y2;   ///< Y coordinate of the line's second point
 
+    /** @endcond */
+
 signals:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Emitted when the X coordinate of the line's first point changes
@@ -162,10 +185,14 @@ signals:
      */
     void y2Changed();
 
+    /** @endcond */
+
 };
 
 /**
  * @brief CelluloZone Specific Class for line segment distance determination
+ *
+ * Calculates the client's distance to the zone that is a line segment.
  */
 class CelluloZoneLineSegmentDistance : public CelluloZoneLine {
     /* *INDENT-OFF* */
@@ -173,6 +200,8 @@ class CelluloZoneLineSegmentDistance : public CelluloZoneLine {
     /* *INDENT-ON* */
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     CelluloZoneLineSegmentDistance();
 
@@ -199,12 +228,15 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 };
 
 /**
  * @brief CelluloZone Specific Class for signed line distance determination
  *
- * The two points of CelluloZoneLine are taken as the two points that this infinite line passes through
+ * Calculates the client's (signed) distance to the zone that is an infinite line.
+ * The two points of CelluloZoneLine are taken as the two points that this infinite line passes through.
  */
 class CelluloZoneLineDistanceSigned : public CelluloZoneLine {
     /* *INDENT-OFF* */
@@ -212,6 +244,8 @@ class CelluloZoneLineDistanceSigned : public CelluloZoneLine {
     /* *INDENT-ON* */
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     CelluloZoneLineDistanceSigned();
 
@@ -238,20 +272,27 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 };
 
 /**
  * @brief CelluloZone Specific Class for determining whether a point is within a distance to an infinite line
  *
- * The two points of CelluloZoneLine are taken as the two points that this infinite line passes through
+ * Calculates whether the client's position is within **borderThickness** of the zone's border, value is `0.0` or `1.0`.
+ * The two points of CelluloZoneLine are taken as the two points that this infinite line passes through.
  */
 class CelluloZoneLineBorder : public CelluloZoneLine {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
+
+    /** @brief Total thickness of the border (mm) */
     Q_PROPERTY(qreal borderThickness WRITE setBorderThickness READ getBorderThickness NOTIFY borderThicknessChanged)
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     CelluloZoneLineBorder();
 
@@ -304,18 +345,26 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 signals:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Emitted when border thickness changes
      */
     void borderThicknessChanged();
 
+    /** @endcond */
+
 private:
 
-        qreal borderThickness;  ///< The border thickness in mm
+    qreal borderThickness;  ///< The border thickness in mm
 
 };
+
+/** @} */
 
 }
 
