@@ -207,7 +207,7 @@ public:
     /**
      * @brief Converts radians to degrees
      *
-     * @param deg Angle in radians
+     * @param rad Angle in radians
      * @return Corresponding angle in degrees
      */
     Q_INVOKABLE static qreal radToDeg(qreal rad);

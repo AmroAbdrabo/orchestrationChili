@@ -30,17 +30,30 @@
 namespace Cellulo{
 
 /**
+ * @addtogroup zone
+ * @{
+ */
+
+/**
  * @brief CelluloZone Base Class for circular zones
  */
 class CelluloZoneCircle : public CelluloZone {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
+
+    /** @brief Center x coordinate of the circle (mm) */
     Q_PROPERTY(float x WRITE setX READ getX NOTIFY xChanged)
+
+    /** @brief Center y coordinate of the circle (mm) */
     Q_PROPERTY(float y WRITE setY READ getY NOTIFY yChanged)
+
+    /** @brief Radius of the circle (mm) */
     Q_PROPERTY(float r WRITE setR READ getR NOTIFY rChanged)
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Creates a new Cellulo circular zone
@@ -126,7 +139,12 @@ public:
      */
     Q_INVOKABLE virtual bool isMouseInside(QVector2D  mousePosition, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 protected:
+
+    /** @cond DO_NOT_DOCUMENT */
+
     /**
      * @brief Get if the point is inside the zone or not
      *
@@ -141,7 +159,11 @@ protected:
     float y;    ///< y position of circle's center
     float r;    ///< r the radius of the circle
 
+    /** @endcond */
+
 signals:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Emitted when the x position of circular zone's center changes
@@ -158,10 +180,14 @@ signals:
      */
     void rChanged();
 
+    /** @endcond */
+
 };
 
 /**
  * @brief CelluloZone Specific Class for circular zones inner determination
+ *
+ * Calculates whether the client's position is within the circle, value is `0.0` or `1.0`.
  */
 class CelluloZoneCircleInner : public CelluloZoneCircle {
     /* *INDENT-OFF* */
@@ -169,6 +195,8 @@ class CelluloZoneCircleInner : public CelluloZoneCircle {
     /* *INDENT-ON* */
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     CelluloZoneCircleInner();
 
@@ -195,18 +223,26 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 };
 
 /**
  * @brief CelluloZone Specific Class for circular zones border determination
+ *
+ * Calculates whether the client's position is within **borderThickness** of the zone's border, value is `0.0` or `1.0`.
  */
 class CelluloZoneCircleBorder : public CelluloZoneCircle {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
+
+    /** @brief Total thickness of the border (deg) */
     Q_PROPERTY(qreal borderThickness WRITE setBorderThickness READ getBorderThickness NOTIFY borderThicknessChanged)
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     CelluloZoneCircleBorder();
 
@@ -261,12 +297,18 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 signals:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Emitted when border thickness changes
      */
     void borderThicknessChanged();
+
+    /** @endcond */
 
 private:
 
@@ -276,6 +318,8 @@ private:
 
 /**
  * @brief CelluloZone Specific Class for circular zones distance determination
+ *
+ * Calculates the client's distance to the zone's border.
  */
 class CelluloZoneCircleDistance : public CelluloZoneCircle {
     /* *INDENT-OFF* */
@@ -283,6 +327,8 @@ class CelluloZoneCircleDistance : public CelluloZoneCircle {
     /* *INDENT-ON* */
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     CelluloZoneCircleDistance();
 
@@ -309,7 +355,11 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 };
+
+/** @} */
 
 }
 

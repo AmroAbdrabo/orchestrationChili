@@ -220,7 +220,7 @@ Corresponding angle in radians
 Converts radians to degrees.
 
 #### Parameters
-* `deg` Angle in radians 
+* `rad` Angle in radians 
 
 #### Returns
 Corresponding angle in degrees
@@ -292,7 +292,7 @@ If optimize is true, tries to parsed into a more accurate shape and outputs in t
 
 * `dpi` Dots Per Inch to be used during conversion to millimeters (90 is the default for inkscape) 
 
-* `optimize` Whether to try to extract as lines, points, circles, rectangles or polygons instead of polybezier zones, if possible (default, but EXPERIMENTAL). If disabled, all zones are converted into `POLBEZIERCLOSESTT`. 
+* `optimized` Whether to try to extract as lines, points, circles, rectangles or polygons instead of polybezier zones, if possible (default, but EXPERIMENTAL). If disabled, all zones are converted into `POLBEZIERCLOSESTT`. 
 
 #### Returns
 Human readable result message
@@ -308,7 +308,7 @@ Parses the given SVG file into zones.
 
 * `dpi` Dots Per Inch to be used during conversion to millimeters (90 is the default for inkscape) 
 
-* `optimize` Whether to try to extract as lines, points, circles, rectangles or polygons instead of polybezier zones, if possible 
+* `optimized` Whether to try to extract as lines, points, circles, rectangles or polygons instead of polybezier zones, if possible 
 
 #### Returns
 Parsed zones (QML-compatible)

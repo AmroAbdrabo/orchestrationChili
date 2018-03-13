@@ -72,7 +72,7 @@ public:
      * @param type UNUSED
      * @param name Name prefix for all zones, consecutive zones are suffixed with "_1", "_2" etc
      * @param dpi Dots Per Inch to be used during conversion to millimeters (90 is the default for inkscape)
-     * @param optimize Whether to try to extract as lines, points, circles, rectangles or polygons instead of polybezier zones, if possible (default, but EXPERIMENTAL). If disabled, all zones are converted into `POLBEZIERCLOSESTT`.
+     * @param optimized Whether to try to extract as lines, points, circles, rectangles or polygons instead of polybezier zones, if possible (default, but EXPERIMENTAL). If disabled, all zones are converted into `POLBEZIERCLOSESTT`.
      * @return Human readable result message
      */
     Q_INVOKABLE static QString dumpAllPathsToJSON(
@@ -90,7 +90,7 @@ public:
      * @param inSVGFile Full path to the local SVG file, can be in QUrl form
      * @param name Name prefix for all zones
      * @param dpi Dots Per Inch to be used during conversion to millimeters (90 is the default for inkscape)
-     * @param optimize Whether to try to extract as lines, points, circles, rectangles or polygons instead of polybezier zones, if possible
+     * @param optimized Whether to try to extract as lines, points, circles, rectangles or polygons instead of polybezier zones, if possible
      * @return Parsed zones (QML-compatible)
      */
     Q_INVOKABLE static QVariantList loadZonesQML(
@@ -108,7 +108,7 @@ public:
      * @param inSVGFile Full path to the local SVG file, can be in QUrl form
      * @param name Name prefix for all zones
      * @param dpi Dots Per Inch to be used during conversion to millimeters (90 is the default for inkscape)
-     * @param optimize Whether to try to extract as lines, points, circles, rectangles or polygons instead of polybezier zones, if possible
+     * @param optimized Whether to try to extract as lines, points, circles, rectangles or polygons instead of polybezier zones, if possible
      * @return Parsed zones (not QML-compatible)
      */
     Q_INVOKABLE static QList<CelluloZone*> loadZonesCPP(
@@ -149,7 +149,7 @@ private:
     /**
      * @brief Gets whether polygon is small enough to be considered as a point
      *
-     * @param controlPoints controlPoints of the Bezier shape
+     * @param polyPoints controlPoints of the Bezier shape
      * @return Whether polygon is small enough to be considered as a point
      */
     static bool polyIsSmallEnoughToBeAPoint(QList<QVector2D> polyPoints);

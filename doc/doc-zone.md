@@ -11,6 +11,10 @@
 `class `[`Cellulo::CelluloZoneAngleIntervalInner`](doc/doc-zone.md#classCellulo_1_1CelluloZoneAngleIntervalInner) | Describes an angular zone sensitive to the client angle being in/out of the interval.
 `class `[`Cellulo::CelluloZoneAngleIntervalBorder`](doc/doc-zone.md#classCellulo_1_1CelluloZoneAngleIntervalBorder) | Describes an angular zone sensitive to the client angle being on the border of the interval.
 `class `[`Cellulo::CelluloZoneAngleIntervalDistance`](doc/doc-zone.md#classCellulo_1_1CelluloZoneAngleIntervalDistance) | Describes an angular zone sensitive to the client orientation distance to the interval.
+`class `[`Cellulo::CelluloZoneCircle`](doc/doc-zone.md#classCellulo_1_1CelluloZoneCircle) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Base Class for circular zones.
+`class `[`Cellulo::CelluloZoneCircleInner`](doc/doc-zone.md#classCellulo_1_1CelluloZoneCircleInner) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for circular zones inner determination.
+`class `[`Cellulo::CelluloZoneCircleBorder`](doc/doc-zone.md#classCellulo_1_1CelluloZoneCircleBorder) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for circular zones border determination.
+`class `[`Cellulo::CelluloZoneCircleDistance`](doc/doc-zone.md#classCellulo_1_1CelluloZoneCircleDistance) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for circular zones distance determination.
 `class `[`Cellulo::CelluloZoneClient`](doc/doc-zone.md#classCellulo_1_1CelluloZoneClient) | Describes an object with a physical pose (e.g a robot) that may interact with [Cellulo](#namespaceCellulo) zones.
 `class `[`Cellulo::CelluloZoneEngine`](doc/doc-zone.md#classCellulo_1_1CelluloZoneEngine) | Object that ensures `[CelluloZone](#classCellulo_1_1CelluloZone)` and `[CelluloZoneClient](#classCellulo_1_1CelluloZoneClient)` interaction.
 `class `[`Cellulo::CelluloZoneJsonHandler`](doc/doc-zone.md#classCellulo_1_1CelluloZoneJsonHandler) | Utilities to load/save `[CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone)`s to to/from files in JSON format.
@@ -247,6 +251,98 @@ class Cellulo::CelluloZoneAngleIntervalDistance
 Describes an angular zone sensitive to the client orientation distance to the interval.
 
 Calculates the client's angular distance to the zone's angle interval. The zone is described by the limits **fromAngle** to **toAngle**, in that order; e.g if `330` and `30` are provided, the zone interval includes `0` degrees and not `180` degrees. Always calculates the shortest distance to the interval.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+
+## Members
+
+# class `Cellulo::CelluloZoneCircle` 
+
+```
+class Cellulo::CelluloZoneCircle
+  : public Cellulo::CelluloZone
+```  
+
+[CelluloZone](#classCellulo_1_1CelluloZone) Base Class for circular zones.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+`{property} float `[`x`](doc/doc-zone.md#classCellulo_1_1CelluloZoneCircle_1a645768a86591f37a6bd00ed80f494313) | Center x coordinate of the circle (mm)
+`{property} float `[`y`](doc/doc-zone.md#classCellulo_1_1CelluloZoneCircle_1a1ada06cba763ed0dd9bc835d109782d8) | Center y coordinate of the circle (mm)
+`{property} float `[`r`](doc/doc-zone.md#classCellulo_1_1CelluloZoneCircle_1ade7234cb3d3fa818aef69bdfb0f67ab8) | Radius of the circle (mm)
+
+## Members
+
+#### `{property} float `[`x`](doc/doc-zone.md#classCellulo_1_1CelluloZoneCircle_1a645768a86591f37a6bd00ed80f494313) 
+
+Center x coordinate of the circle (mm)
+
+#### `{property} float `[`y`](doc/doc-zone.md#classCellulo_1_1CelluloZoneCircle_1a1ada06cba763ed0dd9bc835d109782d8) 
+
+Center y coordinate of the circle (mm)
+
+#### `{property} float `[`r`](doc/doc-zone.md#classCellulo_1_1CelluloZoneCircle_1ade7234cb3d3fa818aef69bdfb0f67ab8) 
+
+Radius of the circle (mm)
+
+# class `Cellulo::CelluloZoneCircleInner` 
+
+```
+class Cellulo::CelluloZoneCircleInner
+  : public Cellulo::CelluloZoneCircle
+```  
+
+[CelluloZone](#classCellulo_1_1CelluloZone) Specific Class for circular zones inner determination.
+
+Calculates whether the client's position is within the circle, value is `0.0` or `1.0`.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+
+## Members
+
+# class `Cellulo::CelluloZoneCircleBorder` 
+
+```
+class Cellulo::CelluloZoneCircleBorder
+  : public Cellulo::CelluloZoneCircle
+```  
+
+[CelluloZone](#classCellulo_1_1CelluloZone) Specific Class for circular zones border determination.
+
+Calculates whether the client's position is within **borderThickness** of the zone's border, value is `0.0` or `1.0`.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+`{property} qreal `[`borderThickness`](doc/doc-zone.md#classCellulo_1_1CelluloZoneCircleBorder_1ad780c284026f14d45812b74310dd4b7e) | Total thickness of the border (deg)
+
+## Members
+
+#### `{property} qreal `[`borderThickness`](doc/doc-zone.md#classCellulo_1_1CelluloZoneCircleBorder_1ad780c284026f14d45812b74310dd4b7e) 
+
+Total thickness of the border (deg)
+
+The border thickness in mm.
+
+# class `Cellulo::CelluloZoneCircleDistance` 
+
+```
+class Cellulo::CelluloZoneCircleDistance
+  : public Cellulo::CelluloZoneCircle
+```  
+
+[CelluloZone](#classCellulo_1_1CelluloZone) Specific Class for circular zones distance determination.
+
+Calculates the client's distance to the zone's border.
 
 ## Summary
 
@@ -585,9 +681,9 @@ ANGLEDIFFERENCE            | [CelluloZoneAngleDifference](doc/doc-zone.md#classC
 ANGLEINTERVALINNER            | [CelluloZoneAngleIntervalInner](doc/doc-zone.md#classCellulo_1_1CelluloZoneAngleIntervalInner).
 ANGLEINTERVALBORDER            | [CelluloZoneAngleIntervalBorder](doc/doc-zone.md#classCellulo_1_1CelluloZoneAngleIntervalBorder).
 ANGLEINTERVALDISTANCE            | [CelluloZoneAngleIntervalDistance](doc/doc-zone.md#classCellulo_1_1CelluloZoneAngleIntervalDistance).
-CIRCLEINNER            | [CelluloZoneCircleInner](#classCellulo_1_1CelluloZoneCircleInner).
-CIRCLEBORDER            | [CelluloZoneCircleBorder](#classCellulo_1_1CelluloZoneCircleBorder).
-CIRCLEDISTANCE            | [CelluloZoneCircleDistance](#classCellulo_1_1CelluloZoneCircleDistance).
+CIRCLEINNER            | [CelluloZoneCircleInner](doc/doc-zone.md#classCellulo_1_1CelluloZoneCircleInner).
+CIRCLEBORDER            | [CelluloZoneCircleBorder](doc/doc-zone.md#classCellulo_1_1CelluloZoneCircleBorder).
+CIRCLEDISTANCE            | [CelluloZoneCircleDistance](doc/doc-zone.md#classCellulo_1_1CelluloZoneCircleDistance).
 RECTANGLEINNER            | [CelluloZoneRectangleInner](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangleInner).
 RECTANGLEBORDER            | [CelluloZoneRectangleBorder](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangleBorder).
 RECTANGLEDISTANCE            | [CelluloZoneRectangleDistance](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangleDistance).
