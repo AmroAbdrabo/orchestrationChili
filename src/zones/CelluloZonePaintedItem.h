@@ -36,20 +36,37 @@ namespace Cellulo{
 class CelluloZone;
 
 /**
+ * @addtogroup zone
+ * @{
+ */
+
+/**
  * @brief A QML compatible QQuickPaintedItem for CelluloZones
  *
- * Visually covers the parent (from (0,0) to (parent.width,parent.height)) and draws the zone at the appropriate place
+ * Visual representation of a `CelluloZone`; can be used to draw `CelluloZone`s in e.g `Rectangle`s. Visually covers its
+ * parent (from `[0, 0]` to `[parent.width, parent.height]`), using it as a canvas and drawing the zone at the
+ * appropriate place.
  */
 class CelluloZonePaintedItem : public QQuickPaintedItem {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
+
+    /** @brief The color of the drawn zone */
     Q_PROPERTY(QColor color WRITE setColor READ getColor NOTIFY colorChanged)
+
+    /** @brief Associated zone */
     Q_PROPERTY(CelluloZone* associatedZone WRITE setAssociatedZone READ getAssociatedZone NOTIFY associatedZoneChanged)
+
+    /** @brief Physical playground width that the canvas represents (in mm) */
     Q_PROPERTY(qreal physicalPlaygroundWidth WRITE setPhysicalPlaygroundWidth READ getPhysicalPlaygroundWidth NOTIFY physicalPlaygroundWidthChanged)
+
+    /** @brief Physical playground height that the canvas represents (in mm) */
     Q_PROPERTY(qreal physicalPlaygroundHeight WRITE setPhysicalPlaygroundHeight READ getPhysicalPlaygroundHeight NOTIFY physicalPlaygroundHeightChanged)
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Creates a new CelluloZonePaintedItem
@@ -129,7 +146,11 @@ public:
      */
     void paint(QPainter* painter) override;
 
+    /** @endcond */
+
 signals:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Emitted when the paint color changes
@@ -150,6 +171,8 @@ signals:
      * @brief Emitted when the physical playground height changes
      */
     void physicalPlaygroundHeightChanged();
+
+    /** @endcond */
 
 private slots:
 
@@ -188,6 +211,8 @@ private:
     QMetaObject::Connection parentWidthConnection;  ///< Connection to bind this object's width to the parent
     QMetaObject::Connection parentHeightConnection; ///< Connection to bind this object's height to the parent
 };
+
+/** @} */
 
 }
 

@@ -1,13 +1,4 @@
-#### CelluloZonePaintedItem
 
-Visual representation of a `CelluloZone`; can be used to draw `CelluloZone`s in e.g `Rectangle`s. Visually covers its parent (from `[0, 0]` to `[parent.width, parent.height]`), using it as a canvas and drawing the zone at the appropriate place.
-
-**Properties:**
-
->  - **color** : `color` - The color of the drawn zone
->  - **associatedZone** : `CelluloZone` - Associated zone
->  - **physicalPlaygroundWidth** : `real` - Physical playground width that the canvas represents (in mm)
->  - **physicalPlaygroundHeight** : `real` - Physical playground height that the canvas represents (in mm)
 
 #### CelluloZoneClient [Abstract]
 

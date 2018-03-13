@@ -5,6 +5,7 @@
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
 `class `[`Cellulo::CelluloZone`](doc/doc-zone.md#classCellulo_1_1CelluloZone) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Base Class for zones.
+`class `[`Cellulo::CelluloZonePaintedItem`](doc/doc-zone.md#classCellulo_1_1CelluloZonePaintedItem) | A QML compatible QQuickPaintedItem for CelluloZones.
 `class `[`Cellulo::CelluloZoneRectangle`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangle) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Base Class for rectangular zones.
 `class `[`Cellulo::CelluloZoneRectangleInner`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangleInner) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for rectangular zones inner determination; calculates whether the client's position is within the rectangle, value is `0.0` or `1.0`.
 `class `[`Cellulo::CelluloZoneRectangleBorder`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangleBorder) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for rectangular zones border determination; calculates whether the client's position is within **borderThickness** of the zone's border, value is `0.0` or `1.0`.
@@ -114,6 +115,50 @@ Get painted item associated with this zone so that its properties can be changed
 
 #### Returns
 The PaintedItem that is the visual representation of this zone
+
+# class `Cellulo::CelluloZonePaintedItem` 
+
+```
+class Cellulo::CelluloZonePaintedItem
+  : public QQuickPaintedItem
+```  
+
+A QML compatible QQuickPaintedItem for CelluloZones.
+
+Visual representation of a `[CelluloZone](#classCellulo_1_1CelluloZone)`; can be used to draw `[CelluloZone](#classCellulo_1_1CelluloZone)`s in e.g `Rectangle`s. Visually covers its parent (from `[0, 0]` to `[parent.width, parent.height]`), using it as a canvas and drawing the zone at the appropriate place.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+`{property} QColor `[`color`](doc/doc-zone.md#classCellulo_1_1CelluloZonePaintedItem_1a35a9316c516107c7c8f980bf89bed7aa) | The color of the drawn zone.
+`{property} `[`CelluloZone`](#classCellulo_1_1CelluloZone)` `[`associatedZone`](#classCellulo_1_1CelluloZonePaintedItem_1af25ac35a56fbcfa0fa5e44d4b6bfcf30) | Associated zone.
+`{property} qreal `[`physicalPlaygroundWidth`](doc/doc-zone.md#classCellulo_1_1CelluloZonePaintedItem_1afe3fb2f45c9dee29c66a8b7fc278381f) | Physical playground width that the canvas represents (in mm)
+`{property} qreal `[`physicalPlaygroundHeight`](doc/doc-zone.md#classCellulo_1_1CelluloZonePaintedItem_1ae80f5f415506e5bb2f582aac41185034) | Physical playground height that the canvas represents (in mm)
+
+## Members
+
+#### `{property} QColor `[`color`](doc/doc-zone.md#classCellulo_1_1CelluloZonePaintedItem_1a35a9316c516107c7c8f980bf89bed7aa) 
+
+The color of the drawn zone.
+
+Color of the paint.
+
+#### `{property} `[`CelluloZone`](#classCellulo_1_1CelluloZone)` `[`associatedZone`](#classCellulo_1_1CelluloZonePaintedItem_1af25ac35a56fbcfa0fa5e44d4b6bfcf30) 
+
+Associated zone.
+
+#### `{property} qreal `[`physicalPlaygroundWidth`](doc/doc-zone.md#classCellulo_1_1CelluloZonePaintedItem_1afe3fb2f45c9dee29c66a8b7fc278381f) 
+
+Physical playground width that the canvas represents (in mm)
+
+Physical playground width in mm.
+
+#### `{property} qreal `[`physicalPlaygroundHeight`](doc/doc-zone.md#classCellulo_1_1CelluloZonePaintedItem_1ae80f5f415506e5bb2f582aac41185034) 
+
+Physical playground height that the canvas represents (in mm)
+
+Physical playground height in mm.
 
 # class `Cellulo::CelluloZoneRectangle` 
 
