@@ -5,6 +5,7 @@
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
 `class `[`Cellulo::CelluloZone`](doc/doc-zone.md#classCellulo_1_1CelluloZone) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Base Class for zones.
+`class `[`Cellulo::CelluloZoneClient`](doc/doc-zone.md#classCellulo_1_1CelluloZoneClient) | Describes an object with a physical pose (e.g a robot) that may interact with [Cellulo](#namespaceCellulo) zones.
 `class `[`Cellulo::CelluloZonePaintedItem`](doc/doc-zone.md#classCellulo_1_1CelluloZonePaintedItem) | A QML compatible QQuickPaintedItem for CelluloZones.
 `class `[`Cellulo::CelluloZoneRectangle`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangle) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Base Class for rectangular zones.
 `class `[`Cellulo::CelluloZoneRectangleInner`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangleInner) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for rectangular zones inner determination; calculates whether the client's position is within the rectangle, value is `0.0` or `1.0`.
@@ -29,7 +30,7 @@ They are meant interact with `[CelluloZoneClient](#classCellulo_1_1CelluloZoneCl
 
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
-`{property} bool `[`active`](doc/doc-zone.md#classCellulo_1_1CelluloZone_1adb2c9434ea04be38ddb53c06632ce3db) | Whether this zone is active, i.e generates `zoneValueChanged` signals on `[CelluloZoneClient](#classCellulo_1_1CelluloZoneClient)`s, default true.
+`{property} bool `[`active`](doc/doc-zone.md#classCellulo_1_1CelluloZone_1adb2c9434ea04be38ddb53c06632ce3db) | Whether this zone is active, i.e generates `zoneValueChanged` signals on `[CelluloZoneClient](doc/doc-zone.md#classCellulo_1_1CelluloZoneClient)`s, default true.
 `{property} QString `[`name`](doc/doc-zone.md#classCellulo_1_1CelluloZone_1abb58a78cd5ce7c499a0926710862f188) | Name of this zone, must be unique, default is `"anonymousZone"`
 `{property} `[`CelluloZoneTypes::ZoneType`](#classCellulo_1_1CelluloZoneTypes_1acb24a099726e8d59124afd691c86f9cf)` `[`type`](#classCellulo_1_1CelluloZone_1a703f7329dc9e335356e62ff90f6a3228) | Type of this zone, read-only.
 `public Q_INVOKABLE float `[`calculate`](#classCellulo_1_1CelluloZone_1a404b8449396ad290e001370810b2a62f)`(float xRobot,float yRobot,float thetaRobot)` | Calculate the zone quantity of this zone according to the robot's pose.
@@ -115,6 +116,48 @@ Get painted item associated with this zone so that its properties can be changed
 
 #### Returns
 The PaintedItem that is the visual representation of this zone
+
+# class `Cellulo::CelluloZoneClient` 
+
+```
+class Cellulo::CelluloZoneClient
+  : public QQuickItem
+```  
+
+Describes an object with a physical pose (e.g a robot) that may interact with [Cellulo](#namespaceCellulo) zones.
+
+Abstract object that interacts with `[CelluloZone](#classCellulo_1_1CelluloZone)`s through a `[CelluloZoneEngine](#classCellulo_1_1CelluloZoneEngine)`. Inherit from this object (i.e if being used from QML, create the `YourObject.qml` file with `[CelluloZoneClient](#classCellulo_1_1CelluloZoneClient)` as the top object) to have your custom object interact with `[CelluloZone](#classCellulo_1_1CelluloZone)`s. For example, `[CelluloBluetooth](#classCellulo_1_1CelluloBluetooth)` already inherits from this object.
+
+This class is **abstract**, you cannot instantiate it directly. Refer to classes derived from it.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+`{signal} public void `[`zoneValueChanged`](#classCellulo_1_1CelluloZoneClient_1a127e357850b2448f7addc79bab0168f5)`(QObject * zone,qreal value)` | Emitted when a zone's value with respect to this object changes.
+`{signal} public void `[`poseChanged`](#classCellulo_1_1CelluloZoneClient_1abaf30200131353c16cde52b53aa68409)`(qreal x,qreal y,qreal theta)` | User is responsible for emitting this signal when this client's pose (in mm, mm, deg) changes.
+
+## Members
+
+#### `{signal} public void `[`zoneValueChanged`](#classCellulo_1_1CelluloZoneClient_1a127e357850b2448f7addc79bab0168f5)`(QObject * zone,qreal value)` 
+
+Emitted when a zone's value with respect to this object changes.
+
+#### Parameters
+* `zone` Zone whose value has changed 
+
+* `value` The new value
+
+#### `{signal} public void `[`poseChanged`](#classCellulo_1_1CelluloZoneClient_1abaf30200131353c16cde52b53aa68409)`(qreal x,qreal y,qreal theta)` 
+
+User is responsible for emitting this signal when this client's pose (in mm, mm, deg) changes.
+
+#### Parameters
+* `x` New x coordinate in mm 
+
+* `y` New y coordinate in mm 
+
+* `theta` New orientation in degrees
 
 # class `Cellulo::CelluloZonePaintedItem` 
 

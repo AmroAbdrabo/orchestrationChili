@@ -32,7 +32,18 @@ namespace Cellulo{
 class CelluloZone;
 
 /**
+ * @addtogroup zone
+ * @{
+ */
+
+/**
  * @brief Describes an object with a physical pose (e.g a robot) that may interact with Cellulo zones
+ *
+ * Abstract object that interacts with `CelluloZone`s through a `CelluloZoneEngine`. Inherit from this object (i.e if
+ * being used from QML, create the `YourObject.qml` file with `CelluloZoneClient` as the top object) to have your
+ * custom object interact with `CelluloZone`s. For example, `CelluloBluetooth` already inherits from this object.
+ *
+ * @abstract
  */
 class CelluloZoneClient : public QQuickItem {
     /* *INDENT-OFF* */
@@ -41,12 +52,16 @@ class CelluloZoneClient : public QQuickItem {
 
 public:
 
+    /** @cond DO_NOT_DOCUMENT */
+
     /**
      * @brief Creates a new zone client
      *
      * @param parent Qt parent
      */
     explicit CelluloZoneClient(QQuickItem* parent = 0);
+
+    /** @endcond */
 
 signals:
 
@@ -59,7 +74,7 @@ signals:
     void zoneValueChanged(QObject* zone, qreal value);
 
     /**
-     * @brief Emitted when the physical pose of the object changes
+     * @brief User is responsible for emitting this signal when this client's pose (in mm, mm, deg) changes
      *
      * @param x New x coordinate in mm
      * @param y New y coordinate in mm
@@ -68,6 +83,8 @@ signals:
     void poseChanged(qreal x, qreal y, qreal theta);
 
 };
+
+/** @} */
 
 }
 
