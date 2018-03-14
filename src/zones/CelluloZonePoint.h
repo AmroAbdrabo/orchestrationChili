@@ -30,16 +30,28 @@
 namespace Cellulo{
 
 /**
+ * @addtogroup zone
+ * @{
+ */
+
+/**
  * @brief CelluloZone Base Class for point zones
+ * @abstract
  */
 class CelluloZonePoint : public CelluloZone {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
+
+    /** @brief X coordinate of the point (mm) */
     Q_PROPERTY(float x WRITE setX READ getX NOTIFY xChanged)
+
+    /** @brief Y coordinate of the point (mm) */
     Q_PROPERTY(float y WRITE setY READ getY NOTIFY yChanged)
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Creates a new Cellulo point zone
@@ -111,12 +123,20 @@ public:
      */
     Q_INVOKABLE virtual bool isMouseInside(QVector2D  mousePosition, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 protected:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     float x;                               ///< X position of the point
     float y;                               ///< Y position of the point
 
+    /** @endcond */
+
 signals:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Emitted when the X position of the point changes
@@ -128,10 +148,14 @@ signals:
      */
     void yChanged();
 
+    /** @endcond */
+
 };
 
 /**
  * @brief CelluloZone Specific Class for point zones distance determination
+ *
+ * Calculates the client's distance to the zone.
  */
 class CelluloZonePointDistance : public CelluloZonePoint {
     /* *INDENT-OFF* */
@@ -139,6 +163,8 @@ class CelluloZonePointDistance : public CelluloZonePoint {
     /* *INDENT-ON* */
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     CelluloZonePointDistance();
 
@@ -165,7 +191,11 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 };
+
+/** @} */
 
 }
 

@@ -1,14 +1,5 @@
 
 
-#### CelluloZonePointDistance [extends CelluloZone]
-
-Calculates the client's distance to the zone.
-
-**Properties:**
-
->  - **x** : `real` - X coordinate of the point (mm)
->  - **y** : `real` - Y coordinate of the point (mm)
-
 #### CelluloZoneIrregularPolygonInner [extends CelluloZone]
 
 Calculates whether the client's position is within the irregular polygon, value is `0.0` or `1.0`.

@@ -36,6 +36,7 @@ namespace Cellulo{
 
 /**
  * @brief CelluloZone Base Class for line zones
+ * @abstract
  */
 class CelluloZoneLine : public CelluloZone {
     /* *INDENT-OFF* */

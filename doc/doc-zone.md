@@ -23,6 +23,8 @@
 `class `[`Cellulo::CelluloZoneLineDistanceSigned`](doc/doc-zone.md#classCellulo_1_1CelluloZoneLineDistanceSigned) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for signed line distance determination.
 `class `[`Cellulo::CelluloZoneLineBorder`](doc/doc-zone.md#classCellulo_1_1CelluloZoneLineBorder) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for determining whether a point is within a distance to an infinite line.
 `class `[`Cellulo::CelluloZonePaintedItem`](doc/doc-zone.md#classCellulo_1_1CelluloZonePaintedItem) | A QML compatible QQuickPaintedItem for CelluloZones.
+`class `[`Cellulo::CelluloZonePoint`](doc/doc-zone.md#classCellulo_1_1CelluloZonePoint) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Base Class for point zones.
+`class `[`Cellulo::CelluloZonePointDistance`](doc/doc-zone.md#classCellulo_1_1CelluloZonePointDistance) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for point zones distance determination.
 `class `[`Cellulo::CelluloZoneRectangle`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangle) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Base Class for rectangular zones.
 `class `[`Cellulo::CelluloZoneRectangleInner`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangleInner) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for rectangular zones inner determination; calculates whether the client's position is within the rectangle, value is `0.0` or `1.0`.
 `class `[`Cellulo::CelluloZoneRectangleBorder`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangleBorder) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for rectangular zones border determination; calculates whether the client's position is within **borderThickness** of the zone's border, value is `0.0` or `1.0`.
@@ -141,6 +143,8 @@ class Cellulo::CelluloZoneAngle
 ```  
 
 Describes a single angle.
+
+This class is **abstract**, you cannot instantiate it directly. Refer to classes derived from it.
 
 ## Summary
 
@@ -271,6 +275,8 @@ class Cellulo::CelluloZoneCircle
 ```  
 
 [CelluloZone](#classCellulo_1_1CelluloZone) Base Class for circular zones.
+
+This class is **abstract**, you cannot instantiate it directly. Refer to classes derived from it.
 
 ## Summary
 
@@ -528,6 +534,8 @@ class Cellulo::CelluloZoneLine
 
 [CelluloZone](#classCellulo_1_1CelluloZone) Base Class for line zones.
 
+This class is **abstract**, you cannot instantiate it directly. Refer to classes derived from it.
+
 ## Summary
 
  Members                        | Descriptions                                
@@ -660,6 +668,52 @@ Physical playground height that the canvas represents (in mm)
 
 Physical playground height in mm.
 
+# class `Cellulo::CelluloZonePoint` 
+
+```
+class Cellulo::CelluloZonePoint
+  : public Cellulo::CelluloZone
+```  
+
+[CelluloZone](#classCellulo_1_1CelluloZone) Base Class for point zones.
+
+This class is **abstract**, you cannot instantiate it directly. Refer to classes derived from it.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+`{property} float `[`x`](doc/doc-zone.md#classCellulo_1_1CelluloZonePoint_1a77446bf66d11c3da82fdfd40d67cbb45) | X coordinate of the point (mm)
+`{property} float `[`y`](doc/doc-zone.md#classCellulo_1_1CelluloZonePoint_1a9e11d95c422eb7e78bbbfd3c7e7826be) | Y coordinate of the point (mm)
+
+## Members
+
+#### `{property} float `[`x`](doc/doc-zone.md#classCellulo_1_1CelluloZonePoint_1a77446bf66d11c3da82fdfd40d67cbb45) 
+
+X coordinate of the point (mm)
+
+#### `{property} float `[`y`](doc/doc-zone.md#classCellulo_1_1CelluloZonePoint_1a9e11d95c422eb7e78bbbfd3c7e7826be) 
+
+Y coordinate of the point (mm)
+
+# class `Cellulo::CelluloZonePointDistance` 
+
+```
+class Cellulo::CelluloZonePointDistance
+  : public Cellulo::CelluloZonePoint
+```  
+
+[CelluloZone](#classCellulo_1_1CelluloZone) Specific Class for point zones distance determination.
+
+Calculates the client's distance to the zone.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+
+## Members
+
 # class `Cellulo::CelluloZoneRectangle` 
 
 ```
@@ -791,7 +845,7 @@ RECTANGLEDISTANCE            | [CelluloZoneRectangleDistance](doc/doc-zone.md#cl
 LINESEGMENTDISTANCE            | [CelluloZoneLineSegmentDistance](doc/doc-zone.md#classCellulo_1_1CelluloZoneLineSegmentDistance).
 LINEDISTANCESIGNED            | [CelluloZoneLineDistanceSigned](doc/doc-zone.md#classCellulo_1_1CelluloZoneLineDistanceSigned).
 LINEBORDER            | [CelluloZoneLineBorder](doc/doc-zone.md#classCellulo_1_1CelluloZoneLineBorder).
-POINTDISTANCE            | [CelluloZonePointDistance](#classCellulo_1_1CelluloZonePointDistance).
+POINTDISTANCE            | [CelluloZonePointDistance](doc/doc-zone.md#classCellulo_1_1CelluloZonePointDistance).
 RPOLYGONINNER            | [CelluloZoneRegularPolygonInner](#classCellulo_1_1CelluloZoneRegularPolygonInner).
 RPOLYGONBORDER            | [CelluloZoneRegularPolygonBorder](#classCellulo_1_1CelluloZoneRegularPolygonBorder).
 RPOLYGONDISTANCE            | [CelluloZoneRegularPolygonDistance](#classCellulo_1_1CelluloZoneRegularPolygonDistance).

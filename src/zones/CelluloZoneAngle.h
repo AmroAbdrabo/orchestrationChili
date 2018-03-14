@@ -36,6 +36,7 @@ namespace Cellulo{
 
 /**
  * @brief Describes a single angle
+ * @abstract
  */
 class CelluloZoneAngle : public CelluloZone {
     /* *INDENT-OFF* */

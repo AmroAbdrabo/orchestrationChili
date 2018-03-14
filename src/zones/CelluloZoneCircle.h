@@ -36,6 +36,7 @@ namespace Cellulo{
 
 /**
  * @brief CelluloZone Base Class for circular zones
+ * @abstract
  */
 class CelluloZoneCircle : public CelluloZone {
     /* *INDENT-OFF* */
