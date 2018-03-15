@@ -31,16 +31,26 @@
 namespace Cellulo{
 
 /**
+ * @addtogroup zone
+ * @{
+ */
+
+/**
  * @brief CelluloZone Base Class for polygonal zones
+ * @abstract
  */
 class CelluloZonePolygon : public CelluloZone {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
+
+    /** @brief List of vertices, polygon has an edge between every `i`th and `i+1`th vertex */
     Q_PROPERTY(QList<QVariant> vertices WRITE setVerticesAsVariants READ getVerticesAsVariants NOTIFY verticesChanged)
 
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Creates a new Cellulo polygonal zone
@@ -110,14 +120,22 @@ public:
      */
     Q_INVOKABLE virtual bool isMouseInside(QVector2D  mousePosition, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 signals:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Emitted when the vertices change
      */
     void verticesChanged();
 
+    /** @endcond */
+
 protected:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Updates the bounding rectangle from the new list of vertices
@@ -145,11 +163,14 @@ protected:
     float minY;                ///< Minimum y bound for the polygon
     float maxY;                ///< Maximum y bound for the polygon
 
+    /** @endcond */
+
 };
 
 
 /**
  * @brief CelluloZone Base Class for irregular polygonal zones
+ * @abstract
  */
 class CelluloZoneIrregularPolygon : public CelluloZonePolygon {
     /* *INDENT-OFF* */
@@ -157,6 +178,8 @@ class CelluloZoneIrregularPolygon : public CelluloZonePolygon {
     /* *INDENT-ON* */
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Draws this zone onto the painter
@@ -182,10 +205,14 @@ public:
      */
     virtual void read(const QJsonObject& json) override;
 
+    /** @endcond */
+
 };
 
 /**
  * @brief CelluloZone Specific Class for irregular polygonal zones inner determination
+ *
+ * Calculates whether the client's position is within the irregular polygon, value is `0.0` or `1.0`.
  */
 class CelluloZoneIrregularPolygonInner : public CelluloZoneIrregularPolygon {
     /* *INDENT-OFF* */
@@ -193,6 +220,8 @@ class CelluloZoneIrregularPolygonInner : public CelluloZoneIrregularPolygon {
     /* *INDENT-ON* */
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     CelluloZoneIrregularPolygonInner();
 
@@ -219,18 +248,26 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 };
 
 /**
  * @brief CelluloZone Specific Class for irregular polygonal zones border determination
+ *
+ * Calculates whether the client's position is within **borderThickness** of the zone's border, value is `0.0` or `1.0`.
  */
 class CelluloZoneIrregularPolygonBorder : public CelluloZoneIrregularPolygon {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
+
+    /** @brief Total thickness of the border (mm) */
     Q_PROPERTY(qreal borderThickness WRITE setBorderThickness READ getBorderThickness NOTIFY borderThicknessChanged)
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     CelluloZoneIrregularPolygonBorder();
 
@@ -285,12 +322,18 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 signals:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Emitted when border thickness changes
      */
     void borderThicknessChanged();
+
+    /** @endcond */
 
 private:
 
@@ -300,6 +343,8 @@ private:
 
 /**
  * @brief CelluloZone Specific Class for irregular polygonal zones distance determination
+ *
+ * Calculates the client's distance to the zone's border.
  */
 class CelluloZoneIrregularPolygonDistance : public CelluloZoneIrregularPolygon {
     /* *INDENT-OFF* */
@@ -307,6 +352,8 @@ class CelluloZoneIrregularPolygonDistance : public CelluloZoneIrregularPolygon {
     /* *INDENT-ON* */
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     CelluloZoneIrregularPolygonDistance();
 
@@ -333,19 +380,37 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 };
 
+/**
+ * @brief Base class for regular polygon zones
+ * @abstract
+ */
 class CelluloZoneRegularPolygon : public CelluloZonePolygon {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
+
+    /** @brief Number of edges */
     Q_PROPERTY(int numEdges WRITE setNumEdges READ getNumEdges NOTIFY numEdgesChanged)
+
+    /** @brief X coordinate of the center (mm) */
     Q_PROPERTY(float x WRITE setX READ getX NOTIFY xChanged)
+
+    /** @brief Y coordinate of the center (mm) */
     Q_PROPERTY(float y WRITE setY READ getY NOTIFY yChanged)
+
+    /** @brief Radius of the enclosing circle (mm) */
     Q_PROPERTY(float r WRITE setR READ getR NOTIFY rChanged)
+
+    /** @brief Extra rotation from the initial orientation (deg) */
     Q_PROPERTY(float rotAngle WRITE setRotAngle READ getRotAngle NOTIFY rotAngleChanged)
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Creates a new Cellulo regular polygonal zone
@@ -364,9 +429,7 @@ public:
      *
      * @return The number of edges of the regular polygon
      */
-    int getNumEdges(){
-        return numEdges;
-    }
+    int getNumEdges(){ return numEdges; }
 
     /**
      * @brief Sets the number of edges
@@ -380,9 +443,7 @@ public:
      *
      * @return X position of regular polygon definer circle's center
      */
-    float getX(){
-        return x;
-    }
+    float getX(){ return x; }
 
     /**
      * @brief Sets the x position of the center of the regular polygon
@@ -396,9 +457,7 @@ public:
      *
      * @return Y position of regular polygon definer circle's center
      */
-    float getY(){
-        return y;
-    }
+    float getY(){ return y; }
 
     /**
      * @brief Sets the y position of the center of the regular polygon
@@ -412,9 +471,7 @@ public:
      *
      * @return R the radius of the regular polygon definer circle
      */
-    float getR(){
-        return r;
-    }
+    float getR(){ return r; }
 
     /**
      * @brief Sets the radius of the outer circle of the regular polygon
@@ -428,9 +485,7 @@ public:
      *
      * @return The rotational angle of the regular polygon
      */
-    float getRotAngle(){
-        return rotAngle;
-    }
+    float getRotAngle(){ return rotAngle; }
 
     /**
      * @brief Sets the orientation of the regular polygon
@@ -465,7 +520,11 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 signals:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Emitted when the number of edges of the regular polygonal zone changes
@@ -492,13 +551,19 @@ signals:
      */
     void rotAngleChanged();
 
+    /** @endcond */
+
 protected:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     float numEdges;                         ///< number of edges of the regular polygon
     float x;                                ///< x position of regular polygon defined circle's center
     float y;                                ///< y position of regular polygon defined circle's center
     float r;                                ///< radius of the regular polygon defined circle
     float rotAngle;                         ///< rotational angle of the regular polygon
+
+    /** @endcond */
 
 private:
 
@@ -511,6 +576,8 @@ private:
 
 /**
  * @brief CelluloZone Specific Class for regular polygonal zones inner determination
+ *
+ * Calculates whether the client's position is within the regular polygon, value is `0.0` or `1.0`.
  */
 class CelluloZoneRegularPolygonInner : public CelluloZoneRegularPolygon {
     /* *INDENT-OFF* */
@@ -518,6 +585,8 @@ class CelluloZoneRegularPolygonInner : public CelluloZoneRegularPolygon {
     /* *INDENT-ON* */
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     CelluloZoneRegularPolygonInner();
 
@@ -544,19 +613,27 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 };
 
 
 /**
  * @brief CelluloZone Specific Class for regular polygonal zones border determination
+ *
+ * Calculates whether the client's position is within **borderThickness** of the zone's border, value is `0.0` or `1.0`.
  */
 class CelluloZoneRegularPolygonBorder : public CelluloZoneRegularPolygon {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
+
+    /** @brief Total thickness of the border (mm) */
     Q_PROPERTY(qreal borderThickness WRITE setBorderThickness READ getBorderThickness NOTIFY borderThicknessChanged)
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     CelluloZoneRegularPolygonBorder();
 
@@ -565,9 +642,7 @@ public:
      *
      * @return Border thickness in mm
      */
-    qreal getBorderThickness(){
-        return borderThickness;
-    }
+    qreal getBorderThickness(){ return borderThickness; }
 
     /**
      * @brief Sets the new border thickness
@@ -611,12 +686,18 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 signals:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Emitted when border thickness changes
      */
     void borderThicknessChanged();
+
+    /** @endcond */
 
 private:
 
@@ -626,6 +707,8 @@ private:
 
 /**
  * @brief CelluloZone Specific Class for regular polygonal zones distance determination
+ *
+ * Calculates the client's distance to the zone's border.
  */
 class CelluloZoneRegularPolygonDistance : public CelluloZoneRegularPolygon {
     /* *INDENT-OFF* */
@@ -633,6 +716,8 @@ class CelluloZoneRegularPolygonDistance : public CelluloZoneRegularPolygon {
     /* *INDENT-ON* */
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     CelluloZoneRegularPolygonDistance();
 
@@ -659,7 +744,11 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 };
+
+/** @} */
 
 }
 

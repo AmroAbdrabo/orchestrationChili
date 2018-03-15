@@ -25,6 +25,15 @@
 `class `[`Cellulo::CelluloZonePaintedItem`](doc/doc-zone.md#classCellulo_1_1CelluloZonePaintedItem) | A QML compatible QQuickPaintedItem for CelluloZones.
 `class `[`Cellulo::CelluloZonePoint`](doc/doc-zone.md#classCellulo_1_1CelluloZonePoint) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Base Class for point zones.
 `class `[`Cellulo::CelluloZonePointDistance`](doc/doc-zone.md#classCellulo_1_1CelluloZonePointDistance) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for point zones distance determination.
+`class `[`Cellulo::CelluloZonePolygon`](doc/doc-zone.md#classCellulo_1_1CelluloZonePolygon) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Base Class for polygonal zones.
+`class `[`Cellulo::CelluloZoneIrregularPolygon`](doc/doc-zone.md#classCellulo_1_1CelluloZoneIrregularPolygon) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Base Class for irregular polygonal zones.
+`class `[`Cellulo::CelluloZoneIrregularPolygonInner`](doc/doc-zone.md#classCellulo_1_1CelluloZoneIrregularPolygonInner) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for irregular polygonal zones inner determination.
+`class `[`Cellulo::CelluloZoneIrregularPolygonBorder`](doc/doc-zone.md#classCellulo_1_1CelluloZoneIrregularPolygonBorder) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for irregular polygonal zones border determination.
+`class `[`Cellulo::CelluloZoneIrregularPolygonDistance`](doc/doc-zone.md#classCellulo_1_1CelluloZoneIrregularPolygonDistance) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for irregular polygonal zones distance determination.
+`class `[`Cellulo::CelluloZoneRegularPolygon`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRegularPolygon) | Base class for regular polygon zones.
+`class `[`Cellulo::CelluloZoneRegularPolygonInner`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRegularPolygonInner) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for regular polygonal zones inner determination.
+`class `[`Cellulo::CelluloZoneRegularPolygonBorder`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRegularPolygonBorder) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for regular polygonal zones border determination.
+`class `[`Cellulo::CelluloZoneRegularPolygonDistance`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRegularPolygonDistance) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for regular polygonal zones distance determination.
 `class `[`Cellulo::CelluloZoneRectangle`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangle) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Base Class for rectangular zones.
 `class `[`Cellulo::CelluloZoneRectangleInner`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangleInner) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for rectangular zones inner determination; calculates whether the client's position is within the rectangle, value is `0.0` or `1.0`.
 `class `[`Cellulo::CelluloZoneRectangleBorder`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRectangleBorder) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for rectangular zones border determination; calculates whether the client's position is within **borderThickness** of the zone's border, value is `0.0` or `1.0`.
@@ -714,6 +723,212 @@ Calculates the client's distance to the zone.
 
 ## Members
 
+# class `Cellulo::CelluloZonePolygon` 
+
+```
+class Cellulo::CelluloZonePolygon
+  : public Cellulo::CelluloZone
+```  
+
+[CelluloZone](#classCellulo_1_1CelluloZone) Base Class for polygonal zones.
+
+This class is **abstract**, you cannot instantiate it directly. Refer to classes derived from it.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+`{property} QList< QVariant > `[`vertices`](doc/doc-zone.md#classCellulo_1_1CelluloZonePolygon_1ad5fc1b6e859473d220237d98169f7ffe) | List of vertices, polygon has an edge between every `i`th and `i+1`th vertex.
+
+## Members
+
+#### `{property} QList< QVariant > `[`vertices`](doc/doc-zone.md#classCellulo_1_1CelluloZonePolygon_1ad5fc1b6e859473d220237d98169f7ffe) 
+
+List of vertices, polygon has an edge between every `i`th and `i+1`th vertex.
+
+# class `Cellulo::CelluloZoneIrregularPolygon` 
+
+```
+class Cellulo::CelluloZoneIrregularPolygon
+  : public Cellulo::CelluloZonePolygon
+```  
+
+[CelluloZone](#classCellulo_1_1CelluloZone) Base Class for irregular polygonal zones.
+
+This class is **abstract**, you cannot instantiate it directly. Refer to classes derived from it.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+
+## Members
+
+# class `Cellulo::CelluloZoneIrregularPolygonInner` 
+
+```
+class Cellulo::CelluloZoneIrregularPolygonInner
+  : public Cellulo::CelluloZoneIrregularPolygon
+```  
+
+[CelluloZone](#classCellulo_1_1CelluloZone) Specific Class for irregular polygonal zones inner determination.
+
+Calculates whether the client's position is within the irregular polygon, value is `0.0` or `1.0`.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+
+## Members
+
+# class `Cellulo::CelluloZoneIrregularPolygonBorder` 
+
+```
+class Cellulo::CelluloZoneIrregularPolygonBorder
+  : public Cellulo::CelluloZoneIrregularPolygon
+```  
+
+[CelluloZone](#classCellulo_1_1CelluloZone) Specific Class for irregular polygonal zones border determination.
+
+Calculates whether the client's position is within **borderThickness** of the zone's border, value is `0.0` or `1.0`.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+`{property} qreal `[`borderThickness`](doc/doc-zone.md#classCellulo_1_1CelluloZoneIrregularPolygonBorder_1a41cb42ea031f9c135e9807a04aea5118) | Total thickness of the border (mm)
+
+## Members
+
+#### `{property} qreal `[`borderThickness`](doc/doc-zone.md#classCellulo_1_1CelluloZoneIrregularPolygonBorder_1a41cb42ea031f9c135e9807a04aea5118) 
+
+Total thickness of the border (mm)
+
+The border thickness in mm.
+
+# class `Cellulo::CelluloZoneIrregularPolygonDistance` 
+
+```
+class Cellulo::CelluloZoneIrregularPolygonDistance
+  : public Cellulo::CelluloZoneIrregularPolygon
+```  
+
+[CelluloZone](#classCellulo_1_1CelluloZone) Specific Class for irregular polygonal zones distance determination.
+
+Calculates the client's distance to the zone's border.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+
+## Members
+
+# class `Cellulo::CelluloZoneRegularPolygon` 
+
+```
+class Cellulo::CelluloZoneRegularPolygon
+  : public Cellulo::CelluloZonePolygon
+```  
+
+Base class for regular polygon zones.
+
+This class is **abstract**, you cannot instantiate it directly. Refer to classes derived from it.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+`{property} int `[`numEdges`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRegularPolygon_1a9dbd4d94ab5325108fe0b257dc74a1b4) | Number of edges.
+`{property} float `[`x`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRegularPolygon_1a835d0a798a7234fe9006026efd1a5ae8) | X coordinate of the center (mm)
+`{property} float `[`y`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRegularPolygon_1a0e4a9bd9bafad92febf227f2a8bc7c9c) | Y coordinate of the center (mm)
+`{property} float `[`r`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRegularPolygon_1ae22f178d345bedaeb2653fa433b28f4c) | Radius of the enclosing circle (mm)
+`{property} float `[`rotAngle`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRegularPolygon_1a45d92afd34af8621c79a1a9ef2e668f0) | Extra rotation from the initial orientation (deg)
+
+## Members
+
+#### `{property} int `[`numEdges`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRegularPolygon_1a9dbd4d94ab5325108fe0b257dc74a1b4) 
+
+Number of edges.
+
+#### `{property} float `[`x`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRegularPolygon_1a835d0a798a7234fe9006026efd1a5ae8) 
+
+X coordinate of the center (mm)
+
+#### `{property} float `[`y`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRegularPolygon_1a0e4a9bd9bafad92febf227f2a8bc7c9c) 
+
+Y coordinate of the center (mm)
+
+#### `{property} float `[`r`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRegularPolygon_1ae22f178d345bedaeb2653fa433b28f4c) 
+
+Radius of the enclosing circle (mm)
+
+#### `{property} float `[`rotAngle`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRegularPolygon_1a45d92afd34af8621c79a1a9ef2e668f0) 
+
+Extra rotation from the initial orientation (deg)
+
+# class `Cellulo::CelluloZoneRegularPolygonInner` 
+
+```
+class Cellulo::CelluloZoneRegularPolygonInner
+  : public Cellulo::CelluloZoneRegularPolygon
+```  
+
+[CelluloZone](#classCellulo_1_1CelluloZone) Specific Class for regular polygonal zones inner determination.
+
+Calculates whether the client's position is within the regular polygon, value is `0.0` or `1.0`.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+
+## Members
+
+# class `Cellulo::CelluloZoneRegularPolygonBorder` 
+
+```
+class Cellulo::CelluloZoneRegularPolygonBorder
+  : public Cellulo::CelluloZoneRegularPolygon
+```  
+
+[CelluloZone](#classCellulo_1_1CelluloZone) Specific Class for regular polygonal zones border determination.
+
+Calculates whether the client's position is within **borderThickness** of the zone's border, value is `0.0` or `1.0`.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+`{property} qreal `[`borderThickness`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRegularPolygonBorder_1af85d56687917e2d58d9b90c5c79fe814) | Total thickness of the border (mm)
+
+## Members
+
+#### `{property} qreal `[`borderThickness`](doc/doc-zone.md#classCellulo_1_1CelluloZoneRegularPolygonBorder_1af85d56687917e2d58d9b90c5c79fe814) 
+
+Total thickness of the border (mm)
+
+The border thickness in mm.
+
+# class `Cellulo::CelluloZoneRegularPolygonDistance` 
+
+```
+class Cellulo::CelluloZoneRegularPolygonDistance
+  : public Cellulo::CelluloZoneRegularPolygon
+```  
+
+[CelluloZone](#classCellulo_1_1CelluloZone) Specific Class for regular polygonal zones distance determination.
+
+Calculates the client's distance to the zone's border.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+
+## Members
+
 # class `Cellulo::CelluloZoneRectangle` 
 
 ```
@@ -846,12 +1061,12 @@ LINESEGMENTDISTANCE            | [CelluloZoneLineSegmentDistance](doc/doc-zone.m
 LINEDISTANCESIGNED            | [CelluloZoneLineDistanceSigned](doc/doc-zone.md#classCellulo_1_1CelluloZoneLineDistanceSigned).
 LINEBORDER            | [CelluloZoneLineBorder](doc/doc-zone.md#classCellulo_1_1CelluloZoneLineBorder).
 POINTDISTANCE            | [CelluloZonePointDistance](doc/doc-zone.md#classCellulo_1_1CelluloZonePointDistance).
-RPOLYGONINNER            | [CelluloZoneRegularPolygonInner](#classCellulo_1_1CelluloZoneRegularPolygonInner).
-RPOLYGONBORDER            | [CelluloZoneRegularPolygonBorder](#classCellulo_1_1CelluloZoneRegularPolygonBorder).
-RPOLYGONDISTANCE            | [CelluloZoneRegularPolygonDistance](#classCellulo_1_1CelluloZoneRegularPolygonDistance).
-IRPOLYGONINNER            | [CelluloZoneIrregularPolygonInner](#classCellulo_1_1CelluloZoneIrregularPolygonInner).
-IRPOLYGONBORDER            | [CelluloZoneIrregularPolygonBorder](#classCellulo_1_1CelluloZoneIrregularPolygonBorder).
-IRPOLYGONDISTANCE            | [CelluloZoneIrregularPolygonDistance](#classCellulo_1_1CelluloZoneIrregularPolygonDistance).
+RPOLYGONINNER            | [CelluloZoneRegularPolygonInner](doc/doc-zone.md#classCellulo_1_1CelluloZoneRegularPolygonInner).
+RPOLYGONBORDER            | [CelluloZoneRegularPolygonBorder](doc/doc-zone.md#classCellulo_1_1CelluloZoneRegularPolygonBorder).
+RPOLYGONDISTANCE            | [CelluloZoneRegularPolygonDistance](doc/doc-zone.md#classCellulo_1_1CelluloZoneRegularPolygonDistance).
+IRPOLYGONINNER            | [CelluloZoneIrregularPolygonInner](doc/doc-zone.md#classCellulo_1_1CelluloZoneIrregularPolygonInner).
+IRPOLYGONBORDER            | [CelluloZoneIrregularPolygonBorder](doc/doc-zone.md#classCellulo_1_1CelluloZoneIrregularPolygonBorder).
+IRPOLYGONDISTANCE            | [CelluloZoneIrregularPolygonDistance](doc/doc-zone.md#classCellulo_1_1CelluloZoneIrregularPolygonDistance).
 POLYBEZIERCLOSESTT            | [CelluloZonePolyBezierClosestT](#classCellulo_1_1CelluloZonePolyBezierClosestT).
 POLYBEZIERXT            | [CelluloZonePolyBezierXT](#classCellulo_1_1CelluloZonePolyBezierXT).
 POLYBEZIERYT            | [CelluloZonePolyBezierYT](#classCellulo_1_1CelluloZonePolyBezierYT).
