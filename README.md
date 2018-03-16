@@ -35,9 +35,9 @@ Desktop build
 Tested on Ubuntu 16.04:
 
 ```
-mkdir build-desktop && cd build-desktop
-/path-to-qt-install-root/5.8/gcc_64/bin/qmake ..
-make -j5 install
+    $ mkdir build-desktop && cd build-desktop
+    $ /path-to-qt-install-root/5.8/gcc_64/bin/qmake ..
+    $ make -j5 install
 ```
 
 This will install the QML plugin inside the Qt sysroot, so it must be writable by you. **Be aware that this is not a sandboxed installation.**
@@ -48,13 +48,13 @@ Android build
 Tested with Android SDK API 25 and Android NDK r10e:
 
 ```
-export ANDROID_NDK_ROOT=/path-to-android-ndk/
+    $ export ANDROID_NDK_ROOT=/path-to-android-ndk/
 ```
 
 ```
-mkdir build-android && cd build-android
-/path-to-qt-install-root/5.8/android_armv7/bin/qmake ..
-make -j5 install
+    $ mkdir build-android && cd build-android
+    $ /path-to-qt-install-root/5.8/android_armv7/bin/qmake ..
+    $ make -j5 install
 ```
 
 This will install the QML plugin inside the Qt sysroot, so it must be writable by you. **Be aware that this is not a sandboxed installation.**
@@ -63,15 +63,24 @@ Build & run unit tests
 ----------------------
 
 ```
-mkdir build-test && cd build-test
-/path-to-qt-install-root/5.8/gcc_64/bin/qmake .. "CONFIG += test"
-make -j5
-./celluloplugintests
+    $ mkdir build-test && cd build-test
+    $ /path-to-qt-install-root/5.8/gcc_64/bin/qmake .. "CONFIG += test"
+    $ make -j5
+    $ ./celluloplugintests
 ```
 
 Build documentation
 -------------------
 
+Install dependencies:
+
 ```
-./generate-doc.sh
+    $ apt install doxygen doxyqml
+    $ git clone git@github.com:sourcey/moxygen.git && cd moxygen && npm install -g .
+```
+
+Then, generate the documentation:
+
+```
+    $ ./generate-doc.sh
 ```
