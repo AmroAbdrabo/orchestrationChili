@@ -62,9 +62,7 @@ public:
      * @brief Gets the x position of the point
      * @return X position of the point
      */
-    float getX() {
-        return x;
-    }
+    float getX() { return x; }
 
     /**
      * @brief Updates the x position of the point
@@ -76,9 +74,7 @@ public:
      * @brief Gets the y position of the point
      * @return Y position of the point
      */
-    float getY() {
-        return y;
-    }
+    float getY() { return y; }
 
     /**
      * @brief Updates the y position of the point

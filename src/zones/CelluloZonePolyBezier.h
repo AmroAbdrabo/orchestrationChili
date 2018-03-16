@@ -125,7 +125,7 @@ public slots:
      *
      * @param robot The robot to send the path to
      */
-    void sendPathToRobot(CelluloBluetooth* robot) const;
+    void sendPathToRobot(Cellulo::CelluloBluetooth* robot) const;
 
     /**
      * @brief Gets the point on the curve corresponding to the given parameter

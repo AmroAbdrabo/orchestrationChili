@@ -84,7 +84,7 @@ public:
      *
      * @param newZones New zones
      */
-    void addNewZones(QList<CelluloZone*> newZones);
+    void addNewZones(QList<Cellulo::CelluloZone*> newZones);
 
     /** @endcond */
 
@@ -142,14 +142,14 @@ public slots:
      *
      * @param newClient Client to add
      */
-    void addNewClient(CelluloZoneClient* newClient);
+    void addNewClient(Cellulo::CelluloZoneClient* newClient);
 
     /**
      * @brief Adds a new zone to the engine, binds to all existing clients
      *
      * @param newZone Zone to add
      */
-    void addNewZone(CelluloZone* newZone);
+    void addNewZone(Cellulo::CelluloZone* newZone);
 
     /**
      * @brief Deletes all zones
@@ -176,9 +176,9 @@ private slots:
 
 private:
 
-    bool active;                      ///< Whether clients' poseChanged events are connected to zones; true by default
-    QSet<CelluloZoneClient*> clients; ///< All clients bound to this engine
-    QSet<CelluloZone*> zones;         ///< All zones bound to this engine
+    bool active;                                ///< Whether clients' poseChanged events are connected to zones; true by default
+    QSet<Cellulo::CelluloZoneClient*> clients;  ///< All clients bound to this engine
+    QSet<Cellulo::CelluloZone*> zones;          ///< All zones bound to this engine
 
     /**
      * @brief Binds client to zone

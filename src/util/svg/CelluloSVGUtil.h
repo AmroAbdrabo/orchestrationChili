@@ -111,7 +111,7 @@ public:
      * @param optimized Whether to try to extract as lines, points, circles, rectangles or polygons instead of polybezier zones, if possible
      * @return Parsed zones (not QML-compatible)
      */
-    Q_INVOKABLE static QList<CelluloZone*> loadZonesCPP(
+    Q_INVOKABLE static QList<Cellulo::CelluloZone*> loadZonesCPP(
         const QString& inSVGFile,
         const QString& name,
         float dpi = 90.0f,

@@ -41,6 +41,8 @@
 
 #include <CelluloLocalRelayServer.h>
 
+using namespace Cellulo;
+
 void syslogOutput(QtMsgType type, QMessageLogContext const& context, QString const& msg){
     Q_UNUSED(context);
 

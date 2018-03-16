@@ -65,9 +65,7 @@ public:
      * @brief Gets the x position of circle's center
      * @return X position of circle's center
      */
-    float getX(){
-        return x;
-    }
+    float getX(){ return x; }
 
     /**
      * @brief Updates the x position of circle's center
@@ -79,9 +77,7 @@ public:
      * @brief Gets the y position of circle's center
      * @return Y position of circle's center
      */
-    float getY(){
-        return y;
-    }
+    float getY(){ return y; }
 
     /**
      * @brief Updates the y position of circle's center
@@ -93,9 +89,7 @@ public:
      * @brief Gets the radius of the circle
      * @return R the radius of the circle
      */
-    float getR(){
-        return r;
-    }
+    float getR(){ return r; }
 
     /**
      * @brief Updates the radius of circle
@@ -252,9 +246,7 @@ public:
      *
      * @return Border thickness in mm
      */
-    qreal getBorderThickness(){
-        return borderThickness;
-    }
+    qreal getBorderThickness(){ return borderThickness; }
 
     /**
      * @brief Sets the new border thickness

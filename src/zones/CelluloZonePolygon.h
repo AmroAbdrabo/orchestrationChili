@@ -84,9 +84,7 @@ public:
      *
      * @return List of polygon's vertices
      */
-    const QList<QVector2D>& getVertices(){
-        return vertices;
-    }
+    const QList<QVector2D>& getVertices(){ return vertices; }
 
     /**
      * @brief Sets the polygon's vertices

@@ -105,7 +105,7 @@ public:
      * @param type The desired type
      * @return Pointer to the created zone
      */
-    Q_INVOKABLE static CelluloZone* newZoneFromType(ZoneType type);
+    Q_INVOKABLE static Cellulo::CelluloZone* newZoneFromType(ZoneType type);
 
 };
 

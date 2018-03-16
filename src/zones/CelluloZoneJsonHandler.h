@@ -62,7 +62,7 @@ public:
      * @param zones Zones to be saved
      * @param path Path of the JSON file where to save the zones
      */
-    static void saveZones(const QList<CelluloZone*>& zones, QString path);
+    static void saveZones(const QList<Cellulo::CelluloZone*>& zones, QString path);
 
     /**
      * @brief Load zones from JSON file
@@ -70,7 +70,7 @@ public:
      * @param Path path of the JSON file where to load the zones
      * @return List of zones
      */
-    static QList<CelluloZone*> loadZonesCPP(QString path);
+    static QList<Cellulo::CelluloZone*> loadZonesCPP(QString path);
 
     /** @endcond */
 
@@ -98,7 +98,7 @@ private:
      * @param json Object to write to
      * @param zones Zones to serialize
      */
-    static void write(QJsonArray& json, QList<CelluloZone*> zones);
+    static void write(QJsonArray& json, QList<Cellulo::CelluloZone*> zones);
 
     /**
      * @brief Retrieves zones from Json object and creates them
@@ -106,7 +106,7 @@ private:
      * @param json Object to read from
      * @return Retrieved zones
      */
-    static QList<CelluloZone*> read(const QJsonArray& json);
+    static QList<Cellulo::CelluloZone*> read(const QJsonArray& json);
 
 };
 

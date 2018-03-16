@@ -56,7 +56,7 @@ class CelluloZonePaintedItem : public QQuickPaintedItem {
     Q_PROPERTY(QColor color WRITE setColor READ getColor NOTIFY colorChanged)
 
     /** @brief Associated zone */
-    Q_PROPERTY(CelluloZone* associatedZone WRITE setAssociatedZone READ getAssociatedZone NOTIFY associatedZoneChanged)
+    Q_PROPERTY(Cellulo::CelluloZone* associatedZone WRITE setAssociatedZone READ getAssociatedZone NOTIFY associatedZoneChanged)
 
     /** @brief Physical playground width that the canvas represents (in mm) */
     Q_PROPERTY(qreal physicalPlaygroundWidth WRITE setPhysicalPlaygroundWidth READ getPhysicalPlaygroundWidth NOTIFY physicalPlaygroundWidthChanged)
@@ -80,9 +80,7 @@ public:
      *
      * @return The paint color
      */
-    QColor getColor(){
-        return color;
-    }
+    QColor getColor(){ return color; }
 
     /**
      * @brief Updates the color to paint with
@@ -103,9 +101,7 @@ public:
      *
      * @return The CelluloZone that takes care of painting
      */
-    CelluloZone* getAssociatedZone(){
-        return associatedZone;
-    }
+    CelluloZone* getAssociatedZone(){ return associatedZone; }
 
     /**
      * @brief Changes the physical playground width
@@ -119,9 +115,7 @@ public:
      *
      * @return The physical playground width in mm
      */
-    qreal getPhysicalPlaygroundWidth(){
-        return physicalPlaygroundWidth;
-    }
+    qreal getPhysicalPlaygroundWidth(){ return physicalPlaygroundWidth; }
 
     /**
      * @brief Changes the physical playground height
@@ -135,9 +129,7 @@ public:
      *
      * @return The physical playground height in mm
      */
-    qreal getPhysicalPlaygroundHeight(){
-        return physicalPlaygroundHeight;
-    }
+    qreal getPhysicalPlaygroundHeight(){ return physicalPlaygroundHeight; }
 
     /**
      * @brief Implementation of pure virtual function in QQuickPaintedItem

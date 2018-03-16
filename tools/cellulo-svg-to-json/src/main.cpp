@@ -26,6 +26,8 @@
 #include <QString>
 #include <CelluloSVGUtil.h>
 
+using namespace Cellulo;
+
 QTextStream& qPrint(){
     static QTextStream ts(stdout);
     return ts;

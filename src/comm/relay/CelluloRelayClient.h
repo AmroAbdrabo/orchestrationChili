@@ -170,14 +170,14 @@ public slots:
      * @param robot New robot
      * @param select Selects the newly added robot as current; pass true if robot is added as a result of an unknownRobotAtServer() signal
      */
-    void addRobot(CelluloBluetooth* robot, bool select = false);
+    void addRobot(Cellulo::CelluloBluetooth* robot, bool select = false);
 
     /**
      * @brief Removes the robot from the robots list
      *
      * @param robot Robot to remove
      */
-    void removeRobot(CelluloBluetooth* robot);
+    void removeRobot(Cellulo::CelluloBluetooth* robot);
 
 signals:
 

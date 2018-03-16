@@ -20,18 +20,18 @@ HEADERS += \
     src/robot/CelluloRobot.h \
     src/comm/CelluloBluetooth.h \
     src/comm/CelluloCommUtil.h \
-    src/comm/CelluloRelayServer.h \
-    src/comm/CelluloRelayClient.h \
-    src/comm/CelluloLocalRelayServer.h \
-    src/comm/CelluloLocalRelayClient.h \
-    src/comm/CelluloRobotPoolClient.h \
-    src/comm/CelluloTcpRelayServer.h \
-    src/comm/CelluloTcpRelayClient.h \
     src/comm/CelluloBluetoothEMP.h \
     src/comm/CelluloBluetoothScanner.h \
     src/comm/CelluloBluetoothEnums.h \
     src/comm/CameraFrameImageProvider.h \
     src/comm/CelluloBluetoothPacket.h \
+    src/comm/relay/CelluloRelayServer.h \
+    src/comm/relay/CelluloRelayClient.h \
+    src/comm/relay/CelluloLocalRelayServer.h \
+    src/comm/relay/CelluloLocalRelayClient.h \
+    src/comm/relay/CelluloRobotPoolClient.h \
+    src/comm/relay/CelluloTcpRelayServer.h \
+    src/comm/relay/CelluloTcpRelayClient.h \
     src/zones/CelluloZoneClient.h \
     src/zones/CelluloZonePoint.h \
     src/zones/CelluloZoneLine.h \
@@ -58,18 +58,18 @@ SOURCES += \
     src/robot/CelluloRobot.cpp \
     src/comm/CelluloBluetooth.cpp \
     src/comm/CelluloCommUtil.cpp \
-    src/comm/CelluloRelayServer.cpp \
-    src/comm/CelluloRelayClient.cpp \
-    src/comm/CelluloLocalRelayServer.cpp \
-    src/comm/CelluloLocalRelayClient.cpp \
-    src/comm/CelluloRobotPoolClient.cpp \
-    src/comm/CelluloTcpRelayServer.cpp \
-    src/comm/CelluloTcpRelayClient.cpp \
     src/comm/CelluloBluetoothEMP.cpp \
     src/comm/CelluloBluetoothScanner.cpp \
     src/comm/CelluloBluetoothEnums.cpp \
     src/comm/CameraFrameImageProvider.cpp \
     src/comm/CelluloBluetoothPacket.cpp \
+    src/comm/relay/CelluloRelayServer.cpp \
+    src/comm/relay/CelluloRelayClient.cpp \
+    src/comm/relay/CelluloLocalRelayServer.cpp \
+    src/comm/relay/CelluloLocalRelayClient.cpp \
+    src/comm/relay/CelluloRobotPoolClient.cpp \
+    src/comm/relay/CelluloTcpRelayServer.cpp \
+    src/comm/relay/CelluloTcpRelayClient.cpp \
     src/zones/CelluloZoneClient.cpp \
     src/zones/CelluloZonePoint.cpp \
     src/zones/CelluloZoneLine.cpp \

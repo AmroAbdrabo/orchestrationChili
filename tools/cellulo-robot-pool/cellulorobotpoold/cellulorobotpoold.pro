@@ -11,6 +11,7 @@ linux:!android {
 
     INCLUDEPATH += \
         ../../../src/comm/ \
+        ../../../src/comm/relay/ \
         ../../../include/
 
     LIBS += -L$$[QT_INSTALL_QML]/Cellulo/ -lcelluloplugin

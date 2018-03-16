@@ -175,14 +175,14 @@ public slots:
      *
      * @param robot New robot
      */
-    void addRobot(CelluloBluetooth* robot);
+    void addRobot(Cellulo::CelluloBluetooth* robot);
 
     /**
      * @brief Removes the robot from the robots list
      *
      * @param robot Existing robot
      */
-    void removeRobot(CelluloBluetooth* robot);
+    void removeRobot(Cellulo::CelluloBluetooth* robot);
 
     /**
      * @brief Closes the client's socket

@@ -70,10 +70,10 @@ class CelluloBluetooth : public CelluloZoneClient {
     Q_PROPERTY(QString macAddr WRITE setMacAddr READ getMacAddr NOTIFY macAddrChanged)
 
     /** @brief Current connection status to the robot, read-only */
-    Q_PROPERTY(CelluloBluetoothEnums::ConnectionStatus connectionStatus READ getConnectionStatus NOTIFY connectionStatusChanged)
+    Q_PROPERTY(Cellulo::CelluloBluetoothEnums::ConnectionStatus connectionStatus READ getConnectionStatus NOTIFY connectionStatusChanged)
 
     /** @brief Robot's current battery state, read-only */
-    Q_PROPERTY(CelluloBluetoothEnums::BatteryState batteryState READ getBatteryState NOTIFY batteryStateChanged)
+    Q_PROPERTY(Cellulo::CelluloBluetoothEnums::BatteryState batteryState READ getBatteryState NOTIFY batteryStateChanged)
 
     /** @brief Robot's x coordinate in mm, read-only */
     Q_PROPERTY(float x READ getX NOTIFY poseChanged_inherited)
@@ -88,7 +88,7 @@ class CelluloBluetooth : public CelluloZoneClient {
     Q_PROPERTY(bool kidnapped READ getKidnapped NOTIFY kidnappedChanged)
 
     /** @brief Current robot gesture (if gesture detection is enabled), read-only */
-    Q_PROPERTY(CelluloBluetoothEnums::Gesture gesture READ getGesture NOTIFY gestureChanged)
+    Q_PROPERTY(Cellulo::CelluloBluetoothEnums::Gesture gesture READ getGesture NOTIFY gestureChanged)
 
     /** @brief Whether the robot will send its own timestamp along with its pose, default false */
     Q_PROPERTY(bool timestampingEnabled WRITE setTimestampingEnabled READ getTimestampingEnabled)
@@ -483,14 +483,14 @@ public slots:
      *
      * @param mode LED resposne mode
      */
-    void setLEDResponseMode(CelluloBluetoothEnums::LEDResponseMode mode);
+    void setLEDResponseMode(Cellulo::CelluloBluetoothEnums::LEDResponseMode mode);
 
     /**
      * @brief Sets the locomotion interactivity mode, i.e the dependance of locomotion to user input
      *
      * @param mode Locomotion interactivity mode
      */
-    void setLocomotionInteractivityMode(CelluloBluetoothEnums::LocomotionInteractivityMode mode);
+    void setLocomotionInteractivityMode(Cellulo::CelluloBluetoothEnums::LocomotionInteractivityMode mode);
 
     /**
      * @brief Enables/disables raw touch signal offset querying and processing
@@ -525,7 +525,7 @@ public slots:
      * @param color Color
      * @param value A value possibly meaningful for the effect (between 0 and 255)
      */
-    void setVisualEffect(CelluloBluetoothEnums::VisualEffect effect, QColor color, int value);
+    void setVisualEffect(Cellulo::CelluloBluetoothEnums::VisualEffect effect, QColor color, int value);
 
     /**
      * @brief Sends the first control point of the composite Bézier curve for motion tracking
@@ -550,7 +550,7 @@ public slots:
      *
      * @param zone The zone that contains the composite Bézier curve path
      */
-    void polyBezierSetFromZone(CelluloZone* zone);
+    void polyBezierSetFromZone(Cellulo::CelluloZone* zone);
 
     /**
      * @brief Starts tracking the previously set composite Bézier curve

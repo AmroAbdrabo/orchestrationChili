@@ -68,7 +68,7 @@ class CelluloZone : public QQuickItem {
     Q_PROPERTY(QString name WRITE setName READ getName NOTIFY nameChanged)
 
     /** @brief Type of this zone, read-only */
-    Q_PROPERTY(CelluloZoneTypes::ZoneType type READ getType NOTIFY typeChanged)
+    Q_PROPERTY(Cellulo::CelluloZoneTypes::ZoneType type READ getType NOTIFY typeChanged)
 
 public:
 
@@ -185,21 +185,21 @@ public:
      *
      * @return A PaintedItem that is the visual representation of this zone
      */
-    Q_INVOKABLE CelluloZonePaintedItem* createPaintedItem(QQuickItem* parent, QColor color, qreal physicalPlaygroundWidth, qreal physicalPlaygroundHeight);
+    Q_INVOKABLE Cellulo::CelluloZonePaintedItem* createPaintedItem(QQuickItem* parent, QColor color, qreal physicalPlaygroundWidth, qreal physicalPlaygroundHeight);
 
     /**
      * @brief Associates a painted item with this zone so that it can be redrawn if the zone changes
      *
      * @param newPaintedItem New painted item
      */
-    Q_INVOKABLE void setPaintedItem(CelluloZonePaintedItem* newPaintedItem);
+    Q_INVOKABLE void setPaintedItem(Cellulo::CelluloZonePaintedItem* newPaintedItem);
 
     /**
      * @brief Get painted item associated with this zone so that its properties can be changed
      *
      * @return The PaintedItem that is the visual representation of this zone
      */
-    Q_INVOKABLE CelluloZonePaintedItem* getPaintedItem(){ return paintedItem; }
+    Q_INVOKABLE Cellulo::CelluloZonePaintedItem* getPaintedItem(){ return paintedItem; }
 
 public slots:
 
@@ -255,9 +255,9 @@ signals:
 
 private:
 
-    QHash<CelluloZoneClient*, qreal> clientsLastValues;  ///< Stores the most recent values calculated for clients
-    CelluloZonePaintedItem* paintedItem;                 ///< The PaintedItem associated with this zone
-    bool active;                                         ///< Whether the zone is active
+    QHash<Cellulo::CelluloZoneClient*, qreal> clientsLastValues;    ///< Stores the most recent values calculated for clients
+    CelluloZonePaintedItem* paintedItem;                            ///< The PaintedItem associated with this zone
+    bool active;                                                    ///< Whether the zone is active
 
 };
 
