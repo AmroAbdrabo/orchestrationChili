@@ -270,7 +270,7 @@ This class is **singleton**, you can call `ThisClass.anyFunction()` and use `Thi
 
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
-`public static Q_INVOKABLE QString `[`dumpAllPathsToJSON`](#classCellulo_1_1CelluloSVGUtil_1a03ff9f602eed155d9c49a8106b36a304)`(const QString & inSVGFile,const QString & outJSONFile,const QString & type,const QString & name,float dpi,bool optimized)` | Parses the given SVG file and dumps all paths into the given JSON file in the [CelluloZonePolyBezierClosestT](#classCellulo_1_1CelluloZonePolyBezierClosestT) type.
+`public static Q_INVOKABLE QString `[`dumpAllPathsToJSON`](#classCellulo_1_1CelluloSVGUtil_1a03ff9f602eed155d9c49a8106b36a304)`(const QString & inSVGFile,const QString & outJSONFile,const QString & type,const QString & name,float dpi,bool optimized)` | Parses the given SVG file and dumps all paths into the given JSON file in the [CelluloZonePolyBezierClosestT](doc/doc-zone.md#classCellulo_1_1CelluloZonePolyBezierClosestT) type.
 `public static Q_INVOKABLE QVariantList `[`loadZonesQML`](#classCellulo_1_1CelluloSVGUtil_1ab2e7db8bc5c58aa058f42cef70ce78c9)`(const QString & inSVGFile,const QString & name,float dpi,bool optimized)` | Parses the given SVG file into zones.
 
 ## Members

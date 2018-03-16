@@ -34,20 +34,31 @@ namespace Cellulo{
 class CelluloBluetooth;
 
 /**
+ * @addtogroup zone
+ * @{
+ */
+
+/**
  * @brief CelluloZone Base class for composite cubic Bézier curve
  *
  * The curve is composed of continuous cubic Bézier curve segments, as seen in https://en.wikipedia.org/wiki/Composite_B%C3%A9zier_curve
  * The curve is compliant with the SVG standard of continuous cubic Bézier segments.
  *
  * It is composed of 3n+1 control points where the points at indices [3k, 3k+1, 3k+2, 3k+3] correspond to a Bézier curve.
+ *
+ * @abstract
  */
 class CelluloZonePolyBezier : public CelluloZone {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
+
+    /** @brief List of consecutive control points, must contain `3N + 1` points; `N` is the number of segments */
     Q_PROPERTY(QVariantList controlPoints WRITE setControlPoints READ getControlPoints NOTIFY controlPointsChanged)
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Creates a new Cellulo composite Bézier curve
@@ -105,6 +116,8 @@ public:
      */
     Q_INVOKABLE virtual bool isMouseInside(QVector2D  mousePosition, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 public slots:
 
     /**
@@ -125,7 +138,7 @@ public slots:
     /**
      * @brief Gets the tangent direction of point on the curve corresponding to the given parameter
      *
-     * @param m Given parameter t in [0,numSegments]
+     * @param t Given parameter t in [0,numSegments]
      * @return Tangent direction of the point on curve corresponding to t
      */
     QVector2D getTangent(qreal t);
@@ -133,19 +146,25 @@ public slots:
     /**
      * @brief Gets the normal direction of point on the curve corresponding to the given parameter
      *
-     * @param m Given parameter t in [0,numSegments]
+     * @param t Given parameter t in [0,numSegments]
      * @return Normal direction of the point on curve corresponding to t
      */
     QVector2D getNormal(qreal t);
 
 signals:
 
+    /** @cond DO_NOT_DOCUMENT */
+
     /**
      * @brief Emitted when the control points change
      */
     void controlPointsChanged();
 
+    /** @endcond */
+
 protected:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Gets the segment index from the given parameter t, pulls t to [0,1]
@@ -194,6 +213,8 @@ protected:
     qreal minY = std::numeric_limits<qreal>::max(); ///< Minimum y bound for the curve
     qreal maxY = std::numeric_limits<qreal>::min(); ///< Maximum y bound for the curve
 
+    /** @endcond */
+
 private:
 
     /**
@@ -206,6 +227,10 @@ private:
 
 /**
  * @brief Calculates the parameter t of the closest point on a composite Bézier curve
+ *
+ * Calculates the parameter `t` of the composite Bézier curve whose corresponding point is closest to the client.
+ * `t` will be in `[0, number of segments]` where every interval of size `1` corresponds to the parameter `t` on that
+ * particular segment within the curve.
  */
 class CelluloZonePolyBezierClosestT : public CelluloZonePolyBezier {
     /* *INDENT-OFF* */
@@ -213,6 +238,8 @@ class CelluloZonePolyBezierClosestT : public CelluloZonePolyBezier {
     /* *INDENT-ON* */
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     CelluloZonePolyBezierClosestT();
 
@@ -239,15 +266,26 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 protected:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     static constexpr qreal GET_T_EPSILON = 0.01; ///< Get t from x/y calculation sensitivity, in mm
     static constexpr qreal GET_T_LIM_T = 0.001;  ///< Get t from x/y calculation t interval limit
+
+    /** @endcond */
 
 };
 
 /**
  * @brief Calculates the parameter t of the point on the composite Bézier curve with the same x coordinate as the client
+ *
+ * Calculates the parameter `t` of the composite Bézier curve whose corresponding point has the same x coordinate as
+ * the client. `t` will be in `[0, number of segments]` where every interval of size `1` corresponds to the parameter
+ * `t` on that particular segment within the curve. Assumes that the curve is 1-to-1 along the x axis, i.e it is of the
+ * form `y = f(t)`.
  *
  * Assumes that the curve is 1-to-1 along the x axis, i.e it is of the form y = f(t).
  */
@@ -257,6 +295,8 @@ class CelluloZonePolyBezierXT : public CelluloZonePolyBezierClosestT {
     /* *INDENT-ON* */
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     CelluloZonePolyBezierXT();
 
@@ -285,10 +325,17 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 };
 
 /**
  * @brief Calculates the parameter t of the point on the composite Bézier curve with the same y coordinate as the client
+ *
+ * Calculates the parameter `t` of the composite Bézier curve whose corresponding point has the same y coordinate as the
+ * client. `t` will be in `[0, number of segments]` where every interval of size `1` corresponds to the parameter `t` on
+ * that particular segment within the curve. Assumes that the curve is 1-to-1 along the y axis, i.e it is of the form
+ * `x = f(t)`.
  *
  * Assumes that the curve is 1-to-1 along the y axis, i.e it is of the form x = f(t).
  */
@@ -298,6 +345,8 @@ class CelluloZonePolyBezierYT : public CelluloZonePolyBezierClosestT {
     /* *INDENT-ON* */
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     CelluloZonePolyBezierYT();
 
@@ -326,10 +375,14 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 };
 
 /**
  * @brief Calculates the distance to a composite Bézier curve
+ *
+ * Calculates the distance of the client to the composite Bézier curve.
  */
 class CelluloZonePolyBezierDistance : public CelluloZonePolyBezierClosestT {
     /* *INDENT-OFF* */
@@ -337,6 +390,8 @@ class CelluloZonePolyBezierDistance : public CelluloZonePolyBezierClosestT {
     /* *INDENT-ON* */
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     CelluloZonePolyBezierDistance();
 
@@ -363,18 +418,26 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 };
 
 /**
  * @brief Calculates whether the client is on the border of a composite Bézier curve
+ *
+ * Calculates whether the client's position is within **borderThickness** of the zone's border, value is `0.0` or `1.0`.
  */
 class CelluloZonePolyBezierBorder : public CelluloZonePolyBezier {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
+
+    /** @brief Total thickness of the border (mm) */
     Q_PROPERTY(qreal borderThickness WRITE setBorderThickness READ getBorderThickness NOTIFY borderThicknessChanged)
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     CelluloZonePolyBezierBorder();
 
@@ -427,12 +490,18 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 signals:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Emitted when border thickness changes
      */
     void borderThicknessChanged();
+
+    /** @endcond */
 
 private:
 
@@ -443,7 +512,9 @@ private:
 /**
  * @brief Calculates whether the client is within the composite Bézier curve
  *
- * The first and last points of the curve are assumed to be connected with a line segment in order to ensure the curve is closed.
+ * Calculates whether the client is within the composite Bézier curve, value is `0.0` or `1.0`. The first and last
+ * control points of the curve are assumed to be connected with a line segment in order to ensure the curve is closed,
+ * if the curve is not already closed.
  */
 class CelluloZonePolyBezierInner : public CelluloZonePolyBezier {
     /* *INDENT-OFF* */
@@ -451,6 +522,8 @@ class CelluloZonePolyBezierInner : public CelluloZonePolyBezier {
     /* *INDENT-ON* */
 
 public:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     CelluloZonePolyBezierInner();
 
@@ -477,7 +550,11 @@ public:
      */
     virtual void paint(QPainter* painter, QColor color, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight) override;
 
+    /** @endcond */
+
 };
+
+/** @} */
 
 }
 

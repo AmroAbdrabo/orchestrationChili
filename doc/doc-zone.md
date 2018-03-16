@@ -25,6 +25,13 @@
 `class `[`Cellulo::CelluloZonePaintedItem`](doc/doc-zone.md#classCellulo_1_1CelluloZonePaintedItem) | A QML compatible QQuickPaintedItem for CelluloZones.
 `class `[`Cellulo::CelluloZonePoint`](doc/doc-zone.md#classCellulo_1_1CelluloZonePoint) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Base Class for point zones.
 `class `[`Cellulo::CelluloZonePointDistance`](doc/doc-zone.md#classCellulo_1_1CelluloZonePointDistance) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for point zones distance determination.
+`class `[`Cellulo::CelluloZonePolyBezier`](doc/doc-zone.md#classCellulo_1_1CelluloZonePolyBezier) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Base class for composite cubic Bézier curve.
+`class `[`Cellulo::CelluloZonePolyBezierClosestT`](doc/doc-zone.md#classCellulo_1_1CelluloZonePolyBezierClosestT) | Calculates the parameter t of the closest point on a composite Bézier curve.
+`class `[`Cellulo::CelluloZonePolyBezierXT`](doc/doc-zone.md#classCellulo_1_1CelluloZonePolyBezierXT) | Calculates the parameter t of the point on the composite Bézier curve with the same x coordinate as the client.
+`class `[`Cellulo::CelluloZonePolyBezierYT`](doc/doc-zone.md#classCellulo_1_1CelluloZonePolyBezierYT) | Calculates the parameter t of the point on the composite Bézier curve with the same y coordinate as the client.
+`class `[`Cellulo::CelluloZonePolyBezierDistance`](doc/doc-zone.md#classCellulo_1_1CelluloZonePolyBezierDistance) | Calculates the distance to a composite Bézier curve.
+`class `[`Cellulo::CelluloZonePolyBezierBorder`](doc/doc-zone.md#classCellulo_1_1CelluloZonePolyBezierBorder) | Calculates whether the client is on the border of a composite Bézier curve.
+`class `[`Cellulo::CelluloZonePolyBezierInner`](doc/doc-zone.md#classCellulo_1_1CelluloZonePolyBezierInner) | Calculates whether the client is within the composite Bézier curve.
 `class `[`Cellulo::CelluloZonePolygon`](doc/doc-zone.md#classCellulo_1_1CelluloZonePolygon) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Base Class for polygonal zones.
 `class `[`Cellulo::CelluloZoneIrregularPolygon`](doc/doc-zone.md#classCellulo_1_1CelluloZoneIrregularPolygon) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Base Class for irregular polygonal zones.
 `class `[`Cellulo::CelluloZoneIrregularPolygonInner`](doc/doc-zone.md#classCellulo_1_1CelluloZoneIrregularPolygonInner) | [CelluloZone](doc/doc-zone.md#classCellulo_1_1CelluloZone) Specific Class for irregular polygonal zones inner determination.
@@ -723,6 +730,193 @@ Calculates the client's distance to the zone.
 
 ## Members
 
+# class `Cellulo::CelluloZonePolyBezier` 
+
+```
+class Cellulo::CelluloZonePolyBezier
+  : public Cellulo::CelluloZone
+```  
+
+[CelluloZone](#classCellulo_1_1CelluloZone) Base class for composite cubic Bézier curve.
+
+The curve is composed of continuous cubic Bézier curve segments, as seen in [https://en.wikipedia.org/wiki/Composite_B%C3%A9zier_curve](https://en.wikipedia.org/wiki/Composite_B%C3%A9zier_curve) The curve is compliant with the SVG standard of continuous cubic Bézier segments.
+
+It is composed of 3n+1 control points where the points at indices [3k, 3k+1, 3k+2, 3k+3] correspond to a Bézier curve.
+
+This class is **abstract**, you cannot instantiate it directly. Refer to classes derived from it.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+`{property} QVariantList `[`controlPoints`](doc/doc-zone.md#classCellulo_1_1CelluloZonePolyBezier_1afa67316d98873cfc52f88d28e70e636e) | List of consecutive control points, must contain `3N + 1` points; `N` is the number of segments.
+`{slot} public void `[`sendPathToRobot`](#classCellulo_1_1CelluloZonePolyBezier_1a615b70d119e89610b917c680bda40a6f)`(`[`CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth)` * robot) const` | Sends this path to the given robot in order to be followed.
+`{slot} public QVector2D `[`getPoint`](#classCellulo_1_1CelluloZonePolyBezier_1ac8d36120b82174dfccdd0d7957083977)`(qreal t)` | Gets the point on the curve corresponding to the given parameter.
+`{slot} public QVector2D `[`getTangent`](#classCellulo_1_1CelluloZonePolyBezier_1aaa887426e743588e883c6ba1ea8cd9d2)`(qreal t)` | Gets the tangent direction of point on the curve corresponding to the given parameter.
+`{slot} public QVector2D `[`getNormal`](#classCellulo_1_1CelluloZonePolyBezier_1af3b226549d81e1f3facc826b8bcb723a)`(qreal t)` | Gets the normal direction of point on the curve corresponding to the given parameter.
+
+## Members
+
+#### `{property} QVariantList `[`controlPoints`](doc/doc-zone.md#classCellulo_1_1CelluloZonePolyBezier_1afa67316d98873cfc52f88d28e70e636e) 
+
+List of consecutive control points, must contain `3N + 1` points; `N` is the number of segments.
+
+#### `{slot} public void `[`sendPathToRobot`](#classCellulo_1_1CelluloZonePolyBezier_1a615b70d119e89610b917c680bda40a6f)`(`[`CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth)` * robot) const` 
+
+Sends this path to the given robot in order to be followed.
+
+#### Parameters
+* `robot` The robot to send the path to
+
+#### `{slot} public QVector2D `[`getPoint`](#classCellulo_1_1CelluloZonePolyBezier_1ac8d36120b82174dfccdd0d7957083977)`(qreal t)` 
+
+Gets the point on the curve corresponding to the given parameter.
+
+#### Parameters
+* `t` Given parameter t in [0,numSegments] 
+
+#### Returns
+Point on curve corresponding to t
+
+#### `{slot} public QVector2D `[`getTangent`](#classCellulo_1_1CelluloZonePolyBezier_1aaa887426e743588e883c6ba1ea8cd9d2)`(qreal t)` 
+
+Gets the tangent direction of point on the curve corresponding to the given parameter.
+
+#### Parameters
+* `t` Given parameter t in [0,numSegments] 
+
+#### Returns
+Tangent direction of the point on curve corresponding to t
+
+#### `{slot} public QVector2D `[`getNormal`](#classCellulo_1_1CelluloZonePolyBezier_1af3b226549d81e1f3facc826b8bcb723a)`(qreal t)` 
+
+Gets the normal direction of point on the curve corresponding to the given parameter.
+
+#### Parameters
+* `t` Given parameter t in [0,numSegments] 
+
+#### Returns
+Normal direction of the point on curve corresponding to t
+
+# class `Cellulo::CelluloZonePolyBezierClosestT` 
+
+```
+class Cellulo::CelluloZonePolyBezierClosestT
+  : public Cellulo::CelluloZonePolyBezier
+```  
+
+Calculates the parameter t of the closest point on a composite Bézier curve.
+
+Calculates the parameter `t` of the composite Bézier curve whose corresponding point is closest to the client. `t` will be in `[0, number of segments]` where every interval of size `1` corresponds to the parameter `t` on that particular segment within the curve.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+
+## Members
+
+# class `Cellulo::CelluloZonePolyBezierXT` 
+
+```
+class Cellulo::CelluloZonePolyBezierXT
+  : public Cellulo::CelluloZonePolyBezierClosestT
+```  
+
+Calculates the parameter t of the point on the composite Bézier curve with the same x coordinate as the client.
+
+Calculates the parameter `t` of the composite Bézier curve whose corresponding point has the same x coordinate as the client. `t` will be in `[0, number of segments]` where every interval of size `1` corresponds to the parameter `t` on that particular segment within the curve. Assumes that the curve is 1-to-1 along the x axis, i.e it is of the form `y = f(t)`.
+
+Assumes that the curve is 1-to-1 along the x axis, i.e it is of the form y = f(t).
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+
+## Members
+
+# class `Cellulo::CelluloZonePolyBezierYT` 
+
+```
+class Cellulo::CelluloZonePolyBezierYT
+  : public Cellulo::CelluloZonePolyBezierClosestT
+```  
+
+Calculates the parameter t of the point on the composite Bézier curve with the same y coordinate as the client.
+
+Calculates the parameter `t` of the composite Bézier curve whose corresponding point has the same y coordinate as the client. `t` will be in `[0, number of segments]` where every interval of size `1` corresponds to the parameter `t` on that particular segment within the curve. Assumes that the curve is 1-to-1 along the y axis, i.e it is of the form `x = f(t)`.
+
+Assumes that the curve is 1-to-1 along the y axis, i.e it is of the form x = f(t).
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+
+## Members
+
+# class `Cellulo::CelluloZonePolyBezierDistance` 
+
+```
+class Cellulo::CelluloZonePolyBezierDistance
+  : public Cellulo::CelluloZonePolyBezierClosestT
+```  
+
+Calculates the distance to a composite Bézier curve.
+
+Calculates the distance of the client to the composite Bézier curve.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+
+## Members
+
+# class `Cellulo::CelluloZonePolyBezierBorder` 
+
+```
+class Cellulo::CelluloZonePolyBezierBorder
+  : public Cellulo::CelluloZonePolyBezier
+```  
+
+Calculates whether the client is on the border of a composite Bézier curve.
+
+Calculates whether the client's position is within **borderThickness** of the zone's border, value is `0.0` or `1.0`.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+`{property} qreal `[`borderThickness`](doc/doc-zone.md#classCellulo_1_1CelluloZonePolyBezierBorder_1adc9ac5e57b65629e0d26c2a4573f6336) | Total thickness of the border (mm)
+
+## Members
+
+#### `{property} qreal `[`borderThickness`](doc/doc-zone.md#classCellulo_1_1CelluloZonePolyBezierBorder_1adc9ac5e57b65629e0d26c2a4573f6336) 
+
+Total thickness of the border (mm)
+
+The border thickness in mm.
+
+# class `Cellulo::CelluloZonePolyBezierInner` 
+
+```
+class Cellulo::CelluloZonePolyBezierInner
+  : public Cellulo::CelluloZonePolyBezier
+```  
+
+Calculates whether the client is within the composite Bézier curve.
+
+Calculates whether the client is within the composite Bézier curve, value is `0.0` or `1.0`. The first and last control points of the curve are assumed to be connected with a line segment in order to ensure the curve is closed, if the curve is not already closed.
+
+## Summary
+
+ Members                        | Descriptions                                
+--------------------------------|---------------------------------------------
+
+## Members
+
 # class `Cellulo::CelluloZonePolygon` 
 
 ```
@@ -1067,12 +1261,12 @@ RPOLYGONDISTANCE            | [CelluloZoneRegularPolygonDistance](doc/doc-zone.m
 IRPOLYGONINNER            | [CelluloZoneIrregularPolygonInner](doc/doc-zone.md#classCellulo_1_1CelluloZoneIrregularPolygonInner).
 IRPOLYGONBORDER            | [CelluloZoneIrregularPolygonBorder](doc/doc-zone.md#classCellulo_1_1CelluloZoneIrregularPolygonBorder).
 IRPOLYGONDISTANCE            | [CelluloZoneIrregularPolygonDistance](doc/doc-zone.md#classCellulo_1_1CelluloZoneIrregularPolygonDistance).
-POLYBEZIERCLOSESTT            | [CelluloZonePolyBezierClosestT](#classCellulo_1_1CelluloZonePolyBezierClosestT).
-POLYBEZIERXT            | [CelluloZonePolyBezierXT](#classCellulo_1_1CelluloZonePolyBezierXT).
-POLYBEZIERYT            | [CelluloZonePolyBezierYT](#classCellulo_1_1CelluloZonePolyBezierYT).
-POLYBEZIERDISTANCE            | [CelluloZonePolyBezierDistance](#classCellulo_1_1CelluloZonePolyBezierDistance).
-POLYBEZIERBORDER            | [CelluloZonePolyBezierBorder](#classCellulo_1_1CelluloZonePolyBezierBorder).
-POLYBEZIERINNER            | [CelluloZonePolyBezierInner](#classCellulo_1_1CelluloZonePolyBezierInner).
+POLYBEZIERCLOSESTT            | [CelluloZonePolyBezierClosestT](doc/doc-zone.md#classCellulo_1_1CelluloZonePolyBezierClosestT).
+POLYBEZIERXT            | [CelluloZonePolyBezierXT](doc/doc-zone.md#classCellulo_1_1CelluloZonePolyBezierXT).
+POLYBEZIERYT            | [CelluloZonePolyBezierYT](doc/doc-zone.md#classCellulo_1_1CelluloZonePolyBezierYT).
+POLYBEZIERDISTANCE            | [CelluloZonePolyBezierDistance](doc/doc-zone.md#classCellulo_1_1CelluloZonePolyBezierDistance).
+POLYBEZIERBORDER            | [CelluloZonePolyBezierBorder](doc/doc-zone.md#classCellulo_1_1CelluloZonePolyBezierBorder).
+POLYBEZIERINNER            | [CelluloZonePolyBezierInner](doc/doc-zone.md#classCellulo_1_1CelluloZonePolyBezierInner).
 ZoneTypeNumElements            | 
 
 List of possible zones.

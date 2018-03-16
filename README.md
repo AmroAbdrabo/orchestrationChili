@@ -14,7 +14,7 @@ that were confirmed to work with the Cellulo robots under Ubuntu 16.04 with Blue
 
 Tools are under [tools/](tools/), samples are under [samples/](samples/). See their README's for instructions.
 
-See [doc/DOCUMENTATION.md](doc/DOCUMENTATION.md) for the API.
+See [doc/doc.md](doc/doc.md) for the API.
 
 Dependencies
 -------------
