@@ -6,6 +6,7 @@ import QtQuick.Controls.Private 1.0
 import QtQuick.Controls.Styles 1.3
 
 import QMLBluetoothExtras 1.0
+import QMLExtraDataStructures 1.0
 import Cellulo 1.0
 
 ApplicationWindow {
@@ -16,6 +17,34 @@ ApplicationWindow {
     minimumWidth: width
     minimumHeight: height
     //height: mobile ? Screen.desktopAvailableHeight : 0.7*Screen.height
+
+    property var localAdapterMacAddrs: BluetoothLocalDeviceStatic.allDevices()
+
+    RepeaterList{
+        id: localAdapters
+
+        model: localAdapterMacAddrs.length
+
+        BluetoothLocalDevice{
+            address: localAdapterMacAddrs[index]
+
+            function hasRobot(robotMacAddr){
+                for(var i=0;i<connectedDevices.length;i++)
+                    if(connectedDevices[i].toLowerCase() === robotMacAddr.toLowerCase())
+                        return true;
+                return false;
+            }
+        }
+
+
+    }
+
+    function containedInOtherAdapter(localAddr, robot){
+        for(var l=0;l<localAdapters.items.length;l++)
+            if(localAdapters.items[l].address.toLowerCase() !== robot.localAdapterMacAddr && localAdapters.items[l].hasRobot(robot.macAddr))
+                return true;
+        return false;
+    }
 
     Component.onCompleted: {
         if(CelluloCommUtil.testRobotPoolDaemon()){
@@ -139,32 +168,52 @@ ApplicationWindow {
                 Column{
                     id: robotList
 
-                    Repeater{
+                    RepeaterList{
                         id: robotListMacAddrSelectors
 
                         model: client.robots.length
 
-                        MacAddrSelector{
-                            property var robot: client.robots[index]
-                            property string localAdapterMacAddr: robot.localAdapterMacAddr
+                        Row{
+                            spacing: 5
 
-                            addresses: [robot.macAddr]
-                            connectionStatus: robot.connectionStatus
+                            property var selectorAtRow: selector
 
-                            onConnectionStatusChanged: {
-                                if(connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected)
-                                    robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectAlertAll,"#800080",3);
+                            MacAddrSelector{
+                                id: selector
+                                property var robot: client.robots[index]
+                                property string localAdapterMacAddr: robot.localAdapterMacAddr
+
+                                addresses: [robot.macAddr]
+                                connectionStatus: robot.connectionStatus
+
+                                onConnectionStatusChanged: {
+                                    if(connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected)
+                                        robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectAlertAll,"#800080",3);
+                                    wrongText.update();
+                                }
+
+                                onLocalAdapterMacAddrChanged: selectLocalAdapterAddress(localAdapterMacAddr.toUpperCase())
+
+                                onConnectRequested: {
+                                    robot.localAdapterMacAddr = selectedLocalAdapterAddress;
+                                    robot.macAddr = selectedAddress;
+                                    robot.connectToServer();
+                                }
+
+                                onDisconnectRequested: robot.disconnectFromServer()
                             }
 
-                            onLocalAdapterMacAddrChanged: selectLocalAdapterAddress(localAdapterMacAddr.toUpperCase())
+                            Text{
+                                id: wrongText
+                                text: "Wrong adapter!"
+                                visible: containedInOtherAdapter(selector.localAdapterMacAddr, selector.robot)
+                                color: "red"
+                                anchors.verticalCenter: parent.verticalCenter
 
-                            onConnectRequested: {
-                                robot.localAdapterMacAddr = selectedLocalAdapterAddress;
-                                robot.macAddr = selectedAddress;
-                                robot.connectToServer();
+                                function update(){
+                                    visible = containedInOtherAdapter(selector.localAdapterMacAddr, selector.robot);
+                                }
                             }
-
-                            onDisconnectRequested: robot.disconnectFromServer()
                         }
                     }
 
@@ -174,9 +223,8 @@ ApplicationWindow {
                         Button{
                             text: "Equally distribute local adapters"
                             onClicked:{
-                                var localAdapters = BluetoothLocalDeviceStatic.allDevices();
                                 for(var i=0;i<client.robots.length;i++)
-                                    client.robots[i].localAdapterMacAddr = localAdapters[i % localAdapters.length];
+                                    client.robots[i].localAdapterMacAddr = localAdapterMacAddrs[i % localAdapterMacAddrs.length];
                             }
                         }
 
@@ -188,7 +236,7 @@ ApplicationWindow {
                             function autoconnectTo(){
                                 if(currentIndex < client.robots.length){
                                     var robot = client.robots[currentIndex];
-                                    var macAddrSelector = robotListMacAddrSelectors.itemAt(currentIndex);
+                                    var macAddrSelector = robotListMacAddrSelectors.items[currentIndex].selectorAtRow;
                                     robot.localAdapterMacAddr = macAddrSelector.selectedLocalAdapterAddress;
                                     robot.macAddr = macAddrSelector.selectedAddress;
                                     robot.connectToServer();
