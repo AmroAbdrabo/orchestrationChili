@@ -40,9 +40,14 @@ ApplicationWindow {
     }
 
     function containedInOtherAdapter(localAddr, robot){
-        for(var l=0;l<localAdapters.items.length;l++)
-            if(localAdapters.items[l].address.toLowerCase() !== robot.localAdapterMacAddr && localAdapters.items[l].hasRobot(robot.macAddr))
+        for(var l=0;l<localAdapters.items.length;l++){
+            if(robot.localAdapterMacAddr === ""){
+                if(l > 0)
+                    return true;
+            }
+            else if(localAdapters.items[l].address.toLowerCase() !== robot.localAdapterMacAddr && localAdapters.items[l].hasRobot(robot.macAddr))
                 return true;
+        }
         return false;
     }
 
