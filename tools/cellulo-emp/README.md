@@ -1,9 +1,13 @@
 cellulo-emp
 ===========
 
-Tool to scan and mass reset/shutdown all Cellulo robots.
+Tool to scan and mass reset/shutdown all Cellulo robots (bit buggy and may crash at the moment).
 
-Tested with Qt 5.8.0 on Ubuntu 16.04 and Android SDK 25 and NDK r10e.
+Tested with Qt 5.10.0 on:
+
+  - Ubuntu 17.10
+  - macOS 10.13.3
+  - Android 7.1.2 (also available on the Play Store)
 
 Build
 -----
