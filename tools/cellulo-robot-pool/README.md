@@ -9,7 +9,11 @@ A suite of tools that provide a server that stays alive and connected to the Cel
 While `cellulorobotpoold` is alive, a `CelluloRobotPoolClient` in a Cellulo application can connect to the server and
 communicate with its already connected robots.
 
-Tested on Ubuntu 16.04. Does not yet work on Android.
+Tested with Qt 5.10.0 on:
+
+  - Ubuntu 17.10
+  - ~~macOS 10.13.3~~ not yet, ongoing work
+  - ~~Android~~ not yet, ongoing work
 
 Desktop build
 -------------
@@ -18,8 +22,8 @@ Desktop build
 1. Run the following:
 
     ```
-    mkdir build-desktop && cd build-desktop
-    /path-to-qt-install-root/5.8/gcc_64/bin/qmake ..
+    mkdir build && cd build
+    qt-install-root/5.10.0/target-platform/bin/qmake ..
     make -j5
     sudo make install
     ```
