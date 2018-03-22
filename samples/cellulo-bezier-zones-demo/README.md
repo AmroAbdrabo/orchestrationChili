@@ -3,7 +3,10 @@ cellulo-bezier-zones-demo
 
 Demonstrates more complicated PolyBézier zones that can be used with the Cellulo robots.
 
-Tested with Qt 5.8.0 on Ubuntu 16.04 and Android SDK 25 and NDK r10e.
+Tested with Qt 5.10.0 on:
+
+  - Ubuntu 17.10
+  - macOS 10.13.3
 
 Build
 -----
