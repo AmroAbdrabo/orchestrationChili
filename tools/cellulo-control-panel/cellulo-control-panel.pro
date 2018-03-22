@@ -6,13 +6,21 @@ SOURCES += src/main.cpp
 
 RESOURCES += qml.qrc
 
-unix:!android {
-    linux{ message("Building for Linux") }
-    macx{ message("Building for macOS") }
+linux:!android {
+    message("Building for Linux")
 
     TARGET = cellulo-control-panel
 
     target.path = /usr/local/bin/
+    INSTALLS += target
+}
+
+macx:!android {
+    message("Building for macOS")
+
+    TARGET = cellulo-control-panel
+
+    target.path = /Applications/
     INSTALLS += target
 }
 
