@@ -6,7 +6,7 @@ Command line tool to extract Cellulo zones from SVG files designed in vector gra
 Tested with Qt 5.10.0 on:
 
   - Ubuntu 17.10
-  - ~~macOS 10.13.3~~ Not yet
+  - macOS 10.13.3
 
 Build
 -----
@@ -16,7 +16,7 @@ Build
 
     ```
     mkdir build && cd build
-    /path-to-qt-install-root/5.10.0/gcc_64/bin/qmake ..
+    qt-install-root/qt-version/target-platform/bin/qmake ..
     make -j5 install
     ```
 
