@@ -20,7 +20,8 @@ macx:!android {
 
     TARGET = cellulo-control-panel
 
-    ICON = assets/icon.icns
+    ICON = assets/cellulo-control-panel.icns
+    QMAKE_INFO_PLIST = assets/Info.plist
 
     target.path = /Applications/
     INSTALLS += target
