@@ -20,6 +20,8 @@ macx:!android {
 
     TARGET = cellulo-control-panel
 
+    ICON = assets/icon.icns
+
     target.path = /Applications/
     INSTALLS += target
 }
