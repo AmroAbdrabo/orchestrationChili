@@ -14,3 +14,15 @@ linux:!android {
     target.path = /usr/local/bin/
     INSTALLS += target
 }
+
+macx:!android {
+    message("Building for macOS")
+
+    TARGET = "Cellulo Robot Pool GUI"
+
+    ICON = assets/cellulo-robot-pool-gui.icns
+    QMAKE_INFO_PLIST = assets/Info.plist
+
+    target.path = /Applications/
+    INSTALLS += target
+}

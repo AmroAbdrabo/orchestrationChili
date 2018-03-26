@@ -8,7 +8,7 @@ A suite of tools that provide a server that stays alive and connected to the Cel
     - *macOS*: Must be launched manually as an app (named `Cellulo Robot Pool Daemon`) and must be left running. All messages coming from the daemon are dumped via `syslog`. This is found in `/var/log/system.log` under macOS.
   - `cellulo-robot-pool-gui`: controls `cellulorobotpoold` to add or remove robots as well as connect to or disconnect from them.
     - *Linux*: Can start and stop `cellulorobotpoold` as well.
-    - *macOS*: `cellulorobotpoold` must be launched manually as an app and must be left running.
+    - *macOS*: Launch as an app (called `Cellulo Robot Pool GUI`). Cannot start and stop `cellulorobotpoold`, it must be launched manually as an app and must be left running.
 
 While `cellulorobotpoold` is alive, a `CelluloRobotPoolClient` in a Cellulo application can connect to the server and
 communicate with its already connected robots.
