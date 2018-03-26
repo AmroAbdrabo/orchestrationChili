@@ -35,8 +35,6 @@ ApplicationWindow {
                 return false;
             }
         }
-
-
     }
 
     function containedInOtherAdapter(localAddr, robot){
@@ -52,17 +50,19 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
-        if(CelluloCommUtil.testRobotPoolDaemon()){
-            if(CelluloCommUtil.startRobotPoolDaemon())
-                toast.show("Robot pool daemon started, connecting...");
-            else
-                toast.show("Robot pool daemon already running, connecting...");
-            client.connectToServer();
-        }
-        else{
-            var err = "/usr/local/bin/cellulorobotpoold not found!!!";
-            toast.show(err);
-            console.log(err);
+        if(Qt.platform.os === "linux"){
+            if(CelluloCommUtil.testRobotPoolDaemon()){
+                if(CelluloCommUtil.startRobotPoolDaemon())
+                    toast.show("Robot pool daemon started, connecting...");
+                else
+                    toast.show("Robot pool daemon already running, connecting...");
+                client.connectToServer();
+            }
+            else{
+                var err = "/usr/local/bin/cellulorobotpoold not found!!!";
+                toast.show(err);
+                console.log(err);
+            }
         }
     }
 
@@ -113,7 +113,7 @@ ApplicationWindow {
                             else
                                 toast.show("Cannot start robot pool daemon, possibly already running.");
                         }
-                        enable: Qt.platform.os === "osx" ? false : true
+                        enabled: Qt.platform.os === "osx" ? false : true
                     }
                     Button{
                         text: "Stop Server"
@@ -132,7 +132,7 @@ ApplicationWindow {
                         onClicked: toast.show(client.cleanSocket() ? "Cleaned socket successfully." : "Could not clean socket.")
                     }
                     Text{
-                        text: client.connected ? "Connected to Server." : "Connecting to Server... " + (Qt.platform.os === "osx" ? : "(must launch \"Cellulo Robot Pool Daemon\" manually on macOS))" : "")
+                        text: client.connected ? "Connected to Server." : "Connecting to Server... " + (Qt.platform.os === "osx" ? "\n(must launch \"Cellulo Robot Pool Daemon\" manually on macOS)" : "")
                         color: client.connected ? "green" : "red"
                         anchors.verticalCenter: parent.verticalCenter
                     }

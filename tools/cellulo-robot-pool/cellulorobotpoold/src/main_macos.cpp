@@ -3,20 +3,21 @@
 #include <QtBluetooth>
 
 #include <syslog.h>
+#include <stdarg.h>
 
 void syslogOutput(QtMsgType type, QMessageLogContext const& context, QString const& msg){
     Q_UNUSED(context);
 
     QByteArray localMsg = msg.toLocal8Bit();
 
-    int priority = LOG_DEBUG;
+    int priority = LOG_NOTICE; //LOG_INFO; //macOS doesn't dump logs lower than LOG_NOTICE
     switch(type){
     case QtDebugMsg:
-        priority = LOG_DEBUG;
+        priority = LOG_NOTICE; //LOG_INFO; //macOS doesn't dump logs lower than LOG_NOTICE
         break;
 
     case QtInfoMsg:
-        priority = LOG_INFO;
+        priority = LOG_NOTICE; //LOG_INFO; //macOS doesn't dump logs lower than LOG_NOTICE
         break;
 
     case QtWarningMsg:
