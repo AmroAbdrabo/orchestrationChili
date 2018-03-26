@@ -113,6 +113,7 @@ ApplicationWindow {
                             else
                                 toast.show("Cannot start robot pool daemon, possibly already running.");
                         }
+                        enable: Qt.platform.os === "osx" ? false : true
                     }
                     Button{
                         text: "Stop Server"
@@ -123,6 +124,7 @@ ApplicationWindow {
                             else
                                 toast.show("Cannot stop robot pool daemon, possibly not running.");
                         }
+                        enabled: Qt.platform.os === "osx" ? false : true
                     }
                     Button{
                         text: "Clean Socket"
@@ -130,7 +132,7 @@ ApplicationWindow {
                         onClicked: toast.show(client.cleanSocket() ? "Cleaned socket successfully." : "Could not clean socket.")
                     }
                     Text{
-                        text: client.connected ? "Connected to Server." : "Connecting to Server..."
+                        text: client.connected ? "Connected to Server." : "Connecting to Server... " + (Qt.platform.os === "osx" ? : "(must launch \"Cellulo Robot Pool Daemon\" manually on macOS))" : "")
                         color: client.connected ? "green" : "red"
                         anchors.verticalCenter: parent.verticalCenter
                     }
