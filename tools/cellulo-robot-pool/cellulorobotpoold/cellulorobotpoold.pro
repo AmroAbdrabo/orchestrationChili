@@ -20,3 +20,21 @@ linux:!android {
     target.path = /usr/local/bin/
     INSTALLS += target
 }
+
+macx:!android {
+    message("Building for macOS")
+
+    TARGET = "Cellulo Robot Pool Daemon"
+
+    QT += core bluetooth quick
+
+    SOURCES += src/main_macos.cpp
+
+    RESOURCES += qml.qrc
+
+    ICON = assets/cellulorobotpoold.icns
+    QMAKE_INFO_PLIST = assets/Info.plist
+
+    target.path = /Applications/
+    INSTALLS += target
+}
