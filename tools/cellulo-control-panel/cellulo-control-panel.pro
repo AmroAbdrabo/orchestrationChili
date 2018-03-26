@@ -18,7 +18,7 @@ linux:!android {
 macx:!android {
     message("Building for macOS")
 
-    TARGET = cellulo-control-panel
+    TARGET = "Cellulo Control Panel"
 
     ICON = assets/cellulo-control-panel.icns
     QMAKE_INFO_PLIST = assets/Info.plist
