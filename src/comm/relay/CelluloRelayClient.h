@@ -239,6 +239,10 @@ private slots:
      */
     void decideReconnect();
 
+protected:
+
+    QString serverAddress;  ///< Server's address, e.g "127.0.0.1"
+
 private:
 
     /**
@@ -261,7 +265,6 @@ private:
     bool autoConnect;                                     ///< Whether to try to reconnect to the relay server if connection is lost
     QTimer reconnectTimer;                                ///< Timeout timer to reconnect if connection fails
 
-    QString serverAddress;                                ///< Server's address, e.g "127.0.0.1"
     quint16 port;                                         ///< Port to connect to on the server
 
     QIODevice* serverSocket;                              ///< Socket to server that handles communication

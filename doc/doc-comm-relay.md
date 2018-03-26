@@ -25,8 +25,16 @@ Relays packets between a server and virtual robot objects over a Unix domain soc
 
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
+`{slot} public bool `[`cleanSocket`](#classCellulo_1_1CelluloLocalRelayClient_1aa1afa3b89e0d6a0d40bdf8e1629764f1)`()` | Removes the local socket file, i.e calls QLocalServer::removeServer()
 
 ## Members
+
+#### `{slot} public bool `[`cleanSocket`](#classCellulo_1_1CelluloLocalRelayClient_1aa1afa3b89e0d6a0d40bdf8e1629764f1)`()` 
+
+Removes the local socket file, i.e calls QLocalServer::removeServer()
+
+#### Returns
+Whether the socket file was successfully cleaned
 
 # class `Cellulo::CelluloLocalRelayServer` 
 
@@ -41,8 +49,16 @@ Relays packets between a client and physical robots over a Unix domain socket. A
 
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
+`{slot} public bool `[`cleanSocket`](#classCellulo_1_1CelluloLocalRelayServer_1a08701a8f3a2a115665f46087f6347510)`()` | Removes the local socket file, i.e calls QLocalServer::removeServer()
 
 ## Members
+
+#### `{slot} public bool `[`cleanSocket`](#classCellulo_1_1CelluloLocalRelayServer_1a08701a8f3a2a115665f46087f6347510)`()` 
+
+Removes the local socket file, i.e calls QLocalServer::removeServer()
+
+#### Returns
+Whether the socket file was successfully cleaned
 
 # class `Cellulo::CelluloRelayClient` 
 
@@ -71,8 +87,8 @@ This class is **abstract**, you cannot instantiate it directly. Refer to classes
 `{signal} public void `[`unknownRobotAtServer`](#classCellulo_1_1CelluloRelayClient_1a8744b4de8ab1164e8b4e1659f56281ff)`(QString macAddr)` | Emitted when the server has a robot already connected that is not in the robots list covered by this client.
 `{slot} public void `[`connectToServer`](#classCellulo_1_1CelluloRelayClient_1a53b79491108537bf602cadfe75fc026f)`()` | Initiates a connection to the service on the server.
 `{slot} public void `[`disconnectFromServer`](#classCellulo_1_1CelluloRelayClient_1a70b239ca558b93c6993ba92b0d6f6649)`()` | Starts closing the socket.
-`{slot} public void `[`addRobot`](#classCellulo_1_1CelluloRelayClient_1a891162b7696811d0eaf6266da607e39e)`(`[`CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth)` * robot,bool select)` | Adds the robot to the robots list, sets the robot's relay client to this object.
-`{slot} public void `[`removeRobot`](#classCellulo_1_1CelluloRelayClient_1a22a1ee57b76d1a0c4df249fd320de743)`(`[`CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth)` * robot)` | Removes the robot from the robots list.
+`{slot} public void `[`addRobot`](#classCellulo_1_1CelluloRelayClient_1a1180cd38870c8856aef7b816db9a47c3)`(`[`Cellulo::CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth)` * robot,bool select)` | Adds the robot to the robots list, sets the robot's relay client to this object.
+`{slot} public void `[`removeRobot`](#classCellulo_1_1CelluloRelayClient_1a7eccd090383468345b0de682ca98368a)`(`[`Cellulo::CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth)` * robot)` | Removes the robot from the robots list.
 
 ## Members
 
@@ -121,7 +137,7 @@ Initiates a connection to the service on the server.
 
 Starts closing the socket.
 
-#### `{slot} public void `[`addRobot`](#classCellulo_1_1CelluloRelayClient_1a891162b7696811d0eaf6266da607e39e)`(`[`CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth)` * robot,bool select)` 
+#### `{slot} public void `[`addRobot`](#classCellulo_1_1CelluloRelayClient_1a1180cd38870c8856aef7b816db9a47c3)`(`[`Cellulo::CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth)` * robot,bool select)` 
 
 Adds the robot to the robots list, sets the robot's relay client to this object.
 
@@ -130,7 +146,7 @@ Adds the robot to the robots list, sets the robot's relay client to this object.
 
 * `select` Selects the newly added robot as current; pass true if robot is added as a result of an [unknownRobotAtServer()](#classCellulo_1_1CelluloRelayClient_1a8744b4de8ab1164e8b4e1659f56281ff) signal
 
-#### `{slot} public void `[`removeRobot`](#classCellulo_1_1CelluloRelayClient_1a22a1ee57b76d1a0c4df249fd320de743)`(`[`CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth)` * robot)` 
+#### `{slot} public void `[`removeRobot`](#classCellulo_1_1CelluloRelayClient_1a7eccd090383468345b0de682ca98368a)`(`[`Cellulo::CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth)` * robot)` 
 
 Removes the robot from the robots list.
 
@@ -156,14 +172,14 @@ This class is **abstract**, you cannot instantiate it directly. Refer to classes
 --------------------------------|---------------------------------------------
 `{property} QString `[`address`](doc/doc-comm-relay.md#classCellulo_1_1CelluloRelayServer_1ac4e8d3e0f576133076f78c24e283a8fe) | Host address, i.e name of the domain socket (default is "cellulo_relay") or the IP address of the TCP socket (default is "localhost")
 `{property} int `[`port`](doc/doc-comm-relay.md#classCellulo_1_1CelluloRelayServer_1aa6697416fd80d8f80bb3c9c6eba60535) | Port to listen to in TCP (default is 2556), unused in local sockets.
+`{property} bool `[`listen`](doc/doc-comm-relay.md#classCellulo_1_1CelluloRelayServer_1a501f390e6c5c9c88e92c8dee8550e14f) | Whether to listen to incoming connections, enabled by default.
+`{signal} public void `[`listenError`](#classCellulo_1_1CelluloRelayServer_1af2e77447b8d331edcd1156cc378ecb43)`()` | Emitted when listening fails.
 `{signal} public void `[`clientConnected`](#classCellulo_1_1CelluloRelayServer_1a0c177f69d6a00e9c46627a6350c2d2b0)`()` | Emitted when a new client connects.
 `{signal} public void `[`clientDisconnected`](#classCellulo_1_1CelluloRelayServer_1a131a26e03a7f7bfd03cd63c196092be6)`()` | Emitted when the client disconnects.
 `{signal} public void `[`robotAdded`](#classCellulo_1_1CelluloRelayServer_1a6f4ac79e3ce85bdf24ba05f1b71495ba)`(QString macAddr)` | Emitted when a new robot is added to the server.
 `{signal} public void `[`robotRemoved`](#classCellulo_1_1CelluloRelayServer_1ac9a0a3c6db06a0e11b6f01910774295f)`(QString macAddr)` | Emitted when a robot is removed from the server.
-`{slot} public bool `[`isListening`](#classCellulo_1_1CelluloRelayServer_1a26ed5be2621c7a65c61c6595c18bd808)`() const` | Gets whether the server is listening.
-`{slot} public void `[`setListening`](#classCellulo_1_1CelluloRelayServer_1a3fc354faab1ee173a083453e5c7926b9)`(bool enable)` | Enables/disables listening.
-`{slot} public void `[`addRobot`](#classCellulo_1_1CelluloRelayServer_1a00e7fdec95b84aae8dd429bc3cd57b88)`(`[`CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth)` * robot)` | Adds robot to the robots list, sets the robot's relay server to this object.
-`{slot} public void `[`removeRobot`](#classCellulo_1_1CelluloRelayServer_1ad5190154f36e71c91069dff9793cba1d)`(`[`CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth)` * robot)` | Removes the robot from the robots list.
+`{slot} public void `[`addRobot`](#classCellulo_1_1CelluloRelayServer_1aec94e96d4af0384e275266a423b65fe1)`(`[`Cellulo::CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth)` * robot)` | Adds robot to the robots list, sets the robot's relay server to this object.
+`{slot} public void `[`removeRobot`](#classCellulo_1_1CelluloRelayServer_1a2d3f4984486ccfd6f775071138fd94b2)`(`[`Cellulo::CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth)` * robot)` | Removes the robot from the robots list.
 `{slot} public void `[`disconnectClient`](#classCellulo_1_1CelluloRelayServer_1af945c9a03a454a34dad636fa8f3eda1f)`()` | Closes the client's socket.
 
 ## Members
@@ -177,6 +193,14 @@ Host address, e.g "127.0.0.1" for TCP.
 #### `{property} int `[`port`](doc/doc-comm-relay.md#classCellulo_1_1CelluloRelayServer_1aa6697416fd80d8f80bb3c9c6eba60535) 
 
 Port to listen to in TCP (default is 2556), unused in local sockets.
+
+#### `{property} bool `[`listen`](doc/doc-comm-relay.md#classCellulo_1_1CelluloRelayServer_1a501f390e6c5c9c88e92c8dee8550e14f) 
+
+Whether to listen to incoming connections, enabled by default.
+
+#### `{signal} public void `[`listenError`](#classCellulo_1_1CelluloRelayServer_1af2e77447b8d331edcd1156cc378ecb43)`()` 
+
+Emitted when listening fails.
 
 #### `{signal} public void `[`clientConnected`](#classCellulo_1_1CelluloRelayServer_1a0c177f69d6a00e9c46627a6350c2d2b0)`()` 
 
@@ -200,28 +224,14 @@ Emitted when a robot is removed from the server.
 #### Parameters
 * `macAddr` MAC address of the removed robot
 
-#### `{slot} public bool `[`isListening`](#classCellulo_1_1CelluloRelayServer_1a26ed5be2621c7a65c61c6595c18bd808)`() const` 
-
-Gets whether the server is listening.
-
-#### Returns
-Whether the server is listening
-
-#### `{slot} public void `[`setListening`](#classCellulo_1_1CelluloRelayServer_1a3fc354faab1ee173a083453e5c7926b9)`(bool enable)` 
-
-Enables/disables listening.
-
-#### Parameters
-* `enable` Whether to listen or close the server and stop listening
-
-#### `{slot} public void `[`addRobot`](#classCellulo_1_1CelluloRelayServer_1a00e7fdec95b84aae8dd429bc3cd57b88)`(`[`CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth)` * robot)` 
+#### `{slot} public void `[`addRobot`](#classCellulo_1_1CelluloRelayServer_1aec94e96d4af0384e275266a423b65fe1)`(`[`Cellulo::CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth)` * robot)` 
 
 Adds robot to the robots list, sets the robot's relay server to this object.
 
 #### Parameters
 * `robot` New robot
 
-#### `{slot} public void `[`removeRobot`](#classCellulo_1_1CelluloRelayServer_1ad5190154f36e71c91069dff9793cba1d)`(`[`CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth)` * robot)` 
+#### `{slot} public void `[`removeRobot`](#classCellulo_1_1CelluloRelayServer_1a2d3f4984486ccfd6f775071138fd94b2)`(`[`Cellulo::CelluloBluetooth`](#classCellulo_1_1CelluloBluetooth)` * robot)` 
 
 Removes the robot from the robots list.
 

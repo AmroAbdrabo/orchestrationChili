@@ -86,6 +86,8 @@ bool CelluloRelayServer::isListening() const {
 }
 
 void CelluloRelayServer::setListening(bool enable){
+    bool wasListening = isListening();
+
     if(enable){
         if(clientSocket != NULL)
             qWarning() << "CelluloRelayServer::setListening(): Can't start listening while client is connected, only one client is allowed.";
@@ -94,8 +96,10 @@ void CelluloRelayServer::setListening(bool enable){
                 case CelluloCommUtil::RelayProtocol::Local:
                     //QLocalServer::removeServer(address);
                     if(localServer != NULL){
-                        if(!localServer->listen(address))
+                        if(!localServer->listen(address)){
+                            emit listenError();
                             qWarning() << "CelluloRelayServer::setListening(): Couldn't start listening: " << localServer->errorString();
+                        }
                         else
                             qDebug() << "CelluloRelayServer::setListening(): Started listening on " << localServer->fullServerName();
                     }
@@ -103,8 +107,10 @@ void CelluloRelayServer::setListening(bool enable){
 
                 case CelluloCommUtil::RelayProtocol::Tcp:
                     if(tcpServer != NULL){
-                        if(!tcpServer->listen(QHostAddress(address), port))
+                        if(!tcpServer->listen(QHostAddress(address), port)){
+                            emit listenError();
                             qWarning() << "CelluloRelayServer::setListening(): Couldn't start listening: " << tcpServer->errorString();
+                        }
                         else
                             qDebug() << "CelluloRelayServer::setListening(): Started listening on " << tcpServer->serverAddress() << ":" << tcpServer->serverPort();
                     }
@@ -123,6 +129,9 @@ void CelluloRelayServer::setListening(bool enable){
                 break;
         }
     }
+
+    if(wasListening != isListening())
+        emit listeningChanged();
 }
 
 void CelluloRelayServer::setAddress(QString address){

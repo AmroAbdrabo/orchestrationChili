@@ -65,6 +65,9 @@ class CelluloRelayServer : public QQuickItem {
     /** @brief Port to listen to in TCP (default is 2556), unused in local sockets */
     Q_PROPERTY(int port READ getPort WRITE setPort NOTIFY portChanged)
 
+    /** @brief Whether to listen to incoming connections, enabled by default */
+    Q_PROPERTY(bool listen READ isListening WRITE setListening NOTIFY listeningChanged)
+
     friend class CelluloBluetooth;
 
 public:
@@ -112,6 +115,20 @@ public:
      */
     void setPort(int port);
 
+    /**
+     * @brief Gets whether the server is listening
+     *
+     * @return Whether the server is listening
+     */
+    bool isListening() const;
+
+    /**
+     * @brief Enables/disables listening
+     *
+     * @param enable Whether to listen or close the server and stop listening
+     */
+    void setListening(bool enable);
+
     /** @endcond */
 
 signals:
@@ -128,7 +145,17 @@ signals:
      */
     void portChanged();
 
+    /**
+     * @brief Listening status chaned
+     */
+    void listeningChanged();
+
     /** @endcond */
+
+    /**
+     * @brief Emitted when listening fails
+     */
+    void listenError();
 
     /**
      * @brief Emitted when a new client connects
@@ -155,20 +182,6 @@ signals:
     void robotRemoved(QString macAddr);
 
 public slots:
-
-    /**
-     * @brief Gets whether the server is listening
-     *
-     * @return Whether the server is listening
-     */
-    bool isListening() const;
-
-    /**
-     * @brief Enables/disables listening
-     *
-     * @param enable Whether to listen or close the server and stop listening
-     */
-    void setListening(bool enable);
 
     /**
      * @brief Adds robot to the robots list, sets the robot's relay server to this object
@@ -206,6 +219,10 @@ private slots:
      */
     void incomingClientData();
 
+protected:
+
+    QString address;    ///< Host address, e.g "127.0.0.1" for TCP
+
 private:
 
     /**
@@ -223,7 +240,6 @@ private:
 
     CelluloCommUtil::RelayProtocol protocol; ///< Underlying transfer protocol
 
-    QString address;                         ///< Host address, e.g "127.0.0.1" for TCP
     quint16 port;                            ///< Port to listen to
     QLocalServer* localServer;               ///< Unix domain server that listens to clients
     QTcpServer* tcpServer;                   ///< TCP server that listens to clients

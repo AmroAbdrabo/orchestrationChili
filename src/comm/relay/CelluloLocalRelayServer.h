@@ -62,6 +62,15 @@ public:
 
     /** @endcond */
 
+public slots:
+
+    /**
+     * @brief Removes the local socket file, i.e calls QLocalServer::removeServer()
+     *
+     * @return Whether the socket file was successfully cleaned
+     */
+    bool cleanSocket();
+
 };
 
 /** @} */

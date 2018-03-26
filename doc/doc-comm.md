@@ -28,13 +28,13 @@ Inherits from `[CelluloZoneClient](#classCellulo_1_1CelluloZoneClient)` and ther
 `{property} QString `[`localAdapterMacAddr`](doc/doc-comm.md#classCellulo_1_1CelluloBluetooth_1a31ca21c1a395893cbfe0e4ea4bb6e590) | Local adapter's MAC address chosen to connect to the robot, empty string if using default adapter; only works on Linux and if the plugin is built with BlueZ.
 `{property} bool `[`autoConnect`](doc/doc-comm.md#classCellulo_1_1CelluloBluetooth_1a2c2f916967bee8e06038b92f46bb4248) | Whether to start connecting immediately as soon as **macAddr** is set and to reconnect if connection drops, default true.
 `{property} QString `[`macAddr`](doc/doc-comm.md#classCellulo_1_1CelluloBluetooth_1a3a4f9fd2da2440be2368bd4b9e74f0f2) | Robot MAC address in the form "XX:XX:XX:XX:XX:XX".
-`{property} `[`CelluloBluetoothEnums::ConnectionStatus`](#classCellulo_1_1CelluloBluetoothEnums_1a9bdbb91140cd33c3daa779af49c7ed97)` `[`connectionStatus`](#classCellulo_1_1CelluloBluetooth_1a9520239e44d19dd120c6779a126a543f) | Current connection status to the robot, read-only.
-`{property} `[`CelluloBluetoothEnums::BatteryState`](#classCellulo_1_1CelluloBluetoothEnums_1a895a56801308039dd778b0a0fb6809b8)` `[`batteryState`](#classCellulo_1_1CelluloBluetooth_1a87f7b19fe478e73346094a8208c00ea5) | Robot's current battery state, read-only.
+`{property} `[`Cellulo::CelluloBluetoothEnums::ConnectionStatus`](#classCellulo_1_1CelluloBluetoothEnums_1a9bdbb91140cd33c3daa779af49c7ed97)` `[`connectionStatus`](#classCellulo_1_1CelluloBluetooth_1a5af659befd3f07076dbecde097d9cbef) | Current connection status to the robot, read-only.
+`{property} `[`Cellulo::CelluloBluetoothEnums::BatteryState`](#classCellulo_1_1CelluloBluetoothEnums_1a895a56801308039dd778b0a0fb6809b8)` `[`batteryState`](#classCellulo_1_1CelluloBluetooth_1a46ce3a0a6dbce042c6dc48da531a0650) | Robot's current battery state, read-only.
 `{property} float `[`x`](doc/doc-comm.md#classCellulo_1_1CelluloBluetooth_1af13c47b29e25220131c182d963e41034) | Robot's x coordinate in mm, read-only.
 `{property} float `[`y`](doc/doc-comm.md#classCellulo_1_1CelluloBluetooth_1ac1276ac29b10f1f28fa0f6a00416fa60) | Robot's y coordinate in mm, read-only.
 `{property} float `[`theta`](doc/doc-comm.md#classCellulo_1_1CelluloBluetooth_1acaee9ee4adc6528bcaae8c9577790d02) | Robot's orientation in degrees, read-only.
 `{property} bool `[`kidnapped`](doc/doc-comm.md#classCellulo_1_1CelluloBluetooth_1a4be50315021f3a8df91275ee89bccfa5) | Whether the robot is not on encoded paper, read-only.
-`{property} `[`CelluloBluetoothEnums::Gesture`](#classCellulo_1_1CelluloBluetoothEnums_1aac0e86c82f086708674759431d6ff0fb)` `[`gesture`](#classCellulo_1_1CelluloBluetooth_1af9c3ebbd5cd9b40135f3b0289b8189ab) | Current robot gesture (if gesture detection is enabled), read-only.
+`{property} `[`Cellulo::CelluloBluetoothEnums::Gesture`](#classCellulo_1_1CelluloBluetoothEnums_1aac0e86c82f086708674759431d6ff0fb)` `[`gesture`](#classCellulo_1_1CelluloBluetooth_1add98eab9b9ea571a7fda462016dc2518) | Current robot gesture (if gesture detection is enabled), read-only.
 `{property} bool `[`timestampingEnabled`](doc/doc-comm.md#classCellulo_1_1CelluloBluetooth_1ab93e751696cdaa7635681bb05b5598f5) | Whether the robot will send its own timestamp along with its pose, default false.
 `{property} int `[`lastTimestamp`](doc/doc-comm.md#classCellulo_1_1CelluloBluetooth_1a7884ff94eaf821db9310d20f95024ad5) | Last local timestamp received along with pose (is valid if **timestampingEnabled** is true), read-only.
 `{property} float `[`framerate`](doc/doc-comm.md#classCellulo_1_1CelluloBluetooth_1aa64ae00fc5683f384940db4b9e72ac8d) | Localization framerate calculated from local timestamps received along with pose (is valid if **timestampingEnabled** is true), read-only.
@@ -63,15 +63,15 @@ Inherits from `[CelluloZoneClient](#classCellulo_1_1CelluloZoneClient)` and ther
 `{slot} public void `[`clearHapticFeedback`](#classCellulo_1_1CelluloBluetooth_1aae5231423781a97d4a21ff219750b95d)`()` | Clears all haptic feedbacks.
 `{slot} public void `[`setExposureTime`](#classCellulo_1_1CelluloBluetooth_1a9c451386f116d48aebd5c4a0f09e02cf)`(int pixels)` | Sets the exposure time for super-fast unkidnap detection for uniform and known paper colors known or enables autoexposure.
 `{slot} public void `[`queryBatteryState`](#classCellulo_1_1CelluloBluetooth_1af4ba396b5d36fd2c5c23abe9bb1262c8)`()` | Sends a battery state query.
-`{slot} public void `[`setLEDResponseMode`](#classCellulo_1_1CelluloBluetooth_1aa56fe3eed954d834321fab5763142cba)`(`[`CelluloBluetoothEnums::LEDResponseMode`](#classCellulo_1_1CelluloBluetoothEnums_1a57ece08557723b6428a74ba3b1265b29)` mode)` | Sets the LED response mode, i.e the LED visual response of the robot to touches.
-`{slot} public void `[`setLocomotionInteractivityMode`](#classCellulo_1_1CelluloBluetooth_1ad110ee7cb10a67b3aa4c4a3d55fa8d2d)`(`[`CelluloBluetoothEnums::LocomotionInteractivityMode`](#classCellulo_1_1CelluloBluetoothEnums_1ae5126bceecb95ffc8846e8c72f379812)` mode)` | Sets the locomotion interactivity mode, i.e the dependance of locomotion to user input.
+`{slot} public void `[`setLEDResponseMode`](#classCellulo_1_1CelluloBluetooth_1aad421e4e61b426923011ef94b725aa26)`(`[`Cellulo::CelluloBluetoothEnums::LEDResponseMode`](#classCellulo_1_1CelluloBluetoothEnums_1a57ece08557723b6428a74ba3b1265b29)` mode)` | Sets the LED response mode, i.e the LED visual response of the robot to touches.
+`{slot} public void `[`setLocomotionInteractivityMode`](#classCellulo_1_1CelluloBluetooth_1a6542f6c1544f291b721edbc25cd99877)`(`[`Cellulo::CelluloBluetoothEnums::LocomotionInteractivityMode`](#classCellulo_1_1CelluloBluetoothEnums_1ae5126bceecb95ffc8846e8c72f379812)` mode)` | Sets the locomotion interactivity mode, i.e the dependance of locomotion to user input.
 `{slot} public void `[`setGestureEnabled`](#classCellulo_1_1CelluloBluetooth_1a9bd4f2f2feb7ff0f00c4f05767aca0ea)`(bool enabled)` | Enables/disables raw touch signal offset querying and processing.
 `{slot} public void `[`setCasualBackdriveAssistEnabled`](#classCellulo_1_1CelluloBluetooth_1a5f26ca73c9bbb4ff882f94f2cfdfd62c)`(bool enabled)` | Enables/disables assist for easy backdriving.
 `{slot} public void `[`setHapticBackdriveAssist`](#classCellulo_1_1CelluloBluetooth_1a4e127b89e9ac560b558262916d3230f5)`(float xAssist,float yAssist,float thetaAssist)` | Haptic feedback-oriented backdrive assist.
-`{slot} public void `[`setVisualEffect`](#classCellulo_1_1CelluloBluetooth_1a87d834bff1ddded9c83e427802acf2d8)`(`[`CelluloBluetoothEnums::VisualEffect`](#classCellulo_1_1CelluloBluetoothEnums_1a810aca61e84c1e31fb751335cd776361)` effect,QColor color,int value)` | Sets the visual effect on the robot, changing LED illumination.
+`{slot} public void `[`setVisualEffect`](#classCellulo_1_1CelluloBluetooth_1a52bbc201976eb3b4d4e415461ddce8cd)`(`[`Cellulo::CelluloBluetoothEnums::VisualEffect`](#classCellulo_1_1CelluloBluetoothEnums_1a810aca61e84c1e31fb751335cd776361)` effect,QColor color,int value)` | Sets the visual effect on the robot, changing LED illumination.
 `{slot} public void `[`polyBezierInit`](#classCellulo_1_1CelluloBluetooth_1a5943ebcea0fe39fb517fff8ec3c26d0f)`(const QVector2D & point0)` | Sends the first control point of the composite Bézier curve for motion tracking.
 `{slot} public void `[`polyBezierAppend`](#classCellulo_1_1CelluloBluetooth_1ac6034aa0cea06d6843281e8ecda357fd)`(const QVector2D & point1,const QVector2D & point2,const QVector2D & point3)` | Adds a segment to the composite Bézier curve for motion tracking; [polyBezierInit()](doc/doc-comm.md#classCellulo_1_1CelluloBluetooth_1a5943ebcea0fe39fb517fff8ec3c26d0f) must be called before.
-`{slot} public void `[`polyBezierSetFromZone`](#classCellulo_1_1CelluloBluetooth_1ad183a2dd9341750e9449532ea9a6880a)`(`[`CelluloZone`](#classCellulo_1_1CelluloZone)` * zone)` | Sends the composite Bézier curve in the zone to the robot.
+`{slot} public void `[`polyBezierSetFromZone`](#classCellulo_1_1CelluloBluetooth_1a9d6f1ad33bc39dc6b07e68435f7c8b55)`(`[`Cellulo::CelluloZone`](#classCellulo_1_1CelluloZone)` * zone)` | Sends the composite Bézier curve in the zone to the robot.
 `{slot} public void `[`setGoalPolyBezier`](#classCellulo_1_1CelluloBluetooth_1aa225ca6d3c15fe4461f16e9fb873299b)`(float v,float w)` | Starts tracking the previously set composite Bézier curve.
 `{slot} public void `[`setGoalPolyBezierAligned`](#classCellulo_1_1CelluloBluetooth_1afbda284c48ef1cae82357cd2a6afc83d)`(float v,float theta,float w)` | Starts tracking the previously set composite Bézier curve while keeping orientation aligned to the curve.
 `{slot} public void `[`reset`](#classCellulo_1_1CelluloBluetooth_1ab29c7d9cce6b8ec5e5b8f82da6332886)`()` | Initiates a software reset on the robot.
@@ -97,17 +97,13 @@ Robot MAC address in the form "XX:XX:XX:XX:XX:XX".
 
 Bluetooth MAC address of the server.
 
-#### `{property} `[`CelluloBluetoothEnums::ConnectionStatus`](#classCellulo_1_1CelluloBluetoothEnums_1a9bdbb91140cd33c3daa779af49c7ed97)` `[`connectionStatus`](#classCellulo_1_1CelluloBluetooth_1a9520239e44d19dd120c6779a126a543f) 
+#### `{property} `[`Cellulo::CelluloBluetoothEnums::ConnectionStatus`](#classCellulo_1_1CelluloBluetoothEnums_1a9bdbb91140cd33c3daa779af49c7ed97)` `[`connectionStatus`](#classCellulo_1_1CelluloBluetooth_1a5af659befd3f07076dbecde097d9cbef) 
 
 Current connection status to the robot, read-only.
 
-Bluetooth connection status.
-
-#### `{property} `[`CelluloBluetoothEnums::BatteryState`](#classCellulo_1_1CelluloBluetoothEnums_1a895a56801308039dd778b0a0fb6809b8)` `[`batteryState`](#classCellulo_1_1CelluloBluetooth_1a87f7b19fe478e73346094a8208c00ea5) 
+#### `{property} `[`Cellulo::CelluloBluetoothEnums::BatteryState`](#classCellulo_1_1CelluloBluetoothEnums_1a895a56801308039dd778b0a0fb6809b8)` `[`batteryState`](#classCellulo_1_1CelluloBluetooth_1a46ce3a0a6dbce042c6dc48da531a0650) 
 
 Robot's current battery state, read-only.
-
-Current battery state.
 
 #### `{property} float `[`x`](doc/doc-comm.md#classCellulo_1_1CelluloBluetooth_1af13c47b29e25220131c182d963e41034) 
 
@@ -133,11 +129,9 @@ Whether the robot is not on encoded paper, read-only.
 
 Whether currently kidnapped.
 
-#### `{property} `[`CelluloBluetoothEnums::Gesture`](#classCellulo_1_1CelluloBluetoothEnums_1aac0e86c82f086708674759431d6ff0fb)` `[`gesture`](#classCellulo_1_1CelluloBluetooth_1af9c3ebbd5cd9b40135f3b0289b8189ab) 
+#### `{property} `[`Cellulo::CelluloBluetoothEnums::Gesture`](#classCellulo_1_1CelluloBluetoothEnums_1aac0e86c82f086708674759431d6ff0fb)` `[`gesture`](#classCellulo_1_1CelluloBluetooth_1add98eab9b9ea571a7fda462016dc2518) 
 
 Current robot gesture (if gesture detection is enabled), read-only.
-
-Current gesture.
 
 #### `{property} bool `[`timestampingEnabled`](doc/doc-comm.md#classCellulo_1_1CelluloBluetooth_1ab93e751696cdaa7635681bb05b5598f5) 
 
@@ -350,14 +344,14 @@ Sets the exposure time for super-fast unkidnap detection for uniform and known p
 
 Sends a battery state query.
 
-#### `{slot} public void `[`setLEDResponseMode`](#classCellulo_1_1CelluloBluetooth_1aa56fe3eed954d834321fab5763142cba)`(`[`CelluloBluetoothEnums::LEDResponseMode`](#classCellulo_1_1CelluloBluetoothEnums_1a57ece08557723b6428a74ba3b1265b29)` mode)` 
+#### `{slot} public void `[`setLEDResponseMode`](#classCellulo_1_1CelluloBluetooth_1aad421e4e61b426923011ef94b725aa26)`(`[`Cellulo::CelluloBluetoothEnums::LEDResponseMode`](#classCellulo_1_1CelluloBluetoothEnums_1a57ece08557723b6428a74ba3b1265b29)` mode)` 
 
 Sets the LED response mode, i.e the LED visual response of the robot to touches.
 
 #### Parameters
 * `mode` LED resposne mode
 
-#### `{slot} public void `[`setLocomotionInteractivityMode`](#classCellulo_1_1CelluloBluetooth_1ad110ee7cb10a67b3aa4c4a3d55fa8d2d)`(`[`CelluloBluetoothEnums::LocomotionInteractivityMode`](#classCellulo_1_1CelluloBluetoothEnums_1ae5126bceecb95ffc8846e8c72f379812)` mode)` 
+#### `{slot} public void `[`setLocomotionInteractivityMode`](#classCellulo_1_1CelluloBluetooth_1a6542f6c1544f291b721edbc25cd99877)`(`[`Cellulo::CelluloBluetoothEnums::LocomotionInteractivityMode`](#classCellulo_1_1CelluloBluetoothEnums_1ae5126bceecb95ffc8846e8c72f379812)` mode)` 
 
 Sets the locomotion interactivity mode, i.e the dependance of locomotion to user input.
 
@@ -391,7 +385,7 @@ Pass 0 to all parameters to disable. Disables casual backdrive assist upon enabl
 
 * `thetaAssist` Theta assist with respect to w drive, can be negative
 
-#### `{slot} public void `[`setVisualEffect`](#classCellulo_1_1CelluloBluetooth_1a87d834bff1ddded9c83e427802acf2d8)`(`[`CelluloBluetoothEnums::VisualEffect`](#classCellulo_1_1CelluloBluetoothEnums_1a810aca61e84c1e31fb751335cd776361)` effect,QColor color,int value)` 
+#### `{slot} public void `[`setVisualEffect`](#classCellulo_1_1CelluloBluetooth_1a52bbc201976eb3b4d4e415461ddce8cd)`(`[`Cellulo::CelluloBluetoothEnums::VisualEffect`](#classCellulo_1_1CelluloBluetoothEnums_1a810aca61e84c1e31fb751335cd776361)` effect,QColor color,int value)` 
 
 Sets the visual effect on the robot, changing LED illumination.
 
@@ -422,7 +416,7 @@ The first control point is the last control point of the previously added segmen
 
 * `point3` The fourth control point for the curve
 
-#### `{slot} public void `[`polyBezierSetFromZone`](#classCellulo_1_1CelluloBluetooth_1ad183a2dd9341750e9449532ea9a6880a)`(`[`CelluloZone`](#classCellulo_1_1CelluloZone)` * zone)` 
+#### `{slot} public void `[`polyBezierSetFromZone`](#classCellulo_1_1CelluloBluetooth_1a9d6f1ad33bc39dc6b07e68435f7c8b55)`(`[`Cellulo::CelluloZone`](#classCellulo_1_1CelluloZone)` * zone)` 
 
 Sends the composite Bézier curve in the zone to the robot.
 

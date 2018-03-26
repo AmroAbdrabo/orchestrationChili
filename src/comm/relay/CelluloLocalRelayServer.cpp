@@ -31,4 +31,8 @@ CelluloLocalRelayServer::CelluloLocalRelayServer(QQuickItem* parent) : CelluloRe
 
 CelluloLocalRelayServer::~CelluloLocalRelayServer(){}
 
+bool CelluloLocalRelayServer::cleanSocket(){
+    return QLocalServer::removeServer(address);
+}
+
 }
