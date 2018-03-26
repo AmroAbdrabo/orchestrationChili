@@ -162,7 +162,7 @@ class Cellulo::CelluloRelayServer
 
 Object that relays packets between a `[CelluloRelayClient](#classCellulo_1_1CelluloRelayClient)` and physical robots.
 
-The robots that are connected to this object (i.e having their relay server set as this object) have all their events routed to the `[CelluloRelayClient](#classCellulo_1_1CelluloRelayClient)` that is connected to this server. Listens for incoming connections from a client upon creation.
+The robots that are connected to this object (i.e having their relay server set as this object) have all their events routed to the `[CelluloRelayClient](#classCellulo_1_1CelluloRelayClient)` that is connected to this server. Does not listen for incoming connections from a client upon creation, must be enabled explicitly.
 
 This class is **abstract**, you cannot instantiate it directly. Refer to classes derived from it.
 
@@ -172,7 +172,7 @@ This class is **abstract**, you cannot instantiate it directly. Refer to classes
 --------------------------------|---------------------------------------------
 `{property} QString `[`address`](doc/doc-comm-relay.md#classCellulo_1_1CelluloRelayServer_1ac4e8d3e0f576133076f78c24e283a8fe) | Host address, i.e name of the domain socket (default is "cellulo_relay") or the IP address of the TCP socket (default is "localhost")
 `{property} int `[`port`](doc/doc-comm-relay.md#classCellulo_1_1CelluloRelayServer_1aa6697416fd80d8f80bb3c9c6eba60535) | Port to listen to in TCP (default is 2556), unused in local sockets.
-`{property} bool `[`listen`](doc/doc-comm-relay.md#classCellulo_1_1CelluloRelayServer_1a501f390e6c5c9c88e92c8dee8550e14f) | Whether to listen to incoming connections, enabled by default.
+`{property} bool `[`listen`](doc/doc-comm-relay.md#classCellulo_1_1CelluloRelayServer_1a501f390e6c5c9c88e92c8dee8550e14f) | Whether to listen to incoming connections, disabled on construction.
 `{signal} public void `[`listenError`](#classCellulo_1_1CelluloRelayServer_1af2e77447b8d331edcd1156cc378ecb43)`()` | Emitted when listening fails.
 `{signal} public void `[`clientConnected`](#classCellulo_1_1CelluloRelayServer_1a0c177f69d6a00e9c46627a6350c2d2b0)`()` | Emitted when a new client connects.
 `{signal} public void `[`clientDisconnected`](#classCellulo_1_1CelluloRelayServer_1a131a26e03a7f7bfd03cd63c196092be6)`()` | Emitted when the client disconnects.
@@ -196,7 +196,7 @@ Port to listen to in TCP (default is 2556), unused in local sockets.
 
 #### `{property} bool `[`listen`](doc/doc-comm-relay.md#classCellulo_1_1CelluloRelayServer_1a501f390e6c5c9c88e92c8dee8550e14f) 
 
-Whether to listen to incoming connections, enabled by default.
+Whether to listen to incoming connections, disabled on construction.
 
 #### `{signal} public void `[`listenError`](#classCellulo_1_1CelluloRelayServer_1af2e77447b8d331edcd1156cc378ecb43)`()` 
 

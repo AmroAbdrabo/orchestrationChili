@@ -91,6 +91,7 @@ int run(int argc, char** argv){
 
     QCoreApplication app(argc, argv);
     CelluloLocalRelayServer server;
+    server.setListening(true);
     return app.exec();
 }
 

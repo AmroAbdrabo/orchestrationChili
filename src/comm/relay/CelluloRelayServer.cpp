@@ -52,8 +52,6 @@ CelluloRelayServer::CelluloRelayServer(CelluloCommUtil::RelayProtocol protocol, 
             connect(tcpServer, SIGNAL(newConnection()), this, SLOT(addClient()));
             break;
     }
-
-    setListening(true);
 }
 
 CelluloRelayServer::~CelluloRelayServer(){

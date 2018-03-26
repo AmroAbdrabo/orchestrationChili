@@ -49,8 +49,8 @@ class CelluloBluetooth;
  * @brief Object that relays packets between a `CelluloRelayClient` and physical robots.
  *
  * The robots that are connected to this object (i.e having their relay server set as this object) have all their events
- * routed to the `CelluloRelayClient` that is connected to this server. Listens for incoming connections from a client
- * upon creation.
+ * routed to the `CelluloRelayClient` that is connected to this server. Does not listen for incoming connections from a
+ * client upon creation, must be enabled explicitly.
  *
  * @abstract
  */
@@ -65,7 +65,7 @@ class CelluloRelayServer : public QQuickItem {
     /** @brief Port to listen to in TCP (default is 2556), unused in local sockets */
     Q_PROPERTY(int port READ getPort WRITE setPort NOTIFY portChanged)
 
-    /** @brief Whether to listen to incoming connections, enabled by default */
+    /** @brief Whether to listen to incoming connections, disabled on construction */
     Q_PROPERTY(bool listen READ isListening WRITE setListening NOTIFY listeningChanged)
 
     friend class CelluloBluetooth;
