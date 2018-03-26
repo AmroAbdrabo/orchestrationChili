@@ -124,6 +124,11 @@ ApplicationWindow {
                                 toast.show("Cannot stop robot pool daemon, possibly not running.");
                         }
                     }
+                    Button{
+                        text: "Clean Socket"
+                        anchors.verticalCenter: parent.verticalCenter
+                        onClicked: toast.show(client.cleanSocket() ? "Cleaned socket successfully." : "Could not clean socket.")
+                    }
                     Text{
                         text: client.connected ? "Connected to Server." : "Connecting to Server..."
                         color: client.connected ? "green" : "red"
