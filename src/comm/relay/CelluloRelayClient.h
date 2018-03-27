@@ -70,7 +70,7 @@ class CelluloRelayClient : public QQuickItem {
     Q_PROPERTY(int port READ getPort WRITE setPort NOTIFY portChanged)
 
     /** @brief Whether to try to reconnect when the connection drops or in the beginning, default is true */
-    Q_PROPERTY(int autoConnect READ getAutoConnect WRITE setAutoConnect NOTIFY autoConnectChanged)
+    Q_PROPERTY(bool autoConnect READ getAutoConnect WRITE setAutoConnect NOTIFY autoConnectChanged)
 
     /** @brief List of virtual robots currently under control of this client, read-only */
     Q_PROPERTY(QVariantList robots READ getRobots NOTIFY robotsChanged)

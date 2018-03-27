@@ -15,6 +15,10 @@ linux:!android {
     }
 }
 
+android{
+    QT += androidextras
+}
+
 HEADERS += \
     src/CelluloPlugin.h \
     src/robot/CelluloRobot.h \

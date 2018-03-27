@@ -24,6 +24,11 @@
 
 #include "CelluloCommUtil.h"
 
+#if defined(Q_OS_ANDROID)
+    #include<QAndroidJniObject>
+    #include<QtAndroid>
+#endif
+
 #include "../util/system/CelluloSystemUtil.h"
 
 namespace Cellulo{
@@ -81,10 +86,20 @@ bool CelluloCommUtil::testRobotPoolDaemon(){
 }
 
 bool CelluloCommUtil::startRobotPoolDaemon(){
-    //TODO: FIGURE OUT ON ANDROID
-
-
-    return CelluloSystemUtil::exec("start-stop-daemon", QStringList() << "--start" << "--exec" << "/usr/local/bin/cellulorobotpoold") == 0;
+    #if defined(Q_OS_ANDROID)
+        QAndroidJniObject::callStaticMethod<void>(
+            "ch/epfl/chili/cellulo/cellulorobotpoold/CelluloRobotPoolService",
+            "startCelluloRobotPoolService",
+            "(Landroid/content/Context;)V",
+            QtAndroid::androidActivity().object()
+        );
+        return true;
+    #elif defined(Q_OS_LINUX)
+        return CelluloSystemUtil::exec("start-stop-daemon", QStringList() << "--start" << "--exec" << "/usr/local/bin/cellulorobotpoold") == 0;
+    #else
+        qWarning() << "CelluloCommUtil::startRobotPoolDaemon(): Not implemented on this platform.";
+        return false;
+    #endif
 }
 
 bool CelluloCommUtil::stopRobotPoolDaemon(){

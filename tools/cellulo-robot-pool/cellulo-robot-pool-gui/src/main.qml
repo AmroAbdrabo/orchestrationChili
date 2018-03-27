@@ -73,8 +73,14 @@ ApplicationWindow {
         return newRobot;
     }
 
+    CelluloLocalRelayServer{
+        listen: true
+    }
+
     CelluloLocalRelayClient{
         id: client
+
+        autoConnect: false
 
         onConnected: toast.show("Connected to Server.")
         onDisconnected: toast.show("Disconnected from Server.")
