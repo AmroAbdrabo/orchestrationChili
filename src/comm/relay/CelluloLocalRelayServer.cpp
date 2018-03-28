@@ -29,7 +29,7 @@ namespace Cellulo{
 
 CelluloLocalRelayServer::CelluloLocalRelayServer(QQuickItem* parent) :
     #if defined(Q_OS_ANDROID)
-        CelluloRelayServer(CelluloCommUtil::RelayProtocol::Tcp, parent){ //QLocalServer doesn't work on Android for some reason
+        CelluloRelayServer(CelluloCommUtil::RelayProtocol::Tcp, parent){ //On Android QLocalServer path defaults to an app-specific path and abstract sockets are not supported yet, so we fall back to Tcp sockets for now
             address = "127.0.0.1";
         }
     #else
