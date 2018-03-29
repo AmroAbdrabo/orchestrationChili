@@ -47,7 +47,11 @@ bool CelluloBluetoothScanner::isScanning() const {
 void CelluloBluetoothScanner::start(){
     if(!isScanning()){
         clear();
-        scanner.start(QBluetoothDeviceDiscoveryAgent::ClassicMethod);
+        #if defined(Q_OS_ANDROID)
+            scanner.start(); //QBluetoothDeviceDiscoveryAgent::ClassicMethod fails for some reason on Android
+        #else
+            scanner.start(QBluetoothDeviceDiscoveryAgent::ClassicMethod);
+        #endif
         emit scanningChanged();
     }
 }
