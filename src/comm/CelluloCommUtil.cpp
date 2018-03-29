@@ -78,11 +78,14 @@ QString CelluloCommUtil::getMacAddr(QList<quint8> const& octets){
 }
 
 bool CelluloCommUtil::testRobotPoolDaemon(){
-    //TODO: FIGURE OUT ON ANDROID
-
-
-
-    return CelluloSystemUtil::exec("test", QStringList() << "-f" << "/usr/local/bin/cellulorobotpoold") == 0;
+    #if defined(Q_OS_ANDROID)
+        return QAndroidJniObject::isClassAvailable("ch/epfl/chili/cellulo/cellulorobotpoold/CelluloRobotPoolService");
+    #elif defined(Q_OS_LINUX)
+        return CelluloSystemUtil::exec("test", QStringList() << "-f" << "/usr/local/bin/cellulorobotpoold") == 0;
+    #else
+        qWarning() << "CelluloCommUtil::testRobotPoolDaemon(): Not implemented on this platform.";
+        return false;
+    #endif
 }
 
 bool CelluloCommUtil::startRobotPoolDaemon(){
@@ -103,12 +106,20 @@ bool CelluloCommUtil::startRobotPoolDaemon(){
 }
 
 bool CelluloCommUtil::stopRobotPoolDaemon(){
-    //TODO: FIGURE OUT ON ANDROID
-
-
-
-
-    return CelluloSystemUtil::exec("start-stop-daemon", QStringList() << "--stop" << "--exec" << "/usr/local/bin/cellulorobotpoold") == 0;
+    #if defined(Q_OS_ANDROID)
+        QAndroidJniObject::callStaticMethod<void>(
+            "ch/epfl/chili/cellulo/cellulorobotpoold/CelluloRobotPoolService",
+            "stopCelluloRobotPoolService",
+            "(Landroid/content/Context;)V",
+            QtAndroid::androidActivity().object()
+        );
+        return true;
+    #elif defined(Q_OS_LINUX)
+        return CelluloSystemUtil::exec("start-stop-daemon", QStringList() << "--stop" << "--exec" << "/usr/local/bin/cellulorobotpoold") == 0;
+    #else
+        qWarning() << "CelluloCommUtil::stopRobotPoolDaemon(): Not implemented on this platform.";
+        return false;
+    #endif
 }
 
 }

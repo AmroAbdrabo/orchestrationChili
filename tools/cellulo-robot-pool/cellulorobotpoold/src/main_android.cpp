@@ -16,49 +16,47 @@
  */
 
 #include <QCoreApplication>
-#if defined(Q_OS_ANDROID)
-    #include <QAndroidJniObject>
-    #include <QtAndroid>
-#endif
+#include <QAndroidService>
+#include <QGuiApplication>
+#include <QQmlApplicationEngine>
+#include <QLoggingCategory>
+#include <string.h>
 
-#include <CelluloTcpRelayServer.h>
-#include <CelluloTcpRelayClient.h>
 #include <CelluloLocalRelayServer.h>
-#include <CelluloLocalRelayClient.h>
 
 using namespace Cellulo;
 
 int main(int argc, char** argv){
-    QCoreApplication app(argc, argv);
 
+    //GUI
+    if(argc <= 1){
+        QGuiApplication app(argc, argv);
 
-    if (QCoreApplication::arguments().count() > 1){
-        qDebug() << "I am the service";
-        qInfo() << "Starting...";
+        qInfo() << "cellulorobotpoold main(): GUI starting...";
 
+        QQmlApplicationEngine engine;
+        engine.load(QUrl(QStringLiteral("qrc:///src/main_android.qml")));
 
-
-        qDebug() << "CELLULO SERVICE LAUNCHED";
+        return app.exec();
     }
-    else{
-        qDebug() << "I am the app";
-        qDebug() << "CELLULO APP LAUNCHED";
 
-        /*QAndroidJniObject::callStaticMethod<void>(
-                    "ch/epfl/chili/cellulo/cellulorobotpoold/CelluloRobotPoolService",
-                    "startCelluloRobotPoolService",
-                    "(Landroid/content/Context;)V",
-                    QtAndroid::androidActivity().object()
-                );*/
+    //Service
+    else if(argc > 1 && strcmp(argv[1], "-service") == 0){
+        QAndroidService app(argc, argv);
+
+        qInfo() << "cellulorobotpoold main(): Service starting...";
+
+        QLoggingCategory::setFilterRules(QStringLiteral("qt.bluetooth* = true"));
 
         CelluloLocalRelayServer server;
         server.setListening(true);
 
-        //CelluloLocalRelayClient client;
-        //client.connectToServer();
-
-
+        return app.exec();
     }
 
-    return app.exec();
+    //Unrecognized argument
+    else{
+        qWarning() << "cellulorobotpoold main(): Unrecognized command line argument.";
+        return -1;
+    }
 }
