@@ -7,6 +7,7 @@ Tested with Qt 5.10.0 on:
 
   - Ubuntu 17.10
   - macOS 10.13.3
+  - Android 7.1.2
 
 Build
 -----
