@@ -46,7 +46,6 @@ ApplicationWindow {
 
     CelluloRobot{
         id: robotComm
-        macAddr: "00:06:66:74:43:00"
 
         property bool inInner: false
         property bool inBorder: false
@@ -107,7 +106,7 @@ ApplicationWindow {
         title: "Robots"
 
         Column{
-            property variant addresses: [
+            property var addresses: [
                 "00:06:66:74:40:D2",
                 "00:06:66:74:40:D4",
                 "00:06:66:74:40:D5",
