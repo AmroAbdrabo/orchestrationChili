@@ -18,8 +18,10 @@ communicate with its already connected robots.
 Tested with Qt 5.10.1 on:
 
   - Ubuntu 17.10
-  - macOS 10.13.3
-  - Android 7.1.2 (also available on the Play Store)
+  - macOS 10.13.3 with Xcode 9.3
+  - Android 7.1.2 with Ubuntu 17.10 host with Android API 23, Android SDK Tools 25.2.5 and Android NDK r10e (both apps also available on the Play Store)
+
+Does not work on Windows due to WinRT sandboxing preventing multiple apps from communicating with each other. This prevents any sort of daemon from being built within the WinRT framework.
 
 Linux & macOS build
 -------------------
