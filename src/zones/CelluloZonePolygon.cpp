@@ -25,7 +25,12 @@
 #include "CelluloZonePolygon.h"
 
 #include <QPolygon>
-#include <cmath>
+#if defined(Q_OS_WIN)
+	#define _USE_MATH_DEFINES
+	#include <math.h>
+#elif
+	#include <cmath>
+#endif
 
 #include "../util/math/CelluloMathUtil.h"
 

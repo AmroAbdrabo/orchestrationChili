@@ -26,7 +26,12 @@
 #include "CelluloMathUtil.h"
 
 #include <algorithm>
-#include <cmath>
+#if defined(Q_OS_WIN)
+	#define _USE_MATH_DEFINES
+	#include <math.h>
+#elif
+	#include <cmath>
+#endif
 #include <cstdlib>
 #include <ctime>
 

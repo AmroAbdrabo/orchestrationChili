@@ -24,7 +24,11 @@
 
 #include "CelluloSystemUtil.h"
 
-#include <QProcess>
+#if defined(Q_OS_WIN)
+	#include <QDebug>
+#elif
+	#include <QProcess>
+#endif
 
 namespace Cellulo{
 
@@ -33,10 +37,15 @@ CelluloSystemUtil::CelluloSystemUtil(QObject* parent) : QObject(parent){}
 CelluloSystemUtil::~CelluloSystemUtil(){}
 
 int CelluloSystemUtil::exec(QString const& command, QStringList const& arguments){
-    QProcess proc;
-    proc.start(command, arguments);
-    proc.waitForFinished(-1);
-    return proc.exitCode();
+	#if defined(Q_OS_WIN)
+		qWarning() << "CelluloSystemUtil::exec(): Not implemented on WinRT";
+		return -1;
+	#elif	
+		QProcess proc;
+		proc.start(command, arguments);
+		proc.waitForFinished(-1);
+		return proc.exitCode();
+	#endif
 }
 
 }

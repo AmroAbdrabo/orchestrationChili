@@ -137,12 +137,10 @@ else{
 
     OTHER_FILES += qmldir.files javascript.files qml.files
 
-    unix {
-        installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
-        qmldir.path = $$installPath
-        javascript.path = $$installPath
-        qml.path = $$installPath
-        target.path = $$installPath
-        INSTALLS += target qmldir javascript qml
-    }
+    installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
+    qmldir.path = $$installPath
+    javascript.path = $$installPath
+    qml.path = $$installPath
+    target.path = $$installPath
+    INSTALLS += target qmldir javascript qml
 }
