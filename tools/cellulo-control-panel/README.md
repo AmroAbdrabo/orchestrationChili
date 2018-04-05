@@ -28,6 +28,25 @@ Android build
 1. Build and install [qml-cellulo](../../).
 1. Load into Qt Creator, connect your device over USB, click `Run`.
 
+Windows build
+-------------
+
+1. Build and install [qml-cellulo](../../).
+1. Run the following in a `Developer Command Prompt for VS 2017` launched with administrator privileges (right click, select `Run as administrator`) while paying attention to slash directions, some of them are regular and some of them are backslashes:
+
+    ```
+	> "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" amd64
+	> mkdir build
+	> cd build
+	> qt-install-root\qt-version\target-platform\bin\qmake ..
+    > nmake
+	> nmake install
+    > qt-install-root\qt-version\target-platform\bin\windeployqt --qmldir .. "C:/Program Files (x86)/Cellulo Control Panel/cellulo-control-panel.exe"
+    > qt-install-root\qt-version\target-platform\bin\winrtrunner --profile appx --install "C:/Program Files (x86)/Cellulo Control Panel/cellulo-control-panel.exe"
+    ```
+
+This will install the control panel as an app to `C:\Program Files (x86)\Cellulo Control Panel\`. Alternatively, the app can also be loaded into Qt Creator, built and run from there.
+
 Linux usage
 -----------
 
@@ -42,3 +61,8 @@ Android usage
 -------------
 
 Click `Run` from within Qt Creator to install and launch or manually launch the app if it's already installed.
+
+Windows usage
+-------------
+
+Launch `Cellulo Control Panel` from the Start Menu.

@@ -10,7 +10,7 @@ Tested with Qt 5.10.1 on:
 - macOS 10.13.3 with Xcode 9.3
 - Android 7.1.2 with Ubuntu 17.10 host with Android API 23, Android SDK Tools 25.2.5 and Android NDK r10e
 
-Does not work on Windows due to WinRT sandboxing preventing multiple apps from communicating with each other.
+As the swarm functionality requires `cellulorobotpoold`, this sample will not work on Windows since WinRT sandboxing prevents multiple apps from communicating with each other.
 
 Build
 -----
