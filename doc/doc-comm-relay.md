@@ -80,7 +80,7 @@ This class is **abstract**, you cannot instantiate it directly. Refer to classes
 `{property} bool `[`connected`](doc/doc-comm-relay.md#classCellulo_1_1CelluloRelayClient_1a8425b7761ae0c840c8e34dc741c162f0) | Whether currently connected to the server, read-only.
 `{property} QString `[`serverAddress`](doc/doc-comm-relay.md#classCellulo_1_1CelluloRelayClient_1a61a164f2a1ff8077854253ccade0ebfa) | Address to connect to, i.e name of the domain socket (default is "cellulo_relay") or the IP address of the TCP socket (default is "localhost")
 `{property} int `[`port`](doc/doc-comm-relay.md#classCellulo_1_1CelluloRelayClient_1a6bf83800ed227b6c5e2e33f1de5d0702) | Port to connect to in TCP (default is 2556), unused in local sockets.
-`{property} int `[`autoConnect`](doc/doc-comm-relay.md#classCellulo_1_1CelluloRelayClient_1ac03d0024c5c1656d1e6308b8461e3190) | Whether to try to reconnect when the connection drops or in the beginning, default is true.
+`{property} bool `[`autoConnect`](doc/doc-comm-relay.md#classCellulo_1_1CelluloRelayClient_1af73aba8c0461c2559bb5ac59f5a131b2) | Whether to try to reconnect when the connection drops or in the beginning, default is true.
 `{property} QVariantList `[`robots`](doc/doc-comm-relay.md#classCellulo_1_1CelluloRelayClient_1ae88af0add6b8a6ecfa0e04ee5d34a53c) | List of virtual robots currently under control of this client, read-only.
 `{signal} public void `[`connected`](#classCellulo_1_1CelluloRelayClient_1a7d5937c7d07a5a07f471f4e956a0b9a4)`()` | Emitted when the server socket is connected.
 `{signal} public void `[`disconnected`](#classCellulo_1_1CelluloRelayClient_1a10cfb3ae0feb9843741af7cfa4125196)`()` | Emitted when the server socket is disconected.
@@ -106,9 +106,11 @@ Server's address, e.g "127.0.0.1".
 
 Port to connect to in TCP (default is 2556), unused in local sockets.
 
-#### `{property} int `[`autoConnect`](doc/doc-comm-relay.md#classCellulo_1_1CelluloRelayClient_1ac03d0024c5c1656d1e6308b8461e3190) 
+#### `{property} bool `[`autoConnect`](doc/doc-comm-relay.md#classCellulo_1_1CelluloRelayClient_1af73aba8c0461c2559bb5ac59f5a131b2) 
 
 Whether to try to reconnect when the connection drops or in the beginning, default is true.
+
+Whether to try to reconnect to the relay server if connection is lost.
 
 #### `{property} QVariantList `[`robots`](doc/doc-comm-relay.md#classCellulo_1_1CelluloRelayClient_1ae88af0add6b8a6ecfa0e04ee5d34a53c) 
 

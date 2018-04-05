@@ -329,6 +329,7 @@ This class is **singleton**, you can call `ThisClass.anyFunction()` and use `Thi
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
 `public static Q_INVOKABLE int `[`exec`](#classCellulo_1_1CelluloSystemUtil_1a860091df1106a70ff24c962007743879)`(QString const & command,QStringList const & arguments)` | Executes a system command.
+`public static Q_INVOKABLE QString `[`getAppDataLocation`](#classCellulo_1_1CelluloSystemUtil_1a148c24b6ade48fb2f2e471d254736713)`()` | Gets a writable location specific to the app.
 
 ## Members
 
@@ -343,6 +344,13 @@ Executes a system command.
 
 #### Returns
 Return code of the executed command
+
+#### `public static Q_INVOKABLE QString `[`getAppDataLocation`](#classCellulo_1_1CelluloSystemUtil_1a148c24b6ade48fb2f2e471d254736713)`()` 
+
+Gets a writable location specific to the app.
+
+#### Returns
+Location that is guaranteed to be writable
 
 # class `Cellulo::CelluloUIUtil` 
 
