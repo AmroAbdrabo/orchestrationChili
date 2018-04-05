@@ -67,3 +67,5 @@ Windows usage
 -------------
 
 Launch `Cellulo Control Panel` from the Start Menu.
+
+**Note:** It seems that for robots to appear in the scan, they must be paired manually beforehand from the Windows Bluetooth stack.
