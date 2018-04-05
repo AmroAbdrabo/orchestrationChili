@@ -47,12 +47,12 @@ Desktop build (Windows)
 Run the following in the `Developer Command Prompt for VS 2017`:
 
 ```
-	> "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" amd64
-	> mkdir build
-	> cd build
-	> qt-install-root\qt-version\target-platform\bin\qmake ..
+    > "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" amd64
+    > mkdir build
+    > cd build
+    > qt-install-root\qt-version\target-platform\bin\qmake ..
     > nmake
-	> nmake install
+    > nmake install
 ```
 
 This will install the QML plugin inside the Qt sysroot, so it must be writable by you. **Be aware that this is not a sandboxed installation.**
