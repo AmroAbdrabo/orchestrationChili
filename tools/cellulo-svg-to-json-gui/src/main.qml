@@ -26,35 +26,46 @@ ApplicationWindow{
         Column{
             spacing: 5
 
+            Text{
+                text: "Be careful on Windows, the input and output files must be inside the below directories!"
+                visible: Qt.platform.os === "winrt"
+            }
+
             Row{
                 spacing: 5
 
+                Text{ text: "Input file:" }
                 TextField{
                     id: inFile
                     width: 500
                     anchors.verticalCenter: parent.verticalCenter
                     placeholderText: "Input .svg file"
+                    text: Qt.platform.os === "winrt" ? CelluloSystemUtil.getAppDataLocation() : ""
                 }
                 Button{
                     text: "Choose file"
                     anchors.verticalCenter: parent.verticalCenter
                     onClicked: inputFilePicker.open()
+                    enabled: Qt.platform.os !== "winrt"
                 }
             }
 
             Row{
                 spacing: 5
 
+                Text{ text: "Output file:" }
                 TextField{
                     id: outFile
                     width: 500
                     anchors.verticalCenter: parent.verticalCenter
                     placeholderText: "Output .json file"
+                    text: Qt.platform.os === "winrt" ? CelluloSystemUtil.getAppDataLocation() : ""
                 }
                 Button{
                     text: "Choose file"
                     anchors.verticalCenter: parent.verticalCenter
                     onClicked: outputFilePicker.visible = true
+                    enabled: Qt.platform.os !== "winrt"
                 }
             }
 

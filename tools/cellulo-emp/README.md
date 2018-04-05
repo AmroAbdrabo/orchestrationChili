@@ -6,9 +6,9 @@ Tool to scan and mass reset/shutdown all Cellulo robots (bit buggy and may crash
 Tested with Qt 5.10.1 on:
 
 - Ubuntu 17.10
-- On macOS 10.13.3 with Xcode 9.3
-- On Windows 10 (UWP x64 (MSVC 2017)) with Visual Studio 2017 Community (with `Universal Windows Platform development` and `C++ Universal Windows Platform tools`)
-- On Android 7.1.2 with Ubuntu 17.10 host with Android API 23, Android SDK Tools 25.2.5 and Android NDK r10e (also available on the Play Store for direct download)
+- macOS 10.13.3 with Xcode 9.3
+- Windows 10 (UWP x64 (MSVC 2017)) with Visual Studio 2017 Community (with `Universal Windows Platform development` and `C++ Universal Windows Platform tools`)
+- Android 7.1.2 with Ubuntu 17.10 host with Android API 23, Android SDK Tools 25.2.5 and Android NDK r10e (also available on the Play Store for direct download)
 
 **Note for Windows:** It seems that for robots to appear in the scan, they must be paired manually beforehand from the Windows Bluetooth stack.
 

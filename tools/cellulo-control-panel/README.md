@@ -5,9 +5,10 @@ Tool to control and listen to all features of a single Cellulo robot.
 
 Tested with Qt 5.10.0 on:
 
-  - Ubuntu 17.10
-  - macOS 10.13.3
-  - Android 7.1.2 (also available on the Play Store)
+- Ubuntu 17.10
+- macOS 10.13.3 with Xcode 9.3
+- Windows 10 (UWP x64 (MSVC 2017)) with Visual Studio 2017 Community (with `Universal Windows Platform development` and `C++ Universal Windows Platform tools`)
+- Android 7.1.2 with Ubuntu 17.10 host with Android API 23, Android SDK Tools 25.2.5 and Android NDK r10e (also available on the Play Store for direct download)
 
 Linux & macOS build
 -------------------

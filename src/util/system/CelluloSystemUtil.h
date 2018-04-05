@@ -61,6 +61,13 @@ public:
      */
     Q_INVOKABLE static int exec(QString const& command, QStringList const& arguments);
 
+    /**
+     * @brief Gets a writable location specific to the app
+     *
+     * @return Location that is guaranteed to be writable
+     */
+    Q_INVOKABLE static QString getAppDataLocation();
+
 };
 
 /** @} */

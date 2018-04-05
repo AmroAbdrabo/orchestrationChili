@@ -30,6 +30,8 @@
 	#include <QProcess>
 #endif
 
+#include <QStandardPaths>
+
 namespace Cellulo{
 
 CelluloSystemUtil::CelluloSystemUtil(QObject* parent) : QObject(parent){}
@@ -40,12 +42,16 @@ int CelluloSystemUtil::exec(QString const& command, QStringList const& arguments
 	#if defined(Q_OS_WIN)
 		qWarning() << "CelluloSystemUtil::exec(): Not implemented on WinRT";
 		return -1;
-	#elif	
+	#elif
 		QProcess proc;
 		proc.start(command, arguments);
 		proc.waitForFinished(-1);
 		return proc.exitCode();
 	#endif
+}
+
+QString CelluloSystemUtil::getAppDataLocation(){
+	return QStandardPaths::writableLocation(QStandardPaths::StandardLocation::AppDataLocation);
 }
 
 }
