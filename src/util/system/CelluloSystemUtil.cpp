@@ -26,7 +26,7 @@
 
 #if defined(Q_OS_WIN)
 	#include <QDebug>
-#elif
+#else
 	#include <QProcess>
 #endif
 
@@ -40,9 +40,11 @@ CelluloSystemUtil::~CelluloSystemUtil(){}
 
 int CelluloSystemUtil::exec(QString const& command, QStringList const& arguments){
 	#if defined(Q_OS_WIN)
+        Q_UNUSED(command)
+        Q_UNUSED(arguments)
 		qWarning() << "CelluloSystemUtil::exec(): Not implemented on WinRT";
 		return -1;
-	#elif
+	#else
 		QProcess proc;
 		proc.start(command, arguments);
 		proc.waitForFinished(-1);

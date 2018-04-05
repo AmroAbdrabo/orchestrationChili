@@ -28,7 +28,7 @@
 #if defined(Q_OS_WIN)
 	#define _USE_MATH_DEFINES
 	#include <math.h>
-#elif
+#else
 	#include <cmath>
 #endif
 

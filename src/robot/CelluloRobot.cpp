@@ -21,13 +21,13 @@
  * @author Ayberk Özgür
  * @date 2015-05-20
  */
- 
+
 #include "CelluloRobot.h"
 
 #if defined(Q_OS_WIN)
 	#define _USE_MATH_DEFINES
 	#include <math.h>
-#elif
+#else
 	#include <cmath>
 #endif
 
