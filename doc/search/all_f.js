@@ -5,6 +5,7 @@ var searchData=
   ['rectangleborder',['RECTANGLEBORDER',['../group__zone.html#acb24a099726e8d59124afd691c86f9cfaed7bc9233d882d88cd25a644602c72ec',1,'Cellulo::CelluloZoneTypes']]],
   ['rectangledistance',['RECTANGLEDISTANCE',['../group__zone.html#acb24a099726e8d59124afd691c86f9cfa2a4b7a46a0f9d9d2951d9247cfd7dabb',1,'Cellulo::CelluloZoneTypes']]],
   ['rectangleinner',['RECTANGLEINNER',['../group__zone.html#acb24a099726e8d59124afd691c86f9cfacf5547e1e5708d942007fa61a71c3f4b',1,'Cellulo::CelluloZoneTypes']]],
+  ['remapposition',['remapPosition',['../group__tile.html#a03172cac6c1c4f521537f3cf72c29517',1,'Cellulo::PositionRemapper']]],
   ['removerobot',['removeRobot',['../group__comm-relay.html#a7eccd090383468345b0de682ca98368a',1,'Cellulo::CelluloRelayClient::removeRobot()'],['../group__comm-relay.html#a2d3f4984486ccfd6f775071138fd94b2',1,'Cellulo::CelluloRelayServer::removeRobot()']]],
   ['reset',['reset',['../group__comm.html#ab29c7d9cce6b8ec5e5b8f82da6332886',1,'Cellulo::CelluloBluetooth']]],
   ['resetlater',['resetLater',['../group__comm.html#ab12436c821fecc2050cc3c37925229b2',1,'Cellulo::CelluloBluetoothEMP']]],

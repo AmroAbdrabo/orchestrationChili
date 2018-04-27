@@ -12,6 +12,7 @@ var hierarchy =
       [ "Cellulo::CelluloUIUtil", "group__util.html#classCellulo_1_1CelluloUIUtil", null ],
       [ "Cellulo::CelluloZoneJsonHandler", "group__zone.html#classCellulo_1_1CelluloZoneJsonHandler", null ],
       [ "Cellulo::CelluloZoneTypes", "group__zone.html#classCellulo_1_1CelluloZoneTypes", null ],
+      [ "Cellulo::PositionRemapper", "group__tile.html#classCellulo_1_1PositionRemapper", null ],
       [ "Cellulo::TranslationTool", "group__util.html#classCellulo_1_1TranslationTool", null ]
     ] ],
     [ "QQuickItem", null, [

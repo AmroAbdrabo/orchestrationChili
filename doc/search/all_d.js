@@ -23,5 +23,8 @@ var searchData=
   ['posevelcontrolkgoalposeerr',['poseVelControlKGoalPoseErr',['../group__robot.html#a0461ff18bdf125f1587ff616368db7c2',1,'Cellulo::CelluloRobot']]],
   ['posevelcontrolkgoalvel',['poseVelControlKGoalVel',['../group__robot.html#afd3187099bb2b39dc99967e0631d4fd2',1,'Cellulo::CelluloRobot']]],
   ['posevelcontrolkgoalvelerr',['poseVelControlKGoalVelErr',['../group__robot.html#ad0bd66a4a9b1744517a744e4470ec492',1,'Cellulo::CelluloRobot']]],
-  ['posevelcontrolperiod',['poseVelControlPeriod',['../group__robot.html#ae9623a6305f54063ac903d13aefb49f1',1,'Cellulo::CelluloRobot']]]
+  ['posevelcontrolperiod',['poseVelControlPeriod',['../group__robot.html#ae9623a6305f54063ac903d13aefb49f1',1,'Cellulo::CelluloRobot']]],
+  ['positionremapper',['PositionRemapper',['../group__tile.html#classCellulo_1_1PositionRemapper',1,'Cellulo']]],
+  ['positionremapper_2ecpp',['PositionRemapper.cpp',['../PositionRemapper_8cpp.html',1,'']]],
+  ['positionremapper_2eh',['PositionRemapper.h',['../PositionRemapper_8h.html',1,'']]]
 ];

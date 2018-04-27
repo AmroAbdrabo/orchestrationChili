@@ -39,6 +39,7 @@
 #include "relay/CelluloRelayServer.h"
 #include "../zones/CelluloZoneClient.h"
 #include "../zones/CelluloZonePolyBezier.h"
+#include "../tile/PositionRemapper.h"
 
 namespace Cellulo{
 
@@ -98,6 +99,9 @@ class CelluloBluetooth : public CelluloZoneClient {
 
     /** @brief Localization framerate calculated from local timestamps received along with pose (is valid if **timestampingEnabled** is true), read-only */
     Q_PROPERTY(float framerate READ getFramerate NOTIFY timestampChanged)
+
+    /** @briefv Position remapper if desired, null by default, pass null if you want to disable this functionaliy */
+    Q_PROPERTY(Cellulo::PositionRemapper* positionRemapper MEMBER positionRemapper)
 
     /** @cond DO_NOT_DOCUMENT */
 
@@ -706,6 +710,7 @@ private:
 
     CelluloRelayClient* relayClient;                          ///< Client to route all command packets to
     CelluloRelayServer* relayServer;                          ///< Server to route all event packets to
+    PositionRemapper* positionRemapper;                       ///< Position remapper
 
     bool timestampingEnabled;                                 ///< Whether timestamping along with pose is enabled and idling disabled
     int lastTimestamp;                                        ///< Latest received onboard timestamp (in milliseconds)

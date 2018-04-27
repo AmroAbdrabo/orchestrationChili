@@ -1,6 +1,7 @@
 var searchData=
 [
   ['radtodeg',['radToDeg',['../group__util.html#aebd81ebb37fb050b70bd9ed2f044d825',1,'Cellulo::CelluloMathUtil']]],
+  ['remapposition',['remapPosition',['../group__tile.html#a03172cac6c1c4f521537f3cf72c29517',1,'Cellulo::PositionRemapper']]],
   ['removerobot',['removeRobot',['../group__comm-relay.html#a7eccd090383468345b0de682ca98368a',1,'Cellulo::CelluloRelayClient::removeRobot()'],['../group__comm-relay.html#a2d3f4984486ccfd6f775071138fd94b2',1,'Cellulo::CelluloRelayServer::removeRobot()']]],
   ['reset',['reset',['../group__comm.html#ab29c7d9cce6b8ec5e5b8f82da6332886',1,'Cellulo::CelluloBluetooth']]],
   ['resetlater',['resetLater',['../group__comm.html#ab12436c821fecc2050cc3c37925229b2',1,'Cellulo::CelluloBluetoothEMP']]],

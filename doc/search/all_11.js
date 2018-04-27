@@ -2,6 +2,7 @@ var searchData=
 [
   ['testrobotpooldaemon',['testRobotPoolDaemon',['../group__comm.html#a6ec0d01253d86b0757f767be31c8de56',1,'Cellulo::CelluloCommUtil']]],
   ['theta',['theta',['../group__comm.html#acaee9ee4adc6528bcaae8c9577790d02',1,'Cellulo::CelluloBluetooth']]],
+  ['tile',['Tile',['../group__tile.html',1,'']]],
   ['timestampingenabled',['timestampingEnabled',['../group__comm.html#ab93e751696cdaa7635681bb05b5598f5',1,'Cellulo::CelluloBluetooth']]],
   ['toangle',['toAngle',['../group__zone.html#a8b405d1a360070b5350368feec11c0e4',1,'Cellulo::CelluloZoneAngleInterval']]],
   ['toast',['Toast',['../group__util.html#classCellulo_1_1Toast',1,'Cellulo']]],

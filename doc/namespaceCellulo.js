@@ -60,6 +60,7 @@ var namespaceCellulo =
     [ "CelluloZoneRegularPolygonInner", "group__zone.html#classCellulo_1_1CelluloZoneRegularPolygonInner", null ],
     [ "CelluloZoneTypes", "group__zone.html#classCellulo_1_1CelluloZoneTypes", "group__zone_classCellulo_1_1CelluloZoneTypes" ],
     [ "MacAddrSelector", "group__util.html#classCellulo_1_1MacAddrSelector", "group__util_classCellulo_1_1MacAddrSelector" ],
+    [ "PositionRemapper", "group__tile.html#classCellulo_1_1PositionRemapper", "group__tile_classCellulo_1_1PositionRemapper" ],
     [ "Toast", "group__util.html#classCellulo_1_1Toast", "group__util_classCellulo_1_1Toast" ],
     [ "ToastManager", "group__util.html#classCellulo_1_1ToastManager", "group__util_classCellulo_1_1ToastManager" ],
     [ "TranslationTool", "group__util.html#classCellulo_1_1TranslationTool", "group__util_classCellulo_1_1TranslationTool" ]

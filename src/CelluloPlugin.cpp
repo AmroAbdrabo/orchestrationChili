@@ -58,6 +58,7 @@
 #include "util/lang/TranslationTool.h"
 #include "util/system/CelluloSystemUtil.h"
 #include "util/ui/CelluloUIUtil.h"
+#include "tile/PositionRemapper.h"
 
 /**
  * @brief Scope for core Cellulo objects
