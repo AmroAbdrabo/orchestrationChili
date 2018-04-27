@@ -1,0 +1,21 @@
+var searchData=
+[
+  ['r',['r',['../group__zone.html#ade7234cb3d3fa818aef69bdfb0f67ab8',1,'Cellulo::CelluloZoneCircle::r()'],['../group__zone.html#ae22f178d345bedaeb2653fa433b28f4c',1,'Cellulo::CelluloZoneRegularPolygon::r()']]],
+  ['radtodeg',['radToDeg',['../group__util.html#aebd81ebb37fb050b70bd9ed2f044d825',1,'Cellulo::CelluloMathUtil']]],
+  ['rectangleborder',['RECTANGLEBORDER',['../group__zone.html#acb24a099726e8d59124afd691c86f9cfaed7bc9233d882d88cd25a644602c72ec',1,'Cellulo::CelluloZoneTypes']]],
+  ['rectangledistance',['RECTANGLEDISTANCE',['../group__zone.html#acb24a099726e8d59124afd691c86f9cfa2a4b7a46a0f9d9d2951d9247cfd7dabb',1,'Cellulo::CelluloZoneTypes']]],
+  ['rectangleinner',['RECTANGLEINNER',['../group__zone.html#acb24a099726e8d59124afd691c86f9cfacf5547e1e5708d942007fa61a71c3f4b',1,'Cellulo::CelluloZoneTypes']]],
+  ['removerobot',['removeRobot',['../group__comm-relay.html#a7eccd090383468345b0de682ca98368a',1,'Cellulo::CelluloRelayClient::removeRobot()'],['../group__comm-relay.html#a2d3f4984486ccfd6f775071138fd94b2',1,'Cellulo::CelluloRelayServer::removeRobot()']]],
+  ['reset',['reset',['../group__comm.html#ab29c7d9cce6b8ec5e5b8f82da6332886',1,'Cellulo::CelluloBluetooth']]],
+  ['resetlater',['resetLater',['../group__comm.html#ab12436c821fecc2050cc3c37925229b2',1,'Cellulo::CelluloBluetoothEMP']]],
+  ['robot',['Robot',['../group__robot.html',1,'']]],
+  ['robotadded',['robotAdded',['../group__comm-relay.html#a6f4ac79e3ce85bdf24ba05f1b71495ba',1,'Cellulo::CelluloRelayServer']]],
+  ['robotdiscovered',['robotDiscovered',['../group__comm.html#a3107786d8400a26b0cf8f5ef970f3ca4',1,'Cellulo::CelluloBluetoothScanner']]],
+  ['robotremoved',['robotRemoved',['../group__comm-relay.html#ac9a0a3c6db06a0e11b6f01910774295f',1,'Cellulo::CelluloRelayServer']]],
+  ['robots',['robots',['../group__comm-relay.html#ae88af0add6b8a6ecfa0e04ee5d34a53c',1,'Cellulo::CelluloRelayClient']]],
+  ['rotangle',['rotAngle',['../group__zone.html#a45d92afd34af8621c79a1a9ef2e668f0',1,'Cellulo::CelluloZoneRegularPolygon']]],
+  ['rotatevector',['rotateVector',['../group__util.html#a3bb6db1423e9d3e4755f54ca73a27fb6',1,'Cellulo::CelluloMathUtil']]],
+  ['rpolygonborder',['RPOLYGONBORDER',['../group__zone.html#acb24a099726e8d59124afd691c86f9cfa2a3a93fbc5a3b655799904b4ca2bbce3',1,'Cellulo::CelluloZoneTypes']]],
+  ['rpolygondistance',['RPOLYGONDISTANCE',['../group__zone.html#acb24a099726e8d59124afd691c86f9cfab88ba2ad8dcac79877bf5ed7bb608f29',1,'Cellulo::CelluloZoneTypes']]],
+  ['rpolygoninner',['RPOLYGONINNER',['../group__zone.html#acb24a099726e8d59124afd691c86f9cfa3b5c5b3bb056907df94608071d8bc65f',1,'Cellulo::CelluloZoneTypes']]]
+];

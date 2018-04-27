@@ -1,0 +1,27 @@
+var searchData=
+[
+  ['physicalplaygroundheight',['physicalPlaygroundHeight',['../group__zone.html#ae80f5f415506e5bb2f582aac41185034',1,'Cellulo::CelluloZonePaintedItem']]],
+  ['physicalplaygroundwidth',['physicalPlaygroundWidth',['../group__zone.html#afe3fb2f45c9dee29c66a8b7fc278381f',1,'Cellulo::CelluloZonePaintedItem']]],
+  ['pointdistance',['POINTDISTANCE',['../group__zone.html#acb24a099726e8d59124afd691c86f9cfa3c2415c48b0dc473747592953f3ce996',1,'Cellulo::CelluloZoneTypes']]],
+  ['pointinpoly',['pointInPoly',['../group__util.html#aefa1f8e82c7c4c54e95964b7d6d09de7',1,'Cellulo::CelluloMathUtil']]],
+  ['pointtolinedistsigned',['pointToLineDistSigned',['../group__util.html#ae3dc27d0fc111c4a0128f933c0970033',1,'Cellulo::CelluloMathUtil']]],
+  ['pointtopolyborderdist',['pointToPolyBorderDist',['../group__util.html#ae1771e133a7a8b41efde0f6e22e030f7',1,'Cellulo::CelluloMathUtil']]],
+  ['pointtosegmentdist',['pointToSegmentDist',['../group__util.html#aaaebc0a7dd54bc2e0b4bb47237530054',1,'Cellulo::CelluloMathUtil']]],
+  ['polybezierappend',['polyBezierAppend',['../group__comm.html#ac6034aa0cea06d6843281e8ecda357fd',1,'Cellulo::CelluloBluetooth']]],
+  ['polybezierborder',['POLYBEZIERBORDER',['../group__zone.html#acb24a099726e8d59124afd691c86f9cfa85e37c29bf4e035712241077652d9b02',1,'Cellulo::CelluloZoneTypes']]],
+  ['polybezierclosestt',['POLYBEZIERCLOSESTT',['../group__zone.html#acb24a099726e8d59124afd691c86f9cfa10b454e6005869e2a793856cf6f51076',1,'Cellulo::CelluloZoneTypes']]],
+  ['polybezierdistance',['POLYBEZIERDISTANCE',['../group__zone.html#acb24a099726e8d59124afd691c86f9cfa348d7259d582d93ddcaa49d9535f3c14',1,'Cellulo::CelluloZoneTypes']]],
+  ['polybezierinit',['polyBezierInit',['../group__comm.html#a5943ebcea0fe39fb517fff8ec3c26d0f',1,'Cellulo::CelluloBluetooth']]],
+  ['polybezierinner',['POLYBEZIERINNER',['../group__zone.html#acb24a099726e8d59124afd691c86f9cfa9d6e3e63b70d4b5c4fcac854df655b20',1,'Cellulo::CelluloZoneTypes']]],
+  ['polybeziersetfromzone',['polyBezierSetFromZone',['../group__comm.html#a9d6f1ad33bc39dc6b07e68435f7c8b55',1,'Cellulo::CelluloBluetooth']]],
+  ['polybezierxt',['POLYBEZIERXT',['../group__zone.html#acb24a099726e8d59124afd691c86f9cfa8acf28e756d2dc1307a5dde5c01b39d0',1,'Cellulo::CelluloZoneTypes']]],
+  ['polybezieryt',['POLYBEZIERYT',['../group__zone.html#acb24a099726e8d59124afd691c86f9cfa7f8c4c1d5cd9ef2b49eac83a7f6e8e3b',1,'Cellulo::CelluloZoneTypes']]],
+  ['port',['port',['../group__comm-relay.html#a6bf83800ed227b6c5e2e33f1de5d0702',1,'Cellulo::CelluloRelayClient::port()'],['../group__comm-relay.html#aa6697416fd80d8f80bb3c9c6eba60535',1,'Cellulo::CelluloRelayServer::port()']]],
+  ['posechanged',['poseChanged',['../group__zone.html#abaf30200131353c16cde52b53aa68409',1,'Cellulo::CelluloZoneClient']]],
+  ['posechanged_5finherited',['poseChanged_inherited',['../group__comm.html#a76412491f647df2979f90ba5f4f4c9d2',1,'Cellulo::CelluloBluetooth']]],
+  ['posevelcontrolenabled',['poseVelControlEnabled',['../group__robot.html#a3b59966b09c1f1b81d090aa1239de383',1,'Cellulo::CelluloRobot']]],
+  ['posevelcontrolkgoalposeerr',['poseVelControlKGoalPoseErr',['../group__robot.html#a0461ff18bdf125f1587ff616368db7c2',1,'Cellulo::CelluloRobot']]],
+  ['posevelcontrolkgoalvel',['poseVelControlKGoalVel',['../group__robot.html#afd3187099bb2b39dc99967e0631d4fd2',1,'Cellulo::CelluloRobot']]],
+  ['posevelcontrolkgoalvelerr',['poseVelControlKGoalVelErr',['../group__robot.html#ad0bd66a4a9b1744517a744e4470ec492',1,'Cellulo::CelluloRobot']]],
+  ['posevelcontrolperiod',['poseVelControlPeriod',['../group__robot.html#ae9623a6305f54063ac903d13aefb49f1',1,'Cellulo::CelluloRobot']]]
+];

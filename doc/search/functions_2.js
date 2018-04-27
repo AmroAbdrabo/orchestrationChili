@@ -1,0 +1,21 @@
+var searchData=
+[
+  ['c_5frand',['c_rand',['../group__util.html#ab5ca178d6b922ecdc14e9f11cb258099',1,'Cellulo::CelluloMathUtil']]],
+  ['c_5fsrand',['c_srand',['../group__util.html#a972aab4558a5493a68005ec5c1a49185',1,'Cellulo::CelluloMathUtil']]],
+  ['calculate',['calculate',['../group__zone.html#a404b8449396ad290e001370810b2a62f',1,'Cellulo::CelluloZone']]],
+  ['clamp',['clamp',['../group__util.html#a802dd180acb91fdea9d3b1e4b18469d6',1,'Cellulo::CelluloMathUtil']]],
+  ['cleansocket',['cleanSocket',['../group__comm-relay.html#aa1afa3b89e0d6a0d40bdf8e1629764f1',1,'Cellulo::CelluloLocalRelayClient::cleanSocket()'],['../group__comm-relay.html#a08701a8f3a2a115665f46087f6347510',1,'Cellulo::CelluloLocalRelayServer::cleanSocket()']]],
+  ['clear',['clear',['../group__comm.html#a9dda86060b992a8104ad9f13e4030a1f',1,'Cellulo::CelluloBluetoothEMP::clear()'],['../group__comm.html#ad289a3fbcb416c37d7c6bd36ec14d2f4',1,'Cellulo::CelluloBluetoothScanner::clear()']]],
+  ['clearhapticfeedback',['clearHapticFeedback',['../group__comm.html#aae5231423781a97d4a21ff219750b95d',1,'Cellulo::CelluloBluetooth']]],
+  ['cleartracking',['clearTracking',['../group__comm.html#a7247a33e64f535f33d3e7ecf899f028d',1,'Cellulo::CelluloBluetooth']]],
+  ['clearzones',['clearZones',['../group__zone.html#ac350f0f16d642b3144cdbbc23588ba6a',1,'Cellulo::CelluloZoneEngine']]],
+  ['clientconnected',['clientConnected',['../group__comm-relay.html#a0c177f69d6a00e9c46627a6350c2d2b0',1,'Cellulo::CelluloRelayServer']]],
+  ['clientdisconnected',['clientDisconnected',['../group__comm-relay.html#a131a26e03a7f7bfd03cd63c196092be6',1,'Cellulo::CelluloRelayServer']]],
+  ['collinear',['collinear',['../group__util.html#a0d2b1423fd9c17dbd4fd412827f56830',1,'Cellulo::CelluloMathUtil']]],
+  ['colorfromstring',['colorFromString',['../group__util.html#a99775ee04460bcec80b53afb5790e425',1,'Cellulo::CelluloUIUtil']]],
+  ['colorinterpolate',['colorInterpolate',['../group__util.html#a54a7011e0dce87a8efdae1d7fc26b0ac',1,'Cellulo::CelluloUIUtil']]],
+  ['connected',['connected',['../group__comm-relay.html#a7d5937c7d07a5a07f471f4e956a0b9a4',1,'Cellulo::CelluloRelayClient']]],
+  ['connectrequested',['connectRequested',['../group__util.html#aa4aaeebaa7f611cb7a8f05c3f3477d16',1,'Cellulo::MacAddrSelector']]],
+  ['connecttoserver',['connectToServer',['../group__comm.html#a0872bdaa7029f7e95b224a60469492bf',1,'Cellulo::CelluloBluetooth::connectToServer()'],['../group__comm-relay.html#a53b79491108537bf602cadfe75fc026f',1,'Cellulo::CelluloRelayClient::connectToServer()']]],
+  ['createpainteditem',['createPaintedItem',['../group__zone.html#a305df5424bddb23ddb7f0935561b3206',1,'Cellulo::CelluloZone']]]
+];

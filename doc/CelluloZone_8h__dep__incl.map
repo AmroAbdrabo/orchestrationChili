@@ -1,0 +1,47 @@
+<map id="src/zones/CelluloZone.h" name="src/zones/CelluloZone.h">
+<area shape="rect" id="node2" href="$CelluloZonePolyBezier_8h.html" title="Header for composite cubic Bézier curves. " alt="" coords="1007,80,1185,121"/>
+<area shape="rect" id="node24" href="$CelluloSVGUtil_8h.html" title="Source for SVG file parsing and dumping utils. " alt="" coords="1345,177,1535,203"/>
+<area shape="rect" id="node27" href="$CelluloZonePaintedItem_8h.html" title="Header for a QML compatible QQuickPaintedItem for Cellulo zones. " alt="" coords="3133,80,3329,121"/>
+<area shape="rect" id="node29" href="$CelluloZonePolygon_8h.html" title="Header for the polygon zone. " alt="" coords="2473,87,2684,114"/>
+<area shape="rect" id="node34" href="$CelluloZonePoint_8h.html" title="Header for the point zone. " alt="" coords="2010,87,2203,114"/>
+<area shape="rect" id="node36" href="$CelluloZoneLine_8h.html" title="Header for the line zone. " alt="" coords="1799,87,1985,114"/>
+<area shape="rect" id="node38" href="$CelluloZoneCircle_8h.html" title="Header for circle zone. " alt="" coords="1367,87,1564,114"/>
+<area shape="rect" id="node40" href="$CelluloZoneRectangle_8h.html" title="Header for the rectangular zone. " alt="" coords="2227,87,2450,114"/>
+<area shape="rect" id="node42" href="$CelluloZoneAngle_8h.html" title="Header for single angle zones. " alt="" coords="2709,87,2905,114"/>
+<area shape="rect" id="node44" href="$CelluloZoneAngleInterval_8h.html" title="Header for angular interval zones. " alt="" coords="1589,80,1774,121"/>
+<area shape="rect" id="node45" href="$CelluloZoneJsonHandler_8h.html" title="Header for zone JSON tools. " alt="" coords="2929,80,3109,121"/>
+<area shape="rect" id="node46" href="$CelluloZone_8cpp.html" title="Source for base class zone architecture. " alt="" coords="3353,87,3530,114"/>
+<area shape="rect" id="node3" href="$CelluloBluetooth_8h.html" title="Header for Bluetooth communication with Cellulo robots. " alt="" coords="895,177,1086,203"/>
+<area shape="rect" id="node25" href="$CelluloZonePolyBezier_8cpp.html" title="Source for composite cubic Bézier curves. " alt="" coords="692,169,871,211"/>
+<area shape="rect" id="node26" href="$CelluloZoneTypes_8cpp.html" title="Source for zone type tools. " alt="" coords="1785,177,1999,203"/>
+<area shape="rect" id="node4" href="$CelluloRobot_8h.html" title="Object that directly represents a Cellulo robot. " alt="" coords="1117,266,1280,293"/>
+<area shape="rect" id="node5" href="$CelluloRelayClient_8h.html" title="Relays packets between a server and virtual robot objects. " alt="" coords="1531,259,1722,300"/>
+<area shape="rect" id="node7" href="$CelluloRobotPoolClient_8h.html" title="Uses the robots at a cellulo&#45;robot&#45;pool. " alt="" coords="977,437,1167,479"/>
+<area shape="rect" id="node13" href="$CelluloRelayServer_8h.html" title="Relays packets between a client and robots. " alt="" coords="419,259,610,300"/>
+<area shape="rect" id="node19" href="$CelluloBluetoothEMP_8h.html" title="Header of object that mass reset/shuts down all robots. " alt="" coords="685,259,864,300"/>
+<area shape="rect" id="node21" href="$CameraFrameImageProvider_8h.html" title="Header for converting the camera image in QByteBuffer to QImage. " alt="" coords="1304,259,1507,300"/>
+<area shape="rect" id="node23" href="$CelluloBluetooth_8cpp.html" title="Source for Bluetooth communication with Cellulo robots. " alt="" coords="889,266,1093,293"/>
+<area shape="rect" id="node6" href="$CelluloLocalRelayClient_8h.html" title="Relays packets between a server and virtual robot objects over a Unix domain socket. " alt="" coords="1533,348,1720,389"/>
+<area shape="rect" id="node10" href="$CelluloTcpRelayClient_8h.html" title="Relays packets between a server and virtual robot objects over a TCP socket. " alt="" coords="1744,348,1923,389"/>
+<area shape="rect" id="node12" href="$CelluloRelayClient_8cpp.html" title="Relays packets between a server and virtual robot objects. " alt="" coords="1318,348,1509,389"/>
+<area shape="rect" id="node9" href="$CelluloLocalRelayClient_8cpp.html" title="Relays packets between a server and virtual robot objects over a Unix domain socket. " alt="" coords="1533,437,1720,479"/>
+<area shape="rect" id="node8" href="$CelluloRobotPoolClient_8cpp.html" title="Uses the robots at a cellulo&#45;robot&#45;pool. " alt="" coords="977,527,1167,568"/>
+<area shape="rect" id="node11" href="$CelluloTcpRelayClient_8cpp.html" title="Relays packets between a server and virtual robot objects over a TCP socket. " alt="" coords="1744,437,1923,479"/>
+<area shape="rect" id="node14" href="$CelluloLocalRelayServer_8h.html" title="Relays packets between a client and physical robot objects over a Unix domain socket. " alt="" coords="5,348,192,389"/>
+<area shape="rect" id="node16" href="$CelluloTcpRelayServer_8h.html" title="Relays packets between a client and virtual robot objects over a TCP socket. " alt="" coords="432,348,611,389"/>
+<area shape="rect" id="node18" href="$CelluloRelayServer_8cpp.html" title="Relays packets between a client and robots. " alt="" coords="217,348,407,389"/>
+<area shape="rect" id="node15" href="$CelluloLocalRelayServer_8cpp.html" title="Relays packets between a client and virtual robot objects over a Unix domain socket. " alt="" coords="5,437,192,479"/>
+<area shape="rect" id="node17" href="$CelluloTcpRelayServer_8cpp.html" title="Relays packets between a client and virtual robot objects over a TCP socket. " alt="" coords="432,437,611,479"/>
+<area shape="rect" id="node20" href="$CelluloBluetoothEMP_8cpp.html" title="Source of object that mass reset/shuts down all robots. " alt="" coords="685,348,864,389"/>
+<area shape="rect" id="node22" href="$CameraFrameImageProvider_8cpp.html" title="Source for converting the camera image in QByteBuffer to QImage. " alt="" coords="1091,348,1293,389"/>
+<area shape="rect" id="node28" href="$CelluloZonePaintedItem_8cpp.html" title="Source for a QML compatible QQuickPaintedItem for Cellulo zones. " alt="" coords="3429,169,3625,211"/>
+<area shape="rect" id="node30" href="$CelluloZoneEngine_8h.html" title="Header for the zone engine. " alt="" coords="2255,177,2457,203"/>
+<area shape="rect" id="node32" href="$CelluloZoneJsonHandler_8cpp.html" title="Source for zone JSON tools. " alt="" coords="2482,169,2662,211"/>
+<area shape="rect" id="node33" href="$CelluloZonePolygon_8cpp.html" title="Source for the polygon zone. " alt="" coords="2945,177,3169,203"/>
+<area shape="rect" id="node31" href="$CelluloZoneEngine_8cpp.html" title="Source for the zone engine. " alt="" coords="2247,266,2465,293"/>
+<area shape="rect" id="node35" href="$CelluloZonePoint_8cpp.html" title="Source for the point zone. " alt="" coords="2023,177,2230,203"/>
+<area shape="rect" id="node37" href="$CelluloZoneLine_8cpp.html" title="Source for the line zone. " alt="" coords="1559,177,1761,203"/>
+<area shape="rect" id="node39" href="$CelluloZoneCircle_8cpp.html" title="Header for circle zone. " alt="" coords="1111,177,1321,203"/>
+<area shape="rect" id="node41" href="$CelluloZoneRectangle_8cpp.html" title="Source for the rectangular zone. " alt="" coords="2686,177,2922,203"/>
+<area shape="rect" id="node43" href="$CelluloZoneAngle_8cpp.html" title="Source for single angle zones. " alt="" coords="3193,177,3404,203"/>
+</map>

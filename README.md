@@ -20,7 +20,7 @@ Below are the USB Bluetooth dongles that were confirmed to work with the Cellulo
 
 Tools are under [tools/](tools/), samples are under [samples/](samples/). See their README's for instructions.
 
-See [doc/doc.md](doc/doc.md) for the API.
+See [doc/index.html](doc/index.html) for the API.
 
 Dependencies
 -------------
@@ -86,11 +86,10 @@ Install dependencies:
 
 ```
     $ apt install doxygen doxyqml
-    $ git clone git@github.com:sourcey/moxygen.git && cd moxygen && npm install -g .
 ```
 
 Then, generate the documentation:
 
 ```
-    $ ./generate-doc.sh
+    $ doxygen
 ```

@@ -22,6 +22,14 @@
  * @date 2016-06-26
  */
 
+/**
+ * @mainpage cellulo-qml-plugin
+ *
+ * This is a qml module for communicating with Cellulo robots over Bluetooth. See README.md for more information.
+ *
+ * Start with Modules on the left.
+ */
+
 #ifndef CELLULOPLUGIN_H
 #define CELLULOPLUGIN_H
 
