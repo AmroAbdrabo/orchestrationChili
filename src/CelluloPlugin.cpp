@@ -59,6 +59,8 @@
 #include "util/system/CelluloSystemUtil.h"
 #include "util/ui/CelluloUIUtil.h"
 #include "tile/OffsetRemapper.h"
+#include "tile/HexTileRemapper.h"
+#include "tile/HexTile.h"
 
 /**
  * @brief Scope for core Cellulo objects
@@ -173,6 +175,8 @@ void CelluloPlugin::registerTypes(const char *uri){
                                                 });
 
     qmlRegisterType<OffsetRemapper>(uri, 1, 0, "OffsetRemapper");
+    qmlRegisterType<HexTileRemapper>(uri, 1, 0, "HexTileRemapper");
+    qmlRegisterType<HexTile>(uri, 1, 0, "HexTile");
 }
 
 void CelluloPlugin::initializeEngine(QQmlEngine *engine, const char *uri){

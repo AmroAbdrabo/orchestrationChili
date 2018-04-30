@@ -57,7 +57,9 @@ HEADERS += \
     src/util/system/CelluloSystemUtil.h \
     src/util/ui/CelluloUIUtil.h \
     src/tile/PoseRemapper.h \
-    src/tile/OffsetRemapper.h
+    src/tile/OffsetRemapper.h \
+    src/tile/HexTileRemapper.h \
+    src/tile/HexTile.h
 
 SOURCES += \
     src/CelluloPlugin.cpp \
@@ -97,7 +99,9 @@ SOURCES += \
     src/util/system/CelluloSystemUtil.cpp \
     src/util/ui/CelluloUIUtil.cpp \
     src/tile/PoseRemapper.cpp \
-    src/tile/OffsetRemapper.cpp
+    src/tile/OffsetRemapper.cpp \
+    src/tile/HexTileRemapper.cpp \
+    src/tile/HexTile.cpp
 
 INCLUDEPATH += \
     include/
