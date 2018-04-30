@@ -16,16 +16,33 @@
  */
 
 /**
- * @file PositionRemapper.cpp
- * @brief Source for position remapper base
+ * @file OffsetRemapper.cpp
+ * @brief Source for pose remapper base
  * @author Ayberk Özgür
  * @date 2018-04-27
  */
 
-#include "PositionRemapper.h"
+#include "OffsetRemapper.h"
+
+#include<QDebug>
 
 namespace Cellulo{
 
-PositionRemapper::PositionRemapper(QObject* parent) : QObject(parent){}
+OffsetRemapper::OffsetRemapper(QQuickItem* parent) : PoseRemapper(parent){
+    deltaX = 0;
+    deltaY = 0;
+    deltaTheta = 0;
+}
+
+OffsetRemapper::~OffsetRemapper(){}
+
+QVector3D OffsetRemapper::remapPose(QVector3D const& pose){
+    qreal newTheta = pose.z() + deltaTheta;
+    while(newTheta > 360.0)
+        newTheta -= 360.0;
+    while(newTheta < 0.0)
+        newTheta += 360.0;
+    return QVector3D(pose.x() + deltaX, pose.y() + deltaY, newTheta);
+}
 
 }

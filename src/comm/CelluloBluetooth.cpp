@@ -53,7 +53,7 @@ CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) : CelluloZoneClient(paren
 
     relayClient = NULL;
     relayServer = NULL;
-    positionRemapper = NULL;
+    poseRemapper = NULL;
 
     //TODO: CALL RESET PROPERTIES INSTEAD OF THE BELOW
 
@@ -428,10 +428,11 @@ void CelluloBluetooth::processResponse(CelluloBluetoothPacket& externalPacket){
                 y = externalPacket.unloadUInt32()*DOTS_GRID_SPACING/(float)GOAL_POSE_FACTOR_SHARED;
                 theta = externalPacket.unloadUInt16()/(float)GOAL_POSE_FACTOR_SHARED;
 
-                if(positionRemapper){
-                    QVector2D remapped = positionRemapper->remapPosition(QVector2D(x,y));
+                if(poseRemapper){
+                    QVector3D remapped = poseRemapper->remapPose(QVector3D(x,y,theta));
                     x = remapped.x();
                     y = remapped.y();
+                    theta = remapped.z();
                 }
 
                 emit poseChanged(x,y,theta);
@@ -449,10 +450,11 @@ void CelluloBluetooth::processResponse(CelluloBluetoothPacket& externalPacket){
                 y = externalPacket.unloadUInt32()*DOTS_GRID_SPACING/(float)GOAL_POSE_FACTOR_SHARED;
                 theta = externalPacket.unloadUInt16()/(float)GOAL_POSE_FACTOR_SHARED;
 
-                if(positionRemapper){
-                    QVector2D remapped = positionRemapper->remapPosition(QVector2D(x,y));
+                if(poseRemapper){
+                    QVector3D remapped = poseRemapper->remapPose(QVector3D(x,y,theta));
                     x = remapped.x();
                     y = remapped.y();
+                    theta = remapped.z();
                 }
 
                 unsigned int newTimestamp = externalPacket.unloadUInt32();

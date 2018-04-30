@@ -16,17 +16,17 @@
  */
 
 /**
- * @file PositionRemapper.h
- * @brief Header for position remapper base
+ * @file PoseRemapper.h
+ * @brief Header for pose remapper base
  * @author Ayberk Özgür
  * @date 2018-04-27
  */
 
-#ifndef POSITIONREMAPPER_H
-#define POSITIONREMAPPER_H
+#ifndef POSEREMAPPER_H
+#define POSEREMAPPER_H
 
-#include<QObject>
-#include<QVector2D>
+#include<QQuickItem>
+#include<QVector3D>
 
 namespace Cellulo{
 
@@ -36,11 +36,11 @@ namespace Cellulo{
  */
 
 /**
- * @brief Abstract object that should remap given positions to another positions based on some rule to be determined by the extending classes
+ * @brief Abstract object that should remap given poses to another poses based on some rule to be determined by the extending classes
  *
  * @abstract
  */
-class PositionRemapper : public QObject {
+class PoseRemapper : public QQuickItem {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
@@ -50,26 +50,26 @@ public:
     /** @cond DO_NOT_DOCUMENT */
 
     /**
-     * @brief Creates a new Cellulo zone
+     * @brief Creates a new pose remapper
      */
-    explicit PositionRemapper(QObject* parent = 0);
+    explicit PoseRemapper(QQuickItem* parent = 0);
 
     /**
-     * @brief Deletes this zone and its PaintedItem if it exists
+     * @brief Deletes this remapper
      */
-    ~PositionRemapper();
+    virtual ~PoseRemapper();
 
     /** @endcond */
 
 public slots:
 
     /**
-     * @brief Remaps the given position to another position based on some rule to be determined by the extending classes
+     * @brief Remaps the given pose to another pose based on some rule to be determined by the extending classes
      *
-     * @param  position Given position
-     * @return Remapped position
+     * @param  pose Given pose (x,y is in mm, z is orientation in degrees)
+     * @return Remapped pose (x,y is in mm, z is orientation in degrees)
      */
-    virtual QVector2D remapPosition(QVector2D const& position) = 0;
+    virtual QVector3D remapPose(QVector3D const& pose) = 0;
 
 };
 
@@ -77,6 +77,6 @@ public slots:
 
 }
 
-Q_DECLARE_METATYPE(Cellulo::PositionRemapper*)
+Q_DECLARE_METATYPE(Cellulo::PoseRemapper*)
 
-#endif // POSITIONREMAPPER_H
+#endif // POSEREMAPPER_H

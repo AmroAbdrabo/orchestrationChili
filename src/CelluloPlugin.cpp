@@ -58,7 +58,7 @@
 #include "util/lang/TranslationTool.h"
 #include "util/system/CelluloSystemUtil.h"
 #include "util/ui/CelluloUIUtil.h"
-#include "tile/PositionRemapper.h"
+#include "tile/OffsetRemapper.h"
 
 /**
  * @brief Scope for core Cellulo objects
@@ -171,6 +171,8 @@ void CelluloPlugin::registerTypes(const char *uri){
                                                     Q_UNUSED(jsEngine)
                                                     return new CelluloUIUtil();
                                                 });
+
+    qmlRegisterType<OffsetRemapper>(uri, 1, 0, "OffsetRemapper");
 }
 
 void CelluloPlugin::initializeEngine(QQmlEngine *engine, const char *uri){
