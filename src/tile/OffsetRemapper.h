@@ -45,13 +45,13 @@ class OffsetRemapper : public PoseRemapper {
     /* *INDENT-ON* */
 
     /** @brief X offset in mm */
-    Q_PROPERTY(qreal deltaX MEMBER deltaX)
+    Q_PROPERTY(float deltaX MEMBER deltaX)
 
     /** @brief Y offset in mm */
-    Q_PROPERTY(qreal deltaY MEMBER deltaY)
+    Q_PROPERTY(float deltaY MEMBER deltaY)
 
     /** @brief Theta offset in degrees */
-    Q_PROPERTY(qreal deltaTheta MEMBER deltaTheta)
+    Q_PROPERTY(float deltaTheta MEMBER deltaTheta)
 
 public:
 
@@ -81,9 +81,9 @@ public slots:
 
 private:
 
-    qreal deltaX;     ///< X offset in mm
-    qreal deltaY;     ///< Y offset in mm
-    qreal deltaTheta; ///< Theta offset in deg
+    float deltaX;     ///< X offset in mm
+    float deltaY;     ///< Y offset in mm
+    float deltaTheta; ///< Theta offset in deg
 
 };
 

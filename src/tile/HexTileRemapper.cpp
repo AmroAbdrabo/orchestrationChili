@@ -24,7 +24,10 @@
 
 #include "HexTileRemapper.h"
 
-#include<QDebug>
+#include "HexTile.h"
+
+#include <QDebug>
+
 
 namespace Cellulo{
 
@@ -35,11 +38,24 @@ HexTileRemapper::HexTileRemapper(QQuickItem* parent) : PoseRemapper(parent){
 HexTileRemapper::~HexTileRemapper(){}
 
 QVector3D HexTileRemapper::remapPose(QVector3D const& pose){
+    QVector2D position = pose.toVector2D();
 
 
+    //TODO: REPLACE LOOKUP WITH HASH<HASH<TILE>>
+    for(auto const& tileVariant : tiles){
+        HexTile* tile = tileVariant.value<HexTile*>();
+        if(tile){
+            if(tile->sourceContains(position)){
+                return tile->sourceCoordinates(position) + tile->hexOffset();
+            }
+        }
+        else
+            qCritical() << "HexTileRemapper::remapPose(): tiles can only contain HexTile type!";
+    }
 
-    //return QVector3D(pose.x() + deltaX, pose.y() + deltaY, newTheta);
-    return QVector3D();
+    qCritical() << "HexTileRemapper::remapPose(): Unknown tile!";
+
+    return QVector3D(0,0,0);
 }
 
 }

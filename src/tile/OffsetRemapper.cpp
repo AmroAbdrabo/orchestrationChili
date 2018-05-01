@@ -38,10 +38,10 @@ OffsetRemapper::~OffsetRemapper(){}
 
 QVector3D OffsetRemapper::remapPose(QVector3D const& pose){
     qreal newTheta = pose.z() + deltaTheta;
-    while(newTheta >= 360.0)
-        newTheta -= 360.0;
-    while(newTheta < 0.0)
-        newTheta += 360.0;
+    while(newTheta >= 360.0f)
+        newTheta -= 360.0f;
+    while(newTheta < 0.0f)
+        newTheta += 360.0f;
     return QVector3D(pose.x() + deltaX, pose.y() + deltaY, newTheta);
 }
 

@@ -26,14 +26,38 @@
 
 #include<QDebug>
 
+#include<cmath>
+
 namespace Cellulo{
 
 HexTile::HexTile(QQuickItem* parent) : QQuickItem(parent){
-
+    q = 0;
+    r = 0;
+    sourceLeft = 0;
+    sourceTop = 0;
+    sourceRight = 0;
+    sourceBottom = 0;
+    sourceCenterX = 0;
+    sourceCenterY = 0;
 }
 
 HexTile::~HexTile(){}
 
+bool HexTile::sourceContains(QVector2D const& point){
+    return
+        sourceLeft <= point.x() &&  point.x() <= sourceRight &&
+        sourceTop <= point.y() &&   point.y() <= sourceBottom;
+}
 
+QVector2D HexTile::hexOffset(float tileWidth){
+    return tileWidth*QVector2D(
+        (float)q + (float)r*0.5f,
+        (float)r*0.86602540378443864676f //sqrt(3)/2
+    );
+}
+
+QVector2D HexTile::sourceCoordinates(QVector2D const& point){
+    return point - QVector2D(sourceLeft + sourceCenterX, sourceTop + sourceCenterY);
+}
 
 }

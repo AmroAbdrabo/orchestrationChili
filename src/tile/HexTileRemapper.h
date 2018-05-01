@@ -28,6 +28,7 @@
 #include "PoseRemapper.h"
 
 #include <QVector3D>
+#include <QVariantList>
 
 namespace Cellulo {
 
@@ -43,6 +44,9 @@ class HexTileRemapper : public PoseRemapper {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
+
+
+    Q_PROPERTY(QVariantList tiles MEMBER tiles)
 
 public:
 
@@ -73,6 +77,9 @@ public slots:
 private:
 
 
+
+
+    QVariantList tiles;
 
 };
 
