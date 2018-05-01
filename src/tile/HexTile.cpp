@@ -45,8 +45,8 @@ HexTile::~HexTile(){}
 
 bool HexTile::sourceContains(QVector2D const& point){
     return
-        sourceLeft <= point.x() &&  point.x() <= sourceRight &&
-        sourceTop <= point.y() &&   point.y() <= sourceBottom;
+        sourceLeft < point.x() &&  point.x() <= sourceRight &&
+        sourceTop < point.y() &&   point.y() <= sourceBottom;
 }
 
 QVector2D HexTile::hexOffset(float tileWidth){

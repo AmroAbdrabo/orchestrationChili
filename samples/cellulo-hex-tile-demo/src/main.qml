@@ -18,11 +18,38 @@ ApplicationWindow {
 
         MacAddrSelector{
             addresses: [
-                "00:06:66:74:41:1e"
+                "00:06:66:74:40:DB"
             ]
             onConnectRequested: robotComm.macAddr = selectedAddress
             onDisconnectRequested: robotComm.disconnectFromServer()
             connectionStatus: robotComm.connectionStatus
+        }
+    }
+
+    HexTileRemapper{
+        id: hexMap
+
+        tiles: [tile1, tile2, tile3, tile4, tile5, tile6]
+
+        HexTile{ id: tile1
+            sourceLeft: 105.7; sourceRight: 210.0; sourceTop: 0.0; sourceBottom: 130.0; sourceCenterX: 50.0; sourceCenterY: 67.0;
+            q: 0; r: 0
+        }
+        HexTile{ id: tile2
+            sourceLeft: 210.0 + 0.0; sourceRight: 210.0 + 105.7; sourceTop: 0.0; sourceBottom: 130.0; sourceCenterX: 50.0; sourceCenterY: 67.0;
+            q: 1; r: 0
+        }
+        HexTile{ id: tile3
+            sourceLeft: 0.0; sourceRight: 105.7; sourceTop: 0.0; sourceBottom: 130.0; sourceCenterX: 50.0; sourceCenterY: 67.0;
+            q: -1; r: 0
+        }
+        HexTile{ id: tile4
+            sourceLeft: 105.7; sourceRight: 210.0; sourceTop: 130.0; sourceBottom: 260.0; sourceCenterX: 50.0; sourceCenterY: 67.0;
+            q: 0; r: 1
+        }
+        HexTile{ id: tile5
+            sourceLeft: 0.0; sourceRight: 105.7; sourceTop: 130.0; sourceBottom: 260.0; sourceCenterX: 50.0; sourceCenterY: 67.0;
+            q: 0; r: -1
         }
     }
 
@@ -32,13 +59,12 @@ ApplicationWindow {
         id: page
         anchors.top: addressBox.bottom
         anchors.left: parent.left
-        anchors.margins: robotHalf
+        anchors.margins: 50
 
-        property real scaleCoeff: Math.min((Screen.width*0.8)/210, (Screen.height*0.8 - addressBox.height)/297)
-        property real robotHalf: 60*scaleCoeff/2
+        property real scaleCoeff: Math.min((Screen.width*0.8)/300, (Screen.height*0.8 - addressBox.height)/300)
 
-        width: 210*scaleCoeff
-        height: 297*scaleCoeff
+        width: 300*scaleCoeff
+        height: 300*scaleCoeff
         color: "#EEEEEE"
         border.color: "black"
         border.width: 2
@@ -47,8 +73,8 @@ ApplicationWindow {
         Image{
             source: robotComm.kidnapped ? "../assets/redHexagon.svg" : "../assets/greenHexagon.svg"
             rotation: robotComm.theta
-            x: robotComm.x*parent.scaleCoeff - width/2
-            y: robotComm.y*parent.scaleCoeff - height/2
+            x: robotComm.x*parent.scaleCoeff - width/2 + 150*parent.scaleCoeff
+            y: robotComm.y*parent.scaleCoeff - height/2 + 150*parent.scaleCoeff
             sourceSize.width: 75*parent.scaleCoeff
             sourceSize.height: 80*parent.scaleCoeff
         }
@@ -56,12 +82,12 @@ ApplicationWindow {
 
     Item{ //Dummy item to provide margin for bottom
         anchors.top: page.bottom
-        anchors.margins: page.robotHalf
+        anchors.margins: 50
     }
 
     Item{ //Dummy item to provide margin for right
         anchors.left: page.right
-        anchors.margins: page.robotHalf
+        anchors.margins: 50
     }
 
     CelluloRobot{
@@ -70,51 +96,8 @@ ApplicationWindow {
             if(connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected)
                 setPoseBcastPeriod(0);
         }
+        poseRemapper: hexMap
 
-        onThetaChanged: console.info(theta)
-    }
-
-    OffsetRemapper{
-        id: offsetTheta
-        deltaTheta: 90
-    }
-    OffsetRemapper{
-        id: offsetX
-        deltaX: 10
-    }
-    OffsetRemapper{
-        id: offsetY
-        deltaY: 10
-    }
-
-    Button{
-        id: thetaButton
-        text: "Theta"
-        anchors.top: addressBox.bottom
-
-        onClicked: robotComm.poseRemapper = offsetTheta
-    }
-
-    Button{
-        id: xButton
-        text: "X"
-        anchors.left: thetaButton.right
-
-        onClicked: robotComm.poseRemapper = offsetX
-    }
-
-    Button{
-        id: yButton
-        text: "Y"
-        anchors.left: xButton.right
-
-        onClicked: robotComm.poseRemapper = offsetY
-    }
-    Button{
-        id: noneButton
-        text: "None"
-        anchors.left: yButton.right
-
-        onClicked: robotComm.poseRemapper = null
+        onPoseChanged: console.info(x+" "+y+" "+theta)
     }
 }

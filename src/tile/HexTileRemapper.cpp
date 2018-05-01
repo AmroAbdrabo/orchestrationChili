@@ -46,7 +46,9 @@ QVector3D HexTileRemapper::remapPose(QVector3D const& pose){
         HexTile* tile = tileVariant.value<HexTile*>();
         if(tile){
             if(tile->sourceContains(position)){
-                return tile->sourceCoordinates(position) + tile->hexOffset();
+                QVector3D result = (tile->sourceCoordinates(position) + tile->hexOffset()).toVector3D();
+                result.setZ(pose.z());
+                return result;
             }
         }
         else
