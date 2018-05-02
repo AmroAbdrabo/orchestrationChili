@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.2565225"
-     inkscape:cx="221.23263"
-     inkscape:cy="869.10994"
+     inkscape:zoom="1.4507467"
+     inkscape:cx="309.5515"
+     inkscape:cy="279.25071"
      inkscape:document-units="mm"
      inkscape:current-layer="layer2"
      showgrid="false"
@@ -105,5 +105,64 @@
        id="path914"
        d="m 147.03974,142.26497 8.66026,-5 8.66025,5 z"
        style="opacity:1;fill:#d2d2d2;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.99009997;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke fill markers" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888855px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Normal;letter-spacing:1.10595822px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="10.395509"
+       y="280.58606"
+       id="text823"><tspan
+         sodipodi:role="line"
+         id="tspan821"
+         x="10.395509"
+         y="280.58606"
+         style="font-size:3.52777767px;letter-spacing:0.26458332px;stroke-width:0.26458332">Sheet i,j=SHEET_I_J</tspan></text>
+    <text
+       id="text827"
+       y="28.420818"
+       x="2.7355771"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888855px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Normal;letter-spacing:1.10595822px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       xml:space="preserve"
+       transform="rotate(-30)"><tspan
+         style="font-size:3.52777767px;letter-spacing:0.26458332px;stroke-width:0.26458332"
+         y="28.420818"
+         x="2.7355771"
+         id="tspan825"
+         sodipodi:role="line">Tile x,y=0,0</tspan></text>
+    <text
+       transform="rotate(-30)"
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888855px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Normal;letter-spacing:1.10595822px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="90.550552"
+       y="79.120819"
+       id="text831"><tspan
+         sodipodi:role="line"
+         id="tspan829"
+         x="90.550552"
+         y="79.120819"
+         style="font-size:3.52777767px;letter-spacing:0.26458332px;stroke-width:0.26458332">Tile x,y=1,0</tspan></text>
+    <text
+       transform="rotate(-30)"
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888855px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Normal;letter-spacing:1.10595822px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="-62.264423"
+       y="141.00412"
+       id="text835"><tspan
+         sodipodi:role="line"
+         id="tspan833"
+         x="-62.264423"
+         y="141.00412"
+         style="font-size:3.52777767px;letter-spacing:0.26458332px;stroke-width:0.26458332">Tile x,y=0,1</tspan></text>
+    <text
+       id="text839"
+       y="191.70412"
+       x="25.550552"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888855px;line-height:0;font-family:sans-serif;-inkscape-font-specification:Normal;letter-spacing:1.10595822px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       xml:space="preserve"
+       transform="rotate(-30)"><tspan
+         style="font-size:3.52777767px;letter-spacing:0.26458332px;stroke-width:0.26458332"
+         y="191.70412"
+         x="25.550552"
+         id="tspan837"
+         sodipodi:role="line">Tile x,y=1,1</tspan></text>
   </g>
 </svg>
