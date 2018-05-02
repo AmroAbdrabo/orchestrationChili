@@ -39,6 +39,10 @@ HexTile::HexTile(QQuickItem* parent) : QQuickItem(parent){
     sourceBottom = 0;
     sourceCenterX = 0;
     sourceCenterY = 0;
+
+    standardCoords = NULL;
+
+    connect(this, SIGNAL(standardCoordsChanged()), this, SLOT(updateFromStandardCoords()));
 }
 
 HexTile::~HexTile(){}
@@ -58,6 +62,75 @@ QVector2D HexTile::hexOffset(float tileWidth){
 
 QVector2D HexTile::sourceCoordinates(QVector2D const& point){
     return point - QVector2D(sourceLeft + sourceCenterX, sourceTop + sourceCenterY);
+}
+
+void HexTile::setStandardCoords(Cellulo::HexTileStandardCoords* standardCoords){
+    if(standardCoords != this->standardCoords){
+        if(this->standardCoords)
+            this->standardCoords->disconnectHexTileChangedSignals(this);
+        this->standardCoords = standardCoords;
+        if(this->standardCoords)
+            this->standardCoords->connectHexTileChangedSignals(this);
+        emit standardCoordsChanged();
+    }
+}
+
+void HexTile::updateFromStandardCoords(){
+    if(standardCoords){
+        float sourceLeft = standardCoords->getI()*210.0f;
+        float sourceRight = sourceLeft;
+        float sourceTop = standardCoords->getJ()*260.0f;
+        float sourceBottom = sourceTop;
+        float sourceCenterX;
+        float sourceCenterY;
+
+        if(standardCoords->getU() == 0){
+            sourceLeft += 0.0f;
+            sourceRight += 105.7f;
+            sourceCenterX = 54.3f;
+        }
+        else{ // == 1
+            sourceLeft += 105.7f;
+            sourceRight += 210.0f;
+            sourceCenterX = 50.0f;
+        }
+
+        if(standardCoords->getV() == 0){
+            sourceTop += 0.0f;
+            sourceBottom += 130.0f;
+            sourceCenterY = 67.0f;
+        }
+        else{ // == 1
+            sourceTop += 130.0f;
+            sourceBottom += 260.0f;
+            sourceCenterY = 67.0f;
+        }
+
+        if(this->sourceLeft != sourceLeft){
+            this->sourceLeft = sourceLeft;
+            emit sourceLeftChanged();
+        }
+        if(this->sourceRight != sourceRight){
+            this->sourceRight = sourceRight;
+            emit sourceRightChanged();
+        }
+        if(this->sourceTop != sourceTop){
+            this->sourceTop = sourceTop;
+            emit sourceTopChanged();
+        }
+        if(this->sourceBottom != sourceBottom){
+            this->sourceBottom = sourceBottom;
+            emit sourceBottomChanged();
+        }
+        if(this->sourceCenterX != sourceCenterX){
+            this->sourceCenterX = sourceCenterX;
+            emit sourceCenterXChanged();
+        }
+        if(this->sourceCenterY != sourceCenterY){
+            this->sourceCenterY = sourceCenterY;
+            emit sourceCenterYChanged();
+        }
+    }
 }
 
 }

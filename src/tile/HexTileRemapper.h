@@ -76,6 +76,15 @@ public slots:
 
 private:
 
+    /**
+     * @brief Override; adds the added child to tiles if it is a HexTile
+     *
+     * @param change The change that occurred, must be ItemChildAddedChange
+     * @param value Points to the added child when change is ItemChildAddedChange
+     */
+    void itemChange(ItemChange change, const ItemChangeData& value) override;
+
+
 
 
 

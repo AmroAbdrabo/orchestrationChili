@@ -29,31 +29,36 @@ ApplicationWindow {
     HexTileRemapper{
         id: hexMap
 
-        tiles: [tile1, tile2, tile3, tile4, tile5, tile6]
-
-        HexTile{ id: tile1
-            sourceLeft: 105.7; sourceRight: 210.0; sourceTop: 0.0; sourceBottom: 130.0; sourceCenterX: 50.0; sourceCenterY: 67.0;
+        HexTile{
+            standardCoords: HexTileStandardCoords{ i:0; j:0; u:0; v:0 }
             q: 0; r: 0
         }
-        HexTile{ id: tile2
-            sourceLeft: 210.0 + 0.0; sourceRight: 210.0 + 105.7; sourceTop: 0.0; sourceBottom: 130.0; sourceCenterX: 50.0; sourceCenterY: 67.0;
+        HexTile{
+            standardCoords: HexTileStandardCoords{ i:0; j:0; u:1; v:0 }
             q: 1; r: 0
         }
-        HexTile{ id: tile3
-            sourceLeft: 0.0; sourceRight: 105.7; sourceTop: 0.0; sourceBottom: 130.0; sourceCenterX: 50.0; sourceCenterY: 67.0;
-            q: -1; r: 0
+        HexTile{
+            standardCoords: HexTileStandardCoords{ i:0; j:0; u:0; v:1 }
+            q: 1; r: -1
         }
-        HexTile{ id: tile4
-            sourceLeft: 105.7; sourceRight: 210.0; sourceTop: 130.0; sourceBottom: 260.0; sourceCenterX: 50.0; sourceCenterY: 67.0;
-            q: 0; r: 1
+        HexTile{
+            id: extile
+            standardCoords: HexTileStandardCoords{ id: oldcoords; i:0; j:0; u:1; v:1 }
+
+            q: 1; r: 1
         }
-        HexTile{ id: tile5
-            sourceLeft: 0.0; sourceRight: 105.7; sourceTop: 130.0; sourceBottom: 260.0; sourceCenterX: 50.0; sourceCenterY: 67.0;
-            q: 0; r: -1
-        }
+
     }
 
+    Text{ anchors.top: page.bottom; text: extile.sourceLeft + " " + extile.sourceRight + " " + extile.sourceTop + " " + extile.sourceBottom + " " + extile.sourceCenterX + " " + extile.sourceCenterY }
 
+    Button{ id: asdasd; text: "asdasd"; onClicked: extile.standardCoords = newcoords }
+
+    Button{ anchors.left: asdasd.right; text: "asdas2"; onClicked: oldcoords.i = 3 }
+
+    HexTileStandardCoords{
+        id: newcoords
+    }
 
     Rectangle{
         id: page

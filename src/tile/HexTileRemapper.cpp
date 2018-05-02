@@ -37,6 +37,50 @@ HexTileRemapper::HexTileRemapper(QQuickItem* parent) : PoseRemapper(parent){
 
 HexTileRemapper::~HexTileRemapper(){}
 
+void HexTileRemapper::itemChange(ItemChange change, const ItemChangeData& value){
+    if(change == ItemChange::ItemChildAddedChange){
+        HexTile* newTile = qobject_cast<HexTile*>(value.item);
+        if(newTile){
+
+
+
+
+
+
+
+            if(!tiles.contains(QVariant::fromValue(newTile)))
+                tiles.append(QVariant::fromValue(newTile));
+
+
+
+
+
+
+
+
+
+
+
+            //addNewZone(newTile);
+            qDebug() << "HexTileRemapper::itemChange(): Child tile " << /*newTile->getName()*/ "" << " automatically added.";
+        }
+    }
+
+    QQuickItem::itemChange(change, value);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 QVector3D HexTileRemapper::remapPose(QVector3D const& pose){
     QVector2D position = pose.toVector2D();
 

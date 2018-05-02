@@ -27,7 +27,11 @@
 
 #include <QQuickItem>
 
+#include "HexTileStandardCoords.h"
+
 namespace Cellulo {
+
+class HexTileStandardCoords;
 
 /**
  * @addtogroup tile
@@ -51,25 +55,28 @@ class HexTile : public QQuickItem {
     Q_PROPERTY(int r MEMBER r)
 
     /** @brief Starting X coordinate of the rectangular source space (mm) */
-    Q_PROPERTY(float sourceLeft MEMBER sourceLeft)
+    Q_PROPERTY(float sourceLeft MEMBER sourceLeft NOTIFY sourceLeftChanged)
 
     /** @brief Starting Y coordinate of the rectangular source space (mm) */
-    Q_PROPERTY(float sourceTop MEMBER sourceTop)
+    Q_PROPERTY(float sourceTop MEMBER sourceTop NOTIFY sourceTopChanged)
 
     /** @brief Ending X coordinate of the rectangular source space (mm) */
-    Q_PROPERTY(float sourceRight MEMBER sourceRight)
+    Q_PROPERTY(float sourceRight MEMBER sourceRight NOTIFY sourceRightChanged)
 
     /** @brief Ending Y coordinate of the rectangular source space (mm) */
-    Q_PROPERTY(float sourceBottom MEMBER sourceBottom)
+    Q_PROPERTY(float sourceBottom MEMBER sourceBottom NOTIFY sourceBottomChanged)
 
     /** @brief X coordinate of the center of the hex tile in the source space, with respect to the top/left of the source space (mm) */
-    Q_PROPERTY(float sourceCenterX MEMBER sourceCenterX)
+    Q_PROPERTY(float sourceCenterX MEMBER sourceCenterX NOTIFY sourceCenterXChanged)
 
     /** @brief Y coordinate of the center of the hex tile in the source space, with respect to the top/left of the source space (mm) */
-    Q_PROPERTY(float sourceCenterY MEMBER sourceCenterY)
+    Q_PROPERTY(float sourceCenterY MEMBER sourceCenterY NOTIFY sourceCenterYChanged)
 
     /** @brief Default read-only tile width (mm) */
     Q_PROPERTY(float tileWidthDefault CONSTANT MEMBER HEX_TILE_WIDTH_DEFAULT)
+
+    /** @brief Standard coordinate description, null by default; if used, autosets the source* properties so they must not be manually modified */
+    Q_PROPERTY(Cellulo::HexTileStandardCoords* standardCoords WRITE setStandardCoords READ getStandardCoords NOTIFY standardCoordsChanged)
 
 public:
 
@@ -88,6 +95,57 @@ public:
     /** @endcond */
 
     static constexpr float HEX_TILE_WIDTH_DEFAULT = 99.0f; ///< Default physical width of the hex tile in mm (height would be 2*width/sqrt(3))
+
+    /**
+     * @brief Sets the new standard hex tile coordinate description
+     *
+     * @param standardCoords New standard hex tile coordinate description
+     */
+    void setStandardCoords(Cellulo::HexTileStandardCoords* standardCoords);
+
+    /**
+     * @brief Gets the standard hex tile coordinate description
+     *
+     * @return The current standard hex tile coordinate description
+     */
+    Cellulo::HexTileStandardCoords* getStandardCoords(){ return standardCoords; }
+
+signals:
+
+    /**
+     * @brief Emitted when the standard hex tile coordinate definition changes
+     */
+    void standardCoordsChanged();
+
+    /**
+     * @brief Emitted when sourceLeft changes
+     */
+    void sourceLeftChanged();
+
+    /**
+     * @brief Emitted when sourceRight changes
+     */
+    void sourceRightChanged();
+
+    /**
+     * @brief Emitted when sourceTop changes
+     */
+    void sourceTopChanged();
+
+    /**
+     * @brief Emitted when sourceBottom changes
+     */
+    void sourceBottomChanged();
+
+    /**
+     * @brief Emitted when sourceCenterX changes
+     */
+    void sourceCenterXChanged();
+
+    /**
+     * @brief Emitted when sourceCenterY changes
+     */
+    void sourceCenterYChanged();
 
 public slots:
 
@@ -117,16 +175,24 @@ public slots:
      */
     QVector2D hexOffset(float tileWidth = HEX_TILE_WIDTH_DEFAULT);
 
+private slots:
+
+    /**
+     * @brief Sets the appropriate source coordinates according to the standard coordinate description
+     */
+    void updateFromStandardCoords();
+
 private:
 
-    int q;               ///< Q index (horizontal) in axial hex tile coordinates
-    int r;               ///< R index (vertical, 120 degrees to the Q axis) in axial hex tile coordinates
-    float sourceLeft;    ///< Starting X coordinate of the rectangular source space (mm)
-    float sourceTop;     ///< Starting Y coordinate of the rectangular source space (mm)
-    float sourceRight;   ///< Ending X coordinate of the rectangular source space (mm)
-    float sourceBottom;  ///< Ending Y coordinate of the rectangular source space (mm)
-    float sourceCenterX; ///< X coordinate of the center of the hex tile in the source space, with respect to the top/left of the source space (mm)
-    float sourceCenterY; ///< Y coordinate of the center of the hex tile in the source space, with respect to the top/left of the source space (mm)
+    int q;                                          ///< Q index (horizontal) in axial hex tile coordinates
+    int r;                                          ///< R index (vertical, 120 degrees to the Q axis) in axial hex tile coordinates
+    float sourceLeft;                               ///< Starting X coordinate of the rectangular source space (mm)
+    float sourceTop;                                ///< Starting Y coordinate of the rectangular source space (mm)
+    float sourceRight;                              ///< Ending X coordinate of the rectangular source space (mm)
+    float sourceBottom;                             ///< Ending Y coordinate of the rectangular source space (mm)
+    float sourceCenterX;                            ///< X coordinate of the center of the hex tile in the source space, with respect to the top/left of the source space (mm)
+    float sourceCenterY;                            ///< Y coordinate of the center of the hex tile in the source space, with respect to the top/left of the source space (mm)
+    Cellulo::HexTileStandardCoords* standardCoords; ///< Standard hex tile coordinate description if available
 
 };
 
