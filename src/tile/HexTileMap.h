@@ -16,14 +16,14 @@
  */
 
 /**
- * @file HexTileRemapper.h
- * @brief Header for a hexagonal multi-tile remapper
+ * @file HexTileMap.h
+ * @brief Header for a hexagonal multi-tile map
  * @author Ayberk Özgür
  * @date 2018-04-27
  */
 
-#ifndef HEXTILEREMAPPER_H
-#define HEXTILEREMAPPER_H
+#ifndef HEXTILEMAP_H
+#define HEXTILEMAP_H
 
 #include "PoseRemapper.h"
 
@@ -38,9 +38,9 @@ namespace Cellulo {
  */
 
 /**
- * @brief Offsets the pose of the robot such that the source
+ * @brief Map built from hex tiles
  */
-class HexTileRemapper : public PoseRemapper {
+class HexTileMap : public PoseRemapper {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
@@ -53,14 +53,14 @@ public:
     /** @cond DO_NOT_DOCUMENT */
 
     /**
-     * @brief Creates a new hex tile remaper
+     * @brief Creates a new hex tile map
      */
-    explicit HexTileRemapper(QQuickItem* parent = 0);
+    explicit HexTileMap(QQuickItem* parent = 0);
 
     /**
-     * @brief Deletes this hex tile remapper
+     * @brief Deletes this hex tile map
      */
-    virtual ~HexTileRemapper();
+    virtual ~HexTileMap();
 
     /** @endcond */
 
@@ -96,4 +96,4 @@ private:
 
 }
 
-#endif // HEXTILEREMAPPER_H
+#endif // HEXTILEMAP_H

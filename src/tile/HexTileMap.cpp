@@ -16,13 +16,13 @@
  */
 
 /**
- * @file HexTileRemapper.cpp
- * @brief Source for a hexagonal multi-tile remapper
+ * @file HexTileMap.cpp
+ * @brief Source for a hexagonal multi-tile map
  * @author Ayberk Özgür
  * @date 2018-04-27
  */
 
-#include "HexTileRemapper.h"
+#include "HexTileMap.h"
 
 #include "HexTile.h"
 
@@ -31,13 +31,13 @@
 
 namespace Cellulo{
 
-HexTileRemapper::HexTileRemapper(QQuickItem* parent) : PoseRemapper(parent){
+HexTileMap::HexTileMap(QQuickItem* parent) : PoseRemapper(parent){
 
 }
 
-HexTileRemapper::~HexTileRemapper(){}
+HexTileMap::~HexTileMap(){}
 
-void HexTileRemapper::itemChange(ItemChange change, const ItemChangeData& value){
+void HexTileMap::itemChange(ItemChange change, const ItemChangeData& value){
     if(change == ItemChange::ItemChildAddedChange){
         HexTile* newTile = qobject_cast<HexTile*>(value.item);
         if(newTile){
@@ -62,7 +62,7 @@ void HexTileRemapper::itemChange(ItemChange change, const ItemChangeData& value)
 
 
             //addNewZone(newTile);
-            qDebug() << "HexTileRemapper::itemChange(): Child tile " << /*newTile->getName()*/ "" << " automatically added.";
+            qDebug() << "HexTileMap::itemChange(): Child tile " << /*newTile->getName()*/ "" << " automatically added.";
         }
     }
 
@@ -81,7 +81,7 @@ void HexTileRemapper::itemChange(ItemChange change, const ItemChangeData& value)
 
 
 
-QVector3D HexTileRemapper::remapPose(QVector3D const& pose){
+QVector3D HexTileMap::remapPose(QVector3D const& pose){
     QVector2D position = pose.toVector2D();
 
 
@@ -96,10 +96,10 @@ QVector3D HexTileRemapper::remapPose(QVector3D const& pose){
             }
         }
         else
-            qCritical() << "HexTileRemapper::remapPose(): tiles can only contain HexTile type!";
+            qCritical() << "HexTileMap::remapPose(): tiles can only contain HexTile type!";
     }
 
-    qCritical() << "HexTileRemapper::remapPose(): Unknown tile!";
+    qCritical() << "HexTileMap::remapPose(): Unknown tile!";
 
     return QVector3D(0,0,0);
 }

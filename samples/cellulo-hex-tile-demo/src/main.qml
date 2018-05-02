@@ -26,7 +26,7 @@ ApplicationWindow {
         }
     }
 
-    HexTileRemapper{
+    HexTileMap{
         id: hexMap
 
         HexTile{

@@ -58,7 +58,7 @@ HEADERS += \
     src/util/ui/CelluloUIUtil.h \
     src/tile/PoseRemapper.h \
     src/tile/OffsetRemapper.h \
-    src/tile/HexTileRemapper.h \
+    src/tile/HexTileMap.h \
     src/tile/HexTile.h \
     src/tile/HexTileStandardCoords.h
 
@@ -101,7 +101,7 @@ SOURCES += \
     src/util/ui/CelluloUIUtil.cpp \
     src/tile/PoseRemapper.cpp \
     src/tile/OffsetRemapper.cpp \
-    src/tile/HexTileRemapper.cpp \
+    src/tile/HexTileMap.cpp \
     src/tile/HexTile.cpp \
     src/tile/HexTileStandardCoords.cpp
 
