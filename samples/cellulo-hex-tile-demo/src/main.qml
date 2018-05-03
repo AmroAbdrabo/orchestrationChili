@@ -75,6 +75,17 @@ ApplicationWindow {
         border.width: 2
         radius: 5
 
+        HexTile{
+            standardCoords: HexTileStandardCoords{ i:0; j:0; u:0; v:1 }
+            q: 1; r: -1
+            width: 50
+            height: width*2/Math.sqrt(3)
+            x: parent.width/2
+            y: parent.height/2
+            rotation: 40
+            visible: true
+        }
+
         Image{
             source: robotComm.kidnapped ? "../assets/redHexagon.svg" : "../assets/greenHexagon.svg"
             rotation: robotComm.theta
@@ -82,6 +93,7 @@ ApplicationWindow {
             y: robotComm.y*parent.scaleCoeff - height/2 + 150*parent.scaleCoeff
             sourceSize.width: 75*parent.scaleCoeff
             sourceSize.height: 80*parent.scaleCoeff
+            visible: false
         }
     }
 

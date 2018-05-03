@@ -184,6 +184,15 @@ private slots:
 
 private:
 
+    /**
+     * @brief Implementation of the rendering routine for this hex tile
+     *
+     * @param  oldNode             [description]
+     * @param  updatePaintNodeData [description]
+     * @return                     [description]
+     */
+    QSGNode* updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* updatePaintNodeData) override;
+
     int q;                                          ///< Q index (horizontal) in axial hex tile coordinates
     int r;                                          ///< R index (vertical, 120 degrees to the Q axis) in axial hex tile coordinates
     float sourceLeft;                               ///< Starting X coordinate of the rectangular source space (mm)

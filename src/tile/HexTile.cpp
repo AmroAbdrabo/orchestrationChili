@@ -25,6 +25,9 @@
 #include "HexTile.h"
 
 #include<QDebug>
+#include<QSGGeometry>
+#include<QSGGeometryNode>
+#include<QSGFlatColorMaterial>
 
 #include<cmath>
 
@@ -33,6 +36,7 @@ namespace Cellulo{
 HexTile::HexTile(QQuickItem* parent) : QQuickItem(parent){
     q = 0;
     r = 0;
+
     sourceLeft = 0;
     sourceTop = 0;
     sourceRight = 0;
@@ -43,6 +47,8 @@ HexTile::HexTile(QQuickItem* parent) : QQuickItem(parent){
     standardCoords = NULL;
 
     connect(this, SIGNAL(standardCoordsChanged()), this, SLOT(updateFromStandardCoords()));
+
+    setFlag(QQuickItem::ItemHasContents, true);
 }
 
 HexTile::~HexTile(){}
@@ -131,6 +137,50 @@ void HexTile::updateFromStandardCoords(){
             emit sourceCenterYChanged();
         }
     }
+}
+
+QSGNode* HexTile::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* updatePaintNodeData){
+    QSGGeometryNode* node = NULL;
+    QSGGeometry* geometry = NULL;
+
+    //First render
+    if(!oldNode){
+        node = new QSGGeometryNode();
+
+        geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), 6);
+        geometry->setLineWidth(2);
+        geometry->setDrawingMode(QSGGeometry::DrawLineLoop);
+
+        node->setGeometry(geometry);
+        node->setFlag(QSGNode::OwnsGeometry);
+
+        QSGFlatColorMaterial* material = new QSGFlatColorMaterial();
+        material->setColor(QColor(255, 0, 0));
+        node->setMaterial(material);
+        node->setFlag(QSGNode::OwnsMaterial);
+    }
+
+    //Not the first render
+    else{
+        node = static_cast<QSGGeometryNode*>(oldNode);
+
+        geometry = node->geometry();
+        geometry->allocate(6);
+    }
+
+    //Rendering
+    qreal w = width();
+    qreal h = height();
+    QSGGeometry::Point2D* vertices = geometry->vertexDataAsPoint2D();
+    vertices[0].set(0.5*w,  0);
+    vertices[1].set(w,      0.25*h);
+    vertices[2].set(w,      0.75*h);
+    vertices[3].set(0.5*w,  h);
+    vertices[4].set(0,      0.75*h);
+    vertices[5].set(0,      0.25*h);
+
+    node->markDirty(QSGNode::DirtyGeometry);
+    return node;
 }
 
 }
