@@ -24,6 +24,12 @@ ApplicationWindow {
             onDisconnectRequested: robotComm.disconnectFromServer()
             connectionStatus: robotComm.connectionStatus
         }
+
+        Slider{
+            id: slider
+            width: 100
+            value: 0.5
+        }
     }
 
     HexTileMap{
@@ -76,14 +82,28 @@ ApplicationWindow {
         radius: 5
 
         HexTile{
-            standardCoords: HexTileStandardCoords{ i:0; j:0; u:0; v:1 }
-            q: 1; r: -1
-            width: 50
+            id: til
+            width: 200
             height: width*2/Math.sqrt(3)
-            x: parent.width/2
-            y: parent.height/2
-            rotation: 40
+            x: parent.width/2 - width/2
+            y: parent.height/2 - height/2
+            rotation: 0
             visible: true
+            fillColor: "red"
+            borderColor: "cyan"
+            borderSize: 0.1
+        }
+
+        HexTile{
+            width: 200
+            height: width*2/Math.sqrt(3)
+            anchors.left: til.right
+            anchors.top: til.top
+            rotation: 0
+            visible: true
+            fillColor: "red"
+            borderColor: "cyan"
+            borderSize: 0.05
         }
 
         Image{

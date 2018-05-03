@@ -25,6 +25,7 @@
 #include "HexTile.h"
 
 #include<QDebug>
+#include<QColor>
 #include<QSGGeometry>
 #include<QSGGeometryNode>
 #include<QSGFlatColorMaterial>
@@ -49,6 +50,12 @@ HexTile::HexTile(QQuickItem* parent) : QQuickItem(parent){
     connect(this, SIGNAL(standardCoordsChanged()), this, SLOT(updateFromStandardCoords()));
 
     setFlag(QQuickItem::ItemHasContents, true);
+    fillColor = QColor(250, 250, 250);
+    borderColor = QColor(50, 50, 50);
+    borderSize = 0.05;
+    connect(this, SIGNAL(fillColorChanged()), this, SLOT(update()));
+    connect(this, SIGNAL(borderColorChanged()), this, SLOT(update()));
+    connect(this, SIGNAL(borderSizeChanged()), this, SLOT(update()));
 }
 
 HexTile::~HexTile(){}
@@ -139,48 +146,97 @@ void HexTile::updateFromStandardCoords(){
     }
 }
 
-QSGNode* HexTile::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* updatePaintNodeData){
-    QSGGeometryNode* node = NULL;
-    QSGGeometry* geometry = NULL;
+QSGNode* HexTile::updatePaintNode(QSGNode* oldRoot, UpdatePaintNodeData* updatePaintNodeData){
+    Q_UNUSED(updatePaintNodeData);
+
+    qreal w = width();
+    qreal h = height();
+
+    QSGNode* root = NULL;
+    QSGGeometryNode* hexFill = NULL;
+    QSGGeometry* hexFillGeo = NULL;
+    QSGGeometryNode* hexBorder = NULL;
+    QSGGeometry* hexBorderGeo = NULL;
+    qreal borderWidth = w*borderSize;
 
     //First render
-    if(!oldNode){
-        node = new QSGGeometryNode();
+    if(!oldRoot){
+        root = new QSGNode();
+        hexFill = new QSGGeometryNode();
+        hexBorder = new QSGGeometryNode();
+        root->appendChildNode(hexFill);
+        root->appendChildNode(hexBorder);
 
-        geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), 6);
-        geometry->setLineWidth(2);
-        geometry->setDrawingMode(QSGGeometry::DrawLineLoop);
+        //Hex
+        hexFillGeo = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), 6);
+        hexFillGeo->setLineWidth(0);
+        hexFillGeo->setDrawingMode(QSGGeometry::DrawTriangleFan);
+        hexFill->setGeometry(hexFillGeo);
+        hexFill->setFlag(QSGNode::OwnsGeometry);
+        QSGFlatColorMaterial* hexFillMat = new QSGFlatColorMaterial();
+        hexFillMat->setColor(fillColor);
+        hexFill->setMaterial(hexFillMat);
+        hexFill->setFlag(QSGNode::OwnsMaterial);
 
-        node->setGeometry(geometry);
-        node->setFlag(QSGNode::OwnsGeometry);
-
-        QSGFlatColorMaterial* material = new QSGFlatColorMaterial();
-        material->setColor(QColor(255, 0, 0));
-        node->setMaterial(material);
-        node->setFlag(QSGNode::OwnsMaterial);
+        //Border
+        hexBorderGeo = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), 14);
+        hexBorderGeo->setLineWidth(0);
+        hexBorderGeo->setDrawingMode(QSGGeometry::DrawTriangleStrip);
+        hexBorder->setGeometry(hexBorderGeo);
+        hexBorder->setFlag(QSGNode::OwnsGeometry);
+        QSGFlatColorMaterial* hexBorderMat = new QSGFlatColorMaterial();
+        hexBorderMat->setColor(borderColor);
+        hexBorder->setMaterial(hexBorderMat);
+        hexBorder->setFlag(QSGNode::OwnsMaterial);
     }
 
     //Not the first render
     else{
-        node = static_cast<QSGGeometryNode*>(oldNode);
+        root = oldRoot;
+        hexFill = static_cast<QSGGeometryNode*>(root->childAtIndex(0));
+        hexBorder = static_cast<QSGGeometryNode*>(root->childAtIndex(1));
 
-        geometry = node->geometry();
-        geometry->allocate(6);
+        //Hex polygon in the background
+        hexFillGeo = hexFill->geometry();
+        hexFillGeo->allocate(6);
+        QSGFlatColorMaterial* hexFillMat = static_cast<QSGFlatColorMaterial*>(hexFill->material());
+        hexFillMat->setColor(fillColor);
+
+        //Hex border
+        hexBorderGeo = hexBorder->geometry();
+        hexBorderGeo->allocate(14);
+        QSGFlatColorMaterial* hexBorderMat = static_cast<QSGFlatColorMaterial*>(hexBorder->material());
+        hexBorderMat->setColor(borderColor);
     }
 
-    //Rendering
-    qreal w = width();
-    qreal h = height();
-    QSGGeometry::Point2D* vertices = geometry->vertexDataAsPoint2D();
-    vertices[0].set(0.5*w,  0);
-    vertices[1].set(w,      0.25*h);
-    vertices[2].set(w,      0.75*h);
-    vertices[3].set(0.5*w,  h);
-    vertices[4].set(0,      0.75*h);
-    vertices[5].set(0,      0.25*h);
+    //Hex fill (6 vertices are still enough with triangle fan...)
+    QSGGeometry::Point2D* vertices = hexFillGeo->vertexDataAsPoint2D();
+    vertices[0].set(0.5*w,              1.15470053837925152902*borderWidth);
+    vertices[1].set(w - borderWidth,    0.25*h + 0.57735026918962576451*borderWidth);
+    vertices[2].set(w - borderWidth,    0.75*h - 0.57735026918962576451*borderWidth);
+    vertices[3].set(0.5*w,              h - 1.15470053837925152902*borderWidth);
+    vertices[4].set(borderWidth,        0.75*h - 0.57735026918962576451*borderWidth);
+    vertices[5].set(borderWidth,        0.25*h + 0.57735026918962576451*borderWidth);
 
-    node->markDirty(QSGNode::DirtyGeometry);
-    return node;
+    //Hex border
+    vertices = hexBorderGeo->vertexDataAsPoint2D();
+    vertices[0].set(0.5*w,              0);
+    vertices[1].set(0.5*w,              1.15470053837925152902*borderWidth);
+    vertices[2].set(w,                  0.25*h);
+    vertices[3].set(w - borderWidth,    0.25*h + 0.57735026918962576451*borderWidth);
+    vertices[4].set(w,                  0.75*h);
+    vertices[5].set(w - borderWidth,    0.75*h - 0.57735026918962576451*borderWidth);
+    vertices[6].set(0.5*w,  h);
+    vertices[7].set(0.5*w,              h - 1.15470053837925152902*borderWidth);
+    vertices[8].set(0,      0.75*h);
+    vertices[9].set(borderWidth,        0.75*h - 0.57735026918962576451*borderWidth);
+    vertices[10].set(0,      0.25*h);
+    vertices[11].set(borderWidth,       0.25*h + 0.57735026918962576451*borderWidth);
+    vertices[12].set(0.5*w,             0);
+    vertices[13].set(0.5*w,             1.15470053837925152902*borderWidth);
+
+    root->markDirty(QSGNode::DirtyGeometry);
+    return root;
 }
 
 }

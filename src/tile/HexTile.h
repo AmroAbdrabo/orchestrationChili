@@ -49,10 +49,10 @@ class HexTile : public QQuickItem {
         /* *INDENT-ON* */
 
     /** @brief Target Q index (horizontal) in axial discrete hex tile coordinates */
-    Q_PROPERTY(int q MEMBER q)
+    Q_PROPERTY(int q MEMBER q NOTIFY qChanged)
 
     /** @brief Target R index (vertical, 120 degrees to the Q axis) in axial discrete hex tile coordinates */
-    Q_PROPERTY(int r MEMBER r)
+    Q_PROPERTY(int r MEMBER r NOTIFY rChanged)
 
     /** @brief Starting X coordinate of the rectangular source space (mm) */
     Q_PROPERTY(float sourceLeft MEMBER sourceLeft NOTIFY sourceLeftChanged)
@@ -72,11 +72,22 @@ class HexTile : public QQuickItem {
     /** @brief Y coordinate of the center of the hex tile in the source space, with respect to the top/left of the source space (mm) */
     Q_PROPERTY(float sourceCenterY MEMBER sourceCenterY NOTIFY sourceCenterYChanged)
 
-    /** @brief Default read-only tile width (mm) */
-    Q_PROPERTY(float tileWidthDefault CONSTANT MEMBER HEX_TILE_WIDTH_DEFAULT)
-
     /** @brief Standard coordinate description, null by default; if used, autosets the source* properties so they must not be manually modified */
     Q_PROPERTY(Cellulo::HexTileStandardCoords* standardCoords WRITE setStandardCoords READ getStandardCoords NOTIFY standardCoordsChanged)
+
+    /** @brief The fill color of the rendering of this tile, white by default */
+    Q_PROPERTY(QColor fillColor MEMBER fillColor NOTIFY fillColorChanged)
+
+    /** @brief The border color of the rendering of this tile, black by default */
+    Q_PROPERTY(QColor borderColor MEMBER borderColor NOTIFY borderColorChanged)
+
+    /** @brief Size of the border with respect to the width, between 0.0 and 1.0, by default 0.05 */
+    Q_PROPERTY(qreal borderSize MEMBER borderSize NOTIFY borderSizeChanged)
+
+
+
+    /** @brief Default read-only tile width (mm) */
+    Q_PROPERTY(float tileWidthDefault CONSTANT MEMBER HEX_TILE_WIDTH_DEFAULT)
 
 public:
 
@@ -113,6 +124,16 @@ public:
 signals:
 
     /**
+     * @brief Emitted when q changes
+     */
+    void qChanged();
+
+    /**
+     * @brief Emitted when r changes
+     */
+    void rChanged();
+
+    /**
      * @brief Emitted when the standard hex tile coordinate definition changes
      */
     void standardCoordsChanged();
@@ -146,6 +167,21 @@ signals:
      * @brief Emitted when sourceCenterY changes
      */
     void sourceCenterYChanged();
+
+    /**
+     * @brief Emitted when the fill color changes
+     */
+    void fillColorChanged();
+
+    /**
+     * @brief Emitted when the border color changes
+     */
+    void borderColorChanged();
+
+    /**
+     * @brief Emitted when the border size changes
+     */
+    void borderSizeChanged();
 
 public slots:
 
@@ -203,6 +239,9 @@ private:
     float sourceCenterY;                            ///< Y coordinate of the center of the hex tile in the source space, with respect to the top/left of the source space (mm)
     Cellulo::HexTileStandardCoords* standardCoords; ///< Standard hex tile coordinate description if available
 
+    QColor fillColor;                               ///< Fill color of the rendering of this tile
+    QColor borderColor;                             ///< Border color of the rendering of this tile
+    qreal borderSize;                               ///< Border size of the rendering with respect to the width
 };
 
 /** @} */
