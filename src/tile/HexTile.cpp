@@ -32,11 +32,20 @@
 
 #include<cmath>
 
+#include"HexTileMap.h"
+
 namespace Cellulo{
 
 HexTile::HexTile(QQuickItem* parent) : QQuickItem(parent){
+    physicalWidth = PHYSICAL_WIDTH_DEFAULT;
+    connect(this, SIGNAL(physicalWidthChanged()), this, SIGNAL(physicalHeightChanged()));
+
     q = 0;
     r = 0;
+
+    connect(this, SIGNAL(tileWidthChanged()),   this, SLOT(recalculateScreenCoords()));
+    connect(this, SIGNAL(qChanged()),           this, SLOT(recalculateScreenCoords()));
+    connect(this, SIGNAL(rChanged()),           this, SLOT(recalculateScreenCoords()));
 
     sourceLeft = 0;
     sourceTop = 0;
@@ -53,12 +62,16 @@ HexTile::HexTile(QQuickItem* parent) : QQuickItem(parent){
     fillColor = QColor(250, 250, 250);
     borderColor = QColor(50, 50, 50);
     borderSize = 0.05;
-    connect(this, SIGNAL(fillColorChanged()), this, SLOT(update()));
+    connect(this, SIGNAL(fillColorChanged()),   this, SLOT(update()));
     connect(this, SIGNAL(borderColorChanged()), this, SLOT(update()));
-    connect(this, SIGNAL(borderSizeChanged()), this, SLOT(update()));
+    connect(this, SIGNAL(borderSizeChanged()),  this, SLOT(update()));
 }
 
 HexTile::~HexTile(){}
+
+float HexTile::getPhysicalHeight() const {
+    return physicalWidth*1.15470053837925152902f; // 2/sqrt(3)
+}
 
 bool HexTile::sourceContains(QVector2D const& point){
     return
@@ -66,8 +79,8 @@ bool HexTile::sourceContains(QVector2D const& point){
         sourceTop < point.y() &&   point.y() <= sourceBottom;
 }
 
-QVector2D HexTile::hexOffset(float tileWidth){
-    return tileWidth*QVector2D(
+QVector2D HexTile::hexOffset(){
+    return physicalWidth*QVector2D(
         (float)q + (float)r*0.5f,
         (float)r*0.86602540378443864676f //sqrt(3)/2
     );
@@ -144,6 +157,37 @@ void HexTile::updateFromStandardCoords(){
             emit sourceCenterYChanged();
         }
     }
+}
+
+void HexTile::recalculateScreenCoords(){
+    HexTileMap* tileMap = qobject_cast<HexTileMap*>(parentItem());
+    if(tileMap){
+        QRectF mapPhysicalArea = tileMap->getPhysicalArea();
+        float widthPhyToScreenCoeff = tileMap->width()/mapPhysicalArea.width();
+        float heightPhyToScreenCoeff = tileMap->height()/mapPhysicalArea.height();
+
+        setWidth(widthPhyToScreenCoeff*physicalWidth);
+        setHeight(heightPhyToScreenCoeff*getPhysicalHeight());
+
+        QVector2D physicalOffset = hexOffset();
+        setX(widthPhyToScreenCoeff*(physicalOffset.x() - mapPhysicalArea.x() - 0.5f*physicalWidth));
+        setY(heightPhyToScreenCoeff*(physicalOffset.y() - mapPhysicalArea.y() - 0.5f*getPhysicalHeight()));
+
+        update();
+    }
+}
+
+void HexTile::itemChange(ItemChange change, const ItemChangeData& value){
+    if(change == ItemChange::ItemParentHasChanged){
+        HexTileMap* tileMap = qobject_cast<HexTileMap*>(parentItem());
+        if(tileMap){
+            recalculateScreenCoords();
+            connect(tileMap, SIGNAL(physicalAreaChanged()),    this, SLOT(recalculateScreenCoords()));
+            connect(tileMap, SIGNAL(widthChanged()),        this, SLOT(recalculateScreenCoords()));
+            connect(tileMap, SIGNAL(heightChanged()),       this, SLOT(recalculateScreenCoords()));
+        }
+    }
+    QQuickItem::itemChange(change, value);
 }
 
 QSGNode* HexTile::updatePaintNode(QSGNode* oldRoot, UpdatePaintNodeData* updatePaintNodeData){
@@ -235,6 +279,8 @@ QSGNode* HexTile::updatePaintNode(QSGNode* oldRoot, UpdatePaintNodeData* updateP
     vertices[12].set(0.5*w,             0);
     vertices[13].set(0.5*w,             1.15470053837925152902*borderWidth);
 
+    hexFill->markDirty(QSGNode::DirtyGeometry);
+    hexBorder->markDirty(QSGNode::DirtyGeometry);
     root->markDirty(QSGNode::DirtyGeometry);
     return root;
 }

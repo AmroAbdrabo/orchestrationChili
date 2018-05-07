@@ -48,6 +48,12 @@ class HexTile : public QQuickItem {
     Q_OBJECT
         /* *INDENT-ON* */
 
+    /** @brief Tile width (mm), height would be 2*width/sqrt(3) */
+    Q_PROPERTY(float physicalWidth MEMBER physicalWidth NOTIFY physicalWidthChanged)
+
+    /** @brief Tile width (mm), height would be 2*width/sqrt(3) */
+    Q_PROPERTY(float physicalHeight READ getPhysicalHeight NOTIFY physicalHeightChanged)
+
     /** @brief Target Q index (horizontal) in axial discrete hex tile coordinates */
     Q_PROPERTY(int q MEMBER q NOTIFY qChanged)
 
@@ -84,11 +90,6 @@ class HexTile : public QQuickItem {
     /** @brief Size of the border with respect to the width, between 0.0 and 1.0, by default 0.05 */
     Q_PROPERTY(qreal borderSize MEMBER borderSize NOTIFY borderSizeChanged)
 
-
-
-    /** @brief Default read-only tile width (mm) */
-    Q_PROPERTY(float tileWidthDefault CONSTANT MEMBER HEX_TILE_WIDTH_DEFAULT)
-
 public:
 
     /** @cond DO_NOT_DOCUMENT */
@@ -103,9 +104,16 @@ public:
      */
     virtual ~HexTile();
 
+    /**
+     * @brief Gets the physical height of this tile
+     *
+     * @return Always physicalWidth*2/sqrt(3)
+     */
+    float getPhysicalHeight() const;
+
     /** @endcond */
 
-    static constexpr float HEX_TILE_WIDTH_DEFAULT = 99.0f; ///< Default physical width of the hex tile in mm (height would be 2*width/sqrt(3))
+    static constexpr float PHYSICAL_WIDTH_DEFAULT = 99.0f; ///< Default physical width of the hex tile in mm (height would be 2*width/sqrt(3))
 
     /**
      * @brief Sets the new standard hex tile coordinate description
@@ -122,6 +130,16 @@ public:
     Cellulo::HexTileStandardCoords* getStandardCoords(){ return standardCoords; }
 
 signals:
+
+    /**
+     * @brief Emitted when the physical tile width changes
+     */
+    void physicalWidthChanged();
+
+    /**
+     * @brief Emitted when the physical tile height changes
+     */
+    void physicalHeightChanged();
 
     /**
      * @brief Emitted when q changes
@@ -206,10 +224,9 @@ public slots:
     /**
      * @brief Gets the tile center's coordinates in the continuous mapped space composed of hex tiles
      *
-     * @param  tileWidth Width of the tile in mm (height would be 2*width/sqrt(3))
      * @return Tile center's coordinates in the continuous mapped space composed of hex tiles
      */
-    QVector2D hexOffset(float tileWidth = HEX_TILE_WIDTH_DEFAULT);
+    QVector2D hexOffset();
 
 private slots:
 
@@ -218,17 +235,31 @@ private slots:
      */
     void updateFromStandardCoords();
 
+    /**
+     * @brief If the parent is a HexTileMap, recalculates x, y, width and height accordingly
+     */
+    void recalculateScreenCoords();
+
 private:
 
     /**
-     * @brief Implementation of the rendering routine for this hex tile
+     * @brief Override; updates the screen coordinates if parent is a HexTileMap
      *
-     * @param  oldNode             [description]
-     * @param  updatePaintNodeData [description]
-     * @return                     [description]
+     * @param change The change that occurred, must be ItemParentHasChanged
+     * @param value Points to the new parent
+     */
+    void itemChange(ItemChange change, const ItemChangeData& value) override;
+
+    /**
+     * @brief Implementation of the GL rendering routine for this hex tile
+     *
+     * @param  oldNode             Previously returned root node, NULL if first time
+     * @param  updatePaintNodeData UNUSED
+     * @return                     The root node modified by the draw operaton
      */
     QSGNode* updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* updatePaintNodeData) override;
 
+    float physicalWidth;                            ///< Tile width in mm, height would be 2*width/sqrt(3)
     int q;                                          ///< Q index (horizontal) in axial hex tile coordinates
     int r;                                          ///< R index (vertical, 120 degrees to the Q axis) in axial hex tile coordinates
     float sourceLeft;                               ///< Starting X coordinate of the rectangular source space (mm)

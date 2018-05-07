@@ -32,10 +32,19 @@
 namespace Cellulo{
 
 HexTileMap::HexTileMap(QQuickItem* parent) : PoseRemapper(parent){
-
+    physicalArea = QRectF(-50.0f, -57.73502691896257645092f, 100.0f, 115.47005383792515290183f);
 }
 
 HexTileMap::~HexTileMap(){}
+
+void HexTileMap::setPhysicalArea(QRectF const& physicalArea){
+    if(physicalArea.width() > 0 && physicalArea.height() > 0){
+        this->physicalArea = physicalArea;
+        emit physicalAreaChanged();
+    }
+    else
+        qCritical() << "HexTileMap::setPhysicalArea(): Physical area must have positive width and height!";
+}
 
 void HexTileMap::itemChange(ItemChange change, const ItemChangeData& value){
     if(change == ItemChange::ItemChildAddedChange){
@@ -47,7 +56,7 @@ void HexTileMap::itemChange(ItemChange change, const ItemChangeData& value){
 
 
 
-
+            //TODO: BETTER STORAGE
             if(!tiles.contains(QVariant::fromValue(newTile)))
                 tiles.append(QVariant::fromValue(newTile));
 

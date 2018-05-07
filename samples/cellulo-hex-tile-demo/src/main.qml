@@ -28,43 +28,19 @@ ApplicationWindow {
         Slider{
             id: slider
             width: 100
-            value: 0.5
+            value: 1.0
+
+            onValueChanged: hexMap.physicalArea = Qt.rect(-200*slider.value, -200*slider.value, 400*slider.value, 400*slider.value)
         }
     }
 
-    HexTileMap{
-        id: hexMap
 
-        HexTile{
-            standardCoords: HexTileStandardCoords{ i:0; j:0; u:0; v:0 }
-            q: 0; r: 0
-        }
-        HexTile{
-            standardCoords: HexTileStandardCoords{ i:0; j:0; u:1; v:0 }
-            q: 1; r: 0
-        }
-        HexTile{
-            standardCoords: HexTileStandardCoords{ i:0; j:0; u:0; v:1 }
-            q: 1; r: -1
-        }
-        HexTile{
-            id: extile
-            standardCoords: HexTileStandardCoords{ id: oldcoords; i:0; j:0; u:1; v:1 }
 
-            q: 1; r: 1
-        }
+    // Text{ anchors.top: page.bottom; text: extile.sourceLeft + " " + extile.sourceRight + " " + extile.sourceTop + " " + extile.sourceBottom + " " + extile.sourceCenterX + " " + extile.sourceCenterY }
 
-    }
+    // Button{ id: asdasd; text: "asdasd"; onClicked: extile.standardCoords = newcoords }
 
-    Text{ anchors.top: page.bottom; text: extile.sourceLeft + " " + extile.sourceRight + " " + extile.sourceTop + " " + extile.sourceBottom + " " + extile.sourceCenterX + " " + extile.sourceCenterY }
-
-    Button{ id: asdasd; text: "asdasd"; onClicked: extile.standardCoords = newcoords }
-
-    Button{ anchors.left: asdasd.right; text: "asdas2"; onClicked: oldcoords.i = 3 }
-
-    HexTileStandardCoords{
-        id: newcoords
-    }
+    // Button{ anchors.left: asdasd.right; text: "asdas2"; onClicked: oldcoords.i = 3 }
 
     Rectangle{
         id: page
@@ -81,29 +57,74 @@ ApplicationWindow {
         border.width: 2
         radius: 5
 
-        HexTile{
-            id: til
-            width: 200
-            height: width*2/Math.sqrt(3)
-            x: parent.width/2 - width/2
-            y: parent.height/2 - height/2
-            rotation: 0
-            visible: true
-            fillColor: "red"
-            borderColor: "cyan"
-            borderSize: 0.1
-        }
+        HexTileMap{
+            id: hexMap
 
-        HexTile{
-            width: 200
-            height: width*2/Math.sqrt(3)
-            anchors.left: til.right
-            anchors.top: til.top
-            rotation: 0
-            visible: true
-            fillColor: "red"
-            borderColor: "cyan"
-            borderSize: 0.05
+            anchors.fill: parent
+
+            width: parent.width
+            height: parent.height
+            //physicalArea:
+
+
+
+            HexTileWithCoords{
+                standardCoords: HexTileStandardCoords{ i:0; j:0; u:0; v:0 }
+                q: 0; r: 0
+            }
+            HexTileWithCoords{
+                standardCoords: HexTileStandardCoords{ i:0; j:0; u:1; v:0 }
+                q: 1; r: 0
+            }
+            HexTileWithCoords{
+                standardCoords: HexTileStandardCoords{ i:0; j:0; u:1; v:0 }
+                q: -1; r: 0
+            }
+
+            HexTileWithCoords{
+                standardCoords: HexTileStandardCoords{ i:0; j:0; u:1; v:0 }
+                q: 0; r: 1
+            }
+            HexTileWithCoords{
+                standardCoords: HexTileStandardCoords{ i:0; j:0; u:1; v:0 }
+                q: 1; r: 1
+            }
+            HexTileWithCoords{
+                standardCoords: HexTileStandardCoords{ i:0; j:0; u:1; v:0 }
+                q: -1; r: 1
+            }
+            HexTileWithCoords{
+                standardCoords: HexTileStandardCoords{ i:0; j:0; u:1; v:0 }
+                q: -2; r: 1
+            }
+
+            HexTileWithCoords{
+                standardCoords: HexTileStandardCoords{ i:0; j:0; u:1; v:0 }
+                q: 0; r: -1
+            }
+            HexTileWithCoords{
+                standardCoords: HexTileStandardCoords{ i:0; j:0; u:1; v:0 }
+                q: 1; r: -1
+            }
+            HexTileWithCoords{
+                standardCoords: HexTileStandardCoords{ i:0; j:0; u:1; v:0 }
+                q: -1; r: -1
+            }
+            HexTileWithCoords{
+                standardCoords: HexTileStandardCoords{ i:0; j:0; u:1; v:0 }
+                q: 2; r: -1
+            }
+            /*HexTile{
+                standardCoords: HexTileStandardCoords{ i:0; j:0; u:0; v:1 }
+                q: 1; r: -1
+            }
+            HexTile{
+                id: extile
+                standardCoords: HexTileStandardCoords{ id: oldcoords; i:0; j:0; u:1; v:1 }
+
+                q: 1; r: 1
+            }*/
+
         }
 
         Image{
@@ -115,6 +136,8 @@ ApplicationWindow {
             sourceSize.height: 80*parent.scaleCoeff
             visible: false
         }
+
+
     }
 
     Item{ //Dummy item to provide margin for bottom
@@ -134,7 +157,5 @@ ApplicationWindow {
                 setPoseBcastPeriod(0);
         }
         poseRemapper: hexMap
-
-        onPoseChanged: console.info(x+" "+y+" "+theta)
     }
 }
