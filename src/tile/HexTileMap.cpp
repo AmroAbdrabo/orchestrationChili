@@ -33,6 +33,10 @@ namespace Cellulo{
 
 HexTileMap::HexTileMap(QQuickItem* parent) : PoseRemapper(parent){
     physicalArea = QRectF(-50.0f, -57.73502691896257645092f, 100.0f, 115.47005383792515290183f);
+
+    connect(this, SIGNAL(physicalAreaChanged()),    this, SIGNAL(markedDirty()));
+    connect(this, SIGNAL(widthChanged()),           this, SIGNAL(markedDirty()));
+    connect(this, SIGNAL(heightChanged()),          this, SIGNAL(markedDirty()));
 }
 
 HexTileMap::~HexTileMap(){}
@@ -78,20 +82,23 @@ void HexTileMap::itemChange(ItemChange change, const ItemChangeData& value){
     QQuickItem::itemChange(change, value);
 }
 
+QVector2D HexTileMap::toScreenSize(QVector2D const& physicalSize) const {
+    return QVector2D(width()/physicalArea.width(), height()/physicalArea.height())*physicalSize;
+}
 
-
-
-
-
-
-
-
-
-
-
+QVector2D HexTileMap::toScreenCoords(QVector2D const& physicalCoords) const {
+    return QVector2D(width()/physicalArea.width(), height()/physicalArea.height())*(physicalCoords - QVector2D(physicalArea.x(), physicalArea.y()));
+}
 
 QVector3D HexTileMap::remapPose(QVector3D const& pose){
     QVector2D position = pose.toVector2D();
+
+
+
+
+
+
+
 
 
     //TODO: REPLACE LOOKUP WITH HASH<HASH<TILE>>

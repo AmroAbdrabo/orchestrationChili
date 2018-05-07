@@ -43,9 +43,9 @@ HexTile::HexTile(QQuickItem* parent) : QQuickItem(parent){
     q = 0;
     r = 0;
 
-    connect(this, SIGNAL(tileWidthChanged()),   this, SLOT(recalculateScreenCoords()));
-    connect(this, SIGNAL(qChanged()),           this, SLOT(recalculateScreenCoords()));
-    connect(this, SIGNAL(rChanged()),           this, SLOT(recalculateScreenCoords()));
+    connect(this, SIGNAL(physicalWidthChanged()),   this, SLOT(recalculateScreenCoords()));
+    connect(this, SIGNAL(qChanged()),               this, SLOT(recalculateScreenCoords()));
+    connect(this, SIGNAL(rChanged()),               this, SLOT(recalculateScreenCoords()));
 
     sourceLeft = 0;
     sourceTop = 0;
@@ -162,16 +162,14 @@ void HexTile::updateFromStandardCoords(){
 void HexTile::recalculateScreenCoords(){
     HexTileMap* tileMap = qobject_cast<HexTileMap*>(parentItem());
     if(tileMap){
-        QRectF mapPhysicalArea = tileMap->getPhysicalArea();
-        float widthPhyToScreenCoeff = tileMap->width()/mapPhysicalArea.width();
-        float heightPhyToScreenCoeff = tileMap->height()/mapPhysicalArea.height();
+        QVector2D physicalSize = QVector2D(physicalWidth, getPhysicalHeight());
+        QVector2D screenSize = tileMap->toScreenSize(physicalSize);
+        setWidth(screenSize.x());
+        setHeight(screenSize.y());
 
-        setWidth(widthPhyToScreenCoeff*physicalWidth);
-        setHeight(heightPhyToScreenCoeff*getPhysicalHeight());
-
-        QVector2D physicalOffset = hexOffset();
-        setX(widthPhyToScreenCoeff*(physicalOffset.x() - mapPhysicalArea.x() - 0.5f*physicalWidth));
-        setY(heightPhyToScreenCoeff*(physicalOffset.y() - mapPhysicalArea.y() - 0.5f*getPhysicalHeight()));
+        QVector2D screenTopLeft = tileMap->toScreenCoords(hexOffset() - 0.5f*physicalSize);
+        setX(screenTopLeft.x());
+        setY(screenTopLeft.y());
 
         update();
     }
@@ -182,9 +180,7 @@ void HexTile::itemChange(ItemChange change, const ItemChangeData& value){
         HexTileMap* tileMap = qobject_cast<HexTileMap*>(parentItem());
         if(tileMap){
             recalculateScreenCoords();
-            connect(tileMap, SIGNAL(physicalAreaChanged()),    this, SLOT(recalculateScreenCoords()));
-            connect(tileMap, SIGNAL(widthChanged()),        this, SLOT(recalculateScreenCoords()));
-            connect(tileMap, SIGNAL(heightChanged()),       this, SLOT(recalculateScreenCoords()));
+            connect(tileMap, SIGNAL(markedDirty()), this, SLOT(recalculateScreenCoords()));
         }
     }
     QQuickItem::itemChange(change, value);

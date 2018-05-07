@@ -92,6 +92,11 @@ signals:
      */
     void physicalAreaChanged();
 
+    /**
+     * @brief Emitted when screen children should redraw
+     */
+    void markedDirty();
+
 public slots:
 
     /**
@@ -101,6 +106,12 @@ public slots:
      * @return Remapped pose (x,y is in mm, z is orientation in degrees)
      */
     virtual QVector3D remapPose(QVector3D const& pose) override;
+
+
+    QVector2D toScreenSize(QVector2D const& physicalSize) const;
+
+
+    QVector2D toScreenCoords(QVector2D const& physicalCoords) const;
 
 private:
 
