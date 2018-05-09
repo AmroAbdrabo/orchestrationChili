@@ -30,7 +30,7 @@ ApplicationWindow {
             width: 100
             value: 1.0
 
-            onValueChanged: hexMap.physicalArea = Qt.rect(-200*slider.value, -200*slider.value, 400*slider.value, 400*slider.value)
+            //onValueChanged: hexMap.physicalArea = Qt.rect(-200*slider.value, -200*slider.value, 400*slider.value, 400*slider.value)
         }
     }
 
@@ -38,9 +38,9 @@ ApplicationWindow {
 
     // Text{ anchors.top: page.bottom; text: extile.sourceLeft + " " + extile.sourceRight + " " + extile.sourceTop + " " + extile.sourceBottom + " " + extile.sourceCenterX + " " + extile.sourceCenterY }
 
-    // Button{ id: asdasd; text: "asdasd"; onClicked: extile.standardCoords = newcoords }
+    Button{ id: asdasd; text: "asdasd"; onClicked: extile.standardCoords = newcoords }
 
-    // Button{ anchors.left: asdasd.right; text: "asdas2"; onClicked: oldcoords.i = 3 }
+    Button{ anchors.left: asdasd.right; text: "asdas2"; onClicked: extile.r = -2 }
 
     Rectangle{
         id: page
@@ -60,84 +60,65 @@ ApplicationWindow {
         HexTileMap{
             id: hexMap
 
-            anchors.fill: parent
-
-            width: parent.width
-            height: parent.height
-            //physicalArea:
+            width: parent.width*slider.value
+            height: parent.height*slider.value
+            //x: slider.value*100
+            //y: slider.value*100
+            physicalSize: Qt.vector2d(400, 400)
+            physicalTopLeft: Qt.vector2d(-200, -200)
 
 
 
             HexTileWithCoords{
-                standardCoords: HexTileStandardCoords{ i:0; j:0; u:0; v:0 }
+                standardCoords: HexTileStandardCoords{ i:7; j:9; u:0; v:0 }
                 q: 0; r: 0
             }
+
             HexTileWithCoords{
-                standardCoords: HexTileStandardCoords{ i:0; j:0; u:1; v:0 }
-                q: 1; r: 0
-            }
-            HexTileWithCoords{
-                standardCoords: HexTileStandardCoords{ i:0; j:0; u:1; v:0 }
+                standardCoords: HexTileStandardCoords{ i:2; j:3; u:0; v:1 }
                 q: -1; r: 0
             }
 
             HexTileWithCoords{
-                standardCoords: HexTileStandardCoords{ i:0; j:0; u:1; v:0 }
-                q: 0; r: 1
-            }
-            HexTileWithCoords{
-                standardCoords: HexTileStandardCoords{ i:0; j:0; u:1; v:0 }
-                q: 1; r: 1
-            }
-            HexTileWithCoords{
-                standardCoords: HexTileStandardCoords{ i:0; j:0; u:1; v:0 }
-                q: -1; r: 1
-            }
-            HexTileWithCoords{
-                standardCoords: HexTileStandardCoords{ i:0; j:0; u:1; v:0 }
-                q: -2; r: 1
+                standardCoords: HexTileStandardCoords{ i:2; j:3; u:1; v:1 }
+                q: 1; r: 0
             }
 
             HexTileWithCoords{
-                standardCoords: HexTileStandardCoords{ i:0; j:0; u:1; v:0 }
+                standardCoords: HexTileStandardCoords{ i:2; j:3; u:0; v:0 }
                 q: 0; r: -1
             }
+
             HexTileWithCoords{
-                standardCoords: HexTileStandardCoords{ i:0; j:0; u:1; v:0 }
+                standardCoords: HexTileStandardCoords{ i:7; j:9; u:1; v:1 }
                 q: 1; r: -1
             }
+
             HexTileWithCoords{
-                standardCoords: HexTileStandardCoords{ i:0; j:0; u:1; v:0 }
-                q: -1; r: -1
+                standardCoords: HexTileStandardCoords{ i:7; j:9; u:1; v:0 }
+                q: -1; r: 1
             }
+
             HexTileWithCoords{
-                standardCoords: HexTileStandardCoords{ i:0; j:0; u:1; v:0 }
-                q: 2; r: -1
+                standardCoords: HexTileStandardCoords{ i:2; j:3; u:1; v:0 }
+                q: 0; r: 1
             }
-            /*HexTile{
-                standardCoords: HexTileStandardCoords{ i:0; j:0; u:0; v:1 }
-                q: 1; r: -1
+
+            Image{
+                property vector2d screenSize: Qt.vector2d(75, 75*2/Math.sqrt(3)).times(parent.toScreen)
+                property vector2d screenCoords: Qt.vector2d(robotComm.x, robotComm.y).minus(parent.physicalTopLeft).times(parent.toScreen)
+
+                source: robotComm.kidnapped ? "../assets/redHexagon.svg" : "../assets/greenHexagon.svg"
+                rotation: robotComm.theta
+                width: screenSize.x
+                height: screenSize.y
+                sourceSize.width: screenSize.x
+                sourceSize.height: screenSize.y
+                x: screenCoords.x - width/2
+                y: screenCoords.y - height/2
+                visible: true
             }
-            HexTile{
-                id: extile
-                standardCoords: HexTileStandardCoords{ id: oldcoords; i:0; j:0; u:1; v:1 }
-
-                q: 1; r: 1
-            }*/
-
         }
-
-        Image{
-            source: robotComm.kidnapped ? "../assets/redHexagon.svg" : "../assets/greenHexagon.svg"
-            rotation: robotComm.theta
-            x: robotComm.x*parent.scaleCoeff - width/2 + 150*parent.scaleCoeff
-            y: robotComm.y*parent.scaleCoeff - height/2 + 150*parent.scaleCoeff
-            sourceSize.width: 75*parent.scaleCoeff
-            sourceSize.height: 80*parent.scaleCoeff
-            visible: false
-        }
-
-
     }
 
     Item{ //Dummy item to provide margin for bottom
