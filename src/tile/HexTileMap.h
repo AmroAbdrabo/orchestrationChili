@@ -46,9 +46,11 @@ class HexTileMap : public PoseRemapper {
     Q_OBJECT
     /* *INDENT-ON* */
 
-    /** @brief The physical area (in mm) described by this tile map, where tiles are placed according to the axial tile coordinates. To be used when drawing. */
-    Q_PROPERTY(QRectF physicalArea READ getPhysicalArea WRITE setPhysicalArea NOTIFY physicalAreaChanged)
+    /** @brief The physical coordinates of the top left of this map, in mm */
+    Q_PROPERTY(QVector2D physicalTopLeft READ getPhysicalTopLeft WRITE setPhysicalTopLeft NOTIFY physicalTopLeftChanged)
 
+    /** @brief The physical size of this map, in mm */
+    Q_PROPERTY(QVector2D physicalSize READ getPhysicalSize WRITE setPhysicalSize NOTIFY physicalSizeChanged)
 
 
 
@@ -70,27 +72,62 @@ public:
     virtual ~HexTileMap();
 
     /**
-     * @brief Gets the physical area, used for drawing
+     * @brief Gets the physical size, used for drawing
      *
-     * @return The physical area described by this map
+     * @return The physical size described by this map
      */
-    QRectF getPhysicalArea() const { return physicalArea; }
+    QVector2D getPhysicalSize() const { return physicalSize; }
 
     /**
      * @brief Sets the new physical area, must have positive width/height
      *
      * @param physicalArea New physical area described by this map, used for drawing
      */
-    void setPhysicalArea(QRectF const& physicalArea);
+    void setPhysicalSize(QVector2D const& physicalArea);
+
+    /**
+     * @brief Gets the physical top left coordinate, used for drawing
+     *
+     * @return The physical top left coordinate described by this map
+     */
+    QVector2D getPhysicalTopLeft() const { return physicalTopLeft; }
+
+    /**
+     * @brief Sets the new physical top left coordinate
+     *
+     * @param physicalTopLeft New physical top left coordinate of this map, used for drawing
+     */
+    void setPhysicalTopLeft(QVector2D const& physicalTopLeft);
+
+    /**
+     * @brief Converts the given physical size to screen size according to the physical and screen sizes of this map
+     *
+     * @param  physicalSize Physical size of the object in mm
+     * @return              Screen size of the object in pixels
+     */
+    QVector2D toScreenSize(QVector2D const& physicalSize) const;
+
+    /**
+     * @brief Converts the given physical point to screen point according to the physical and screen sizes of this map
+     *
+     * @param  physicalCoords Physical coordinates in mm
+     * @return                Screen coordinates in pixels
+     */
+    QVector2D toScreenCoords(QVector2D const& physicalCoords) const;
 
     /** @endcond */
 
 signals:
 
     /**
-     * @brief Emitted when the physical area changes
+     * @brief Emitted when the physical size changes
      */
-    void physicalAreaChanged();
+    void physicalSizeChanged();
+
+    /**
+     * @brief Emitted when the physical top left coordinate changes
+     */
+    void physicalTopLeftChanged();
 
     /**
      * @brief Emitted when screen children should redraw
@@ -107,12 +144,6 @@ public slots:
      */
     virtual QVector3D remapPose(QVector3D const& pose) override;
 
-
-    QVector2D toScreenSize(QVector2D const& physicalSize) const;
-
-
-    QVector2D toScreenCoords(QVector2D const& physicalCoords) const;
-
 private:
 
     /**
@@ -123,7 +154,8 @@ private:
      */
     void itemChange(ItemChange change, const ItemChangeData& value) override;
 
-    QRectF physicalArea; ///< Physical area described by this map, used when drawing
+    QVector2D physicalTopLeft;  ///< Physical top left coordinate of this map in mm, used when drawing
+    QVector2D physicalSize;     ///< Physical size described by this map in mm, used when drawing
 
 
 

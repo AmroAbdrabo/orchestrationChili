@@ -32,22 +32,29 @@
 namespace Cellulo{
 
 HexTileMap::HexTileMap(QQuickItem* parent) : PoseRemapper(parent){
-    physicalArea = QRectF(-50.0f, -57.73502691896257645092f, 100.0f, 115.47005383792515290183f);
+    physicalTopLeft = QVector2D(-50.0f, -57.73502691896257645092f);
+    physicalSize = QVector2D(100.0f, 115.47005383792515290183f);
 
-    connect(this, SIGNAL(physicalAreaChanged()),    this, SIGNAL(markedDirty()));
+    connect(this, SIGNAL(physicalSizeChanged()),    this, SIGNAL(markedDirty()));
+    connect(this, SIGNAL(physicalTopLeftChanged()), this, SIGNAL(markedDirty()));
     connect(this, SIGNAL(widthChanged()),           this, SIGNAL(markedDirty()));
     connect(this, SIGNAL(heightChanged()),          this, SIGNAL(markedDirty()));
 }
 
 HexTileMap::~HexTileMap(){}
 
-void HexTileMap::setPhysicalArea(QRectF const& physicalArea){
-    if(physicalArea.width() > 0 && physicalArea.height() > 0){
-        this->physicalArea = physicalArea;
-        emit physicalAreaChanged();
+void HexTileMap::setPhysicalSize(QVector2D const& physicalSize){
+    if(physicalSize.x() > 0 && physicalSize.y() > 0){
+        this->physicalSize = physicalSize;
+        emit physicalSizeChanged();
     }
     else
-        qCritical() << "HexTileMap::setPhysicalArea(): Physical area must have positive width and height!";
+        qCritical() << "HexTileMap::setPhysicalSize(): Physical size must have positive width and height!";
+}
+
+void HexTileMap::setPhysicalTopLeft(QVector2D const& physicalTopLeft){
+    this->physicalTopLeft = physicalTopLeft;
+    emit physicalTopLeftChanged();
 }
 
 void HexTileMap::itemChange(ItemChange change, const ItemChangeData& value){
@@ -82,12 +89,12 @@ void HexTileMap::itemChange(ItemChange change, const ItemChangeData& value){
     QQuickItem::itemChange(change, value);
 }
 
-QVector2D HexTileMap::toScreenSize(QVector2D const& physicalSize) const {
-    return QVector2D(width()/physicalArea.width(), height()/physicalArea.height())*physicalSize;
+QVector2D HexTileMap::toScreenSize(QVector2D const& objSize) const {
+    return QVector2D(width(), height())/physicalSize*objSize;
 }
 
-QVector2D HexTileMap::toScreenCoords(QVector2D const& physicalCoords) const {
-    return QVector2D(width()/physicalArea.width(), height()/physicalArea.height())*(physicalCoords - QVector2D(physicalArea.x(), physicalArea.y()));
+QVector2D HexTileMap::toScreenCoords(QVector2D const& objCoords) const {
+    return QVector2D(width(), height())/physicalSize*(objCoords - physicalTopLeft);
 }
 
 QVector3D HexTileMap::remapPose(QVector3D const& pose){
