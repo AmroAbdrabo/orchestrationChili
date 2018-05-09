@@ -52,7 +52,8 @@ class HexTileMap : public PoseRemapper {
     /** @brief The physical size of this map, in mm */
     Q_PROPERTY(QVector2D physicalSize READ getPhysicalSize WRITE setPhysicalSize NOTIFY physicalSizeChanged)
 
-
+    /** @brief When multiplied with physical quantities, converts to screen quantities */
+    Q_PROPERTY(QVector2D toScreen READ getToScreen NOTIFY toScreenChanged)
 
     //TODO: BETTER STORAGE
     Q_PROPERTY(QVariantList tiles MEMBER tiles)
@@ -115,6 +116,13 @@ public:
      */
     QVector2D toScreenCoords(QVector2D const& physicalCoords) const;
 
+    /**
+     * @brief Gets a coefficient vector that converts physical quantities to screen quantities when multiplied
+     * 
+     * @return To screen coeff
+     */
+    QVector2D getToScreen() const;
+
     /** @endcond */
 
 signals:
@@ -128,6 +136,11 @@ signals:
      * @brief Emitted when the physical top left coordinate changes
      */
     void physicalTopLeftChanged();
+
+    /**
+     * @brief Emitted when toScreen changes
+     */
+    void toScreenChanged();
 
     /**
      * @brief Emitted when screen children should redraw

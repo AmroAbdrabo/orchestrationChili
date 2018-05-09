@@ -39,6 +39,9 @@ HexTileMap::HexTileMap(QQuickItem* parent) : PoseRemapper(parent){
     connect(this, SIGNAL(physicalTopLeftChanged()), this, SIGNAL(markedDirty()));
     connect(this, SIGNAL(widthChanged()),           this, SIGNAL(markedDirty()));
     connect(this, SIGNAL(heightChanged()),          this, SIGNAL(markedDirty()));
+    connect(this, SIGNAL(widthChanged()),           this, SIGNAL(toScreenChanged()));
+    connect(this, SIGNAL(heightChanged()),          this, SIGNAL(toScreenChanged()));
+    connect(this, SIGNAL(physicalSizeChanged()),    this, SIGNAL(toScreenChanged()));
 }
 
 HexTileMap::~HexTileMap(){}
@@ -90,11 +93,15 @@ void HexTileMap::itemChange(ItemChange change, const ItemChangeData& value){
 }
 
 QVector2D HexTileMap::toScreenSize(QVector2D const& objSize) const {
-    return QVector2D(width(), height())/physicalSize*objSize;
+    return getToScreen()*objSize;
 }
 
 QVector2D HexTileMap::toScreenCoords(QVector2D const& objCoords) const {
-    return QVector2D(width(), height())/physicalSize*(objCoords - physicalTopLeft);
+    return getToScreen()*(objCoords - physicalTopLeft);
+}
+
+QVector2D HexTileMap::getToScreen() const {
+    return QVector2D(width(), height())/physicalSize;
 }
 
 QVector3D HexTileMap::remapPose(QVector3D const& pose){
