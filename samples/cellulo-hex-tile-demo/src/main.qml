@@ -18,7 +18,7 @@ ApplicationWindow {
 
         MacAddrSelector{
             addresses: [
-                "00:06:66:74:40:DB"
+                "00:06:66:d2:cf:99"
             ]
             onConnectRequested: robotComm.macAddr = selectedAddress
             onDisconnectRequested: robotComm.disconnectFromServer()
@@ -30,17 +30,11 @@ ApplicationWindow {
             width: 100
             value: 1.0
 
+            visible: false
+
             //onValueChanged: hexMap.physicalArea = Qt.rect(-200*slider.value, -200*slider.value, 400*slider.value, 400*slider.value)
         }
     }
-
-
-
-    // Text{ anchors.top: page.bottom; text: extile.sourceLeft + " " + extile.sourceRight + " " + extile.sourceTop + " " + extile.sourceBottom + " " + extile.sourceCenterX + " " + extile.sourceCenterY }
-
-    Button{ id: asdasd; text: "asdasd"; onClicked: extile.standardCoords = newcoords }
-
-    Button{ anchors.left: asdasd.right; text: "asdas2"; onClicked: extile.r = -2 }
 
     Rectangle{
         id: page
@@ -48,10 +42,10 @@ ApplicationWindow {
         anchors.left: parent.left
         anchors.margins: 50
 
-        property real scaleCoeff: Math.min((Screen.width*0.8)/300, (Screen.height*0.8 - addressBox.height)/300)
+        property real rectSize: Math.min((Screen.width*0.8), (Screen.height*0.8 - addressBox.height))
 
-        width: 300*scaleCoeff
-        height: 300*scaleCoeff
+        width: rectSize
+        height: rectSize
         color: "#EEEEEE"
         border.color: "black"
         border.width: 2
@@ -70,36 +64,43 @@ ApplicationWindow {
 
 
             HexTileWithCoords{
+                id: centerTile
                 standardCoords: HexTileStandardCoords{ i:7; j:9; u:0; v:0 }
                 q: 0; r: 0
             }
 
             HexTileWithCoords{
+                id: leftTile
                 standardCoords: HexTileStandardCoords{ i:2; j:3; u:0; v:1 }
                 q: -1; r: 0
             }
 
             HexTileWithCoords{
+                id: rightTile
                 standardCoords: HexTileStandardCoords{ i:2; j:3; u:1; v:1 }
                 q: 1; r: 0
             }
 
             HexTileWithCoords{
+                id: topLeftTile
                 standardCoords: HexTileStandardCoords{ i:2; j:3; u:0; v:0 }
                 q: 0; r: -1
             }
 
             HexTileWithCoords{
+                id: topRightTile
                 standardCoords: HexTileStandardCoords{ i:7; j:9; u:1; v:1 }
                 q: 1; r: -1
             }
 
             HexTileWithCoords{
+                id: bottomLeftTile
                 standardCoords: HexTileStandardCoords{ i:7; j:9; u:1; v:0 }
                 q: -1; r: 1
             }
 
             HexTileWithCoords{
+                id: bottomRightTile
                 standardCoords: HexTileStandardCoords{ i:2; j:3; u:1; v:0 }
                 q: 0; r: 1
             }
@@ -110,6 +111,20 @@ ApplicationWindow {
 
                 source: robotComm.kidnapped ? "../assets/redHexagon.svg" : "../assets/greenHexagon.svg"
                 rotation: robotComm.theta
+                width: screenSize.x
+                height: screenSize.y
+                sourceSize.width: screenSize.x
+                sourceSize.height: screenSize.y
+                x: screenCoords.x - width/2
+                y: screenCoords.y - height/2
+                visible: true
+            }
+
+            Image{
+                property vector2d screenSize: Qt.vector2d(30, 30*2/Math.sqrt(3)).times(parent.toScreen)
+                property vector2d screenCoords: Qt.vector2d(robotComm.goal.x, robotComm.goal.y).minus(parent.physicalTopLeft).times(parent.toScreen)
+
+                source: "../assets/redHexagon.svg"
                 width: screenSize.x
                 height: screenSize.y
                 sourceSize.width: screenSize.x
@@ -131,12 +146,35 @@ ApplicationWindow {
         anchors.margins: 50
     }
 
-    CelluloRobot{
+    CelluloBluetooth{
+        property int currentGoal: 0
+
+        property var goals: [centerTile.hexOffset(), topLeftTile.hexOffset(), topRightTile.hexOffset(), rightTile.hexOffset(), bottomRightTile.hexOffset(), bottomLeftTile.hexOffset(), leftTile.hexOffset()]
+        property vector2d goal: Qt.vector2d(0,0)
+
+        //poseVelControlEnabled: true
+
         id: robotComm
         onConnectionStatusChanged:{
             if(connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected)
-                setPoseBcastPeriod(0);
+                setPoseBcastPeriod(100);
         }
         poseRemapper: hexMap
+
+        onPoseChanged: {
+            goal = goals[currentGoal];
+            var goalVel = goal.minus(Qt.vector2d(x,y)).times(2.0);
+            if(goalVel.length() > 100){
+                goalVel = goalVel.normalized().times(100);
+            }
+            var goalW = 30 - theta;
+            if(goalW < -180)
+                goalW += 360;
+            if(goalW > 180)
+                goalW -= 360;
+            setGoalVelocity(goalVel.x, goalVel.y, 0.1*goalW);
+            if(goal.minus(Qt.vector2d(x,y)).length() < 10)
+                currentGoal = (currentGoal + 1) % 7;
+        }
     }
 }
