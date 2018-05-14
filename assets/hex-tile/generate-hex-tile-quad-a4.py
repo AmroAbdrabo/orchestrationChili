@@ -43,7 +43,7 @@ if jcoord < 0:
 print "Generating quad hex tile A4 sheet at i, j = " + str(icoord) + ", " + str(jcoord) + " ...";
 
 call("cp hex-tile-quad-a4.svg _temp-unlabeled.svg", shell=True)
-call("sed -e \"s/SHEET_I_J/" + str(icoord) + "," + str(jcoord) +  "/g\" _temp-unlabeled.svg > _temp-labeled.svg", shell=True)
+call("sed -e \"s/SHEET_I_J/i=" + str(icoord) + ",j=" + str(jcoord) + "/g\" _temp-unlabeled.svg > _temp-labeled.svg", shell=True)
 call("rm _temp-unlabeled.svg", shell=True)
 call("inkscape _temp-labeled.svg --export-pdf=_temp-labeled.pdf", shell=True)
 call("rm _temp-labeled.svg", shell=True)
