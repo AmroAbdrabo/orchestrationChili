@@ -47,5 +47,5 @@ call("sed -e \"s/SHEET_I_J/" + str(icoord) + "," + str(jcoord) +  "/g\" _temp-un
 call("rm _temp-unlabeled.svg", shell=True)
 call("inkscape _temp-labeled.svg --export-pdf=_temp-labeled.pdf", shell=True)
 call("rm _temp-labeled.svg", shell=True)
-call("libdots-pdf-overlayer -i _temp-labeled.pdf -o hex-tile-quad-a4-" + str(icoord) + "-" + str(jcoord) + ".pdf --xmm " + str(icoord*I_COORD_SIZE) + " --ymm " + str(jcoord*J_COORD_SIZE), shell=True)
+call("libdots-pdf-overlayer --thick -i _temp-labeled.pdf -o hex-tile-quad-a4-" + str(icoord) + "-" + str(jcoord) + ".pdf --xmm " + str(icoord*I_COORD_SIZE) + " --ymm " + str(jcoord*J_COORD_SIZE), shell=True)
 call("rm _temp-labeled.pdf", shell=True)
