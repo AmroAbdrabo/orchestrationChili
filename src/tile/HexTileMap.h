@@ -32,6 +32,7 @@
 #include <QRectF>
 
 #include "CoordSpaceConverter.h"
+#include "HexTileStandardCoords.h"
 
 namespace Cellulo {
 
@@ -230,11 +231,14 @@ private:
     CoordSpaceConverter toScreenCoords;  ///< Converter from physical coords to screen coords
 
     bool autoBuild;                      ///< Whether to try to automatically build the map
-    QVector<QVector2D> autoBuildKnownHistory;
-    QVector<QVector2D> autoBuildUnknownHistory;
+    QList<QVector2D> autoBuildKnownHistory;
+    QList<QVector2D> autoBuildUnknownHistory;
+    HexTileStandardCoords* unknownStdCoords;
     bool autoBuildKnownCoordsExist;
     int autoBuildKnownQ;
     int autoBuildKnownR;
+    constexpr static int autoBuildKnownHistorySize = 10;
+    constexpr static int autoBuildUnknownHistorySize = 5;
 
     //TODO: BETTER STORAGE
     QVariantList tiles;

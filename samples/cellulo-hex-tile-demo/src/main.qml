@@ -18,7 +18,7 @@ ApplicationWindow {
 
         MacAddrSelector{
             addresses: [
-                "00:06:66:d2:cf:99"
+                "00:06:66:d2:cf:7a"
             ]
             onConnectRequested: robotComm.macAddr = selectedAddress
             onDisconnectRequested: robotComm.disconnectFromServer()
@@ -68,7 +68,7 @@ ApplicationWindow {
                 standardCoords: HexTileStandardCoords{ i:7; j:9; u:0; v:0 }
                 q: 0; r: 0
             }
-
+/*
             HexTileWithCoords{
                 id: leftTile
                 standardCoords: HexTileStandardCoords{ i:2; j:3; u:0; v:1 }
@@ -104,7 +104,7 @@ ApplicationWindow {
                 standardCoords: HexTileStandardCoords{ i:2; j:3; u:1; v:0 }
                 q: 0; r: 1
             }
-
+*/
             Image{
                 property vector2d screenSize: parent.toScreenSize.convert(Qt.vector2d(75, 75*2/Math.sqrt(3)))
                 property vector2d screenCoords: parent.toScreenCoords.convert(Qt.vector2d(robotComm.x, robotComm.y))
@@ -151,7 +151,7 @@ ApplicationWindow {
     CelluloBluetooth{
         property int currentGoal: 0
 
-        property var goals: [centerTile.hexOffset(), topLeftTile.hexOffset(), topRightTile.hexOffset(), rightTile.hexOffset(), bottomRightTile.hexOffset(), bottomLeftTile.hexOffset(), leftTile.hexOffset()]
+        property var goals: []//centerTile.hexOffset(), topLeftTile.hexOffset(), topRightTile.hexOffset(), rightTile.hexOffset(), bottomRightTile.hexOffset(), bottomLeftTile.hexOffset(), leftTile.hexOffset()]
         property vector2d goal: Qt.vector2d(0,0)
 
         //poseVelControlEnabled: true
@@ -164,6 +164,7 @@ ApplicationWindow {
         poseRemapper: hexMap
 
         onPoseChanged: {
+            return;
             goal = goals[currentGoal];
             var goalVel = goal.minus(Qt.vector2d(x,y)).times(2.0);
             if(goalVel.length() > 100){

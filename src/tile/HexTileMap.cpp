@@ -162,18 +162,38 @@ void HexTileMap::resetAutoBuild(){
     autoBuildKnownHistory.clear();
     autoBuildUnknownHistory.clear();
     autoBuildKnownCoordsExist = false;
+    if(unknownStdCoords){
+        delete unknownStdCoords;
+        unknownStdCoords = nullptr;
+    }
 }
 
 void HexTileMap::processKnownTile(QVector2D const& position, int q, int r){
-
-
-
-
-
+    if(autoBuildKnownCoordsExist){
+        if(autoBuildKnownQ != q || autoBuildKnownR != r){
+            autoBuildKnownQ = q;
+            autoBuildKnownR = r;
+            autoBuildKnownHistory.clear();
+        }
+    }
+    else{
+        autoBuildKnownCoordsExist = true;
+        autoBuildKnownQ = q;
+        autoBuildKnownR = r;
+    }
+    autoBuildKnownHistory.append(position);
+    if(autoBuildKnownHistory.size() > autoBuildKnownHistorySize)
+        autoBuildKnownHistory.removeFirst();
 }
 
 QVector3D HexTileMap::processUnknownTile(QVector2D const& position){
+    HexTileStandardCoords* newStdCoords = new HexTileStandardCoords();
+    newStdCoords->estimateFromCoords(position);
 
+    qDebug() << newStdCoords->getI() << " " << newStdCoords->getJ() << " " << newStdCoords->getU() << " " << newStdCoords->getV();
+
+
+    delete newStdCoords;
 
 
 
