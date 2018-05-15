@@ -55,10 +55,10 @@ class HexTile : public QQuickItem {
     Q_PROPERTY(float physicalHeight READ getPhysicalHeight NOTIFY physicalHeightChanged)
 
     /** @brief Target Q index (horizontal) in axial discrete hex tile coordinates */
-    Q_PROPERTY(int q MEMBER q NOTIFY qChanged)
+    Q_PROPERTY(int q READ getQ WRITE setQ NOTIFY qChanged)
 
     /** @brief Target R index (vertical, 120 degrees to the Q axis) in axial discrete hex tile coordinates */
-    Q_PROPERTY(int r MEMBER r NOTIFY rChanged)
+    Q_PROPERTY(int r READ getR WRITE setR NOTIFY rChanged)
 
     /** @brief Starting X coordinate of the rectangular source space (mm) */
     Q_PROPERTY(float sourceLeft MEMBER sourceLeft NOTIFY sourceLeftChanged)
@@ -103,6 +103,34 @@ public:
      * @brief Deletes this hex tile
      */
     virtual ~HexTile();
+
+    /**
+     * @brief Gets the horizontal hex tile coordinate
+     *
+     * @return Horizontal hex tile coordinate
+     */
+    int getQ() const { return q; }
+
+    /**
+     * @brief Gets the vertical hex tile coordinate
+     *
+     * @return Vertical hex tile coordinate
+     */
+    int getR() const { return r; }
+
+    /**
+     * @brief Sets the horizontal hex tile coordinate
+     *
+     * @param q Horizontal hex tile coordinate
+     */
+    void setQ(int q);
+
+    /**
+     * @brief Sets the vertical hex tile coordinate
+     *
+     * @param r Vertical hex tile coordinate
+     */
+    void setR(int r);
 
     /**
      * @brief Gets the physical height of this tile

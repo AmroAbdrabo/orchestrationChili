@@ -26,6 +26,8 @@
 
 #include<QDebug>
 
+#include<cmath>
+
 namespace Cellulo{
 
 HexTileStandardCoords::HexTileStandardCoords(QQuickItem* parent) : QQuickItem(parent){
@@ -93,6 +95,25 @@ void HexTileStandardCoords::disconnectHexTileChangedSignals(Cellulo::HexTile* ti
     disconnect(this, SIGNAL(jChanged()), tile, SIGNAL(standardCoordsChanged()));
     disconnect(this, SIGNAL(uChanged()), tile, SIGNAL(standardCoordsChanged()));
     disconnect(this, SIGNAL(vChanged()), tile, SIGNAL(standardCoordsChanged()));
+}
+
+void HexTileStandardCoords::estimateFromCoords(QVector2D const& coords){
+    if(coords.x() >= 0 && coords.y() >= 0){
+        setI((int)(coords.x()/210.0));
+        setJ((int)(coords.y()/260.0));
+        setU((coords.x() - getI()*210.0) <= 105.7 ? 0 : 1);
+        setV((coords.y() - getJ()*260.0) <= 130.0 ? 0 : 1);
+    }
+    else
+        qCritical() << "HexTileStandardCoords::estimateFromCoords(): Coordinates must not be negative!";
+}
+
+bool HexTileStandardCoords::equals(HexTileStandardCoords const& other) const {
+    return
+        getI() == other.getI() &&
+        getJ() == other.getJ() &&
+        getU() == other.getU() &&
+        getV() == other.getV();
 }
 
 }

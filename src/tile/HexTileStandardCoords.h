@@ -102,28 +102,28 @@ public:
      *
      * @return i
      */
-    int getI(){ return i; }
+    int getI() const { return i; }
 
     /**
      * @brief Gets j
      *
      * @return j
      */
-    int getJ(){ return j; }
+    int getJ() const { return j; }
 
     /**
      * @brief Gets u
      *
      * @return u
      */
-    int getU(){ return u; }
+    int getU() const { return u; }
 
     /**
      * @brief Gets v
      *
      * @return v
      */
-    int getV(){ return v; }
+    int getV() const { return v; }
 
     /**
      * @brief Sets a new i
@@ -196,6 +196,21 @@ public slots:
      * @param tile Tile owning this standard coords
      */
     void disconnectHexTileChangedSignals(Cellulo::HexTile* tile);
+
+    /**
+     * @brief Attempts to estimate i,j,u,v from given raw physical coordinates
+     *
+     * @param coords Physical raw coordinates in mm
+     */
+    void estimateFromCoords(QVector2D const& coords);
+
+    /**
+     * @brief Compares these coords to another
+     *
+     * @param  other Other coords
+     * @return       Whether these coords are equal to the other
+     */
+    bool equals(HexTileStandardCoords const& other) const;
 
 private:
 

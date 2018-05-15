@@ -69,6 +69,16 @@ HexTile::HexTile(QQuickItem* parent) : QQuickItem(parent){
 
 HexTile::~HexTile(){}
 
+void HexTile::setQ(int q){
+    this->q = q;
+    emit qChanged();
+}
+
+void HexTile::setR(int r){
+    this->r = r;
+    emit rChanged();
+}
+
 float HexTile::getPhysicalHeight() const {
     return physicalWidth*1.15470053837925152902f; // 2/sqrt(3)
 }

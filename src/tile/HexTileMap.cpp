@@ -35,6 +35,9 @@ HexTileMap::HexTileMap(QQuickItem* parent) : PoseRemapper(parent),
     toScreenSize(this),
     toScreenCoords(this)
 {
+    autoBuild = false;
+    autoBuildKnownCoordsExist = false;
+
     physicalTopLeft = QVector2D(-50.0f, -57.73502691896257645092f);
     physicalSize = QVector2D(100.0f, 115.47005383792515290183f);
 
@@ -65,6 +68,15 @@ void HexTileMap::setPhysicalSize(QVector2D const& physicalSize){
 void HexTileMap::setPhysicalTopLeft(QVector2D const& physicalTopLeft){
     this->physicalTopLeft = physicalTopLeft;
     emit physicalTopLeftChanged();
+}
+
+void HexTileMap::setAutoBuild(bool autoBuild){
+    if(this->autoBuild != autoBuild){
+        this->autoBuild = autoBuild;
+        if(autoBuild)
+            resetAutoBuild();
+        emit autoBuildChanged();
+    }
 }
 
 void HexTileMap::itemChange(ItemChange change, const ItemChangeData& value){
@@ -125,22 +137,65 @@ QVector3D HexTileMap::remapPose(QVector3D const& pose){
 
 
     //TODO: REPLACE LOOKUP WITH HASH<HASH<TILE>>
+    //Lookup of existing tiles
     for(auto const& tileVariant : tiles){
         HexTile* tile = tileVariant.value<HexTile*>();
         if(tile){
             if(tile->sourceContains(position)){
-                QVector3D result = (tile->sourceCoordinates(position) + tile->hexOffset()).toVector3D();
-                result.setZ(pose.z());
-                return result;
+                QVector2D resultPosition = tile->sourceCoordinates(position) + tile->hexOffset();
+                processKnownTile(resultPosition, tile->getQ(), tile->getR());
+
+                QVector3D resultPose = resultPosition.toVector3D();
+                resultPose.setZ(pose.z());
+                return resultPose;
             }
         }
         else
             qCritical() << "HexTileMap::remapPose(): tiles can only contain HexTile type!";
     }
 
+    //Unknown tile encountered
+    return processUnknownTile(position);
+}
+
+void HexTileMap::resetAutoBuild(){
+    autoBuildKnownHistory.clear();
+    autoBuildUnknownHistory.clear();
+    autoBuildKnownCoordsExist = false;
+}
+
+void HexTileMap::processKnownTile(QVector2D const& position, int q, int r){
+
+
+
+
+
+}
+
+QVector3D HexTileMap::processUnknownTile(QVector2D const& position){
+
+
+
+
+
+
+
+
+
+
+
+
+
     qCritical() << "HexTileMap::remapPose(): Unknown tile!";
+
+
+
+
+
 
     return QVector3D(0,0,0);
 }
+
+
 
 }

@@ -60,6 +60,9 @@ class HexTileMap : public PoseRemapper {
     /** @brief Converter from physical coords (mm) to screen coords (pixels) */
     Q_PROPERTY(Cellulo::CoordSpaceConverter* toScreenCoords READ getToScreenCoords NOTIFY toScreenCoordsChanged)
 
+    /** @brief Try build map automatically with standard coordinates through robot readings, i.e auto-add unknown tiles, default false */
+    Q_PROPERTY(bool autoBuild READ getAutoBuild WRITE setAutoBuild NOTIFY autoBuildChanged)
+
     //TODO: BETTER STORAGE
     Q_PROPERTY(QVariantList tiles MEMBER tiles)
 
@@ -119,6 +122,20 @@ public:
      */
     Cellulo::CoordSpaceConverter* getToScreenCoords(){ return &toScreenCoords; }
 
+    /**
+     * @brief Gets whether the map will try to automatically build according to standard coordinate hex tiles
+     *
+     * @return Whether the map will try to automatically build according to standard coordinate hex tiles
+     */
+    bool getAutoBuild() const { return autoBuild; }
+
+    /**
+     * @brief Sets whether the map will try to automatically build according to standard coordinate hex tiles
+     *
+     * @param autoBuild Whether the map will try to automatically build according to standard coordinate hex tiles
+     */
+    void setAutoBuild(bool autoBuild);
+
     /** @endcond */
 
 signals:
@@ -144,6 +161,11 @@ signals:
      * @brief Emitted when toScreenCoords changes
      */
     void toScreenCoordsChanged();
+
+    /**
+     * @brief Emitted when autoBuild changes
+     */
+    void autoBuildChanged();
 
     /** @endcond */
 
@@ -184,13 +206,35 @@ private:
      */
     void itemChange(ItemChange change, const ItemChangeData& value) override;
 
+
+
+
+    void resetAutoBuild();
+
+
+
+
+
+    void processKnownTile(QVector2D const& position, int q, int r);
+
+
+
+
+
+
+    QVector3D processUnknownTile(QVector2D const& position);
+
     QVector2D physicalTopLeft;           ///< Physical top left coordinate of this map in mm, used when drawing
     QVector2D physicalSize;              ///< Physical size described by this map in mm, used when drawing
     CoordSpaceConverter toScreenSize;    ///< Converter from physical sizes to screen sizes
     CoordSpaceConverter toScreenCoords;  ///< Converter from physical coords to screen coords
 
-
-
+    bool autoBuild;                      ///< Whether to try to automatically build the map
+    QVector<QVector2D> autoBuildKnownHistory;
+    QVector<QVector2D> autoBuildUnknownHistory;
+    bool autoBuildKnownCoordsExist;
+    int autoBuildKnownQ;
+    int autoBuildKnownR;
 
     //TODO: BETTER STORAGE
     QVariantList tiles;
