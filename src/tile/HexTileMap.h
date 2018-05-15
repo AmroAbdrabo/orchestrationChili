@@ -31,6 +31,8 @@
 #include <QVariantList>
 #include <QRectF>
 
+#include "CoordSpaceConverter.h"
+
 namespace Cellulo {
 
 /**
@@ -52,8 +54,11 @@ class HexTileMap : public PoseRemapper {
     /** @brief The physical size of this map, in mm */
     Q_PROPERTY(QVector2D physicalSize READ getPhysicalSize WRITE setPhysicalSize NOTIFY physicalSizeChanged)
 
-    /** @brief When multiplied with physical quantities, converts to screen quantities */
-    Q_PROPERTY(QVector2D toScreen READ getToScreen NOTIFY toScreenChanged)
+    /** @brief Converter from physical sizes (mm) to screen sizes (pixels) */
+    Q_PROPERTY(Cellulo::CoordSpaceConverter* toScreenSize READ getToScreenSize NOTIFY toScreenSizeChanged)
+
+    /** @brief Converter from physical coords (mm) to screen coords (pixels) */
+    Q_PROPERTY(Cellulo::CoordSpaceConverter* toScreenCoords READ getToScreenCoords NOTIFY toScreenCoordsChanged)
 
     //TODO: BETTER STORAGE
     Q_PROPERTY(QVariantList tiles MEMBER tiles)
@@ -101,31 +106,24 @@ public:
     void setPhysicalTopLeft(QVector2D const& physicalTopLeft);
 
     /**
-     * @brief Converts the given physical size to screen size according to the physical and screen sizes of this map
+     * @brief Gets the converter from physical sizes to screen sizes
      *
-     * @param  physicalSize Physical size of the object in mm
-     * @return              Screen size of the object in pixels
+     * @return Converter from physical sizes to screen sizes
      */
-    QVector2D toScreenSize(QVector2D const& physicalSize) const;
+    Cellulo::CoordSpaceConverter* getToScreenSize(){ return &toScreenSize; }
 
     /**
-     * @brief Converts the given physical point to screen point according to the physical and screen sizes of this map
+     * @brief Gets the converter from physical coords to screen coords
      *
-     * @param  physicalCoords Physical coordinates in mm
-     * @return                Screen coordinates in pixels
+     * @return Converter from physical coords to screen coords
      */
-    QVector2D toScreenCoords(QVector2D const& physicalCoords) const;
-
-    /**
-     * @brief Gets a coefficient vector that converts physical quantities to screen quantities when multiplied
-     * 
-     * @return To screen coeff
-     */
-    QVector2D getToScreen() const;
+    Cellulo::CoordSpaceConverter* getToScreenCoords(){ return &toScreenCoords; }
 
     /** @endcond */
 
 signals:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Emitted when the physical size changes
@@ -138,9 +136,16 @@ signals:
     void physicalTopLeftChanged();
 
     /**
-     * @brief Emitted when toScreen changes
+     * @brief Emitted when toScreenSize changes
      */
-    void toScreenChanged();
+    void toScreenSizeChanged();
+
+    /**
+     * @brief Emitted when toScreenCoords changes
+     */
+    void toScreenCoordsChanged();
+
+    /** @endcond */
 
     /**
      * @brief Emitted when screen children should redraw
@@ -157,6 +162,18 @@ public slots:
      */
     virtual QVector3D remapPose(QVector3D const& pose) override;
 
+private slots:
+
+    /**
+     * @brief Updates the internal coordinates of toScreenSize according to this map
+     */
+    void updateToScreenSize();
+
+    /**
+     * @brief Updates the internal coordinates of toScreenCoords according to this map
+     */
+    void updateToScreenCoords();
+
 private:
 
     /**
@@ -167,9 +184,10 @@ private:
      */
     void itemChange(ItemChange change, const ItemChangeData& value) override;
 
-    QVector2D physicalTopLeft;  ///< Physical top left coordinate of this map in mm, used when drawing
-    QVector2D physicalSize;     ///< Physical size described by this map in mm, used when drawing
-
+    QVector2D physicalTopLeft;           ///< Physical top left coordinate of this map in mm, used when drawing
+    QVector2D physicalSize;              ///< Physical size described by this map in mm, used when drawing
+    CoordSpaceConverter toScreenSize;    ///< Converter from physical sizes to screen sizes
+    CoordSpaceConverter toScreenCoords;  ///< Converter from physical coords to screen coords
 
 
 

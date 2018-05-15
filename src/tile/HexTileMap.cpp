@@ -31,20 +31,27 @@
 
 namespace Cellulo{
 
-HexTileMap::HexTileMap(QQuickItem* parent) : PoseRemapper(parent){
+HexTileMap::HexTileMap(QQuickItem* parent) : PoseRemapper(parent),
+    toScreenSize(this),
+    toScreenCoords(this)
+{
     physicalTopLeft = QVector2D(-50.0f, -57.73502691896257645092f);
     physicalSize = QVector2D(100.0f, 115.47005383792515290183f);
 
-    connect(this, SIGNAL(physicalSizeChanged()),    this, SIGNAL(markedDirty()));
-    connect(this, SIGNAL(physicalTopLeftChanged()), this, SIGNAL(markedDirty()));
-    connect(this, SIGNAL(widthChanged()),           this, SIGNAL(markedDirty()));
-    connect(this, SIGNAL(heightChanged()),          this, SIGNAL(markedDirty()));
-    connect(this, SIGNAL(widthChanged()),           this, SIGNAL(toScreenChanged()));
-    connect(this, SIGNAL(heightChanged()),          this, SIGNAL(toScreenChanged()));
-    connect(this, SIGNAL(physicalSizeChanged()),    this, SIGNAL(toScreenChanged()));
+    connect(this, SIGNAL(widthChanged()),           this, SLOT(updateToScreenSize()));
+    connect(this, SIGNAL(heightChanged()),          this, SLOT(updateToScreenSize()));
+    connect(this, SIGNAL(physicalSizeChanged()),    this, SLOT(updateToScreenSize()));
+
+    connect(this, SIGNAL(widthChanged()),           this, SLOT(updateToScreenCoords()));
+    connect(this, SIGNAL(heightChanged()),          this, SLOT(updateToScreenCoords()));
+    connect(this, SIGNAL(physicalSizeChanged()),    this, SLOT(updateToScreenCoords()));
+    connect(this, SIGNAL(physicalTopLeftChanged()), this, SLOT(updateToScreenCoords()));
+
+    connect(this, SIGNAL(toScreenSizeChanged()),    this, SIGNAL(markedDirty()));
+    connect(this, SIGNAL(toScreenCoordsChanged()),  this, SIGNAL(markedDirty()));
 }
 
-HexTileMap::~HexTileMap(){}
+HexTileMap::~HexTileMap(){ }
 
 void HexTileMap::setPhysicalSize(QVector2D const& physicalSize){
     if(physicalSize.x() > 0 && physicalSize.y() > 0){
@@ -92,16 +99,18 @@ void HexTileMap::itemChange(ItemChange change, const ItemChangeData& value){
     QQuickItem::itemChange(change, value);
 }
 
-QVector2D HexTileMap::toScreenSize(QVector2D const& objSize) const {
-    return getToScreen()*objSize;
+void HexTileMap::updateToScreenSize(){
+    toScreenSize.setInputSize(physicalSize);
+    toScreenSize.setOutputSize(QVector2D(width(), height()));
+    emit toScreenSizeChanged();
 }
 
-QVector2D HexTileMap::toScreenCoords(QVector2D const& objCoords) const {
-    return getToScreen()*(objCoords - physicalTopLeft);
-}
-
-QVector2D HexTileMap::getToScreen() const {
-    return QVector2D(width(), height())/physicalSize;
+void HexTileMap::updateToScreenCoords(){
+    toScreenCoords.setInputSize(physicalSize);
+    toScreenCoords.setInputOrigin(physicalTopLeft);
+    toScreenCoords.setOutputSize(QVector2D(width(), height()));
+    toScreenCoords.setOutputOrigin(QVector2D(0, 0));
+    emit toScreenCoordsChanged();
 }
 
 QVector3D HexTileMap::remapPose(QVector3D const& pose){

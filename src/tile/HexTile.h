@@ -111,10 +111,6 @@ public:
      */
     float getPhysicalHeight() const;
 
-    /** @endcond */
-
-    static constexpr float PHYSICAL_WIDTH_DEFAULT = 99.0f; ///< Default physical width of the hex tile in mm (height would be 2*width/sqrt(3))
-
     /**
      * @brief Sets the new standard hex tile coordinate description
      *
@@ -129,7 +125,13 @@ public:
      */
     Cellulo::HexTileStandardCoords* getStandardCoords(){ return standardCoords; }
 
+    static constexpr float PHYSICAL_WIDTH_DEFAULT = 99.0f; ///< Default physical width of the hex tile in mm (height would be 2*width/sqrt(3))
+
+    /** @endcond */
+
 signals:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Emitted when the physical tile width changes
@@ -200,6 +202,8 @@ signals:
      * @brief Emitted when the border size changes
      */
     void borderSizeChanged();
+
+    /** @endcond */
 
 public slots:
 

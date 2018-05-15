@@ -60,7 +60,8 @@ HEADERS += \
     src/tile/OffsetRemapper.h \
     src/tile/HexTileMap.h \
     src/tile/HexTile.h \
-    src/tile/HexTileStandardCoords.h
+    src/tile/HexTileStandardCoords.h \
+    src/tile/CoordSpaceConverter.h
 
 SOURCES += \
     src/CelluloPlugin.cpp \
@@ -103,7 +104,8 @@ SOURCES += \
     src/tile/OffsetRemapper.cpp \
     src/tile/HexTileMap.cpp \
     src/tile/HexTile.cpp \
-    src/tile/HexTileStandardCoords.cpp
+    src/tile/HexTileStandardCoords.cpp \
+    src/tile/CoordSpaceConverter.cpp
 
 INCLUDEPATH += \
     include/

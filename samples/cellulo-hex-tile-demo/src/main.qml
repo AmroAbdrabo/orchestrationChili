@@ -30,7 +30,7 @@ ApplicationWindow {
             width: 100
             value: 1.0
 
-            visible: false
+            visible: true
 
             //onValueChanged: hexMap.physicalArea = Qt.rect(-200*slider.value, -200*slider.value, 400*slider.value, 400*slider.value)
         }
@@ -55,7 +55,7 @@ ApplicationWindow {
             id: hexMap
 
             width: parent.width*slider.value
-            height: parent.height*slider.value
+            height: parent.height
             //x: slider.value*100
             //y: slider.value*100
             physicalSize: Qt.vector2d(400, 400)
@@ -106,8 +106,10 @@ ApplicationWindow {
             }
 
             Image{
-                property vector2d screenSize: Qt.vector2d(75, 75*2/Math.sqrt(3)).times(parent.toScreen)
-                property vector2d screenCoords: Qt.vector2d(robotComm.x, robotComm.y).minus(parent.physicalTopLeft).times(parent.toScreen)
+                property vector2d screenSize: parent.toScreenSize.convert(Qt.vector2d(75, 75*2/Math.sqrt(3)))
+                property vector2d screenCoords: parent.toScreenCoords.convert(Qt.vector2d(robotComm.x, robotComm.y))
+
+
 
                 source: robotComm.kidnapped ? "../assets/redHexagon.svg" : "../assets/greenHexagon.svg"
                 rotation: robotComm.theta
@@ -121,8 +123,8 @@ ApplicationWindow {
             }
 
             Image{
-                property vector2d screenSize: Qt.vector2d(30, 30*2/Math.sqrt(3)).times(parent.toScreen)
-                property vector2d screenCoords: Qt.vector2d(robotComm.goal.x, robotComm.goal.y).minus(parent.physicalTopLeft).times(parent.toScreen)
+                property vector2d screenSize: parent.toScreenSize.convert(Qt.vector2d(30, 30*2/Math.sqrt(3)))
+                property vector2d screenCoords: parent.toScreenCoords.convert(Qt.vector2d(robotComm.goal.x, robotComm.goal.y))
 
                 source: "../assets/redHexagon.svg"
                 width: screenSize.x

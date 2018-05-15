@@ -163,15 +163,17 @@ void HexTile::recalculateScreenCoords(){
     HexTileMap* tileMap = qobject_cast<HexTileMap*>(parentItem());
     if(tileMap){
         QVector2D physicalSize = QVector2D(physicalWidth, getPhysicalHeight());
-        QVector2D screenSize = tileMap->toScreenSize(physicalSize);
+        QVector2D screenSize = tileMap->getToScreenSize()->convert(physicalSize);
         setWidth(screenSize.x());
         setHeight(screenSize.y());
+        emit widthChanged();
+        emit heightChanged();
 
-        QVector2D screenTopLeft = tileMap->toScreenCoords(hexOffset() - 0.5f*physicalSize);
+        QVector2D screenTopLeft = tileMap->getToScreenCoords()->convert(hexOffset() - 0.5f*physicalSize);
         setX(screenTopLeft.x());
         setY(screenTopLeft.y());
-
-        update();
+        emit xChanged();
+        emit yChanged();
     }
 }
 

@@ -97,8 +97,6 @@ public:
      */
     virtual ~HexTileStandardCoords();
 
-    /** @endcond */
-
     /**
      * @brief Gets i
      *
@@ -155,7 +153,11 @@ public:
      */
     void setV(int v);
 
+    /** @endcond */
+
 signals:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
      * @brief Emitted when i changes
@@ -176,6 +178,8 @@ signals:
      * @brief Emitted wjhen v changes
      */
     void vChanged();
+
+    /** @endcond */
 
 public slots:
 
