@@ -37,6 +37,7 @@ HexTileMap::HexTileMap(QQuickItem* parent) : PoseRemapper(parent),
 {
     autoBuild = false;
     autoBuildKnownCoordsExist = false;
+    autoBuildUnknownStdCoords = nullptr;
 
     physicalTopLeft = QVector2D(-50.0f, -57.73502691896257645092f);
     physicalSize = QVector2D(100.0f, 115.47005383792515290183f);
@@ -155,16 +156,16 @@ QVector3D HexTileMap::remapPose(QVector3D const& pose){
     }
 
     //Unknown tile encountered
-    return processUnknownTile(position);
+    return processUnknownTile(pose);
 }
 
 void HexTileMap::resetAutoBuild(){
     autoBuildKnownHistory.clear();
     autoBuildUnknownHistory.clear();
     autoBuildKnownCoordsExist = false;
-    if(unknownStdCoords){
-        delete unknownStdCoords;
-        unknownStdCoords = nullptr;
+    if(autoBuildUnknownStdCoords){
+        delete autoBuildUnknownStdCoords;
+        autoBuildUnknownStdCoords = nullptr;
     }
 }
 
@@ -186,36 +187,70 @@ void HexTileMap::processKnownTile(QVector2D const& position, int q, int r){
         autoBuildKnownHistory.removeFirst();
 }
 
-QVector3D HexTileMap::processUnknownTile(QVector2D const& position){
-    HexTileStandardCoords* newStdCoords = new HexTileStandardCoords();
-    newStdCoords->estimateFromCoords(position);
+QVector3D HexTileMap::processUnknownTile(QVector3D const& pose){
+    QVector2D position = pose.toVector2D();
 
-    qDebug() << newStdCoords->getI() << " " << newStdCoords->getJ() << " " << newStdCoords->getU() << " " << newStdCoords->getV();
+    //Get the standard tile coords of the unknown position
+    HexTileStandardCoords* newUnknownStdCoords = new HexTileStandardCoords();
+    if(newUnknownStdCoords->estimateFromCoords(position)){
+
+        //Update old std coords if necessary and position history
+        if(autoBuildUnknownStdCoords){
+            if(autoBuildUnknownStdCoords->equals(*newUnknownStdCoords)){
+                delete newUnknownStdCoords;
+                autoBuildUnknownHistory.append(position);
+                if(autoBuildUnknownHistory.size() > autoBuildUnknownHistorySize)
+                    autoBuildUnknownHistory.removeFirst();
+            }
+            else{
+                delete autoBuildUnknownStdCoords;
+                autoBuildUnknownStdCoords = newUnknownStdCoords;
+                autoBuildUnknownHistory.clear();
+                autoBuildUnknownHistory.append(position);
+            }
+        }
+        else{
+            autoBuildUnknownStdCoords = newUnknownStdCoords;
+            autoBuildUnknownHistory.append(position);
+        }
+
+        //This is the first tile ever, assume q=0 and r=0
+        if(!autoBuildKnownCoordsExist){
+            HexTile* imaginaryTile = new HexTile(); //No need for screen rendering now, no need for parent
+            //imaginaryTile->setQ(0); //No need for these, default coordinates are 0,0
+            //imaginaryTile->setR(0);
+            imaginaryTile->setStandardCoords(autoBuildUnknownStdCoords);
+            QVector3D result = (imaginaryTile->sourceCoordinates(position) + imaginaryTile->hexOffset()).toVector3D();
+            result.setZ(pose.z());
+
+            //Add this tile
+            if(autoBuild && autoBuildUnknownHistory.size() >= autoBuildUnknownHistorySize){
+                autoBuildUnknownStdCoords = nullptr; //Detach from the map, rests only with tile
+                imaginaryTile->setParent(this);
+                imaginaryTile->setParentItem(this);
+                tiles.append(QVariant::fromValue(imaginaryTile));
+            }
+            else
+                delete imaginaryTile;
+
+            return result;
+        }
+        else{
 
 
-    delete newStdCoords;
+            //Try to get new q,r from known coords, intersect ray with hex edges
 
 
+            return QVector3D(0,0,0);
+        }
+    }
 
-
-
-
-
-
-
-
-
-
-    qCritical() << "HexTileMap::remapPose(): Unknown tile!";
-
-
-
-
-
-
-    return QVector3D(0,0,0);
+    //Estimate somehow failed
+    else{
+        delete newUnknownStdCoords;
+        qCritical() << "HexTileMap::processUnknownTile(): Standard coordinate estimate somehow failed.";
+        return QVector3D(0,0,0);
+    }
 }
-
-
 
 }

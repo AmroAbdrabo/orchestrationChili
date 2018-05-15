@@ -56,7 +56,7 @@ HexTile::HexTile(QQuickItem* parent) : QQuickItem(parent){
 
     standardCoords = NULL;
 
-    connect(this, SIGNAL(standardCoordsChanged()), this, SLOT(updateFromStandardCoords()));
+    connect(this, SIGNAL(standardCoordsChanged()), this, SLOT(updateFromStandardCoords()), Qt::DirectConnection); //Update immediately
 
     setFlag(QQuickItem::ItemHasContents, true);
     fillColor = QColor(250, 250, 250);
@@ -65,6 +65,8 @@ HexTile::HexTile(QQuickItem* parent) : QQuickItem(parent){
     connect(this, SIGNAL(fillColorChanged()),   this, SLOT(update()));
     connect(this, SIGNAL(borderColorChanged()), this, SLOT(update()));
     connect(this, SIGNAL(borderSizeChanged()),  this, SLOT(update()));
+
+    setZ(-1); //Tiles go underneath other stuff by default
 }
 
 HexTile::~HexTile(){}

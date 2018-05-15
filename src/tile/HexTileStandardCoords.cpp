@@ -97,15 +97,18 @@ void HexTileStandardCoords::disconnectHexTileChangedSignals(Cellulo::HexTile* ti
     disconnect(this, SIGNAL(vChanged()), tile, SIGNAL(standardCoordsChanged()));
 }
 
-void HexTileStandardCoords::estimateFromCoords(QVector2D const& coords){
+bool HexTileStandardCoords::estimateFromCoords(QVector2D const& coords){
     if(coords.x() >= 0 && coords.y() >= 0){
         setI((int)(coords.x()/210.0));
         setJ((int)(coords.y()/260.0));
         setU((coords.x() - getI()*210.0) <= 105.7 ? 0 : 1);
         setV((coords.y() - getJ()*260.0) <= 130.0 ? 0 : 1);
+        return true;
     }
-    else
+    else{
         qCritical() << "HexTileStandardCoords::estimateFromCoords(): Coordinates must not be negative!";
+        return false;
+    }
 }
 
 bool HexTileStandardCoords::equals(HexTileStandardCoords const& other) const {

@@ -61,14 +61,14 @@ ApplicationWindow {
             physicalSize: Qt.vector2d(400, 400)
             physicalTopLeft: Qt.vector2d(-200, -200)
 
+            autoBuild: true
 
-
-            HexTileWithCoords{
+/*            HexTileWithCoords{
                 id: centerTile
                 standardCoords: HexTileStandardCoords{ i:7; j:9; u:0; v:0 }
                 q: 0; r: 0
             }
-/*
+
             HexTileWithCoords{
                 id: leftTile
                 standardCoords: HexTileStandardCoords{ i:2; j:3; u:0; v:1 }

@@ -223,7 +223,7 @@ private:
 
 
 
-    QVector3D processUnknownTile(QVector2D const& position);
+    QVector3D processUnknownTile(QVector3D const& pose);
 
     QVector2D physicalTopLeft;           ///< Physical top left coordinate of this map in mm, used when drawing
     QVector2D physicalSize;              ///< Physical size described by this map in mm, used when drawing
@@ -233,7 +233,7 @@ private:
     bool autoBuild;                      ///< Whether to try to automatically build the map
     QList<QVector2D> autoBuildKnownHistory;
     QList<QVector2D> autoBuildUnknownHistory;
-    HexTileStandardCoords* unknownStdCoords;
+    HexTileStandardCoords* autoBuildUnknownStdCoords;
     bool autoBuildKnownCoordsExist;
     int autoBuildKnownQ;
     int autoBuildKnownR;

@@ -201,8 +201,9 @@ public slots:
      * @brief Attempts to estimate i,j,u,v from given raw physical coordinates
      *
      * @param coords Physical raw coordinates in mm
+     * @return Whether the estimate was successful
      */
-    void estimateFromCoords(QVector2D const& coords);
+    bool estimateFromCoords(QVector2D const& coords);
 
     /**
      * @brief Compares these coords to another
