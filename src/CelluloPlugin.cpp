@@ -62,6 +62,7 @@
 #include "tile/HexTileMap.h"
 #include "tile/HexTile.h"
 #include "tile/HexTileStandardCoords.h"
+#include "tile/AxialHexCoords.h"
 
 /**
  * @brief Scope for core Cellulo objects
@@ -179,6 +180,7 @@ void CelluloPlugin::registerTypes(const char *uri){
     qmlRegisterType<HexTileMap>(uri, 1, 0, "HexTileMap");
     qmlRegisterType<HexTile>(uri, 1, 0, "HexTile");
     qmlRegisterType<HexTileStandardCoords>(uri, 1, 0, "HexTileStandardCoords");
+    qmlRegisterType<AxialHexCoords>(uri, 1, 0, "AxialHexCoords");
 }
 
 void CelluloPlugin::initializeEngine(QQmlEngine *engine, const char *uri){

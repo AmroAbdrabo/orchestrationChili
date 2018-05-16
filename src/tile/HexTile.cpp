@@ -37,15 +37,11 @@
 namespace Cellulo{
 
 HexTile::HexTile(QQuickItem* parent) : QQuickItem(parent){
-    physicalWidth = PHYSICAL_WIDTH_DEFAULT;
-    connect(this, SIGNAL(physicalWidthChanged()), this, SIGNAL(physicalHeightChanged()));
+    coords = new AxialHexCoords(this);
 
-    q = 0;
-    r = 0;
-
-    connect(this, SIGNAL(physicalWidthChanged()),   this, SLOT(recalculateScreenCoords()));
-    connect(this, SIGNAL(qChanged()),               this, SLOT(recalculateScreenCoords()));
-    connect(this, SIGNAL(rChanged()),               this, SLOT(recalculateScreenCoords()));
+    connect(coords, SIGNAL(physicalWidthChanged()),   this, SLOT(recalculateScreenCoords()));
+    connect(coords, SIGNAL(qChanged()),               this, SLOT(recalculateScreenCoords()));
+    connect(coords, SIGNAL(rChanged()),               this, SLOT(recalculateScreenCoords()));
 
     sourceLeft = 0;
     sourceTop = 0;
@@ -69,33 +65,14 @@ HexTile::HexTile(QQuickItem* parent) : QQuickItem(parent){
     setZ(-1); //Tiles go underneath other stuff by default
 }
 
-HexTile::~HexTile(){}
-
-void HexTile::setQ(int q){
-    this->q = q;
-    emit qChanged();
-}
-
-void HexTile::setR(int r){
-    this->r = r;
-    emit rChanged();
-}
-
-float HexTile::getPhysicalHeight() const {
-    return physicalWidth*1.15470053837925152902f; // 2/sqrt(3)
+HexTile::~HexTile(){
+    delete coords;
 }
 
 bool HexTile::sourceContains(QVector2D const& point){
     return
         sourceLeft < point.x() &&  point.x() <= sourceRight &&
         sourceTop < point.y() &&   point.y() <= sourceBottom;
-}
-
-QVector2D HexTile::hexOffset(){
-    return physicalWidth*QVector2D(
-        (float)q + (float)r*0.5f,
-        (float)r*0.86602540378443864676f //sqrt(3)/2
-    );
 }
 
 QVector2D HexTile::sourceCoordinates(QVector2D const& point){
@@ -174,14 +151,14 @@ void HexTile::updateFromStandardCoords(){
 void HexTile::recalculateScreenCoords(){
     HexTileMap* tileMap = qobject_cast<HexTileMap*>(parentItem());
     if(tileMap){
-        QVector2D physicalSize = QVector2D(physicalWidth, getPhysicalHeight());
+        QVector2D physicalSize = QVector2D(coords->getPhysicalWidth(), coords->getPhysicalHeight());
         QVector2D screenSize = tileMap->getToScreenSize()->convert(physicalSize);
         setWidth(screenSize.x());
         setHeight(screenSize.y());
         emit widthChanged();
         emit heightChanged();
 
-        QVector2D screenTopLeft = tileMap->getToScreenCoords()->convert(hexOffset() - 0.5f*physicalSize);
+        QVector2D screenTopLeft = tileMap->getToScreenCoords()->convert(coords->hexOffset() - 0.5f*physicalSize);
         setX(screenTopLeft.x());
         setY(screenTopLeft.y());
         emit xChanged();

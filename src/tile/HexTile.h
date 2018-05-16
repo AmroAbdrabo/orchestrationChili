@@ -28,6 +28,7 @@
 #include <QQuickItem>
 
 #include "HexTileStandardCoords.h"
+#include "AxialHexCoords.h"
 
 namespace Cellulo {
 
@@ -40,25 +41,14 @@ class HexTileStandardCoords;
 
 /**
  * @brief Hexagonal tile definition, built in axial coordinates
- *
- * See https://www.redblobgames.com/grids/hexagons/#coordinates-axial.
  */
 class HexTile : public QQuickItem {
     /* *INDENT-OFF* */
     Q_OBJECT
         /* *INDENT-ON* */
 
-    /** @brief Tile width (mm), height would be 2*width/sqrt(3) */
-    Q_PROPERTY(float physicalWidth MEMBER physicalWidth NOTIFY physicalWidthChanged)
-
-    /** @brief Tile width (mm), height would be 2*width/sqrt(3) */
-    Q_PROPERTY(float physicalHeight READ getPhysicalHeight NOTIFY physicalHeightChanged)
-
-    /** @brief Target Q index (horizontal) in axial discrete hex tile coordinates */
-    Q_PROPERTY(int q READ getQ WRITE setQ NOTIFY qChanged)
-
-    /** @brief Target R index (vertical, 120 degrees to the Q axis) in axial discrete hex tile coordinates */
-    Q_PROPERTY(int r READ getR WRITE setR NOTIFY rChanged)
+    /** @brief Target axial hex coordinates */
+    Q_PROPERTY(Cellulo::AxialHexCoords* coords READ getCoords NOTIFY coordsChanged)
 
     /** @brief Starting X coordinate of the rectangular source space (mm) */
     Q_PROPERTY(float sourceLeft MEMBER sourceLeft NOTIFY sourceLeftChanged)
@@ -105,39 +95,11 @@ public:
     virtual ~HexTile();
 
     /**
-     * @brief Gets the horizontal hex tile coordinate
+     * @brief Axial hex coordinates
      *
-     * @return Horizontal hex tile coordinate
+     * @return Axial hex coordinates
      */
-    int getQ() const { return q; }
-
-    /**
-     * @brief Gets the vertical hex tile coordinate
-     *
-     * @return Vertical hex tile coordinate
-     */
-    int getR() const { return r; }
-
-    /**
-     * @brief Sets the horizontal hex tile coordinate
-     *
-     * @param q Horizontal hex tile coordinate
-     */
-    void setQ(int q);
-
-    /**
-     * @brief Sets the vertical hex tile coordinate
-     *
-     * @param r Vertical hex tile coordinate
-     */
-    void setR(int r);
-
-    /**
-     * @brief Gets the physical height of this tile
-     *
-     * @return Always physicalWidth*2/sqrt(3)
-     */
-    float getPhysicalHeight() const;
+    Cellulo::AxialHexCoords* getCoords() const { return coords; }
 
     /**
      * @brief Sets the new standard hex tile coordinate description
@@ -153,8 +115,6 @@ public:
      */
     Cellulo::HexTileStandardCoords* getStandardCoords(){ return standardCoords; }
 
-    static constexpr float PHYSICAL_WIDTH_DEFAULT = 99.0f; ///< Default physical width of the hex tile in mm (height would be 2*width/sqrt(3))
-
     /** @endcond */
 
 signals:
@@ -162,24 +122,9 @@ signals:
     /** @cond DO_NOT_DOCUMENT */
 
     /**
-     * @brief Emitted when the physical tile width changes
+     * @brief Emitted when the axial hex tile coordinates change
      */
-    void physicalWidthChanged();
-
-    /**
-     * @brief Emitted when the physical tile height changes
-     */
-    void physicalHeightChanged();
-
-    /**
-     * @brief Emitted when q changes
-     */
-    void qChanged();
-
-    /**
-     * @brief Emitted when r changes
-     */
-    void rChanged();
+    void coordsChanged();
 
     /**
      * @brief Emitted when the standard hex tile coordinate definition changes
@@ -253,13 +198,6 @@ public slots:
      */
     QVector2D sourceCoordinates(QVector2D const& point);
 
-    /**
-     * @brief Gets the tile center's coordinates in the continuous mapped space composed of hex tiles
-     *
-     * @return Tile center's coordinates in the continuous mapped space composed of hex tiles
-     */
-    QVector2D hexOffset();
-
 private slots:
 
     /**
@@ -291,9 +229,7 @@ private:
      */
     QSGNode* updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* updatePaintNodeData) override;
 
-    float physicalWidth;                            ///< Tile width in mm, height would be 2*width/sqrt(3)
-    int q;                                          ///< Q index (horizontal) in axial hex tile coordinates
-    int r;                                          ///< R index (vertical, 120 degrees to the Q axis) in axial hex tile coordinates
+    Cellulo::AxialHexCoords* coords;                ///< Axial hex tile coordinates
     float sourceLeft;                               ///< Starting X coordinate of the rectangular source space (mm)
     float sourceTop;                                ///< Starting Y coordinate of the rectangular source space (mm)
     float sourceRight;                              ///< Ending X coordinate of the rectangular source space (mm)

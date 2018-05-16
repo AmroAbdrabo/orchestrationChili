@@ -237,8 +237,11 @@ private:
     bool autoBuildKnownCoordsExist;
     int autoBuildKnownQ;
     int autoBuildKnownR;
-    constexpr static int autoBuildKnownHistorySize = 10;
+    constexpr static int autoBuildKnownHistorySize = 5;
     constexpr static int autoBuildUnknownHistorySize = 5;
+
+
+    constexpr static float autoBuildExitMargin = 10.0f;
 
     //TODO: BETTER STORAGE
     QVariantList tiles;

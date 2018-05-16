@@ -61,7 +61,8 @@ HEADERS += \
     src/tile/HexTileMap.h \
     src/tile/HexTile.h \
     src/tile/HexTileStandardCoords.h \
-    src/tile/CoordSpaceConverter.h
+    src/tile/CoordSpaceConverter.h \
+    src/tile/AxialHexCoords.h
 
 SOURCES += \
     src/CelluloPlugin.cpp \
@@ -105,7 +106,8 @@ SOURCES += \
     src/tile/HexTileMap.cpp \
     src/tile/HexTile.cpp \
     src/tile/HexTileStandardCoords.cpp \
-    src/tile/CoordSpaceConverter.cpp
+    src/tile/CoordSpaceConverter.cpp \
+    src/tile/AxialHexCoords.cpp
 
 INCLUDEPATH += \
     include/

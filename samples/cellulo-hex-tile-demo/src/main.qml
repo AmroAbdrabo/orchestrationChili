@@ -61,50 +61,52 @@ ApplicationWindow {
             physicalSize: Qt.vector2d(400, 400)
             physicalTopLeft: Qt.vector2d(-200, -200)
 
-            autoBuild: true
+            autoBuild: false
 
-/*            HexTileWithCoords{
+            HexTileWithCoords{
                 id: centerTile
                 standardCoords: HexTileStandardCoords{ i:7; j:9; u:0; v:0 }
-                q: 0; r: 0
+                coords.q: 0; coords.r: 0
+
+                Button{ text: "asdasd"; onClicked: {parent.coords.physicalWidth*=2;parent.coords.q+=2;} }
             }
 
             HexTileWithCoords{
                 id: leftTile
                 standardCoords: HexTileStandardCoords{ i:2; j:3; u:0; v:1 }
-                q: -1; r: 0
+                coords.q: -1; coords.r: 0
             }
 
             HexTileWithCoords{
                 id: rightTile
                 standardCoords: HexTileStandardCoords{ i:2; j:3; u:1; v:1 }
-                q: 1; r: 0
+                coords.q: 1; coords.r: 0
             }
 
             HexTileWithCoords{
                 id: topLeftTile
                 standardCoords: HexTileStandardCoords{ i:2; j:3; u:0; v:0 }
-                q: 0; r: -1
+                coords.q: 0; coords.r: -1
             }
 
             HexTileWithCoords{
                 id: topRightTile
                 standardCoords: HexTileStandardCoords{ i:7; j:9; u:1; v:1 }
-                q: 1; r: -1
+                coords.q: 1; coords.r: -1
             }
 
             HexTileWithCoords{
                 id: bottomLeftTile
                 standardCoords: HexTileStandardCoords{ i:7; j:9; u:1; v:0 }
-                q: -1; r: 1
+                coords.q: -1; coords.r: 1
             }
 
             HexTileWithCoords{
                 id: bottomRightTile
                 standardCoords: HexTileStandardCoords{ i:2; j:3; u:1; v:0 }
-                q: 0; r: 1
+                coords.q: 0; coords.r: 1
             }
-*/
+
             Image{
                 property vector2d screenSize: parent.toScreenSize.convert(Qt.vector2d(75, 75*2/Math.sqrt(3)))
                 property vector2d screenCoords: parent.toScreenCoords.convert(Qt.vector2d(robotComm.x, robotComm.y))

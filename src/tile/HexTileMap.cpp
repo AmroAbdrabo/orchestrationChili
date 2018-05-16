@@ -25,6 +25,7 @@
 #include "HexTileMap.h"
 
 #include "HexTile.h"
+#include "../util/math/CelluloMathUtil.h"
 
 #include <QDebug>
 
@@ -85,24 +86,9 @@ void HexTileMap::itemChange(ItemChange change, const ItemChangeData& value){
         HexTile* newTile = qobject_cast<HexTile*>(value.item);
         if(newTile){
 
-
-
-
-
-
             //TODO: BETTER STORAGE
             if(!tiles.contains(QVariant::fromValue(newTile)))
                 tiles.append(QVariant::fromValue(newTile));
-
-
-
-
-
-
-
-
-
-
 
             //addNewZone(newTile);
             qDebug() << "HexTileMap::itemChange(): Child tile " << /*newTile->getName()*/ "" << " automatically added.";
@@ -129,22 +115,14 @@ void HexTileMap::updateToScreenCoords(){
 QVector3D HexTileMap::remapPose(QVector3D const& pose){
     QVector2D position = pose.toVector2D();
 
-
-
-
-
-
-
-
-
     //TODO: REPLACE LOOKUP WITH HASH<HASH<TILE>>
     //Lookup of existing tiles
     for(auto const& tileVariant : tiles){
         HexTile* tile = tileVariant.value<HexTile*>();
         if(tile){
             if(tile->sourceContains(position)){
-                QVector2D resultPosition = tile->sourceCoordinates(position) + tile->hexOffset();
-                processKnownTile(resultPosition, tile->getQ(), tile->getR());
+                QVector2D resultPosition = tile->sourceCoordinates(position) + tile->getCoords()->hexOffset();
+                processKnownTile(resultPosition, tile->getCoords()->getQ(), tile->getCoords()->getR());
 
                 QVector3D resultPose = resultPosition.toVector3D();
                 resultPose.setZ(pose.z());
@@ -217,15 +195,14 @@ QVector3D HexTileMap::processUnknownTile(QVector3D const& pose){
         //This is the first tile ever, assume q=0 and r=0
         if(!autoBuildKnownCoordsExist){
             HexTile* imaginaryTile = new HexTile(); //No need for screen rendering now, no need for parent
-            //imaginaryTile->setQ(0); //No need for these, default coordinates are 0,0
-            //imaginaryTile->setR(0);
+            //imaginaryTile->setQ(0); imaginaryTile->setR(0); //No need for these, default coordinates are 0,0
             imaginaryTile->setStandardCoords(autoBuildUnknownStdCoords);
-            QVector3D result = (imaginaryTile->sourceCoordinates(position) + imaginaryTile->hexOffset()).toVector3D();
+            QVector3D result = (imaginaryTile->sourceCoordinates(position) + imaginaryTile->getCoords()->hexOffset()).toVector3D();
             result.setZ(pose.z());
 
             //Add this tile
             if(autoBuild && autoBuildUnknownHistory.size() >= autoBuildUnknownHistorySize){
-                autoBuildUnknownStdCoords = nullptr; //Detach from the map, rests only with tile
+                autoBuildUnknownStdCoords = nullptr; //Detach std coords from the map, rests only with tile
                 imaginaryTile->setParent(this);
                 imaginaryTile->setParentItem(this);
                 tiles.append(QVariant::fromValue(imaginaryTile));
@@ -237,8 +214,15 @@ QVector3D HexTileMap::processUnknownTile(QVector3D const& pose){
         }
         else{
 
+//            HexTile* imaginaryTile = new HexTile(); //No need for screen rendering now, no need for parent
+            //imaginaryTile->setQ(0); imaginaryTile->setR(0); //No need for these, default coordinates are 0,0
+            //imaginaryTile->setStandardCoords(autoBuildUnknownStdCoords);
+
 
             //Try to get new q,r from known coords, intersect ray with hex edges
+
+
+            //ray: check if all pos(n) - pos(n-1) vectors agree on direction
 
 
             return QVector3D(0,0,0);
