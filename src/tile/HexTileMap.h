@@ -216,7 +216,7 @@ private:
 
 
 
-    void processKnownTile(QVector2D const& position, int q, int r);
+    void processKnownTile(QVector2D const& sourcePosition, AxialHexCoords* tileCoords);
 
 
 
@@ -235,13 +235,13 @@ private:
     QList<QVector2D> autoBuildUnknownHistory;
     HexTileStandardCoords* autoBuildUnknownStdCoords;
     bool autoBuildKnownCoordsExist;
-    int autoBuildKnownQ;
-    int autoBuildKnownR;
+    AxialHexCoords autoBuildKnownCoords;
     constexpr static int autoBuildKnownHistorySize = 5;
     constexpr static int autoBuildUnknownHistorySize = 5;
 
 
     constexpr static float autoBuildExitMargin = 10.0f;
+    constexpr static float autoBuildExitSegWidth = 20.0f;
 
     //TODO: BETTER STORAGE
     QVariantList tiles;

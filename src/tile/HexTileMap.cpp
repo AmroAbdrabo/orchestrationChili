@@ -28,7 +28,7 @@
 #include "../util/math/CelluloMathUtil.h"
 
 #include <QDebug>
-
+#include <limits>
 
 namespace Cellulo{
 
@@ -121,10 +121,10 @@ QVector3D HexTileMap::remapPose(QVector3D const& pose){
         HexTile* tile = tileVariant.value<HexTile*>();
         if(tile){
             if(tile->sourceContains(position)){
-                QVector2D resultPosition = tile->sourceCoordinates(position) + tile->getCoords()->hexOffset();
-                processKnownTile(resultPosition, tile->getCoords()->getQ(), tile->getCoords()->getR());
+                QVector2D resultSourcePosition = tile->sourceCoordinates(position);
+                processKnownTile(resultSourcePosition, tile->getCoords());
 
-                QVector3D resultPose = resultPosition.toVector3D();
+                QVector3D resultPose = (resultSourcePosition + tile->getCoords()->hexOffset()).toVector3D();
                 resultPose.setZ(pose.z());
                 return resultPose;
             }
@@ -147,20 +147,18 @@ void HexTileMap::resetAutoBuild(){
     }
 }
 
-void HexTileMap::processKnownTile(QVector2D const& position, int q, int r){
+void HexTileMap::processKnownTile(QVector2D const& sourcePosition, AxialHexCoords* coords){
     if(autoBuildKnownCoordsExist){
-        if(autoBuildKnownQ != q || autoBuildKnownR != r){
-            autoBuildKnownQ = q;
-            autoBuildKnownR = r;
+        if(autoBuildKnownCoords.getQ() != coords->getQ() || autoBuildKnownCoords.getR() != coords->getR()){
+            autoBuildKnownCoords.copyFrom(*coords);
             autoBuildKnownHistory.clear();
         }
     }
     else{
         autoBuildKnownCoordsExist = true;
-        autoBuildKnownQ = q;
-        autoBuildKnownR = r;
+        autoBuildKnownCoords.copyFrom(*coords);
     }
-    autoBuildKnownHistory.append(position);
+    autoBuildKnownHistory.append(sourcePosition);
     if(autoBuildKnownHistory.size() > autoBuildKnownHistorySize)
         autoBuildKnownHistory.removeFirst();
 }
@@ -189,6 +187,7 @@ QVector3D HexTileMap::processUnknownTile(QVector3D const& pose){
         }
         else{
             autoBuildUnknownStdCoords = newUnknownStdCoords;
+            autoBuildUnknownHistory.clear();
             autoBuildUnknownHistory.append(position);
         }
 
@@ -213,19 +212,80 @@ QVector3D HexTileMap::processUnknownTile(QVector3D const& pose){
             return result;
         }
         else{
+            float minDist = std::numeric_limits<float>::infinity();
+            QVector<QVector2D> edgeMids;
+            autoBuildKnownCoords.edgeMidList(edgeMids);
+            int deltaQ = 0;
+            int deltaR = 0;
+            float dist;
 
-//            HexTile* imaginaryTile = new HexTile(); //No need for screen rendering now, no need for parent
-            //imaginaryTile->setQ(0); imaginaryTile->setR(0); //No need for these, default coordinates are 0,0
-            //imaginaryTile->setStandardCoords(autoBuildUnknownStdCoords);
+            //Check all edges for closest exit
+            //Order: top-left, left, bottom-left, bottom-right, right, top-right
+            static QVector<int> deltaQs = {0,   -1, -1, 0,  1,  1};
+            static QVector<int> deltaRs = {-1,  0,  1,  1,  0,  -1};
+            static QVector<QVector2D> deltaHalfSegs = {
+                0.5f*autoBuildExitSegWidth*QVector2D(-0.5f,                                     0.86602540378443864676f /* sqrt(3)/2 */),
+                0.5f*autoBuildExitSegWidth*QVector2D(0.0f,                                      -1.0f),
+                0.5f*autoBuildExitSegWidth*QVector2D(-0.86602540378443864676f /* sqrt(3)/2 */,  -0.5f),
+                0.5f*autoBuildExitSegWidth*QVector2D(-0.86602540378443864676f /* sqrt(3)/2 */,  0.5f),
+                0.5f*autoBuildExitSegWidth*QVector2D(0.0,                                       1.0f),
+                0.5f*autoBuildExitSegWidth*QVector2D(0.86602540378443864676f /* sqrt(3)/2 */,   0.5f)
+            };
+            for(int i=0;i<6;i++){
+                dist = CelluloMathUtil::pointToSegmentDist(autoBuildKnownHistory.last(), edgeMids[i] + deltaHalfSegs[i], edgeMids[i] - deltaHalfSegs[i]);
+                if(dist < minDist){
+                    minDist = dist;
+                    if(dist < autoBuildExitMargin){
+                        deltaQ = deltaQs[i];
+                        deltaR = deltaRs[i];
+                    }
+                }
+            }
+
+            //Exit cannot be detected through closeness to edge
+            if(deltaQ == 0 && deltaR == 0){
+
+                //Try to detect through exit ray
 
 
-            //Try to get new q,r from known coords, intersect ray with hex edges
+
+                //
 
 
-            //ray: check if all pos(n) - pos(n-1) vectors agree on direction
+                            //Try to get new q,r from known coords, intersect ray with hex edges
 
 
-            return QVector3D(0,0,0);
+                            //ray: check if all pos(n) - pos(n-1) vectors agree on direction
+
+
+
+
+
+                return QVector3D(0,0,0);
+            }
+
+            //Exit is detected across one edge
+            else{
+                HexTile* imaginaryTile = new HexTile(); //No need for screen rendering now, no need for parent
+                imaginaryTile->getCoords()->setQ(autoBuildKnownCoords.getQ() + deltaQ);
+                imaginaryTile->getCoords()->setR(autoBuildKnownCoords.getR() + deltaR);
+                imaginaryTile->setStandardCoords(autoBuildUnknownStdCoords);
+                QVector3D result = (imaginaryTile->sourceCoordinates(position) + imaginaryTile->getCoords()->hexOffset()).toVector3D();
+                result.setZ(pose.z());
+
+                //Add this tile
+                if(autoBuild && autoBuildUnknownHistory.size() >= autoBuildUnknownHistorySize){
+                    autoBuildUnknownStdCoords = nullptr; //Detach std coords from the map, rests only with tile
+                    imaginaryTile->setParent(this);
+                    imaginaryTile->setParentItem(this);
+                    tiles.append(QVariant::fromValue(imaginaryTile));
+                    qInfo() << "HexTileMap::processUnknownTile(): Added q=" << imaginaryTile->getCoords()->getQ() << ", r=" << imaginaryTile->getCoords()->getR();
+                }
+                else
+                    delete imaginaryTile;
+
+                return result;
+            }
         }
     }
 

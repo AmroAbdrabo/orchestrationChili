@@ -71,6 +71,13 @@ public:
     virtual ~AxialHexCoords();
 
     /**
+     * @brief Copies other coordinates into this one
+     *
+     * @param other Coordinates to be copied
+     */
+    void copyFrom(AxialHexCoords const& other);
+
+    /**
      * @brief Gets the horizontal hex tile coordinate
      *
      * @return Horizontal hex tile coordinate
@@ -157,6 +164,13 @@ public slots:
      * @return Tile center's coordinates in the continuous mapped space composed of hex tiles
      */
     QVector2D hexOffset();
+
+    /**
+     * @brief Gets the list of the 6 midpoints of the edges of this tile
+     *
+     * @param list Output list of 6 midpoints
+     */
+    void edgeMidList(QVector<QVector2D>& list);
 
 private:
 

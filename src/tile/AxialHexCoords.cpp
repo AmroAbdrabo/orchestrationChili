@@ -36,6 +36,12 @@ AxialHexCoords::AxialHexCoords(QQuickItem* parent) : QQuickItem(parent){
 
 AxialHexCoords::~AxialHexCoords(){}
 
+void AxialHexCoords::copyFrom(AxialHexCoords const& other){
+    setQ(other.getQ());
+    setR(other.getR());
+    setPhysicalWidth(other.getPhysicalWidth());
+}
+
 void AxialHexCoords::setPhysicalWidth(float physicalWidth){
     if(physicalWidth > 0){
         this->physicalWidth = physicalWidth;
@@ -60,6 +66,17 @@ QVector2D AxialHexCoords::hexOffset(){
         (float)q + (float)r*0.5f,
         (float)r*0.86602540378443864676f //sqrt(3)/2
     );
+}
+
+void AxialHexCoords::edgeMidList(QVector<QVector2D>& list){
+    float physicalHeight = getPhysicalHeight();
+    list <<
+        QVector2D(-0.25f*physicalWidth, -0.375f*physicalHeight) <<
+        QVector2D(-0.50f*physicalWidth, 0.0f) <<
+        QVector2D(-0.25f*physicalWidth, 0.375f*physicalHeight) <<
+        QVector2D( 0.25f*physicalWidth, 0.375f*physicalHeight) <<
+        QVector2D( 0.50f*physicalWidth, 0.0f) <<
+        QVector2D( 0.25f*physicalWidth, -0.375f*physicalHeight);
 }
 
 }

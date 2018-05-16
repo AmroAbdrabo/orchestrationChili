@@ -61,16 +61,14 @@ ApplicationWindow {
             physicalSize: Qt.vector2d(400, 400)
             physicalTopLeft: Qt.vector2d(-200, -200)
 
-            autoBuild: false
+            autoBuild: true
 
-            HexTileWithCoords{
+            /*HexTileWithCoords{
                 id: centerTile
                 standardCoords: HexTileStandardCoords{ i:7; j:9; u:0; v:0 }
                 coords.q: 0; coords.r: 0
-
-                Button{ text: "asdasd"; onClicked: {parent.coords.physicalWidth*=2;parent.coords.q+=2;} }
-            }
-
+            }*/
+/*
             HexTileWithCoords{
                 id: leftTile
                 standardCoords: HexTileStandardCoords{ i:2; j:3; u:0; v:1 }
@@ -106,6 +104,7 @@ ApplicationWindow {
                 standardCoords: HexTileStandardCoords{ i:2; j:3; u:1; v:0 }
                 coords.q: 0; coords.r: 1
             }
+            */
 
             Image{
                 property vector2d screenSize: parent.toScreenSize.convert(Qt.vector2d(75, 75*2/Math.sqrt(3)))
