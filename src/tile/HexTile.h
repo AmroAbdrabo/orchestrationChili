@@ -223,7 +223,7 @@ private:
     /**
      * @brief Implementation of the GL rendering routine for this hex tile
      *
-     * @param  oldNode             Previously returned root node, NULL if first time
+     * @param  oldNode             Previously returned root node, nullptr if first time
      * @param  updatePaintNodeData UNUSED
      * @return                     The root node modified by the draw operaton
      */

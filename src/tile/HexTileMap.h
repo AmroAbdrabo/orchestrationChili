@@ -175,6 +175,21 @@ signals:
      */
     void markedDirty();
 
+    /**
+     * @brief Emitted when a new tile is added
+     *
+     * @param newTile New tile
+     */
+    void tileAdded(HexTile* newTile);
+
+    /**
+     * @brief Emitted when a tile is removed
+     *
+     * @param oldTileQ Horizontal coordinate of the removed tile
+     * @param oldTileR Vertical coordinate of the removed tile
+     */
+    void tileRemoved(int oldTileQ, int oldTileR);
+
 public slots:
 
     /**
@@ -184,6 +199,30 @@ public slots:
      * @return Remapped pose (x,y is in mm, z is orientation in degrees)
      */
     virtual QVector3D remapPose(QVector3D const& pose) override;
+
+    /**
+     * @brief Adds new tile, removes old tile if one with same q,r coordinates is present
+     *
+     * @param newTile New tile
+     */
+    void addTile(HexTile* newTile);
+
+    /**
+     * @brief Removes the given tile
+     *
+     * @param oldTile Tile to remove
+     * @return Whether the tile was there and was removed
+     */
+    bool removeTile(HexTile* oldTile);
+
+    /**
+     * @brief Removes the given tile
+     *
+     * @param q Horizontal axial coordinate
+     * @param r Vertical axial coordinate
+     * @return Whether the tile was there and was removed
+     */
+    bool removeTile(int q, int r);
 
 private slots:
 
@@ -207,6 +246,24 @@ private:
      */
     void itemChange(ItemChange change, const ItemChangeData& value) override;
 
+    /**
+     * @brief Tile lookup by axial coordinates
+     *
+     * @param  q Horizontal coordinate
+     * @param  r Vertical coordinate
+     * @return   Tile if found, nullptr otherwise
+     */
+    HexTile* getTile(int q, int r);
+
+    /**
+     * @brief Tile lookup by raw source coordinates
+     *
+     * @param  position Raw source coordinates in mm
+     * @return Tile if found, nullptr otherwise
+     */
+    HexTile* getTile(QVector2D const& position);
+
+
 
 
 
@@ -223,6 +280,7 @@ private:
 
 
 
+
     QVector3D processUnknownTile(QVector3D const& pose);
 
     QVector2D physicalTopLeft;           ///< Physical top left coordinate of this map in mm, used when drawing
@@ -231,14 +289,15 @@ private:
     CoordSpaceConverter toScreenCoords;  ///< Converter from physical coords to screen coords
 
     bool autoBuild;                      ///< Whether to try to automatically build the map
+    
     QList<QVector2D> autoBuildKnownHistory;
     QList<QVector2D> autoBuildUnknownHistory;
     HexTileStandardCoords* autoBuildUnknownStdCoords;
     bool autoBuildKnownCoordsExist;
     AxialHexCoords autoBuildKnownCoords;
-    constexpr static int autoBuildKnownHistorySize = 5;
-    constexpr static int autoBuildUnknownHistorySize = 5;
 
+    constexpr static int autoBuildKnownHistorySize = 5;
+    constexpr static int autoBuildUnknownHistorySize = 3;
 
     constexpr static float autoBuildExitMargin = 10.0f;
     constexpr static float autoBuildExitSegWidth = 20.0f;

@@ -84,15 +84,8 @@ void HexTileMap::setAutoBuild(bool autoBuild){
 void HexTileMap::itemChange(ItemChange change, const ItemChangeData& value){
     if(change == ItemChange::ItemChildAddedChange){
         HexTile* newTile = qobject_cast<HexTile*>(value.item);
-        if(newTile){
-
-            //TODO: BETTER STORAGE
-            if(!tiles.contains(QVariant::fromValue(newTile)))
-                tiles.append(QVariant::fromValue(newTile));
-
-            //addNewZone(newTile);
-            qDebug() << "HexTileMap::itemChange(): Child tile " << /*newTile->getName()*/ "" << " automatically added.";
-        }
+        if(newTile)
+            addTile(newTile);
     }
 
     QQuickItem::itemChange(change, value);
@@ -114,27 +107,21 @@ void HexTileMap::updateToScreenCoords(){
 
 QVector3D HexTileMap::remapPose(QVector3D const& pose){
     QVector2D position = pose.toVector2D();
+    HexTile* tile = getTile(position);
 
-    //TODO: REPLACE LOOKUP WITH HASH<HASH<TILE>>
-    //Lookup of existing tiles
-    for(auto const& tileVariant : tiles){
-        HexTile* tile = tileVariant.value<HexTile*>();
-        if(tile){
-            if(tile->sourceContains(position)){
-                QVector2D resultSourcePosition = tile->sourceCoordinates(position);
-                processKnownTile(resultSourcePosition, tile->getCoords());
+    //Position is on a known tile
+    if(tile){
+        QVector2D resultSourcePosition = tile->sourceCoordinates(position);
+        processKnownTile(resultSourcePosition, tile->getCoords());
 
-                QVector3D resultPose = (resultSourcePosition + tile->getCoords()->hexOffset()).toVector3D();
-                resultPose.setZ(pose.z());
-                return resultPose;
-            }
-        }
-        else
-            qCritical() << "HexTileMap::remapPose(): tiles can only contain HexTile type!";
+        QVector3D resultPose = (resultSourcePosition + tile->getCoords()->hexOffset()).toVector3D();
+        resultPose.setZ(pose.z());
+        return resultPose;
     }
 
     //Unknown tile encountered
-    return processUnknownTile(pose);
+    else
+        return processUnknownTile(pose);
 }
 
 void HexTileMap::resetAutoBuild(){
@@ -203,8 +190,9 @@ QVector3D HexTileMap::processUnknownTile(QVector3D const& pose){
             if(autoBuild && autoBuildUnknownHistory.size() >= autoBuildUnknownHistorySize){
                 autoBuildUnknownStdCoords = nullptr; //Detach std coords from the map, rests only with tile
                 imaginaryTile->setParent(this);
-                imaginaryTile->setParentItem(this);
-                tiles.append(QVariant::fromValue(imaginaryTile));
+                imaginaryTile->setParentItem(this); //Child added detection will call addTile()
+                //addTile(imaginaryTile);
+                resetAutoBuild();
             }
             else
                 delete imaginaryTile;
@@ -242,22 +230,12 @@ QVector3D HexTileMap::processUnknownTile(QVector3D const& pose){
                 }
             }
 
-            //Exit cannot be detected through closeness to edge
+            //Exit cannot be detected through closeness to edge, try to detect through exit ray
             if(deltaQ == 0 && deltaR == 0){
 
-                //Try to detect through exit ray
-
-
-
-                //
-
-
-                            //Try to get new q,r from known coords, intersect ray with hex edges
-
-
-                            //ray: check if all pos(n) - pos(n-1) vectors agree on direction
-
-
+                    //Check min vector size
+                    //C
+                    //Check directional agreement of vector history
 
 
 
@@ -277,9 +255,9 @@ QVector3D HexTileMap::processUnknownTile(QVector3D const& pose){
                 if(autoBuild && autoBuildUnknownHistory.size() >= autoBuildUnknownHistorySize){
                     autoBuildUnknownStdCoords = nullptr; //Detach std coords from the map, rests only with tile
                     imaginaryTile->setParent(this);
-                    imaginaryTile->setParentItem(this);
-                    tiles.append(QVariant::fromValue(imaginaryTile));
-                    qInfo() << "HexTileMap::processUnknownTile(): Added q=" << imaginaryTile->getCoords()->getQ() << ", r=" << imaginaryTile->getCoords()->getR();
+                    imaginaryTile->setParentItem(this); //Child added detection will call addTile()
+                    //addTile(imaginaryTile);
+                    resetAutoBuild();
                 }
                 else
                     delete imaginaryTile;
@@ -295,6 +273,80 @@ QVector3D HexTileMap::processUnknownTile(QVector3D const& pose){
         qCritical() << "HexTileMap::processUnknownTile(): Standard coordinate estimate somehow failed.";
         return QVector3D(0,0,0);
     }
+}
+
+HexTile* HexTileMap::getTile(int q, int r){
+    //TODO: More efficient lookup by axial coords possible?
+    for(auto const& tileVariant : tiles){
+        HexTile* tile = tileVariant.value<HexTile*>();
+        if(tile){
+            if(tile->getCoords()->getQ() == q && tile->getCoords()->getR() == r)
+                return tile;
+        }
+        else
+            qCritical() << "HexTileMap::remapPose(): tiles can only contain HexTile type!";
+    }
+    return nullptr;
+}
+
+HexTile* HexTileMap::getTile(QVector2D const& position){
+    //TODO: More efficient lookup by standard source coords!!!
+    for(auto const& tileVariant : tiles){
+        HexTile* tile = tileVariant.value<HexTile*>();
+        if(tile){
+            if(tile->sourceContains(position))
+                return tile;
+        }
+        else
+            qCritical() << "HexTileMap::remapPose(): tiles can only contain HexTile type!";
+    }
+    return nullptr;
+}
+
+void HexTileMap::addTile(HexTile* newTile){
+    if(!tiles.contains(QVariant::fromValue(newTile))){
+        removeTile(newTile->getCoords()->getQ(), newTile->getCoords()->getR());
+        tiles.append(QVariant::fromValue(newTile));
+        emit tileAdded(newTile);
+    }
+    else
+        qInfo() << "HexTileMap::addNewTile(): Not adding already existing identical tile.";
+}
+
+bool HexTileMap::removeTile(HexTile* oldTile){
+    //TODO: More efficient lookup by axial coords possible?
+    for(QVariantList::iterator tileVariantIt =  tiles.begin(); tileVariantIt != tiles.end(); tileVariantIt++){
+        HexTile* tile = (*tileVariantIt).value<HexTile*>();
+        if(tile){
+            if(tile == oldTile){
+                tiles.erase(tileVariantIt);
+                emit tileRemoved(tile->getCoords()->getQ(), tile->getCoords()->getR());
+                tile->deleteLater();
+                return true;
+            }
+        }
+        else
+            qCritical() << "HexTileMap::removeTile(): tiles can only contain HexTile type!";
+    }
+    return false;
+}
+
+bool HexTileMap::removeTile(int q, int r){
+    //TODO: More efficient lookup by axial coords possible?
+    for(QVariantList::iterator tileVariantIt =  tiles.begin(); tileVariantIt != tiles.end(); tileVariantIt++){
+        HexTile* tile = (*tileVariantIt).value<HexTile*>();
+        if(tile){
+            if(tile->getCoords()->getQ() == q && tile->getCoords()->getR() == r){
+                tiles.erase(tileVariantIt);
+                emit tileRemoved(q, r);
+                tile->deleteLater();
+                return true;
+            }
+        }
+        else
+            qCritical() << "HexTileMap::removeTile(): tiles can only contain HexTile type!";
+    }
+    return false;
 }
 
 }

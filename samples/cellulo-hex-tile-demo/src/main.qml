@@ -63,6 +63,9 @@ ApplicationWindow {
 
             autoBuild: true
 
+            onTileAdded: console.info("Tile added at " + newTile.coords.q + " " + newTile.coords.r)
+            onTileRemoved: console.info("Tile removed from " + oldTileQ + " " + oldTileR)
+
             /*HexTileWithCoords{
                 id: centerTile
                 standardCoords: HexTileStandardCoords{ i:7; j:9; u:0; v:0 }

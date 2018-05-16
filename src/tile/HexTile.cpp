@@ -50,7 +50,7 @@ HexTile::HexTile(QQuickItem* parent) : QQuickItem(parent){
     sourceCenterX = 0;
     sourceCenterY = 0;
 
-    standardCoords = NULL;
+    standardCoords = nullptr;
 
     connect(this, SIGNAL(standardCoordsChanged()), this, SLOT(updateFromStandardCoords()), Qt::DirectConnection); //Update immediately
 
@@ -183,11 +183,11 @@ QSGNode* HexTile::updatePaintNode(QSGNode* oldRoot, UpdatePaintNodeData* updateP
     qreal w = width();
     qreal h = height();
 
-    QSGNode* root = NULL;
-    QSGGeometryNode* hexFill = NULL;
-    QSGGeometry* hexFillGeo = NULL;
-    QSGGeometryNode* hexBorder = NULL;
-    QSGGeometry* hexBorderGeo = NULL;
+    QSGNode* root = nullptr;
+    QSGGeometryNode* hexFill = nullptr;
+    QSGGeometry* hexFillGeo = nullptr;
+    QSGGeometryNode* hexBorder = nullptr;
+    QSGGeometry* hexBorderGeo = nullptr;
     qreal borderWidth = w*borderSize;
 
     //First render
