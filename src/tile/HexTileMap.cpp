@@ -207,7 +207,7 @@ QVector3D HexTileMap::processUnknownTile(QVector3D const& pose){
             int deltaR = 0;
             float dist;
 
-            //Check all edges for closest exit
+            //Detect by closest exit edge
             //Order: top-left, left, bottom-left, bottom-right, right, top-right
             static QVector<int> deltaQs = {0,   -1, -1, 0,  1,  1};
             static QVector<int> deltaRs = {-1,  0,  1,  1,  0,  -1};
@@ -229,10 +229,34 @@ QVector3D HexTileMap::processUnknownTile(QVector3D const& pose){
                     }
                 }
             }
+            if(deltaQ != 0 || deltaR != 0){
+
+                //First estimate new position on this imaginary tile
+                HexTile* imaginaryTile = new HexTile(); //No need for screen rendering now, no need for parent
+                imaginaryTile->getCoords()->setQ(autoBuildKnownCoords.getQ() + deltaQ);
+                imaginaryTile->getCoords()->setR(autoBuildKnownCoords.getR() + deltaR);
+                imaginaryTile->setStandardCoords(autoBuildUnknownStdCoords);
+                QVector3D result = (imaginaryTile->sourceCoordinates(position) + imaginaryTile->getCoords()->hexOffset()).toVector3D();
+                result.setZ(pose.z());
+
+                //Consider adding this tile
+                if(autoBuild && autoBuildUnknownHistory.size() >= autoBuildUnknownHistorySize){
+                    autoBuildUnknownStdCoords = nullptr; //Detach std coords from the map, rests only with tile
+                    imaginaryTile->setParent(this);
+                    imaginaryTile->setParentItem(this); //Child added detection will call addTile()
+                    //addTile(imaginaryTile);
+                    resetAutoBuild();
+                }
+                else
+                    delete imaginaryTile;
+
+                return result;
+            }
 
             //Exit cannot be detected through closeness to edge, try to detect through exit ray
-            qDebug() << "Trying ray intersection...";
-            if(deltaQ == 0 && deltaR == 0){
+            else{
+                qDebug() << "Trying ray intersection...";
+
                 if(autoBuildKnownHistory.size() < 2){
                     qDebug() << "Too few known points";
                     return QVector3D(0,0,0);
@@ -271,28 +295,78 @@ QVector3D HexTileMap::processUnknownTile(QVector3D const& pose){
                 //Exit cannot be detected...
                 if(deltaQ == 0 && deltaR == 0)
                     return QVector3D(0,0,0);
+
+                //First estimate new position on this imaginary tile
+                HexTile* imaginaryTile = new HexTile(); //No need for screen rendering now, no need for parent
+                imaginaryTile->getCoords()->setQ(autoBuildKnownCoords.getQ() + deltaQ);
+                imaginaryTile->getCoords()->setR(autoBuildKnownCoords.getR() + deltaR);
+                imaginaryTile->setStandardCoords(autoBuildUnknownStdCoords);
+                QVector3D result = (imaginaryTile->sourceCoordinates(position) + imaginaryTile->getCoords()->hexOffset()).toVector3D();
+                result.setZ(pose.z());
+
+                //Consider adding this tile if unknown tile ray edge intersection also agrees with the known tile ray
+                if(autoBuild && autoBuildUnknownHistory.size() >= autoBuildUnknownHistorySize){
+
+                    //Get main direction
+                    QVector2D unkMainVec = autoBuildUnknownHistory.last() - autoBuildUnknownHistory.first();
+                    if(unkMainVec.length() < autoBuildMinVecSize){
+                        qDebug() << "Unknown mainVec too short: " << autoBuildUnknownHistory;
+                        delete imaginaryTile;
+                        return result;
+                    }
+
+                    //Check if all directions agree with main direction, also get mean of all positions as origin of ray
+                    QVector2D unkOrigin = autoBuildUnknownHistory.first();
+                    for(QList<QVector2D>::iterator it = autoBuildUnknownHistory.begin() + 1; it != autoBuildUnknownHistory.end(); it++){
+                        QVector2D vec = *it - *(it - 1);
+                        if(vec.length() > autoBuildMinVecSize)
+                            if(CelluloMathUtil::angleBetween(unkMainVec, vec) > autoBuildMinVecAngle){
+                                qDebug() << "Unknown Angles don't agree: " << autoBuildUnknownHistory;
+                                delete imaginaryTile;
+                                return result;
+                            }
+
+                        unkOrigin += *it;
+                    }
+                    unkOrigin /= autoBuildUnknownHistory.length();
+
+                    //Intersect entry ray with all edges
+                    unkMainVec = -unkMainVec;
+                    int unkDeltaQ = 0;
+                    int unkDeltaR = 0;
+                    for(int i=0;i<6;i++)
+                        if(CelluloMathUtil::rayCrossesLineSeg(unkOrigin, unkMainVec, edgeMids[i] + deltaHalfSegs[i], edgeMids[i] - deltaHalfSegs[i])){
+                            unkDeltaQ = deltaQs[i];
+                            unkDeltaR = deltaRs[i];
+                            qDebug() << "Unknown crosses at " << i;
+                            break;
+                        }
+
+                    //Entry cannot be detected...
+                    if(unkDeltaQ == 0 && unkDeltaR == 0){
+                        delete imaginaryTile;
+                        return result;
+                    }
+
+                    //Check whether entry and exit edges agree
+                    if(unkDeltaQ == -deltaQ && unkDeltaR == -deltaR){
+                        qDebug() << "Entry and exit edges agree";
+                        autoBuildUnknownStdCoords = nullptr; //Detach std coords from the map, rests only with tile
+                        imaginaryTile->setParent(this);
+                        imaginaryTile->setParentItem(this); //Child added detection will call addTile()
+                        //addTile(imaginaryTile);
+                    }
+                    else
+                        qDebug() << "Entry and exit edges DONT agree";
+
+                    //Reset autobuild for safety even if data doesn't work
+                    resetAutoBuild();
+                }
+                else
+                    delete imaginaryTile;
+
+                return result;
             }
-
-            //First estimate new position on this imaginary tile
-            HexTile* imaginaryTile = new HexTile(); //No need for screen rendering now, no need for parent
-            imaginaryTile->getCoords()->setQ(autoBuildKnownCoords.getQ() + deltaQ);
-            imaginaryTile->getCoords()->setR(autoBuildKnownCoords.getR() + deltaR);
-            imaginaryTile->setStandardCoords(autoBuildUnknownStdCoords);
-            QVector3D result = (imaginaryTile->sourceCoordinates(position) + imaginaryTile->getCoords()->hexOffset()).toVector3D();
-            result.setZ(pose.z());
-
-            //Consider adding this tile
-            if(autoBuild && autoBuildUnknownHistory.size() >= autoBuildUnknownHistorySize){
-                autoBuildUnknownStdCoords = nullptr; //Detach std coords from the map, rests only with tile
-                imaginaryTile->setParent(this);
-                imaginaryTile->setParentItem(this); //Child added detection will call addTile()
-                //addTile(imaginaryTile);
-                resetAutoBuild();
-            }
-            else
-                delete imaginaryTile;
-
-            return result;
         }
     }
 

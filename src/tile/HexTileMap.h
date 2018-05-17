@@ -312,7 +312,7 @@ private:
     constexpr static float autoBuildExitSegWidth = 20.0f;
 
     constexpr static float autoBuildMinVecSize = 5.0f;
-    constexpr static float autoBuildMinVecAngle = CelluloMathUtil::degToRad(15.0f);
+    constexpr static float autoBuildMinVecAngle = CelluloMathUtil::degToRad(30.0f);
 
     //TODO: BETTER STORAGE
     QVariantList tiles;
