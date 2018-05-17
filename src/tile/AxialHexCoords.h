@@ -172,6 +172,13 @@ public slots:
      */
     void edgeMidList(QVector<QVector2D>& list);
 
+    /**
+     * @brief Gets the list of the 6 corners of this tile
+     *
+     * @param list Output list of 6 corners
+     */
+    void cornerList(QVector<QVector2D>& list);
+
 private:
 
     float physicalWidth;                            ///< Tile width in mm, height would be 2*width/sqrt(3)

@@ -70,13 +70,26 @@ QVector2D AxialHexCoords::hexOffset(){
 
 void AxialHexCoords::edgeMidList(QVector<QVector2D>& list){
     float physicalHeight = getPhysicalHeight();
+    QVector2D offset = hexOffset();
     list <<
-        QVector2D(-0.25f*physicalWidth, -0.375f*physicalHeight) <<
-        QVector2D(-0.50f*physicalWidth, 0.0f) <<
-        QVector2D(-0.25f*physicalWidth, 0.375f*physicalHeight) <<
-        QVector2D( 0.25f*physicalWidth, 0.375f*physicalHeight) <<
-        QVector2D( 0.50f*physicalWidth, 0.0f) <<
-        QVector2D( 0.25f*physicalWidth, -0.375f*physicalHeight);
+        offset + QVector2D(-0.25f*physicalWidth, -0.375f*physicalHeight) <<
+        offset + QVector2D(-0.50f*physicalWidth, 0.0f) <<
+        offset + QVector2D(-0.25f*physicalWidth, 0.375f*physicalHeight) <<
+        offset + QVector2D( 0.25f*physicalWidth, 0.375f*physicalHeight) <<
+        offset + QVector2D( 0.50f*physicalWidth, 0.0f) <<
+        offset + QVector2D( 0.25f*physicalWidth, -0.375f*physicalHeight);
+}
+
+void AxialHexCoords::cornerList(QVector<QVector2D>& list){
+    float physicalHeight = getPhysicalHeight();
+    QVector2D offset = hexOffset();
+    list <<
+        offset + QVector2D( 0.00f,               -0.50f*physicalHeight) << //Top
+        offset + QVector2D(-0.50f*physicalWidth, -0.25f*physicalHeight) << //Top left
+        offset + QVector2D(-0.50f*physicalWidth,  0.25f*physicalHeight) << //Bottom left
+        offset + QVector2D( 0.00f,                0.50f*physicalHeight) << //Bottom
+        offset + QVector2D( 0.50f*physicalWidth,  0.25f*physicalHeight) << //Bottom right
+        offset + QVector2D( 0.50f*physicalWidth, -0.25f*physicalHeight); //Top right
 }
 
 }

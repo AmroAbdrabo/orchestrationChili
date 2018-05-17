@@ -280,7 +280,7 @@ private:
 
 
 
-    void processKnownTile(QVector2D const& sourcePosition, AxialHexCoords* tileCoords);
+    void processKnownTile(QVector2D const& position, AxialHexCoords* tileCoords);
 
 
 
@@ -288,7 +288,7 @@ private:
 
 
 
-    QVector3D processUnknownTile(QVector3D const& pose);
+    QVector3D processUnknownTile(QVector3D const& sourcePose);
 
     QVector2D physicalTopLeft;           ///< Physical top left coordinate of this map in mm, used when drawing
     QVector2D physicalSize;              ///< Physical size described by this map in mm, used when drawing
@@ -306,12 +306,21 @@ private:
     AxialHexCoords autoBuildKnownCoords;
 
     constexpr static int autoBuildKnownHistorySize = 5;
+    constexpr static int autoBuildKnownHistoryMinSize = 3;
     constexpr static int autoBuildUnknownHistorySize = 3;
+
+
+
+
+
+
+
+
 
     constexpr static float autoBuildExitMargin = 10.0f;
     constexpr static float autoBuildExitSegWidth = 20.0f;
 
-    constexpr static float autoBuildMinVecSize = 5.0f;
+    constexpr static float autoBuildMinVecSize = 2.0f;
     constexpr static float autoBuildMinVecAngle = CelluloMathUtil::degToRad(30.0f);
 
     //TODO: BETTER STORAGE
