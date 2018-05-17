@@ -228,6 +228,16 @@ bool CelluloMathUtil::hRayCrossesLineSeg(const QVector2D& r, const QVector2D& se
     return r.x() < q*seg1.x() + (1 - q)*seg2.x();
 }
 
+bool CelluloMathUtil::rayCrossesLineSeg(QVector2D const& origin, QVector2D const& dir, QVector2D const& seg1, QVector2D const& seg2){
+
+    //Segment is degenerate
+    if(seg1 == seg2)
+        return false;
+
+    
+
+}
+
 bool CelluloMathUtil::collinear(const QVector2D& a, const QVector2D& b, const QVector2D& c){
     return fabsf(a.x()*(b.y() - c.y()) + b.x()*(c.y() - a.y()) + c.x()*(a.y() - b.y())) < COLLINEAR_EPSILON;
 }
@@ -250,11 +260,11 @@ QVector2D CelluloMathUtil::rotateVector(QVector2D const& vector, qreal angleRad)
     return QVector2D(qCos(angleRad)*vector.x() - qSin(angleRad)*vector.y(), qSin(angleRad)*vector.x() + qCos(angleRad)*vector.y());
 }
 
-qreal CelluloMathUtil::degToRad(qreal deg){
+constexpr qreal CelluloMathUtil::degToRad(qreal deg){
     return deg*M_PI/180.0;
 }
 
-qreal CelluloMathUtil::radToDeg(qreal rad){
+constexpr qreal CelluloMathUtil::radToDeg(qreal rad){
     return rad*180.0/M_PI;
 }
 
@@ -269,6 +279,15 @@ qreal CelluloMathUtil::clamp(qreal val, qreal min, qreal max){
         return max;
     else
         return val;
+}
+
+qreal CelluloMathUtil::angleBetween(QVector2D const& vec1, QVector2D const& vec2){
+    qreal len1 = vec1.length();
+    qreal len2 = vec2.length();
+    if(len1 > 0 && len2 > 0)
+        return qAcos(QVector2D::dotProduct(vec1, vec2)/(len1*len2));
+    else
+        return 0;
 }
 
 }

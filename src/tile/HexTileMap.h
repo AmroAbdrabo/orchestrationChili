@@ -27,6 +27,8 @@
 
 #include "PoseRemapper.h"
 
+#include "../util/math/CelluloMathUtil.h"
+
 #include <QVector3D>
 #include <QVariantList>
 #include <QRectF>
@@ -289,7 +291,9 @@ private:
     CoordSpaceConverter toScreenCoords;  ///< Converter from physical coords to screen coords
 
     bool autoBuild;                      ///< Whether to try to automatically build the map
-    
+
+
+    //TODO: THIS MUST BE PER CLIENT!!!!!
     QList<QVector2D> autoBuildKnownHistory;
     QList<QVector2D> autoBuildUnknownHistory;
     HexTileStandardCoords* autoBuildUnknownStdCoords;
@@ -301,6 +305,9 @@ private:
 
     constexpr static float autoBuildExitMargin = 10.0f;
     constexpr static float autoBuildExitSegWidth = 20.0f;
+
+    constexpr static float autoBuildMinVecSize = 5.0f;
+    constexpr static float autoBuildMinVecAngle = CelluloMathUtil::degToRad(15.0f);
 
     //TODO: BETTER STORAGE
     QVariantList tiles;

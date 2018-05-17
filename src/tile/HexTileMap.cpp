@@ -25,7 +25,6 @@
 #include "HexTileMap.h"
 
 #include "HexTile.h"
-#include "../util/math/CelluloMathUtil.h"
 
 #include <QDebug>
 #include <limits>
@@ -232,38 +231,49 @@ QVector3D HexTileMap::processUnknownTile(QVector3D const& pose){
 
             //Exit cannot be detected through closeness to edge, try to detect through exit ray
             if(deltaQ == 0 && deltaR == 0){
+                if(autoBuildKnownHistory.size() < 2)
+                    return QVector3D(0,0,0);
 
-                    //Check min vector size
-                    //C
-                    //Check directional agreement of vector history
+                //Get main direction
+                QVector2D mainVec = autoBuildKnownHistory.last() - autoBuildKnownHistory.first();
+                if(mainVec.length() < autoBuildMinVecSize)
+                    return QVector3D(0,0,0);
 
+                //Check if all directions agree with main direction, also get mean of all positions as origin of ray
+                QVector2D origin = autoBuildKnownHistory.first();
+                for(QList<QVector2D>::iterator it = autoBuildKnownHistory.begin() + 1; it != autoBuildKnownHistory.end(); it++){
+                    QVector2D vec = *it - *(it - 1);
+                    if(vec.length() > autoBuildMinVecSize)
+                        if(CelluloMathUtil::angleBetween(mainVec, vec) > autoBuildMinVecAngle)
+                            return QVector3D(0,0,0);
 
-
-                return QVector3D(0,0,0);
-            }
-
-            //Exit is detected across one edge
-            else{
-                HexTile* imaginaryTile = new HexTile(); //No need for screen rendering now, no need for parent
-                imaginaryTile->getCoords()->setQ(autoBuildKnownCoords.getQ() + deltaQ);
-                imaginaryTile->getCoords()->setR(autoBuildKnownCoords.getR() + deltaR);
-                imaginaryTile->setStandardCoords(autoBuildUnknownStdCoords);
-                QVector3D result = (imaginaryTile->sourceCoordinates(position) + imaginaryTile->getCoords()->hexOffset()).toVector3D();
-                result.setZ(pose.z());
-
-                //Add this tile
-                if(autoBuild && autoBuildUnknownHistory.size() >= autoBuildUnknownHistorySize){
-                    autoBuildUnknownStdCoords = nullptr; //Detach std coords from the map, rests only with tile
-                    imaginaryTile->setParent(this);
-                    imaginaryTile->setParentItem(this); //Child added detection will call addTile()
-                    //addTile(imaginaryTile);
-                    resetAutoBuild();
+                    origin += *it;
                 }
-                else
-                    delete imaginaryTile;
+                origin /= autoBuildKnownHistory.length();
 
-                return result;
+                //Intersect ray with all edges
             }
+
+            //First estimate new position on this imaginary tile
+            HexTile* imaginaryTile = new HexTile(); //No need for screen rendering now, no need for parent
+            imaginaryTile->getCoords()->setQ(autoBuildKnownCoords.getQ() + deltaQ);
+            imaginaryTile->getCoords()->setR(autoBuildKnownCoords.getR() + deltaR);
+            imaginaryTile->setStandardCoords(autoBuildUnknownStdCoords);
+            QVector3D result = (imaginaryTile->sourceCoordinates(position) + imaginaryTile->getCoords()->hexOffset()).toVector3D();
+            result.setZ(pose.z());
+
+            //Consider adding this tile
+            if(autoBuild && autoBuildUnknownHistory.size() >= autoBuildUnknownHistorySize){
+                autoBuildUnknownStdCoords = nullptr; //Detach std coords from the map, rests only with tile
+                imaginaryTile->setParent(this);
+                imaginaryTile->setParentItem(this); //Child added detection will call addTile()
+                //addTile(imaginaryTile);
+                resetAutoBuild();
+            }
+            else
+                delete imaginaryTile;
+
+            return result;
         }
     }
 

@@ -153,6 +153,17 @@ public:
     Q_INVOKABLE static bool hRayCrossesLineSeg(const QVector2D& r, const QVector2D& seg1, const QVector2D& seg2);
 
     /**
+     * @brief Calculates whether the ray crosses the line segment
+     *
+     * @param origin Ray origin
+     * @param dir Ray direction
+     * @param seg1 Line segment first endpoint
+     * @param seg2 Line segment second endpoint
+     * @return Whether the ray crosses the line segment
+     */
+    Q_INVOKABLE static bool rayCrossesLineSeg(QVector2D const& origin, QVector2D const& dir, QVector2D const& seg1, QVector2D const& seg2);
+
+    /**
      * @brief Initializes c's random number generator seed
      *
      * This will be called with time(NULL) at CelluloMathUtil creation time.
@@ -202,7 +213,7 @@ public:
      * @param deg Angle in degrees
      * @return Corresponding angle in radians
      */
-    Q_INVOKABLE static qreal degToRad(qreal deg);
+    Q_INVOKABLE static constexpr qreal degToRad(qreal deg);
 
     /**
      * @brief Converts radians to degrees
@@ -210,7 +221,7 @@ public:
      * @param rad Angle in radians
      * @return Corresponding angle in degrees
      */
-    Q_INVOKABLE static qreal radToDeg(qreal rad);
+    Q_INVOKABLE static constexpr qreal radToDeg(qreal rad);
 
     /**
      * @brief Calculates a parametric sigmoid function value
@@ -232,6 +243,15 @@ public:
      * @return Value in [min, max]
      */
     Q_INVOKABLE static qreal clamp(qreal val, qreal min, qreal max);
+
+    /**
+     * @brief Returns the angle between two vectors
+     *
+     * @param  vec1 First vector, must have positive length
+     * @param  vec2 Second vector, must have positive length
+     * @return      Angle between in rad
+     */
+    Q_INVOKABLE static qreal angleBetween(QVector2D const& vec1, QVector2D const& vec2);
 
 private:
 
