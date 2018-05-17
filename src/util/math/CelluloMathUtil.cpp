@@ -26,12 +26,6 @@
 #include "CelluloMathUtil.h"
 
 #include <algorithm>
-#if defined(Q_OS_WIN)
-	#define _USE_MATH_DEFINES
-	#include <math.h>
-#else
-	#include <cmath>
-#endif
 #include <cstdlib>
 #include <ctime>
 
@@ -230,12 +224,26 @@ bool CelluloMathUtil::hRayCrossesLineSeg(const QVector2D& r, const QVector2D& se
 
 bool CelluloMathUtil::rayCrossesLineSeg(QVector2D const& origin, QVector2D const& dir, QVector2D const& seg1, QVector2D const& seg2){
 
-    //Segment is degenerate
-    if(seg1 == seg2)
+    /* https://rootllama.wordpress.com/2014/06/20/ray-line-segment-intersection-test-in-2d/ */
+
+    QVector2D v1 = origin - seg1;
+    QVector2D v2 = seg2 - seg1;
+    QVector2D v3 = QVector2D(-dir.y(), dir.x()).normalized();
+
+    qreal denom = QVector2D::dotProduct(v2, v3);
+
+    //Check whether segment is degenerate, direction is degenerate or segment and direction are parallel
+    if(denom == 0.0)
         return false;
 
-    
+    //Intersection parameter on the ray
+    qreal t1 = crossProduct(v2, v1)/denom;
+    if(t1 < 0.0)
+        return false;
 
+    //Intersection parameter on the segment
+    qreal t2 = QVector2D::dotProduct(v1, v3)/denom;
+    return 0.0 <= t2 && t2 <= 1.0;
 }
 
 bool CelluloMathUtil::collinear(const QVector2D& a, const QVector2D& b, const QVector2D& c){
@@ -260,14 +268,6 @@ QVector2D CelluloMathUtil::rotateVector(QVector2D const& vector, qreal angleRad)
     return QVector2D(qCos(angleRad)*vector.x() - qSin(angleRad)*vector.y(), qSin(angleRad)*vector.x() + qCos(angleRad)*vector.y());
 }
 
-constexpr qreal CelluloMathUtil::degToRad(qreal deg){
-    return deg*M_PI/180.0;
-}
-
-constexpr qreal CelluloMathUtil::radToDeg(qreal rad){
-    return rad*180.0/M_PI;
-}
-
 qreal CelluloMathUtil::sigmoid(qreal L, qreal beta, qreal r_0, qreal r){
     return L/(1 + qExp(beta*(r - r_0)));
 }
@@ -282,12 +282,15 @@ qreal CelluloMathUtil::clamp(qreal val, qreal min, qreal max){
 }
 
 qreal CelluloMathUtil::angleBetween(QVector2D const& vec1, QVector2D const& vec2){
-    qreal len1 = vec1.length();
-    qreal len2 = vec2.length();
-    if(len1 > 0 && len2 > 0)
-        return qAcos(QVector2D::dotProduct(vec1, vec2)/(len1*len2));
+    qreal lens = vec1.length()*vec2.length();
+    if(lens > 0)
+        return qAcos(QVector2D::dotProduct(vec1, vec2)/lens);
     else
         return 0;
+}
+
+qreal CelluloMathUtil::crossProduct(QVector2D const& vec1, QVector2D const& vec2){
+    return vec1.x()*vec2.y() - vec1.y()*vec2.x();
 }
 
 }

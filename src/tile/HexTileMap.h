@@ -226,6 +226,11 @@ public slots:
      */
     bool removeTile(int q, int r);
 
+    /**
+     * @brief Removes all tiles
+     */
+    void clearTiles();
+
 private slots:
 
     /**

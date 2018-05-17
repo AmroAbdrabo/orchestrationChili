@@ -26,6 +26,13 @@
 #ifndef CELLULOMATHUTIL_H
 #define CELLULOMATHUTIL_H
 
+#if defined(Q_OS_WIN)
+	#define _USE_MATH_DEFINES
+	#include <math.h>
+#else
+	#include <cmath>
+#endif
+
 #include <QObject>
 #include <QVector2D>
 #include <QVariantList>
@@ -213,7 +220,7 @@ public:
      * @param deg Angle in degrees
      * @return Corresponding angle in radians
      */
-    Q_INVOKABLE static constexpr qreal degToRad(qreal deg);
+    Q_INVOKABLE static constexpr qreal degToRad(qreal deg){ return deg*M_PI/180.0; }
 
     /**
      * @brief Converts radians to degrees
@@ -221,7 +228,7 @@ public:
      * @param rad Angle in radians
      * @return Corresponding angle in degrees
      */
-    Q_INVOKABLE static constexpr qreal radToDeg(qreal rad);
+    Q_INVOKABLE static constexpr qreal radToDeg(qreal rad){ return rad*180.0/M_PI; }
 
     /**
      * @brief Calculates a parametric sigmoid function value
@@ -252,6 +259,15 @@ public:
      * @return      Angle between in rad
      */
     Q_INVOKABLE static qreal angleBetween(QVector2D const& vec1, QVector2D const& vec2);
+
+    /**
+     * @brief Returns the signed cross product length of two 2D vectors
+     *
+     * @param  vec1 First vector, must have positive length
+     * @param  vec2 Second vector, must have positive length
+     * @return      vec1.x*vec2.y - vec1.y*vec2.x
+     */
+    Q_INVOKABLE static qreal crossProduct(QVector2D const& vec1, QVector2D const& vec2);
 
 private:
 

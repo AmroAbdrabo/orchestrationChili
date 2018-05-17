@@ -34,6 +34,12 @@ ApplicationWindow {
 
             //onValueChanged: hexMap.physicalArea = Qt.rect(-200*slider.value, -200*slider.value, 400*slider.value, 400*slider.value)
         }
+
+        Button{
+
+            text: "Clear"
+            onClicked: hexMap.clearTiles()
+        }
     }
 
     Rectangle{

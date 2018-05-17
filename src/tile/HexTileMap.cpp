@@ -25,6 +25,7 @@
 #include "HexTileMap.h"
 
 #include "HexTile.h"
+#include "../util/math/CelluloMathUtil.h"
 
 #include <QDebug>
 #include <limits>
@@ -230,28 +231,46 @@ QVector3D HexTileMap::processUnknownTile(QVector3D const& pose){
             }
 
             //Exit cannot be detected through closeness to edge, try to detect through exit ray
+            qDebug() << "Trying ray intersection...";
             if(deltaQ == 0 && deltaR == 0){
-                if(autoBuildKnownHistory.size() < 2)
+                if(autoBuildKnownHistory.size() < 2){
+                    qDebug() << "Too few known points";
                     return QVector3D(0,0,0);
+                }
 
                 //Get main direction
                 QVector2D mainVec = autoBuildKnownHistory.last() - autoBuildKnownHistory.first();
-                if(mainVec.length() < autoBuildMinVecSize)
+                if(mainVec.length() < autoBuildMinVecSize){
+                    qDebug() << "mainVec too short";
                     return QVector3D(0,0,0);
+                }
 
                 //Check if all directions agree with main direction, also get mean of all positions as origin of ray
                 QVector2D origin = autoBuildKnownHistory.first();
                 for(QList<QVector2D>::iterator it = autoBuildKnownHistory.begin() + 1; it != autoBuildKnownHistory.end(); it++){
                     QVector2D vec = *it - *(it - 1);
                     if(vec.length() > autoBuildMinVecSize)
-                        if(CelluloMathUtil::angleBetween(mainVec, vec) > autoBuildMinVecAngle)
+                        if(CelluloMathUtil::angleBetween(mainVec, vec) > autoBuildMinVecAngle){
+                            qDebug() << "Angles don't agree";
                             return QVector3D(0,0,0);
+                        }
 
                     origin += *it;
                 }
                 origin /= autoBuildKnownHistory.length();
 
-                //Intersect ray with all edges
+                //Intersect exit ray with all edges
+                for(int i=0;i<6;i++)
+                    if(CelluloMathUtil::rayCrossesLineSeg(origin, mainVec, edgeMids[i] + deltaHalfSegs[i], edgeMids[i] - deltaHalfSegs[i])){
+                        deltaQ = deltaQs[i];
+                        deltaR = deltaRs[i];
+                        qDebug() << "crosses at " << i;
+                        break;
+                    }
+
+                //Exit cannot be detected...
+                if(deltaQ == 0 && deltaR == 0)
+                    return QVector3D(0,0,0);
             }
 
             //First estimate new position on this imaginary tile
@@ -325,13 +344,14 @@ void HexTileMap::addTile(HexTile* newTile){
 
 bool HexTileMap::removeTile(HexTile* oldTile){
     //TODO: More efficient lookup by axial coords possible?
-    for(QVariantList::iterator tileVariantIt =  tiles.begin(); tileVariantIt != tiles.end(); tileVariantIt++){
+    for(QVariantList::iterator tileVariantIt = tiles.begin(); tileVariantIt != tiles.end(); tileVariantIt++){
         HexTile* tile = (*tileVariantIt).value<HexTile*>();
         if(tile){
             if(tile == oldTile){
                 tiles.erase(tileVariantIt);
                 emit tileRemoved(tile->getCoords()->getQ(), tile->getCoords()->getR());
                 tile->deleteLater();
+                resetAutoBuild(); //Too expensive to check whether this tile was involved with autobuild...
                 return true;
             }
         }
@@ -350,6 +370,7 @@ bool HexTileMap::removeTile(int q, int r){
                 tiles.erase(tileVariantIt);
                 emit tileRemoved(q, r);
                 tile->deleteLater();
+                resetAutoBuild(); //Too expensive to check whether this tile was involved with autobuild...
                 return true;
             }
         }
@@ -357,6 +378,20 @@ bool HexTileMap::removeTile(int q, int r){
             qCritical() << "HexTileMap::removeTile(): tiles can only contain HexTile type!";
     }
     return false;
+}
+
+void HexTileMap::clearTiles(){
+    for(QVariantList::iterator tileVariantIt = tiles.begin(); tileVariantIt != tiles.end(); tileVariantIt++){
+        HexTile* tile = (*tileVariantIt).value<HexTile*>();
+        if(tile){
+            tiles.erase(tileVariantIt);
+            emit tileRemoved(tile->getCoords()->getQ(), tile->getCoords()->getR());
+            tile->deleteLater();
+        }
+        else
+            qCritical() << "HexTileMap::removeTile(): tiles can only contain HexTile type!";
+    }
+    resetAutoBuild();
 }
 
 }
