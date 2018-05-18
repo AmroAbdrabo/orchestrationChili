@@ -109,19 +109,8 @@ QVector3D HexTileMap::remapPose(QVector3D const& pose, QObject* sender){
     HexTileMapAutoBuilder* builder = autoBuilders.value(sender, nullptr);
     if(!builder){
         builder = new HexTileMapAutoBuilder(this);
+        connect(sender, SIGNAL(kidnappedChanged()), builder, SLOT(resetAutoBuild()));
         autoBuilders.insert(sender, builder);
-
-
-
-
-
-
-
-
-
-
-
-        //connect kidnappedchanged
     }
 
     //Position is on a known tile

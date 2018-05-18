@@ -75,8 +75,6 @@ signals:
 
 public slots:
 
-    void senderKidnappedChanged();
-
     void resetAutoBuild();
 
     void processKnownTile(QVector2D const& position, AxialHexCoords* tileCoords);
