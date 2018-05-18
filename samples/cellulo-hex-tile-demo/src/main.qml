@@ -16,29 +16,41 @@ ApplicationWindow {
         id: addressBox
         title: "Robot Address"
 
-        MacAddrSelector{
-            addresses: [
-                "00:06:66:d2:cf:7a"
-            ]
-            onConnectRequested: robotComm.macAddr = selectedAddress
-            onDisconnectRequested: robotComm.disconnectFromServer()
-            connectionStatus: robotComm.connectionStatus
-        }
+        Column{
 
-        Slider{
-            id: slider
-            width: 100
-            value: 1.0
+            MacAddrSelector{
+                addresses: [
+                    "00:06:66:d2:cf:7a"
+                ]
+                onConnectRequested: robotComm1.macAddr = selectedAddress
+                onDisconnectRequested: robotComm1.disconnectFromServer()
+                connectionStatus: robotComm1.connectionStatus
+            }
 
-            visible: true
+            MacAddrSelector{
+                addresses: [
+                    "00:06:66:74:40:DB"
+                ]
+                onConnectRequested: robotComm2.macAddr = selectedAddress
+                onDisconnectRequested: robotComm2.disconnectFromServer()
+                connectionStatus: robotComm2.connectionStatus
+            }
 
-            //onValueChanged: hexMap.physicalArea = Qt.rect(-200*slider.value, -200*slider.value, 400*slider.value, 400*slider.value)
-        }
+            Slider{
+                id: slider
+                width: 100
+                value: 1.0
 
-        Button{
+                visible: true
 
-            text: "Clear"
-            onClicked: hexMap.clearTiles()
+                //onValueChanged: hexMap.physicalArea = Qt.rect(-200*slider.value, -200*slider.value, 400*slider.value, 400*slider.value)
+            }
+
+            Button{
+
+                text: "Clear"
+                onClicked: hexMap.clearTiles()
+            }
         }
     }
 
@@ -117,12 +129,10 @@ ApplicationWindow {
 
             Image{
                 property vector2d screenSize: parent.toScreenSize.convert(Qt.vector2d(75, 75*2/Math.sqrt(3)))
-                property vector2d screenCoords: parent.toScreenCoords.convert(Qt.vector2d(robotComm.x, robotComm.y))
+                property vector2d screenCoords: parent.toScreenCoords.convert(Qt.vector2d(robotComm1.x, robotComm1.y))
 
-
-
-                source: robotComm.kidnapped ? "../assets/redHexagon.svg" : "../assets/greenHexagon.svg"
-                rotation: robotComm.theta
+                source: robotComm1.kidnapped ? "../assets/redHexagon.svg" : "../assets/greenHexagon.svg"
+                rotation: robotComm1.theta
                 width: screenSize.x
                 height: screenSize.y
                 sourceSize.width: screenSize.x
@@ -133,6 +143,21 @@ ApplicationWindow {
             }
 
             Image{
+                property vector2d screenSize: parent.toScreenSize.convert(Qt.vector2d(75, 75*2/Math.sqrt(3)))
+                property vector2d screenCoords: parent.toScreenCoords.convert(Qt.vector2d(robotComm2.x, robotComm2.y))
+
+                source: robotComm2.kidnapped ? "../assets/redHexagon.svg" : "../assets/greenHexagon.svg"
+                rotation: robotComm2.theta
+                width: screenSize.x
+                height: screenSize.y
+                sourceSize.width: screenSize.x
+                sourceSize.height: screenSize.y
+                x: screenCoords.x - width/2
+                y: screenCoords.y - height/2
+                visible: true
+            }
+
+            /*Image{
                 property vector2d screenSize: parent.toScreenSize.convert(Qt.vector2d(30, 30*2/Math.sqrt(3)))
                 property vector2d screenCoords: parent.toScreenCoords.convert(Qt.vector2d(robotComm.goal.x, robotComm.goal.y))
 
@@ -144,7 +169,7 @@ ApplicationWindow {
                 x: screenCoords.x - width/2
                 y: screenCoords.y - height/2
                 visible: true
-            }
+            }*/
         }
     }
 
@@ -166,7 +191,7 @@ ApplicationWindow {
 
         //poseVelControlEnabled: true
 
-        id: robotComm
+        id: robotComm1
         onConnectionStatusChanged:{
             if(connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected)
                 setPoseBcastPeriod(100);
@@ -189,5 +214,14 @@ ApplicationWindow {
             if(goal.minus(Qt.vector2d(x,y)).length() < 10)
                 currentGoal = (currentGoal + 1) % 7;
         }
+    }
+
+    CelluloBluetooth{
+        id: robotComm2
+        onConnectionStatusChanged:{
+            if(connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected)
+                setPoseBcastPeriod(100);
+        }
+        poseRemapper: hexMap
     }
 }

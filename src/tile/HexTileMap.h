@@ -25,18 +25,19 @@
 #ifndef HEXTILEMAP_H
 #define HEXTILEMAP_H
 
-#include "PoseRemapper.h"
-
-#include "../util/math/CelluloMathUtil.h"
-
 #include <QVector3D>
 #include <QVariantList>
 #include <QRectF>
 
+#include "PoseRemapper.h"
 #include "CoordSpaceConverter.h"
 #include "HexTileStandardCoords.h"
+#include "../util/math/CelluloMathUtil.h"
+#include "HexTileMapAutoBuilder.h"
 
 namespace Cellulo {
+
+class HexTileMapAutoBuilder;
 
 /**
  * @addtogroup tile
@@ -49,7 +50,7 @@ namespace Cellulo {
 class HexTileMap : public PoseRemapper {
     /* *INDENT-OFF* */
     Q_OBJECT
-    /* *INDENT-ON* */
+        /* *INDENT-ON* */
 
     /** @brief The physical coordinates of the top left of this map, in mm */
     Q_PROPERTY(QVector2D physicalTopLeft READ getPhysicalTopLeft WRITE setPhysicalTopLeft NOTIFY physicalTopLeftChanged)
@@ -198,9 +199,10 @@ public slots:
      * @brief Remaps the given pose to another pose based on the hex tile configuration
      *
      * @param  pose Given pose (x,y is in mm, z is orientation in degrees)
+     * @param  sender Object whose pose is being remapped, used for detecting e.g kidnaps and improving the remapping if provided
      * @return Remapped pose (x,y is in mm, z is orientation in degrees)
      */
-    virtual QVector3D remapPose(QVector3D const& pose) override;
+    virtual QVector3D remapPose(QVector3D const& pose, QObject* sender = nullptr) override;
 
     /**
      * @brief Adds new tile, removes old tile if one with same q,r coordinates is present
@@ -270,58 +272,18 @@ private:
      */
     HexTile* getTile(QVector2D const& position);
 
+    /**
+     * @brief Reset all auto builders
+     */
+    void resetAutoBuilders();
 
+    QVector2D physicalTopLeft;                            ///< Physical top left coordinate of this map in mm, used when drawing
+    QVector2D physicalSize;                               ///< Physical size described by this map in mm, used when drawing
+    CoordSpaceConverter toScreenSize;                     ///< Converter from physical sizes to screen sizes
+    CoordSpaceConverter toScreenCoords;                   ///< Converter from physical coords to screen coords
 
-
-
-    void resetAutoBuild();
-
-
-
-
-
-    void processKnownTile(QVector2D const& position, AxialHexCoords* tileCoords);
-
-
-
-
-
-
-
-    QVector3D processUnknownTile(QVector3D const& sourcePose);
-
-    QVector2D physicalTopLeft;           ///< Physical top left coordinate of this map in mm, used when drawing
-    QVector2D physicalSize;              ///< Physical size described by this map in mm, used when drawing
-    CoordSpaceConverter toScreenSize;    ///< Converter from physical sizes to screen sizes
-    CoordSpaceConverter toScreenCoords;  ///< Converter from physical coords to screen coords
-
-    bool autoBuild;                      ///< Whether to try to automatically build the map
-
-
-    //TODO: THIS MUST BE PER CLIENT!!!!!
-    QList<QVector2D> autoBuildKnownHistory;
-    QList<QVector2D> autoBuildUnknownHistory;
-    HexTileStandardCoords* autoBuildUnknownStdCoords;
-    bool autoBuildKnownCoordsExist;
-    AxialHexCoords autoBuildKnownCoords;
-
-    constexpr static int autoBuildKnownHistorySize = 5;
-    constexpr static int autoBuildKnownHistoryMinSize = 3;
-    constexpr static int autoBuildUnknownHistorySize = 3;
-
-
-
-
-
-
-
-
-
-    constexpr static float autoBuildExitMargin = 10.0f;
-    constexpr static float autoBuildExitSegWidth = 20.0f;
-
-    constexpr static float autoBuildMinVecSize = 2.0f;
-    constexpr static float autoBuildMinVecAngle = CelluloMathUtil::degToRad(30.0f);
+    bool autoBuild;                                       ///< Whether to try to automatically build the map
+    QHash<QObject*, HexTileMapAutoBuilder*> autoBuilders; ///< One autobuilder per pose generator (e.g robot)
 
     //TODO: BETTER STORAGE
     QVariantList tiles;

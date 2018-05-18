@@ -36,7 +36,9 @@ OffsetRemapper::OffsetRemapper(QQuickItem* parent) : PoseRemapper(parent){
 
 OffsetRemapper::~OffsetRemapper(){}
 
-QVector3D OffsetRemapper::remapPose(QVector3D const& pose){
+QVector3D OffsetRemapper::remapPose(QVector3D const& pose, QObject* sender){
+    Q_UNUSED(sender);
+    
     qreal newTheta = pose.z() + deltaTheta;
     while(newTheta >= 360.0f)
         newTheta -= 360.0f;

@@ -77,7 +77,7 @@ public slots:
      * @param  pose Given pose (x,y is in mm, z is orientation in degrees)
      * @return Remapped pose (x,y is in mm, z is orientation in degrees)
      */
-    virtual QVector3D remapPose(QVector3D const& pose) override;
+    virtual QVector3D remapPose(QVector3D const& pose, QObject* sender = nullptr) override;
 
 private:
 

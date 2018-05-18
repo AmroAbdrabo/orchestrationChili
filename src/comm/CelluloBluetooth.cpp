@@ -429,7 +429,7 @@ void CelluloBluetooth::processResponse(CelluloBluetoothPacket& externalPacket){
                 theta = externalPacket.unloadUInt16()/(float)GOAL_POSE_FACTOR_SHARED;
 
                 if(poseRemapper){
-                    QVector3D remapped = poseRemapper->remapPose(QVector3D(x,y,theta));
+                    QVector3D remapped = poseRemapper->remapPose(QVector3D(x,y,theta), this);
                     x = remapped.x();
                     y = remapped.y();
                     theta = remapped.z();
@@ -451,7 +451,7 @@ void CelluloBluetooth::processResponse(CelluloBluetoothPacket& externalPacket){
                 theta = externalPacket.unloadUInt16()/(float)GOAL_POSE_FACTOR_SHARED;
 
                 if(poseRemapper){
-                    QVector3D remapped = poseRemapper->remapPose(QVector3D(x,y,theta));
+                    QVector3D remapped = poseRemapper->remapPose(QVector3D(x,y,theta), this);
                     x = remapped.x();
                     y = remapped.y();
                     theta = remapped.z();

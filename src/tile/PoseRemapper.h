@@ -67,9 +67,10 @@ public slots:
      * @brief Remaps the given pose to another pose based on some rule to be determined by the extending classes
      *
      * @param  pose Given pose (x,y is in mm, z is orientation in degrees)
+     * @param  sender Object whose pose is being remapped, used for detecting e.g kidnaps and improving the remapping if provided
      * @return Remapped pose (x,y is in mm, z is orientation in degrees)
      */
-    virtual QVector3D remapPose(QVector3D const& pose) = 0;
+    virtual QVector3D remapPose(QVector3D const& pose, QObject* sender = nullptr) = 0;
 
 };
 
