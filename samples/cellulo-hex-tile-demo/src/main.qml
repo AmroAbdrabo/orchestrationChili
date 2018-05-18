@@ -72,13 +72,17 @@ ApplicationWindow {
         HexTileMap{
             id: hexMap
 
-            width: parent.width
-            height: parent.height*slider.value
+            property real scale: Math.min(parent.width/physicalSize.x, parent.height/physicalSize.y)
+
+            width:  scale*physicalSize.x
+            height: scale*physicalSize.y
+
             //x: slider.value*100
             //y: slider.value*100
-            physicalSize: Qt.vector2d(400, 400)
-            physicalTopLeft: Qt.vector2d(-200, -200)
+            //physicalSize: Qt.vector2d(400, 400)
+            //physicalTopLeft: Qt.vector2d(-200, -200)
 
+            autoResize: true
             autoBuild: true
 
             onTileAdded: console.info("Tile added at " + newTile.coords.q + " " + newTile.coords.r)

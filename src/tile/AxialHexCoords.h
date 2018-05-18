@@ -175,9 +175,19 @@ public slots:
     /**
      * @brief Gets the list of the 6 corners of this tile
      *
-     * @param list Output list of 6 corners
+     * @param list Output list of 6 corners in the order: top, top-left, bottom-left, bottom, bottom-right, top-right
      */
     void cornerList(QVector<QVector2D>& list);
+
+    /**
+     * @brief Gets the limits of this tile
+     *
+     * @param left   Smallest horizontal coordinate
+     * @param right  Largest horizontal coordinate
+     * @param top    Smallest vertical coordinate
+     * @param bottom Largest vertical coordinate
+     */
+    void limits(float& left, float& right, float& top, float& bottom);
 
 private:
 

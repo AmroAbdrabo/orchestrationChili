@@ -36,10 +36,11 @@ HexTileMap::HexTileMap(QQuickItem* parent) : PoseRemapper(parent),
     toScreenSize(this),
     toScreenCoords(this)
 {
-    autoBuild = false;
-
+    autoResize = true;
     physicalTopLeft = QVector2D(-50.0f, -57.73502691896257645092f);
     physicalSize = QVector2D(100.0f, 115.47005383792515290183f);
+    connect(this, SIGNAL(tileAdded(HexTile*)),      this, SLOT(fitPhysicalCoordsToTiles()));
+    connect(this, SIGNAL(tileRemoved(int, int)),    this, SLOT(fitPhysicalCoordsToTiles()));
 
     connect(this, SIGNAL(widthChanged()),           this, SLOT(updateToScreenSize()));
     connect(this, SIGNAL(heightChanged()),          this, SLOT(updateToScreenSize()));
@@ -52,9 +53,50 @@ HexTileMap::HexTileMap(QQuickItem* parent) : PoseRemapper(parent),
 
     connect(this, SIGNAL(toScreenSizeChanged()),    this, SIGNAL(markedDirty()));
     connect(this, SIGNAL(toScreenCoordsChanged()),  this, SIGNAL(markedDirty()));
+
+    autoBuild = false;
 }
 
 HexTileMap::~HexTileMap(){ }
+
+void HexTileMap::setAutoResize(bool autoResize){
+    this->autoResize = autoResize;
+    if(autoResize){
+        connect(this, SIGNAL(tileAdded(HexTile*)),      this, SLOT(fitPhysicalCoordsToTiles()));
+        connect(this, SIGNAL(tileRemoved(int, int)),    this, SLOT(fitPhysicalCoordsToTiles()));
+    }
+    else{
+        disconnect(this, SIGNAL(tileAdded(HexTile*)),   this, SLOT(fitPhysicalCoordsToTiles()));
+        disconnect(this, SIGNAL(tileRemoved(int, int)), this, SLOT(fitPhysicalCoordsToTiles()));
+    }
+    emit autoResizeChanged();
+}
+
+void HexTileMap::fitPhysicalCoordsToTiles(){
+    QVector2D newTopLeft(-50.0f, -57.73502691896257645092f);
+    QVector2D newBottomRight(newTopLeft + QVector2D(100.0f, 115.47005383792515290183f));
+    float left, right, top, bottom;
+
+    for(auto const& tileVariant : tiles){
+        HexTile* tile = tileVariant.value<HexTile*>();
+        if(tile){
+            tile->getCoords()->limits(left, right, top, bottom);
+            if(top < newTopLeft.y())
+                newTopLeft.setY(top);
+            if(bottom > newBottomRight.y())
+                newBottomRight.setY(bottom);
+            if(left < newTopLeft.x())
+                    newTopLeft.setX(left);
+            if(right > newBottomRight.x())
+                    newBottomRight.setX(right);
+        }
+        else
+            qCritical() << "HexTileMap::remapPose(): tiles can only contain HexTile type!";
+    }
+
+    setPhysicalTopLeft(newTopLeft);
+    setPhysicalSize(newBottomRight - newTopLeft);
+}
 
 void HexTileMap::setPhysicalSize(QVector2D const& physicalSize){
     if(physicalSize.x() > 0 && physicalSize.y() > 0){

@@ -92,4 +92,13 @@ void AxialHexCoords::cornerList(QVector<QVector2D>& list){
         offset + QVector2D( 0.50f*physicalWidth, -0.25f*physicalHeight); //Top right
 }
 
+void AxialHexCoords::limits(float& left, float& right, float& top, float& bottom){
+    float physicalHeight = getPhysicalHeight();
+    QVector2D offset = hexOffset();
+    left =  -0.50f*physicalWidth +  offset.x();
+    right =  0.50f*physicalWidth +  offset.x();
+    top =   -0.50f*physicalHeight + offset.y();
+    bottom = 0.50f*physicalHeight + offset.y();
+}
+
 }

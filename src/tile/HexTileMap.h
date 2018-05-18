@@ -50,7 +50,10 @@ class HexTileMapAutoBuilder;
 class HexTileMap : public PoseRemapper {
     /* *INDENT-OFF* */
     Q_OBJECT
-        /* *INDENT-ON* */
+    /* *INDENT-ON* */
+
+    /** @brief Automatically determine physicalTopLeft and physicalSize depending on the owned tiles, default true */
+    Q_PROPERTY(bool autoResize READ getAutoResize WRITE setAutoResize NOTIFY autoResizeChanged)
 
     /** @brief The physical coordinates of the top left of this map, in mm */
     Q_PROPERTY(QVector2D physicalTopLeft READ getPhysicalTopLeft WRITE setPhysicalTopLeft NOTIFY physicalTopLeftChanged)
@@ -64,7 +67,7 @@ class HexTileMap : public PoseRemapper {
     /** @brief Converter from physical coords (mm) to screen coords (pixels) */
     Q_PROPERTY(Cellulo::CoordSpaceConverter* toScreenCoords READ getToScreenCoords NOTIFY toScreenCoordsChanged)
 
-    /** @brief Try build map automatically with standard coordinates through robot readings, i.e auto-add unknown tiles, default false */
+    /** @brief Try to build map automatically with standard coordinates through robot readings, i.e auto-add unknown tiles, default false */
     Q_PROPERTY(bool autoBuild READ getAutoBuild WRITE setAutoBuild NOTIFY autoBuildChanged)
 
     //TODO: BETTER STORAGE
@@ -83,6 +86,20 @@ public:
      * @brief Deletes this hex tile map
      */
     virtual ~HexTileMap();
+
+    /**
+     * @brief Gets whether to automatically resize physicalSize and physicalTopLeft
+     *
+     * @return Whether to automatically resize physicalSize and physicalTopLeft
+     */
+    bool getAutoResize() const { return autoResize; }
+
+    /**
+     * @brief Sets whether to automatically resize physicalSize and physicalTopLeft
+     *
+     * @param autoResize Whether to automatically resize physicalSize and physicalTopLeft
+     */
+    void setAutoResize(bool autoResize);
 
     /**
      * @brief Gets the physical size, used for drawing
@@ -145,6 +162,11 @@ public:
 signals:
 
     /** @cond DO_NOT_DOCUMENT */
+
+    /**
+     * @brief Emitted when autoResize changes
+     */
+    void autoResizeChanged();
 
     /**
      * @brief Emitted when the physical size changes
@@ -245,6 +267,11 @@ private slots:
      */
     void updateToScreenCoords();
 
+    /**
+     * @brief Calculates physicalSize and physicalTopLeft to tiles
+     */
+    void fitPhysicalCoordsToTiles();
+
 private:
 
     /**
@@ -277,6 +304,7 @@ private:
      */
     void resetAutoBuilders();
 
+    bool autoResize;                                      ///< Determine physicalTopLeft and physicalSize depending on the tiles
     QVector2D physicalTopLeft;                            ///< Physical top left coordinate of this map in mm, used when drawing
     QVector2D physicalSize;                               ///< Physical size described by this map in mm, used when drawing
     CoordSpaceConverter toScreenSize;                     ///< Converter from physical sizes to screen sizes
