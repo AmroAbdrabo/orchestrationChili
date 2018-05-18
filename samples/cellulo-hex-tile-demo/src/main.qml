@@ -72,8 +72,8 @@ ApplicationWindow {
         HexTileMap{
             id: hexMap
 
-            width: parent.width*slider.value
-            height: parent.height
+            width: parent.width
+            height: parent.height*slider.value
             //x: slider.value*100
             //y: slider.value*100
             physicalSize: Qt.vector2d(400, 400)

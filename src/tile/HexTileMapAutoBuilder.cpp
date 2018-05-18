@@ -108,6 +108,21 @@ QVector3D HexTileMapAutoBuilder::processUnknownTile(QVector3D const& sourcePose,
                 unknownStdCoords = nullptr; //Detach std coords from the map, rests only with imaginaryTile
                 imaginaryTile->setParent(tileMap);
                 imaginaryTile->setParentItem(tileMap); //Child added detection will call addTile(), no need to call here
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 reset();
             }
             else
@@ -196,13 +211,21 @@ QVector3D HexTileMapAutoBuilder::processUnknownTile(QVector3D const& sourcePose,
                     imaginaryTile->getCoords()->setR(knownCoords.getR() + deltaR);
                     result = (imaginaryTile->sourceCoordinates(sourcePosition) + imaginaryTile->getCoords()->hexOffset()).toVector3D();
                     result.setZ(sourcePose.z());
-                    //TODO: TRANSFER UNKNOWN TO KNOWN
                     unknownStdCoords = nullptr; //Detach std coords from the map, rests only with imaginaryTile
                     imaginaryTile->setParent(tileMap);
                     imaginaryTile->setParentItem(tileMap); //Child added detection will call addTile(), no need to call here
+
+                    //Transfer unknown history to known history
+                    knownHistory.clear();
+                    for(QVector2D const& pos : unknownHistory)
+                        knownHistory.append(imaginaryTile->sourceCoordinates(pos) + imaginaryTile->getCoords()->hexOffset());
+                    unknownHistory.clear();
+                    knownCoords.copyFrom(*imaginaryTile->getCoords());
                 }
-                else
+                else{
+                    delete imaginaryTile;
                     reset();
+                }
             }
             else
                 delete imaginaryTile;
