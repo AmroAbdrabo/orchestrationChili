@@ -29,36 +29,36 @@
 namespace Cellulo{
 
 HexTileMapAutoBuilder::HexTileMapAutoBuilder(QObject* parent) : QObject(parent){
-    autoBuildKnownCoordsExist = false;
-    autoBuildUnknownStdCoords = nullptr;
+    knownCoordsExist = false;
+    unknownStdCoords = nullptr;
 }
 
 HexTileMapAutoBuilder::~HexTileMapAutoBuilder(){}
 
-void HexTileMapAutoBuilder::resetAutoBuild(){
-    autoBuildKnownHistory.clear();
-    autoBuildUnknownHistory.clear();
-    autoBuildKnownCoordsExist = false;
-    if(autoBuildUnknownStdCoords){
-        delete autoBuildUnknownStdCoords;
-        autoBuildUnknownStdCoords = nullptr;
+void HexTileMapAutoBuilder::reset(){
+    knownHistory.clear();
+    unknownHistory.clear();
+    knownCoordsExist = false;
+    if(unknownStdCoords){
+        delete unknownStdCoords;
+        unknownStdCoords = nullptr;
     }
 }
 
 void HexTileMapAutoBuilder::processKnownTile(QVector2D const& position, AxialHexCoords* coords){
-    if(autoBuildKnownCoordsExist){
-        if(autoBuildKnownCoords.getQ() != coords->getQ() || autoBuildKnownCoords.getR() != coords->getR()){
-            autoBuildKnownCoords.copyFrom(*coords);
-            autoBuildKnownHistory.clear();
+    if(knownCoordsExist){
+        if(knownCoords.getQ() != coords->getQ() || knownCoords.getR() != coords->getR()){
+            knownCoords.copyFrom(*coords);
+            knownHistory.clear();
         }
     }
     else{
-        autoBuildKnownCoordsExist = true;
-        autoBuildKnownCoords.copyFrom(*coords);
+        knownCoordsExist = true;
+        knownCoords.copyFrom(*coords);
     }
-    autoBuildKnownHistory.append(position);
-    if(autoBuildKnownHistory.size() > autoBuildKnownHistorySize)
-        autoBuildKnownHistory.removeFirst();
+    knownHistory.append(position);
+    if(knownHistory.size() > knownHistorySize)
+        knownHistory.removeFirst();
 }
 
 QVector3D HexTileMapAutoBuilder::processUnknownTile(QVector3D const& sourcePose, bool addNewTile, bool mapEmpty, Cellulo::HexTileMap* tileMap){
@@ -70,32 +70,32 @@ QVector3D HexTileMapAutoBuilder::processUnknownTile(QVector3D const& sourcePose,
     if(newUnknownStdCoords->estimateFromCoords(sourcePosition)){
 
         //Update old std coords if necessary and position history
-        if(autoBuildUnknownStdCoords){
-            if(autoBuildUnknownStdCoords->equals(*newUnknownStdCoords)){
+        if(unknownStdCoords){
+            if(unknownStdCoords->equals(*newUnknownStdCoords)){
                 delete newUnknownStdCoords;
-                autoBuildUnknownHistory.append(sourcePosition);
-                if(autoBuildUnknownHistory.size() > autoBuildUnknownHistorySize)
-                    autoBuildUnknownHistory.removeFirst();
+                unknownHistory.append(sourcePosition);
+                if(unknownHistory.size() > unknownHistorySize)
+                    unknownHistory.removeFirst();
             }
             else{
-                delete autoBuildUnknownStdCoords;
-                autoBuildUnknownStdCoords = newUnknownStdCoords;
-                autoBuildUnknownHistory.clear();
-                autoBuildUnknownHistory.append(sourcePosition);
+                delete unknownStdCoords;
+                unknownStdCoords = newUnknownStdCoords;
+                unknownHistory.clear();
+                unknownHistory.append(sourcePosition);
             }
         }
         else{
-            autoBuildUnknownStdCoords = newUnknownStdCoords;
-            autoBuildUnknownHistory.clear();
-            autoBuildUnknownHistory.append(sourcePosition);
+            unknownStdCoords = newUnknownStdCoords;
+            unknownHistory.clear();
+            unknownHistory.append(sourcePosition);
         }
 
         //Build imaginary tile
         HexTile* imaginaryTile = new HexTile(); //No need for screen rendering now, no need for parent
-        imaginaryTile->setStandardCoords(autoBuildUnknownStdCoords);
+        imaginaryTile->setStandardCoords(unknownStdCoords);
 
         //This is the first tile ever, assume q,r = 0,0
-        if(!autoBuildKnownCoordsExist){
+        if(!knownCoordsExist){
 
             //If map is empty, we can try to get coordinates
             if(mapEmpty){
@@ -104,11 +104,11 @@ QVector3D HexTileMapAutoBuilder::processUnknownTile(QVector3D const& sourcePose,
             }
 
             //Add this tile
-            if(mapEmpty && addNewTile && autoBuildUnknownHistory.size() >= autoBuildUnknownHistorySize){
-                autoBuildUnknownStdCoords = nullptr; //Detach std coords from the map, rests only with imaginaryTile
+            if(mapEmpty && addNewTile && unknownHistory.size() >= unknownHistorySize){
+                unknownStdCoords = nullptr; //Detach std coords from the map, rests only with imaginaryTile
                 imaginaryTile->setParent(tileMap);
                 imaginaryTile->setParentItem(tileMap); //Child added detection will call addTile(), no need to call here
-                resetAutoBuild();
+                reset();
             }
             else
                 delete imaginaryTile;
@@ -117,49 +117,49 @@ QVector3D HexTileMapAutoBuilder::processUnknownTile(QVector3D const& sourcePose,
         //There are existing tiles
         else{
             QVector<QVector2D> corners;
-            autoBuildKnownCoords.cornerList(corners);
+            knownCoords.cornerList(corners);
             int deltaQ = 0;
             int deltaR = 0;
             static QVector<int> deltaQs = {0,   -1, -1, 0,  1,  1};
             static QVector<int> deltaRs = {-1,  0,  1,  1,  0,  -1};
 
-            if(autoBuildKnownHistory.length() >= 2){
+            if(knownHistory.length() >= 2){
 
                 //Detect raycast exit to estimate unknown coordinates for a short while
                 //Order: top-left, left, bottom-left, bottom-right, right, top-right
                 QVector2D origin(0,0);
-                for(QVector2D const& vec : autoBuildKnownHistory)
+                for(QVector2D const& vec : knownHistory)
                     origin += vec;
-                origin /= autoBuildKnownHistory.length();
-                QVector2D mainVec = autoBuildKnownHistory.last() - autoBuildKnownHistory.first();
+                origin /= knownHistory.length();
+                QVector2D mainVec = knownHistory.last() - knownHistory.first();
                 for(int i=0;i<6;i++)
                     if(CelluloMathUtil::rayCrossesLineSeg(origin, mainVec, corners[i], corners[(i + 1) % 6])){
                         deltaQ = deltaQs[i];
                         deltaR = deltaRs[i];
                         break;
                     }
-                imaginaryTile->getCoords()->setQ(autoBuildKnownCoords.getQ() + deltaQ);
-                imaginaryTile->getCoords()->setR(autoBuildKnownCoords.getR() + deltaR);
+                imaginaryTile->getCoords()->setQ(knownCoords.getQ() + deltaQ);
+                imaginaryTile->getCoords()->setR(knownCoords.getR() + deltaR);
                 result = (imaginaryTile->sourceCoordinates(sourcePosition) + imaginaryTile->getCoords()->hexOffset()).toVector3D();
                 result.setZ(sourcePose.z());
             }
 
             //Enough samples on the known and unknown tiles, pick best direction
-            if(addNewTile && autoBuildUnknownHistory.size() >= autoBuildUnknownHistorySize && autoBuildKnownHistory.size() >= autoBuildKnownHistoryMinSize){
+            if(addNewTile && unknownHistory.size() >= unknownHistorySize && knownHistory.size() >= knownHistoryMinSize){
 
                 //Directions on the known tile
                 QList<QVector2D> knownVecs;
-                for(auto it = autoBuildKnownHistory.begin() + 1; it != autoBuildKnownHistory.end(); it++){
+                for(auto it = knownHistory.begin() + 1; it != knownHistory.end(); it++){
                     QVector2D vec = *it - *(it - 1);
-                    if(vec.length() > autoBuildMinVecSize)
+                    if(vec.length() > minVecSize)
                         knownVecs.append(vec);
                 }
 
                 //Directions on the unknown tile calculated from the raw source coordinates, will result in the same if calculated from remapped coordinates
                 QList<QVector2D> unknownVecs;
-                for(auto it = autoBuildUnknownHistory.begin() + 1; it != autoBuildUnknownHistory.end(); it++){
+                for(auto it = unknownHistory.begin() + 1; it != unknownHistory.end(); it++){
                     QVector2D vec = *it - *(it - 1);
-                    if(vec.length() > autoBuildMinVecSize)
+                    if(vec.length() > minVecSize)
                         unknownVecs.append(vec);
                 }
 
@@ -169,12 +169,12 @@ QVector3D HexTileMapAutoBuilder::processUnknownTile(QVector3D const& sourcePose,
                 for(int i=0;i<6;i++){
                     float hypotDeltaQ = deltaQs[i];
                     float hypotDeltaR = deltaRs[i];
-                    imaginaryTile->getCoords()->setQ(autoBuildKnownCoords.getQ() + hypotDeltaQ);
-                    imaginaryTile->getCoords()->setR(autoBuildKnownCoords.getR() + hypotDeltaR);
+                    imaginaryTile->getCoords()->setQ(knownCoords.getQ() + hypotDeltaQ);
+                    imaginaryTile->getCoords()->setR(knownCoords.getR() + hypotDeltaR);
 
                     //Passage direction from the known tile to the unknown tile
                     QVector2D fromKnownToUnknownDir =
-                        (imaginaryTile->sourceCoordinates(autoBuildUnknownHistory.first()) + imaginaryTile->getCoords()->hexOffset()) - autoBuildKnownHistory.last();
+                        (imaginaryTile->sourceCoordinates(unknownHistory.first()) + imaginaryTile->getCoords()->hexOffset()) - knownHistory.last();
 
                     //Score is the sum of angles between all direction pairs, minimum score wins
                     //We don't add known-known, known-unknown and unknown-unknown pairs to the score as they are the same in all 6 cases
@@ -192,16 +192,17 @@ QVector3D HexTileMapAutoBuilder::processUnknownTile(QVector3D const& sourcePose,
 
                 //Add tile
                 if(deltaQ != 0 || deltaR != 0){
-                    imaginaryTile->getCoords()->setQ(autoBuildKnownCoords.getQ() + deltaQ);
-                    imaginaryTile->getCoords()->setR(autoBuildKnownCoords.getR() + deltaR);
+                    imaginaryTile->getCoords()->setQ(knownCoords.getQ() + deltaQ);
+                    imaginaryTile->getCoords()->setR(knownCoords.getR() + deltaR);
                     result = (imaginaryTile->sourceCoordinates(sourcePosition) + imaginaryTile->getCoords()->hexOffset()).toVector3D();
                     result.setZ(sourcePose.z());
                     //TODO: TRANSFER UNKNOWN TO KNOWN
-                    autoBuildUnknownStdCoords = nullptr; //Detach std coords from the map, rests only with imaginaryTile
+                    unknownStdCoords = nullptr; //Detach std coords from the map, rests only with imaginaryTile
                     imaginaryTile->setParent(tileMap);
                     imaginaryTile->setParentItem(tileMap); //Child added detection will call addTile(), no need to call here
                 }
-                resetAutoBuild();
+                else
+                    reset();
             }
             else
                 delete imaginaryTile;

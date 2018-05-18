@@ -48,7 +48,7 @@ class HexTileMap;
 class HexTileMapAutoBuilder : public QObject {
     /* *INDENT-OFF* */
     Q_OBJECT
-    /* *INDENT-ON* */
+        /* *INDENT-ON* */
 
 public:
 
@@ -66,34 +66,45 @@ public:
 
     /** @endcond */
 
-signals:
-
-    /** @cond DO_NOT_DOCUMENT */
-
-
-    /** @endcond */
-
 public slots:
 
-    void resetAutoBuild();
+    /**
+     * @brief Resets autobuild history
+     */
+    void reset();
 
+    /**
+     * @brief Processes a position on an already known tile
+     *
+     * @param position   Remapped position
+     * @param tileCoords Coordinates of the known tile
+     */
     void processKnownTile(QVector2D const& position, AxialHexCoords* tileCoords);
 
+    /**
+     * @brief Processes a pose on an unknown tile
+     *
+     * @param  sourcePose Raw source coordinates
+     * @param  addNewTile Whether to create and add a new tile to the map if possible
+     * @param  mapEmpty   Whether the map is empty, if so, a new tile will be added at 0,0 if possible
+     * @param  tileMap    Map to add the new tile to
+     * @return            Remapped pose if possible, (0,0,0) otherwise
+     */
     QVector3D processUnknownTile(QVector3D const& sourcePose, bool addNewTile, bool mapEmpty, Cellulo::HexTileMap* tileMap = nullptr);
 
 private:
 
-    bool autoBuildKnownCoordsExist;         ///< Whether there is a reading from any known tile
-    AxialHexCoords autoBuildKnownCoords;    ///< The hex coordinates of the known tile, if any
-    QList<QVector2D> autoBuildKnownHistory; ///< The remapped coordinate history on the known tile
+    bool knownCoordsExist;                        ///< Whether there is a reading from any known tile
+    AxialHexCoords knownCoords;                   ///< The hex coordinates of the known tile, if any
+    QList<QVector2D> knownHistory;                ///< The remapped coordinate history on the known tile
 
-    HexTileStandardCoords* autoBuildUnknownStdCoords;   ///< The autodetected standard coordinates of the unknown tile
-    QList<QVector2D> autoBuildUnknownHistory;           ///< The raw source coordinate history on the unknown tile
+    HexTileStandardCoords* unknownStdCoords;      ///< The autodetected standard coordinates of the unknown tile
+    QList<QVector2D> unknownHistory;              ///< The raw source coordinate history on the unknown tile
 
-    constexpr static int autoBuildKnownHistorySize = 5;     ///< Maximum number of directions on the known tile to consider
-    constexpr static int autoBuildKnownHistoryMinSize = 3;  ///< Minimum number of directions on the known tile to consider
-    constexpr static int autoBuildUnknownHistorySize = 3;   ///< Number of directions on the unknown tile to consider
-    constexpr static float autoBuildMinVecSize = 2.0f;  ///< Min direction length in mm for consideration in unknown tile generation
+    constexpr static int knownHistorySize = 5;    ///< Maximum number of directions on the known tile to consider
+    constexpr static int knownHistoryMinSize = 3; ///< Minimum number of directions on the known tile to consider
+    constexpr static int unknownHistorySize = 3;  ///< Number of directions on the unknown tile to consider
+    constexpr static float minVecSize = 2.0f;     ///< Min direction length in mm for consideration in unknown tile generation
 
 };
 

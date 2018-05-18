@@ -109,7 +109,7 @@ QVector3D HexTileMap::remapPose(QVector3D const& pose, QObject* sender){
     HexTileMapAutoBuilder* builder = autoBuilders.value(sender, nullptr);
     if(!builder){
         builder = new HexTileMapAutoBuilder(this);
-        connect(sender, SIGNAL(kidnappedChanged()), builder, SLOT(resetAutoBuild()));
+        connect(sender, SIGNAL(kidnappedChanged()), builder, SLOT(reset()));
         autoBuilders.insert(sender, builder);
     }
 
@@ -220,7 +220,7 @@ void HexTileMap::clearTiles(){
 
 void HexTileMap::resetAutoBuilders(){
     for(HexTileMapAutoBuilder* builder : autoBuilders)
-        builder->resetAutoBuild();
+        builder->reset();
 }
 
 }
