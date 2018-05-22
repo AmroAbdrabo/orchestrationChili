@@ -2,7 +2,7 @@ import QtQuick 2.2
 import QtQuick.Window 2.1
 import QtQuick.Dialogs 1.3
 import QtQuick.Layouts 1.1
-import QtQuick.Controls 1.2
+import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.3
 import QtBluetooth 5.2
 import Cellulo 1.0
@@ -48,18 +48,28 @@ ApplicationWindow {
             }
 
             Row{
+                spacing: 5
+                CheckBox{
+                    id: autoBuildCheckbox
+                    text: "Autobuild"
+                    checked: true
+                    anchors.verticalCenter: parent.verticalCenter
+                }
                 Button{
-                    text: "Clear"
+                    text: "Clear Map"
+                    anchors.verticalCenter: parent.verticalCenter
                     onClicked: hexMap.clearTiles()
                 }
 
                 Button{
                     text: "Save Map"
+                    anchors.verticalCenter: parent.verticalCenter
                     onClicked: dumpDialog.open()
                 }
 
                 Button{
                     text: "Load Map"
+                    anchors.verticalCenter: parent.verticalCenter
                     onClicked: loadDialog.open()
                 }
             }
@@ -94,56 +104,20 @@ ApplicationWindow {
             //physicalSize: Qt.vector2d(400, 400)
             //physicalTopLeft: Qt.vector2d(-200, -200)
 
-            autoResize: true
-            autoBuild: true
+            autoBuild: autoBuildCheckbox.checked
 
             onTileAdded: console.info("Tile added at " + newTile.coords.q + " " + newTile.coords.r)
             onTileRemoved: console.info("Tile removed from " + oldTileQ + " " + oldTileR)
 
-            onTileClicked: console.info(tile.coords.q + " " + tile.coords.r + " " + physicalPosition)
-
-            /*HexTileWithCoords{
-                id: centerTile
-                standardCoords: HexTileStandardCoords{ i:7; j:9; u:0; v:0 }
-                coords.q: 0; coords.r: 0
-            }*/
-/*
-            HexTileWithCoords{
-                id: leftTile
-                standardCoords: HexTileStandardCoords{ i:2; j:3; u:0; v:1 }
-                coords.q: -1; coords.r: 0
+            onTileClicked: {
+                editTileMenu.tile = tile;
+                editTileMenu.popup();
             }
 
-            HexTileWithCoords{
-                id: rightTile
-                standardCoords: HexTileStandardCoords{ i:2; j:3; u:1; v:1 }
-                coords.q: 1; coords.r: 0
-            }
+            HexTile{
 
-            HexTileWithCoords{
-                id: topLeftTile
-                standardCoords: HexTileStandardCoords{ i:2; j:3; u:0; v:0 }
-                coords.q: 0; coords.r: -1
+                standardCoords: HexTileStandardCoords{}
             }
-
-            HexTileWithCoords{
-                id: topRightTile
-                standardCoords: HexTileStandardCoords{ i:7; j:9; u:1; v:1 }
-                coords.q: 1; coords.r: -1
-            }
-
-            HexTileWithCoords{
-                id: bottomLeftTile
-                standardCoords: HexTileStandardCoords{ i:7; j:9; u:1; v:0 }
-                coords.q: -1; coords.r: 1
-            }
-
-            HexTileWithCoords{
-                id: bottomRightTile
-                standardCoords: HexTileStandardCoords{ i:2; j:3; u:1; v:0 }
-                coords.q: 0; coords.r: 1
-            }
-            */
 
             Image{
                 property vector2d screenSize: parent.toScreenSize.convert(Qt.vector2d(75, 75*2/Math.sqrt(3)))
@@ -243,6 +217,30 @@ ApplicationWindow {
         poseRemapper: hexMap
     }
 
+    Menu{
+        id: editTileMenu
+
+        property HexTile tile: null
+
+        onAboutToShow: tile.borderColor = "gray"
+        onAboutToHide: tile.borderColor = "#323232"
+
+        MenuItem{ text: editTileMenu.tile ? "Edit tile at " + editTileMenu.tile.coords.q + "," + editTileMenu.tile.coords.r : "Invalid tile"; enabled: false }
+        MenuSeparator{}
+        MenuItem{
+            text: "Remove"
+            onTriggered: hexMap.removeTile(editTileMenu.tile)
+        }
+        MenuItem{
+            text: "Copy"
+            onTriggered: {}
+        }
+        MenuItem{
+            text: "Paste"
+            onTriggered: {}
+        }
+    }
+
     FileDialog{
         id: dumpDialog
         title: "Choose a new file to save map to"
@@ -266,5 +264,9 @@ ApplicationWindow {
         selectMultiple: false
         nameFilters: ["*.json"]
         onAccepted: hexMap.loadTilesFromJSON(fileUrl)
+    }
+
+    ColorDialog{
+        id: colorDialog
     }
 }

@@ -268,9 +268,9 @@ QSGNode* HexTile::updatePaintNode(QSGNode* oldRoot, UpdatePaintNodeData* updateP
     vertices[12].set(0.5*w,             0);
     vertices[13].set(0.5*w,             1.15470053837925152902*borderWidth);
 
-    hexFill->markDirty(QSGNode::DirtyGeometry);
-    hexBorder->markDirty(QSGNode::DirtyGeometry);
-    root->markDirty(QSGNode::DirtyGeometry);
+    hexFill->markDirty(QSGNode::DirtyGeometry | QSGNode::DirtyMaterial);
+    hexBorder->markDirty(QSGNode::DirtyGeometry | QSGNode::DirtyMaterial);
+    root->markDirty(QSGNode::DirtyGeometry | QSGNode::DirtyMaterial);
     return root;
 }
 
