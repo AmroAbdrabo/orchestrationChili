@@ -1,5 +1,6 @@
 import QtQuick 2.2
 import QtQuick.Window 2.1
+import QtQuick.Dialogs 1.3
 import QtQuick.Layouts 1.1
 import QtQuick.Controls 1.2
 import QtQuick.Controls.Styles 1.3
@@ -46,19 +47,21 @@ ApplicationWindow {
                 //onValueChanged: hexMap.physicalArea = Qt.rect(-200*slider.value, -200*slider.value, 400*slider.value, 400*slider.value)
             }
 
-            Button{
-                text: "Clear"
-                onClicked: hexMap.clearTiles()
-            }
+            Row{
+                Button{
+                    text: "Clear"
+                    onClicked: hexMap.clearTiles()
+                }
 
-            Button{
-                text: "DUMP"
-                onClicked: hexMap.dumpTilesToJSON("/home/equilibrium/tiles.json")
-            }
+                Button{
+                    text: "Save Map"
+                    onClicked: dumpDialog.open()
+                }
 
-            Button{
-                text: "LOAD"
-                onClicked: hexMap.loadTilesFromJSON("/home/equilibrium/tiles.json")
+                Button{
+                    text: "Load Map"
+                    onClicked: loadDialog.open()
+                }
             }
         }
     }
@@ -236,5 +239,30 @@ ApplicationWindow {
                 setPoseBcastPeriod(100);
         }
         poseRemapper: hexMap
+    }
+
+    FileDialog{
+        id: dumpDialog
+        title: "Choose a new file to save map to"
+        folder: shortcuts.desktop
+        selectExisting: false
+        selectMultiple: false
+        nameFilters: ["*.json"]
+        onAccepted: {
+            var filename = fileUrl.toString();
+            if(!filename.endsWith(".json"))
+                filename += ".json";
+            hexMap.dumpTilesToJSON(filename);
+        }
+    }
+
+    FileDialog{
+        id: loadDialog
+        title: "Choose a map description to load"
+        folder: shortcuts.desktop
+        selectExisting: true
+        selectMultiple: false
+        nameFilters: ["*.json"]
+        onAccepted: hexMap.loadTilesFromJSON(fileUrl)
     }
 }

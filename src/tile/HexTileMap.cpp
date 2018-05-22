@@ -270,7 +270,7 @@ void HexTileMap::resetAutoBuilders(){
 }
 
 void HexTileMap::dumpTilesToJSON(QString const& filename){
-    QFile saveFile(filename);
+    QFile saveFile(QUrl(filename).toLocalFile());
     if(!saveFile.open(QIODevice::WriteOnly)){
         qCritical() << "HexTileMap::dumpTilesToJSON(): Couldn't write into file.";
         return;
@@ -288,7 +288,7 @@ void HexTileMap::dumpTilesToJSON(QString const& filename){
 }
 
 void HexTileMap::loadTilesFromJSON(QString const& filename){
-    QFile loadFile(filename);
+    QFile loadFile(QUrl(filename).toLocalFile());
     if(!loadFile.open(QIODevice::ReadOnly)){
         qCritical("HexTileMap::loadTilesFromJSON(): Couldn't open file.");
         return;
