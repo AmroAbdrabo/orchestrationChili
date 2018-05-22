@@ -26,6 +26,7 @@
 #define HEXTILE_H
 
 #include <QQuickItem>
+#include <QJsonObject>
 
 #include "HexTileStandardCoords.h"
 #include "AxialHexCoords.h"
@@ -114,6 +115,20 @@ public:
      * @return The current standard hex tile coordinate description
      */
     Cellulo::HexTileStandardCoords* getStandardCoords(){ return standardCoords; }
+
+    /**
+     * @brief Dumps all properties of this tile to the JSON object
+     *
+     * @return Resulting JSON object describing this tile
+     */
+    QJsonObject dumpToJSON() const;
+
+    /**
+     * @brief Loads all properties of this tile from the given JSON object
+     *
+     * @param json Descriptor of this tile
+     */
+    void loadFromJSON(QJsonObject const& json);
 
     /** @endcond */
 

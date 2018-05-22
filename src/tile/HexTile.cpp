@@ -71,8 +71,8 @@ HexTile::~HexTile(){
 
 bool HexTile::sourceContains(QVector2D const& point){
     return
-        sourceLeft < point.x() &&  point.x() <= sourceRight &&
-        sourceTop < point.y() &&   point.y() <= sourceBottom;
+        sourceLeft < point.x() && point.x() <= sourceRight &&
+        sourceTop  < point.y() && point.y() <= sourceBottom;
 }
 
 QVector2D HexTile::sourceCoordinates(QVector2D const& point){
@@ -270,6 +270,56 @@ QSGNode* HexTile::updatePaintNode(QSGNode* oldRoot, UpdatePaintNodeData* updateP
     hexBorder->markDirty(QSGNode::DirtyGeometry);
     root->markDirty(QSGNode::DirtyGeometry);
     return root;
+}
+
+QJsonObject HexTile::dumpToJSON() const {
+    QJsonObject json;
+    json["physicalWidth"] = coords->getPhysicalWidth();
+    json["q"] = coords->getQ();
+    json["r"] = coords->getR();
+    if(standardCoords){
+        json["standardCoordsI"] = standardCoords->getI();
+        json["standardCoordsJ"] = standardCoords->getJ();
+        json["standardCoordsU"] = standardCoords->getU();
+        json["standardCoordsV"] = standardCoords->getV();
+    }
+    else{
+        json["sourceLeft"] = sourceLeft;
+        json["sourceTop"] = sourceTop;
+        json["sourceRight"] = sourceRight;
+        json["sourceBottom"] = sourceBottom;
+        json["sourceCenterX"] = sourceCenterX;
+        json["sourceCenterY"] = sourceCenterY;
+    }
+    json["fillColor"] = fillColor.name();
+    json["borderColor"] = borderColor.name();
+    json["borderSize"] = borderSize;
+    return json;
+}
+
+void HexTile::loadFromJSON(QJsonObject const& json){
+    coords->setPhysicalWidth(json["physicalWidth"].toDouble());
+    coords->setQ(json["q"].toInt());
+    coords->setR(json["r"].toInt());
+    if(json.contains("standardCoordsI") && json.contains("standardCoordsJ") && json.contains("standardCoordsU") && json.contains("standardCoordsV")){
+        HexTileStandardCoords* std = new HexTileStandardCoords();
+        std->setI(json["standardCoordsI"].toInt());
+        std->setJ(json["standardCoordsJ"].toInt());
+        std->setU(json["standardCoordsU"].toInt());
+        std->setV(json["standardCoordsV"].toInt());
+        setStandardCoords(std);
+    }
+    else{
+        sourceLeft      = json["sourceLeft"     ].toDouble();
+        sourceTop       = json["sourceTop"      ].toDouble();
+        sourceRight     = json["sourceRight"    ].toDouble();
+        sourceBottom    = json["sourceBottom"   ].toDouble();
+        sourceCenterX   = json["sourceCenterX"  ].toDouble();
+        sourceCenterY   = json["sourceCenterY"  ].toDouble();
+    }
+    fillColor = QColor(json["fillColor"].toString());
+    borderColor = QColor(json["borderColor"].toString());
+    borderSize = json["borderSize"].toDouble();
 }
 
 }

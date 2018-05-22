@@ -47,9 +47,18 @@ ApplicationWindow {
             }
 
             Button{
-
                 text: "Clear"
                 onClicked: hexMap.clearTiles()
+            }
+
+            Button{
+                text: "DUMP"
+                onClicked: hexMap.dumpTilesToJSON("/home/equilibrium/tiles.json")
+            }
+
+            Button{
+                text: "LOAD"
+                onClicked: hexMap.loadTilesFromJSON("/home/equilibrium/tiles.json")
             }
         }
     }

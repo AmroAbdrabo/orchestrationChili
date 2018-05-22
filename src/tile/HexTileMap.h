@@ -255,6 +255,20 @@ public slots:
      */
     void clearTiles();
 
+    /**
+     * @brief Dumps all tiles to a JSON file
+     *
+     * @param filename Full path to a file
+     */
+    void dumpTilesToJSON(QString const& filename);
+
+    /**
+     * @brief Loads tiles from a JSON file
+     *
+     * @param filename Full path to file
+     */
+    void loadTilesFromJSON(QString const& filename);
+
 private slots:
 
     /**

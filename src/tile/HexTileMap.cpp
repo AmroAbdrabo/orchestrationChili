@@ -28,6 +28,10 @@
 #include "../util/math/CelluloMathUtil.h"
 
 #include <QDebug>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+
 #include <limits>
 
 namespace Cellulo{
@@ -263,6 +267,40 @@ void HexTileMap::clearTiles(){
 void HexTileMap::resetAutoBuilders(){
     for(HexTileMapAutoBuilder* builder : autoBuilders)
         builder->reset();
+}
+
+void HexTileMap::dumpTilesToJSON(QString const& filename){
+    QFile saveFile(filename);
+    if(!saveFile.open(QIODevice::WriteOnly)){
+        qCritical() << "HexTileMap::dumpTilesToJSON(): Couldn't write into file.";
+        return;
+    }
+
+    QJsonArray jsonTiles;
+    for(auto const& tileVariant : tiles){
+        HexTile* tile = tileVariant.value<HexTile*>();
+        if(tile)
+            jsonTiles.append(tile->dumpToJSON());
+        else
+            qCritical() << "HexTileMap::dumpTilesToJSON(): tiles can only contain HexTile type!";
+    }
+    saveFile.write(QJsonDocument(jsonTiles).toJson());
+}
+
+void HexTileMap::loadTilesFromJSON(QString const& filename){
+    QFile loadFile(filename);
+    if(!loadFile.open(QIODevice::ReadOnly)){
+        qCritical("HexTileMap::loadTilesFromJSON(): Couldn't open file.");
+        return;
+    }
+
+    QJsonArray jsonTiles = QJsonDocument::fromJson(loadFile.readAll()).array();
+    for(const QJsonValue& jsonTile : jsonTiles){
+        HexTile* tile = new HexTile();
+        tile->loadFromJSON(jsonTile.toObject());
+        tile->setParent(this);
+        tile->setParentItem(this); //Child added detection will call addTile(), no need to call here
+    }
 }
 
 }
