@@ -215,6 +215,14 @@ signals:
      */
     void tileRemoved(int oldTileQ, int oldTileR);
 
+    /**
+     * @brief Emitted when a tile is clicked
+     *
+     * @param tile             Tile that was clicked
+     * @param physicalPosition Physical position in mm corresponding to the screen click
+     */
+    void tileClicked(Cellulo::HexTile* tile, QVector2D physicalPosition);
+
 public slots:
 
     /**
@@ -285,6 +293,13 @@ private slots:
      * @brief Calculates physicalSize and physicalTopLeft to tiles
      */
     void fitPhysicalCoordsToTiles();
+
+    /**
+     * @brief Emits necessary signals upon tile click
+     *
+     * @param physicalPos Physical position in mm corresponding to the screen click
+     */
+    void processTileClick(QVector2D physicalPos);
 
 private:
 

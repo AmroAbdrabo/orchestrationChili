@@ -62,6 +62,11 @@ qreal CelluloMathUtil::pointToLineDistSigned(const QVector2D& p, const QVector2D
     return ((diff.y()*p.x() - diff.x()*p.y()) + (lp2.x()*lp1.y() - lp2.y()*lp1.x()))/diff.length();
 }
 
+bool CelluloMathUtil::pointAboveLine(const QVector2D& p, const QVector2D& lp1, const QVector2D& lp2){
+    QVector2D diff = lp2 - lp1;
+    return ((diff.y()*p.x() - diff.x()*p.y()) + (lp2.x()*lp1.y() - lp2.y()*lp1.x())) > 0;
+}
+
 bool CelluloMathUtil::pointInPoly(const QVector2D& p, const QList<QVector2D>& v){
     //Taken from: https://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
 

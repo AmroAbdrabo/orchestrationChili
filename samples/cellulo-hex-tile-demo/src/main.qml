@@ -100,6 +100,8 @@ ApplicationWindow {
             onTileAdded: console.info("Tile added at " + newTile.coords.q + " " + newTile.coords.r)
             onTileRemoved: console.info("Tile removed from " + oldTileQ + " " + oldTileR)
 
+            onTileClicked: console.info(tile.coords.q + " " + tile.coords.r + " " + physicalPosition)
+
             /*HexTileWithCoords{
                 id: centerTile
                 standardCoords: HexTileStandardCoords{ i:7; j:9; u:0; v:0 }
@@ -250,7 +252,7 @@ ApplicationWindow {
         nameFilters: ["*.json"]
         onAccepted: {
             var filename = fileUrl.toString();
-            if(!filename.endsWith(".json"))
+            if(!filename.endsWith(".json")) //defaultSuffix doesn't work
                 filename += ".json";
             hexMap.dumpTilesToJSON(filename);
         }

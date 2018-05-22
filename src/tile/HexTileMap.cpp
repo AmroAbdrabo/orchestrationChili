@@ -125,6 +125,14 @@ void HexTileMap::setAutoBuild(bool autoBuild){
     }
 }
 
+void HexTileMap::processTileClick(QVector2D physicalPos){
+    HexTile* tile = qobject_cast<HexTile*>(sender());
+    if(tile)
+        emit tileClicked(tile, physicalPos);
+    else
+        qCritical() << "HexTileMap::processTileClick(): Cannot be invoked by other than HexTile!";
+}
+
 void HexTileMap::itemChange(ItemChange change, const ItemChangeData& value){
     if(change == ItemChange::ItemChildAddedChange){
         HexTile* newTile = qobject_cast<HexTile*>(value.item);
@@ -206,6 +214,7 @@ void HexTileMap::addTile(HexTile* newTile){
     if(!tiles.contains(QVariant::fromValue(newTile))){
         removeTile(newTile->getCoords()->getQ(), newTile->getCoords()->getR());
         tiles.append(QVariant::fromValue(newTile));
+        connect(newTile, SIGNAL(clicked(QVector2D)), this, SLOT(processTileClick(QVector2D)));
         emit tileAdded(newTile);
     }
     else

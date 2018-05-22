@@ -193,6 +193,13 @@ signals:
 
     /** @endcond */
 
+    /**
+     * @brief Emitted when the user clicks this tile on the screen
+     *
+     * @param physicalPos Clicked position in mm
+     */
+    void clicked(QVector2D physicalPos);
+
 public slots:
 
     /**
@@ -224,6 +231,15 @@ private slots:
      * @brief If the parent is a HexTileMap, recalculates x, y, width and height accordingly
      */
     void recalculateScreenCoords();
+
+protected:
+
+    /**
+     * @brief Called when the user clicks this tile
+     *
+     * @param event Details of the click
+     */
+    void mousePressEvent(QMouseEvent* event) override;
 
 private:
 

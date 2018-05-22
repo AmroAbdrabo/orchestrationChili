@@ -63,6 +63,8 @@ HexTile::HexTile(QQuickItem* parent) : QQuickItem(parent){
     connect(this, SIGNAL(borderSizeChanged()),  this, SLOT(update()));
 
     setZ(-1); //Tiles go underneath other stuff by default
+
+    setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton);
 }
 
 HexTile::~HexTile(){
@@ -320,6 +322,25 @@ void HexTile::loadFromJSON(QJsonObject const& json){
     fillColor = QColor(json["fillColor"].toString());
     borderColor = QColor(json["borderColor"].toString());
     borderSize = json["borderSize"].toDouble();
+}
+
+void HexTile::mousePressEvent(QMouseEvent* event){
+    QVector2D screenSize(width(), height());
+    QVector2D screenCoords(event->localPos());
+    QVector2D physicalSize(coords->getPhysicalWidth(), coords->getPhysicalHeight());
+    QVector2D tileCoords = screenCoords/screenSize*physicalSize - 0.5f*physicalSize;
+
+    //Need to check whether click is in the hexagon
+    bool accepted =
+        !CelluloMathUtil::pointAboveLine(tileCoords,  physicalSize*QVector2D(-0.50f, -0.25f), physicalSize*QVector2D(0.00f, -0.50f)) &&
+        !CelluloMathUtil::pointAboveLine(tileCoords,  physicalSize*QVector2D( 0.00f, -0.50f), physicalSize*QVector2D(0.50f, -0.25f)) &&
+        CelluloMathUtil::pointAboveLine(tileCoords, physicalSize*QVector2D(-0.50f,  0.25f), physicalSize*QVector2D(0.00f,  0.50f)) &&
+        CelluloMathUtil::pointAboveLine(tileCoords, physicalSize*QVector2D( 0.00f,  0.50f), physicalSize*QVector2D(0.50f,  0.25f));
+    if(accepted)
+        emit clicked(tileCoords + coords->hexOffset());
+
+    event->setAccepted(accepted);
+    QQuickItem::mousePressEvent(event);
 }
 
 }
