@@ -93,7 +93,7 @@ ApplicationWindow {
             width:  scale*physicalSize.x
             height: scale*physicalSize.y
 
-            tileComponent: Qt.createComponent("HexTileWithCoords.qml")
+            tileComponent: Qt.createComponent("HexTileWithName.qml")
 
             autoBuild: autoBuildCheckbox.checked
 
@@ -173,6 +173,10 @@ ApplicationWindow {
             text: "Delete"
             onTriggered: map.removeTile(editTileMenu.tile)
         }
+        MenuItem{
+            text: "Rename"
+            onTriggered: nameDialog.open()
+        }
     }
 
     FileDialog{
@@ -198,5 +202,14 @@ ApplicationWindow {
         selectMultiple: false
         nameFilters: ["*.json"]
         onAccepted: map.loadTilesFromJSON(fileUrl)
+    }
+
+    Dialog{
+        id: nameDialog
+        title: "Choose a name"
+        standardButtons: StandardButton.Ok | StandardButton.Cancel
+        onAccepted: editTileMenu.tile.name = nameField.text
+
+        TextField{ id: nameField }
     }
 }

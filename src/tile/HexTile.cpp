@@ -29,6 +29,9 @@
 #include<QSGGeometry>
 #include<QSGGeometryNode>
 #include<QSGFlatColorMaterial>
+#include<QMetaObject>
+#include<QMetaProperty>
+#include<QQmlProperty>
 
 #include<cmath>
 
@@ -276,6 +279,8 @@ QSGNode* HexTile::updatePaintNode(QSGNode* oldRoot, UpdatePaintNodeData* updateP
 
 QJsonObject HexTile::dumpToJSON() const {
     QJsonObject json;
+
+    //Basic HexTile properties
     json["physicalWidth"] = coords->getPhysicalWidth();
     json["q"] = coords->getQ();
     json["r"] = coords->getR();
@@ -296,10 +301,33 @@ QJsonObject HexTile::dumpToJSON() const {
     json["fillColor"] = fillColor.name();
     json["borderColor"] = borderColor.name();
     json["borderSize"] = borderSize;
+
+    //Custom properties defined by the user
+    const QMetaObject* thisMeta = metaObject();
+    QSet<QString> customProperties;
+    for (int i=0;i<thisMeta->propertyCount();i++){
+        QMetaProperty p = thisMeta->property(i);
+        if(p.isReadable() && p.isWritable() && !p.isConstant())
+            customProperties << QString(p.name());
+    }
+    HexTile basicTile;
+    const QMetaObject* basicMeta = basicTile.metaObject();
+    for(int i=0;i<basicMeta->propertyCount();i++)
+        customProperties.remove(QString(basicMeta->property(i).name()));
+    for(QString p : customProperties){
+        QVariant var = QQmlProperty::read(this, p);
+        if(var.canConvert<QVariantList>())
+            json[p] = QJsonValue::fromVariant(var.value<QVariantList>());
+        else
+            json[p] = QJsonValue::fromVariant(var);
+    }
+
     return json;
 }
 
 void HexTile::loadFromJSON(QJsonObject const& json){
+
+    //Basic HexTile properties
     coords->setPhysicalWidth(json["physicalWidth"].toDouble());
     coords->setQ(json["q"].toInt());
     coords->setR(json["r"].toInt());
@@ -322,6 +350,24 @@ void HexTile::loadFromJSON(QJsonObject const& json){
     fillColor = QColor(json["fillColor"].toString());
     borderColor = QColor(json["borderColor"].toString());
     borderSize = json["borderSize"].toDouble();
+
+    //Custom properties defined by the user
+    const QMetaObject* thisMeta = metaObject();
+    QSet<QString> customProperties;
+    for (int i=0;i<thisMeta->propertyCount();i++){
+        QMetaProperty p = thisMeta->property(i);
+        if(p.isReadable() && p.isWritable() && !p.isConstant())
+            customProperties << QString(p.name());
+    }
+    HexTile basicTile;
+    const QMetaObject* basicMeta = basicTile.metaObject();
+    for(int i=0;i<basicMeta->propertyCount();i++)
+        customProperties.remove(QString(basicMeta->property(i).name()));
+    for(QString p : customProperties){
+        QJsonValue val = json[p];
+        if(val != QJsonValue::Undefined)
+            QQmlProperty::write(this, p, val.toVariant());
+    }
 }
 
 void HexTile::mousePressEvent(QMouseEvent* event){

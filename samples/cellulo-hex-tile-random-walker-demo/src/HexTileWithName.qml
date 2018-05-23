@@ -5,8 +5,10 @@ import Cellulo 1.0
 HexTile{
     id: tile
 
+    property string name: "Unnamed"
+
     Text{
-        text: tile.coords.q + "," + tile.coords.r
+        text: tile.name
         anchors.verticalCenter: tile.verticalCenter
         anchors.horizontalCenter: tile.horizontalCenter
         font.pixelSize: tile.height/6
