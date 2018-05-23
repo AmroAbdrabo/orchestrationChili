@@ -37,16 +37,6 @@ ApplicationWindow {
                 connectionStatus: robotComm2.connectionStatus
             }
 
-            Slider{
-                id: slider
-                width: 100
-                value: 1.0
-
-                visible: true
-
-                //onValueChanged: hexMap.physicalArea = Qt.rect(-200*slider.value, -200*slider.value, 400*slider.value, 400*slider.value)
-            }
-
             Row{
                 spacing: 5
                 CheckBox{
@@ -99,11 +89,6 @@ ApplicationWindow {
             width:  scale*physicalSize.x
             height: scale*physicalSize.y
 
-            //x: slider.value*100
-            //y: slider.value*100
-            //physicalSize: Qt.vector2d(400, 400)
-            //physicalTopLeft: Qt.vector2d(-200, -200)
-
             autoBuild: autoBuildCheckbox.checked
 
             onTileAdded: console.info("Tile added at " + newTile.coords.q + " " + newTile.coords.r)
@@ -112,11 +97,6 @@ ApplicationWindow {
             onTileClicked: {
                 editTileMenu.tile = tile;
                 editTileMenu.popup();
-            }
-
-            HexTile{
-
-                standardCoords: HexTileStandardCoords{}
             }
 
             Image{

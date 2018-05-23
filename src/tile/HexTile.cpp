@@ -332,10 +332,10 @@ void HexTile::mousePressEvent(QMouseEvent* event){
 
     //Need to check whether click is in the hexagon
     bool accepted =
-        !CelluloMathUtil::pointAboveLine(tileCoords,  physicalSize*QVector2D(-0.50f, -0.25f), physicalSize*QVector2D(0.00f, -0.50f)) &&
-        !CelluloMathUtil::pointAboveLine(tileCoords,  physicalSize*QVector2D( 0.00f, -0.50f), physicalSize*QVector2D(0.50f, -0.25f)) &&
-        CelluloMathUtil::pointAboveLine(tileCoords, physicalSize*QVector2D(-0.50f,  0.25f), physicalSize*QVector2D(0.00f,  0.50f)) &&
-        CelluloMathUtil::pointAboveLine(tileCoords, physicalSize*QVector2D( 0.00f,  0.50f), physicalSize*QVector2D(0.50f,  0.25f));
+        !CelluloMathUtil::pointAboveLine(tileCoords, physicalSize*QVector2D(-0.50f, -0.25f), physicalSize*QVector2D(0.00f, -0.50f)) &&
+        !CelluloMathUtil::pointAboveLine(tileCoords, physicalSize*QVector2D( 0.00f, -0.50f), physicalSize*QVector2D(0.50f, -0.25f)) &&
+         CelluloMathUtil::pointAboveLine(tileCoords, physicalSize*QVector2D(-0.50f,  0.25f), physicalSize*QVector2D(0.00f,  0.50f)) &&
+         CelluloMathUtil::pointAboveLine(tileCoords, physicalSize*QVector2D( 0.00f,  0.50f), physicalSize*QVector2D(0.50f,  0.25f));
     if(accepted)
         emit clicked(tileCoords + coords->hexOffset());
 
