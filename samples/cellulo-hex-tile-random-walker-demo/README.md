@@ -29,7 +29,7 @@ such tiles for this demo.
 Run
 ---
 
-1. Build your map with the tiles: Be careful that the marked corner of all tiles point in the same direction!
+1. Build your map with the tiles by juxtaposing them: Be careful that the marked corner of all tiles point in the same direction!
 1. Launch the demo, connect to one or two robots.
 1. Scan the map (`Autobuild` must be enabled) with one or two robots:
     1. The first tile is scanned automatically upon placing a robot onto a tile.

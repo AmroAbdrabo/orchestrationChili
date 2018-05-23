@@ -28,6 +28,7 @@
 #include <QVector3D>
 #include <QVariantList>
 #include <QRectF>
+#include <QQmlComponent>
 
 #include "PoseRemapper.h"
 #include "CoordSpaceConverter.h"
@@ -69,6 +70,9 @@ class HexTileMap : public PoseRemapper {
 
     /** @brief Try to build map automatically with standard coordinates through robot readings, i.e auto-add unknown tiles, default false */
     Q_PROPERTY(bool autoBuild READ getAutoBuild WRITE setAutoBuild NOTIFY autoBuildChanged)
+
+    /** @brief If set, tiles will be created out of this component instead of the standard HexTile, default null */
+    Q_PROPERTY(QQmlComponent* tileComponent READ getTileComponent WRITE setTileComponent NOTIFY tileComponentChanged)
 
     //TODO: BETTER STORAGE
     Q_PROPERTY(QVariantList tiles MEMBER tiles)
@@ -157,6 +161,20 @@ public:
      */
     void setAutoBuild(bool autoBuild);
 
+    /**
+     * @brief Gets the tile component that creates new tiles
+     *
+     * @return Current tile component
+     */
+    QQmlComponent* getTileComponent(){ return tileComponent; }
+    
+    /**
+     * @brief Sets the tile component that creates new tiles
+     *
+     * @param tileComponent New tile component
+     */
+    void setTileComponent(QQmlComponent* tileComponent);
+
     /** @endcond */
 
 signals:
@@ -192,6 +210,11 @@ signals:
      * @brief Emitted when autoBuild changes
      */
     void autoBuildChanged();
+
+    /**
+     * @brief Emitted when the tile component changes
+     */
+    void tileComponentChanged();
 
     /** @endcond */
 
@@ -341,6 +364,8 @@ private:
 
     bool autoBuild;                                       ///< Whether to try to automatically build the map
     QHash<QObject*, HexTileMapAutoBuilder*> autoBuilders; ///< One autobuilder per pose generator (e.g robot)
+
+    QQmlComponent* tileComponent;                         ///< Component to create tiles out of
 
     //TODO: BETTER STORAGE
     QVariantList tiles;

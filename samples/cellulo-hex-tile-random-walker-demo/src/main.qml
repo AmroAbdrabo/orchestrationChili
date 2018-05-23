@@ -93,6 +93,8 @@ ApplicationWindow {
             width:  scale*physicalSize.x
             height: scale*physicalSize.y
 
+            tileComponent: Qt.createComponent("HexTileWithCoords.qml")
+
             autoBuild: autoBuildCheckbox.checked
 
             onTileAdded: console.info("Tile added at " + newTile.coords.q + " " + newTile.coords.r)

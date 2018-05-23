@@ -31,6 +31,7 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QQmlEngine>
 
 #include <limits>
 
@@ -59,6 +60,8 @@ HexTileMap::HexTileMap(QQuickItem* parent) : PoseRemapper(parent),
     connect(this, SIGNAL(toScreenCoordsChanged()),  this, SIGNAL(markedDirty()));
 
     autoBuild = false;
+
+    tileComponent = nullptr;
 }
 
 HexTileMap::~HexTileMap(){ }
@@ -122,6 +125,19 @@ void HexTileMap::setAutoBuild(bool autoBuild){
         if(autoBuild)
             resetAutoBuilders();
         emit autoBuildChanged();
+    }
+}
+
+void HexTileMap::setTileComponent(QQmlComponent* tileComponent){
+    if(this->tileComponent != tileComponent){
+        if(this->tileComponent)
+            tileComponent->deleteLater();
+        this->tileComponent = tileComponent;
+        if(tileComponent){
+            QQmlEngine::setObjectOwnership(tileComponent, QQmlEngine::CppOwnership);
+            tileComponent->setParent(this);
+        }
+        emit tileComponentChanged();
     }
 }
 
@@ -305,7 +321,19 @@ void HexTileMap::loadTilesFromJSON(QString const& filename){
 
     QJsonArray jsonTiles = QJsonDocument::fromJson(loadFile.readAll()).array();
     for(const QJsonValue& jsonTile : jsonTiles){
-        HexTile* tile = new HexTile();
+        HexTile* tile = nullptr;
+
+        //Create tile from component if there
+        if(tileComponent){
+            tile = qobject_cast<HexTile*>(tileComponent->create());
+            if(!tile)
+                qCritical() << "HexTileMap::loadTilesFromJSON(): tileComponent must encapsulate a HexTile-derived object!";
+            else
+                QQmlEngine::setObjectOwnership(tile, QQmlEngine::JavaScriptOwnership);
+        }
+        if(!tile)
+            tile = new HexTile();
+
         tile->loadFromJSON(jsonTile.toObject());
         tile->setParent(this);
         tile->setParentItem(this); //Child added detection will call addTile(), no need to call here

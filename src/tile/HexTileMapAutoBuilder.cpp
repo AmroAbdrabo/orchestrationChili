@@ -26,6 +26,8 @@
 
 #include "../util/math/CelluloMathUtil.h"
 
+#include <QQmlEngine>
+
 namespace Cellulo{
 
 HexTileMapAutoBuilder::HexTileMapAutoBuilder(QObject* parent) : QObject(parent){
@@ -90,8 +92,18 @@ QVector3D HexTileMapAutoBuilder::processUnknownTile(QVector3D const& sourcePose,
             unknownHistory.append(sourcePosition);
         }
 
-        //Build imaginary tile
-        HexTile* imaginaryTile = new HexTile(); //No need for screen rendering now, no need for parent
+        //Build imaginary tile, create tile from component if there
+        HexTile* imaginaryTile = nullptr;
+        QQmlComponent* tileComponent = tileMap->getTileComponent();
+        if(tileComponent){
+            imaginaryTile = qobject_cast<HexTile*>(tileComponent->create());
+            if(!imaginaryTile)
+                qCritical() << "HexTileMapAutoBuilder::processUnknownTile(): tileComponent must encapsulate a HexTile-derived object!";
+            else
+                QQmlEngine::setObjectOwnership(imaginaryTile, QQmlEngine::JavaScriptOwnership);
+        }
+        if(!imaginaryTile)
+            imaginaryTile = new HexTile(); //No need for screen rendering now, no need for parent
         imaginaryTile->setStandardCoords(unknownStdCoords);
 
         //This is the first tile ever, assume q,r = 0,0
