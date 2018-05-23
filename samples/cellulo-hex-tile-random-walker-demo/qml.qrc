@@ -3,7 +3,6 @@
         <file>src/main.qml</file>
         <file>assets/redHexagon.svg</file>
         <file>assets/greenHexagon.svg</file>
-        <file>src/HexTileWithCoords.qml</file>
         <file>src/RandomWalkerRobot.qml</file>
     </qresource>
 </RCC>

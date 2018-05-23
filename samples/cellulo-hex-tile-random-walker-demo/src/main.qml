@@ -76,7 +76,7 @@ ApplicationWindow {
         anchors.left: parent.left
         anchors.margins: 50
 
-        property real rectSize: Math.min((Screen.width*0.8), (Screen.height*0.8 - addressBox.height))
+        property real rectSize: Math.min((Screen.width*0.7), (Screen.height*0.7 - addressBox.height))
 
         width: rectSize
         height: rectSize
@@ -168,12 +168,8 @@ ApplicationWindow {
         MenuItem{ text: editTileMenu.tile ? "Edit tile at " + editTileMenu.tile.coords.q + "," + editTileMenu.tile.coords.r : "Invalid tile"; enabled: false }
         MenuSeparator{}
         MenuItem{
-            text: "Remove"
+            text: "Delete"
             onTriggered: map.removeTile(editTileMenu.tile)
-        }
-        MenuItem{
-            text: "Change color"
-            onTriggered: colorDialog.open()
         }
     }
 
@@ -200,11 +196,5 @@ ApplicationWindow {
         selectMultiple: false
         nameFilters: ["*.json"]
         onAccepted: map.loadTilesFromJSON(fileUrl)
-    }
-
-    ColorDialog{
-        id: colorDialog
-        title: "Please choose a color"
-        onAccepted: editTileMenu.tile.fillColor = color
     }
 }
