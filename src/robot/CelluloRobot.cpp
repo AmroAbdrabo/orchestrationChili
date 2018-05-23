@@ -51,6 +51,9 @@ CelluloRobot::CelluloRobot(QQuickItem* parent) : CelluloBluetooth(parent){
     poseVelControlPeriod = 20;
     poseVelControlEnabledComponents = QVector3D(1, 1, 1);
 
+    poseVelControlMaxLinearVel = 185.0;
+    poseVelControlMaxAngularVel = 7.5;
+
     vxyw = QVector3D(0,0,0);
 
     velEstimateNeedsReset = true;
@@ -188,28 +191,25 @@ void CelluloRobot::poseVelControlCommandVelocities(){
 
     //Goal pose error component
     QVector3D poseErr = poseVelControlGoalPose - QVector3D(getX(), getY(), getTheta());
-    while(poseErr.z() > 180)
-        poseErr.setZ(poseErr.z() - 360);
-    while(poseErr.z() <= -180)
-        poseErr.setZ(poseErr.z() + 360);
-    poseErr.setZ(poseErr.z()/180*M_PI);
+    while(poseErr.z() > 180.0)
+        poseErr.setZ(poseErr.z() - 360.0);
+    while(poseErr.z() <= -180.0)
+        poseErr.setZ(poseErr.z() + 360.0);
+    poseErr.setZ(poseErr.z()/180.0*M_PI);
     commandVel += poseVelControlKGoalPoseErr*poseErr;
 
     //Clamp goal velocity
-    if(commandVel.x() > 200)
-        commandVel.setX(200);
-    else if(commandVel.x() < -200)
-        commandVel.setX(-200);
-
-    if(commandVel.y() > 200)
-        commandVel.setY(200);
-    else if(commandVel.y() < -200)
-        commandVel.setY(-200);
-
-    if(commandVel.z() > 10)
-        commandVel.setZ(10);
-    else if(commandVel.z() < -10)
-        commandVel.setZ(-10);
+    QVector2D linearVel = commandVel.toVector2D();
+    qreal linearVelMag = linearVel.length();
+    if(linearVelMag > poseVelControlMaxLinearVel){
+        linearVel = linearVel/linearVelMag*poseVelControlMaxLinearVel;
+        commandVel.setX(linearVel.x());
+        commandVel.setY(linearVel.y());
+    }
+    if(commandVel.z() > poseVelControlMaxAngularVel)
+        commandVel.setZ(poseVelControlMaxAngularVel);
+    else if(commandVel.z() < -poseVelControlMaxAngularVel)
+        commandVel.setZ(-poseVelControlMaxAngularVel);
 
     commandVel *= poseVelControlEnabledComponents;
 

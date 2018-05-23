@@ -48,20 +48,24 @@ ApplicationWindow {
                 Button{
                     text: "Clear Map"
                     anchors.verticalCenter: parent.verticalCenter
-                    onClicked: hexMap.clearTiles()
+                    onClicked: map.clearTiles()
                 }
-
                 Button{
                     text: "Save Map"
                     anchors.verticalCenter: parent.verticalCenter
                     onClicked: dumpDialog.open()
                 }
-
                 Button{
                     text: "Load Map"
                     anchors.verticalCenter: parent.verticalCenter
                     onClicked: loadDialog.open()
                 }
+            }
+
+            CheckBox{
+                id: walkCheckbox
+                text: "Walk?"
+                checked: false
             }
         }
     }
@@ -82,7 +86,7 @@ ApplicationWindow {
         radius: 5
 
         HexTileMap{
-            id: hexMap
+            id: map
 
             property real scale: Math.min(parent.width/physicalSize.x, parent.height/physicalSize.y)
 
@@ -128,20 +132,6 @@ ApplicationWindow {
                 y: screenCoords.y - height/2
                 visible: true
             }
-
-            /*Image{
-                property vector2d screenSize: parent.toScreenSize.convert(Qt.vector2d(30, 30*2/Math.sqrt(3)))
-                property vector2d screenCoords: parent.toScreenCoords.convert(Qt.vector2d(robotComm.goal.x, robotComm.goal.y))
-
-                source: "../assets/redHexagon.svg"
-                width: screenSize.x
-                height: screenSize.y
-                sourceSize.width: screenSize.x
-                sourceSize.height: screenSize.y
-                x: screenCoords.x - width/2
-                y: screenCoords.y - height/2
-                visible: true
-            }*/
         }
     }
 
@@ -155,46 +145,16 @@ ApplicationWindow {
         anchors.margins: 50
     }
 
-    CelluloBluetooth{
-        property int currentGoal: 0
-
-        property var goals: []//centerTile.hexOffset(), topLeftTile.hexOffset(), topRightTile.hexOffset(), rightTile.hexOffset(), bottomRightTile.hexOffset(), bottomLeftTile.hexOffset(), leftTile.hexOffset()]
-        property vector2d goal: Qt.vector2d(0,0)
-
-        //poseVelControlEnabled: true
-
+    RandomWalkerRobot{
         id: robotComm1
-        onConnectionStatusChanged:{
-            if(connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected)
-                setPoseBcastPeriod(100);
-        }
-        poseRemapper: hexMap
-
-        onPoseChanged: {
-            return;
-            goal = goals[currentGoal];
-            var goalVel = goal.minus(Qt.vector2d(x,y)).times(2.0);
-            if(goalVel.length() > 100){
-                goalVel = goalVel.normalized().times(100);
-            }
-            var goalW = 30 - theta;
-            if(goalW < -180)
-                goalW += 360;
-            if(goalW > 180)
-                goalW -= 360;
-            setGoalVelocity(goalVel.x, goalVel.y, 0.1*goalW);
-            if(goal.minus(Qt.vector2d(x,y)).length() < 10)
-                currentGoal = (currentGoal + 1) % 7;
-        }
+        hexMap: map
+        walk: walkCheckbox.checked
     }
 
-    CelluloBluetooth{
+    RandomWalkerRobot{
         id: robotComm2
-        onConnectionStatusChanged:{
-            if(connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected)
-                setPoseBcastPeriod(100);
-        }
-        poseRemapper: hexMap
+        hexMap: map
+        walk: walkCheckbox.checked
     }
 
     Menu{
@@ -209,7 +169,7 @@ ApplicationWindow {
         MenuSeparator{}
         MenuItem{
             text: "Remove"
-            onTriggered: hexMap.removeTile(editTileMenu.tile)
+            onTriggered: map.removeTile(editTileMenu.tile)
         }
         MenuItem{
             text: "Change color"
@@ -228,7 +188,7 @@ ApplicationWindow {
             var filename = fileUrl.toString();
             if(!filename.endsWith(".json")) //defaultSuffix doesn't work
                 filename += ".json";
-            hexMap.dumpTilesToJSON(filename);
+            map.dumpTilesToJSON(filename);
         }
     }
 
@@ -239,7 +199,7 @@ ApplicationWindow {
         selectExisting: true
         selectMultiple: false
         nameFilters: ["*.json"]
-        onAccepted: hexMap.loadTilesFromJSON(fileUrl)
+        onAccepted: map.loadTilesFromJSON(fileUrl)
     }
 
     ColorDialog{

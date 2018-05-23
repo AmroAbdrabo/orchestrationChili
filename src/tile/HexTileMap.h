@@ -239,7 +239,16 @@ public slots:
      *
      * @param newTile New tile
      */
-    void addTile(HexTile* newTile);
+    void addTile(Cellulo::HexTile* newTile);
+
+    /**
+     * @brief Tile lookup by axial coordinates
+     *
+     * @param  q Horizontal coordinate
+     * @param  r Vertical coordinate
+     * @return   Tile if found, nullptr otherwise
+     */
+    Cellulo::HexTile* getTile(int q, int r);
 
     /**
      * @brief Removes the given tile
@@ -247,7 +256,7 @@ public slots:
      * @param oldTile Tile to remove
      * @return Whether the tile was there and was removed
      */
-    bool removeTile(HexTile* oldTile);
+    bool removeTile(Cellulo::HexTile* oldTile);
 
     /**
      * @brief Removes the given tile
@@ -312,21 +321,12 @@ private:
     void itemChange(ItemChange change, const ItemChangeData& value) override;
 
     /**
-     * @brief Tile lookup by axial coordinates
-     *
-     * @param  q Horizontal coordinate
-     * @param  r Vertical coordinate
-     * @return   Tile if found, nullptr otherwise
-     */
-    HexTile* getTile(int q, int r);
-
-    /**
      * @brief Tile lookup by raw source coordinates
      *
      * @param  position Raw source coordinates in mm
      * @return Tile if found, nullptr otherwise
      */
-    HexTile* getTile(QVector2D const& position);
+    Cellulo::HexTile* getTile(QVector2D const& position);
 
     /**
      * @brief Reset all auto builders
