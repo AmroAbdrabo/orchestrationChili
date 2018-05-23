@@ -232,12 +232,8 @@ ApplicationWindow {
             onTriggered: hexMap.removeTile(editTileMenu.tile)
         }
         MenuItem{
-            text: "Copy"
-            onTriggered: {}
-        }
-        MenuItem{
-            text: "Paste"
-            onTriggered: {}
+            text: "Change color"
+            onTriggered: colorDialog.open()
         }
     }
 
@@ -268,5 +264,7 @@ ApplicationWindow {
 
     ColorDialog{
         id: colorDialog
+        title: "Please choose a color"
+        onAccepted: editTileMenu.tile.fillColor = color
     }
 }
