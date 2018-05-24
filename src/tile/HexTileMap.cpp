@@ -131,7 +131,7 @@ void HexTileMap::setAutoBuild(bool autoBuild){
 void HexTileMap::setTileComponent(QQmlComponent* tileComponent){
     if(this->tileComponent != tileComponent){
         if(this->tileComponent)
-            tileComponent->deleteLater();
+            this->tileComponent->deleteLater();
         this->tileComponent = tileComponent;
         if(tileComponent){
             QQmlEngine::setObjectOwnership(tileComponent, QQmlEngine::CppOwnership);
