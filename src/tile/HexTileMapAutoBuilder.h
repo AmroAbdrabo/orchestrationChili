@@ -30,7 +30,7 @@
 #include <QVector3D>
 
 #include "AxialHexCoords.h"
-#include "HexTileStandardCoords.h"
+#include "HexTileStdSourceCoords.h"
 #include "HexTileMap.h"
 
 namespace Cellulo {
@@ -98,7 +98,7 @@ private:
     AxialHexCoords knownCoords;                   ///< The hex coordinates of the known tile, if any
     QList<QVector2D> knownHistory;                ///< The remapped coordinate history on the known tile
 
-    HexTileStandardCoords* unknownStdCoords;      ///< The autodetected standard coordinates of the unknown tile
+    HexTileStdSourceCoords* unknownStdCoords;     ///< The autodetected standard coordinates of the unknown tile
     QList<QVector2D> unknownHistory;              ///< The raw source coordinate history on the unknown tile
 
     constexpr static int knownHistorySize = 5;    ///< Maximum number of directions on the known tile to consider

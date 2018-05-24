@@ -17,13 +17,13 @@
 
 /**
  * @file HexTile.h
- * @brief Header for a hexagonal tile standard coordinates definition
+ * @brief Header for a hexagonal tile standard source coordinates definition
  * @author Ayberk Özgür
  * @date 2018-05-02
  */
 
-#ifndef HEXTILESTANDARDCOORDS_H
-#define HEXTILESTANDARDCOORDS_H
+#ifndef HEXTILESTDSOURCECOORDS_H
+#define HEXTILESTDSOURCECOORDS_H
 
 #include <QQuickItem>
 
@@ -66,7 +66,7 @@ class HexTile;
  *     Space top bottom: [130.0, 260.0] mm
  *     Center x y: [50.0, 67.0] mm
  */
-class HexTileStandardCoords : public QQuickItem {
+class HexTileStdSourceCoords : public QQuickItem {
     /* *INDENT-OFF* */
     Q_OBJECT
     /* *INDENT-ON* */
@@ -90,12 +90,12 @@ public:
     /**
      * @brief Creates a new hex tile standard coordinate definition
      */
-    explicit HexTileStandardCoords(QQuickItem* parent = 0);
+    explicit HexTileStdSourceCoords(QQuickItem* parent = 0);
 
     /**
      * @brief Deletes this hex tile standard coordinate definition
      */
-    virtual ~HexTileStandardCoords();
+    virtual ~HexTileStdSourceCoords();
 
     /**
      * @brief Gets i
@@ -211,7 +211,7 @@ public slots:
      * @param  other Other coords
      * @return       Whether these coords are equal to the other
      */
-    bool equals(HexTileStandardCoords const& other) const;
+    bool equals(HexTileStdSourceCoords const& other) const;
 
 private:
 
@@ -226,6 +226,6 @@ private:
 
 }
 
-Q_DECLARE_METATYPE(Cellulo::HexTileStandardCoords*)
+Q_DECLARE_METATYPE(Cellulo::HexTileStdSourceCoords*)
 
-#endif // HEXTILESTANDARDCOORDS_H
+#endif // HEXTILESTDSOURCECOORDS_H

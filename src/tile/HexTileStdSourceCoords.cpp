@@ -17,12 +17,12 @@
 
 /**
  * @file HexTile.cpp
- * @brief Source for a hexagonal tile standard coordinates definition
+ * @brief Source for a hexagonal tile standard source coordinates definition
  * @author Ayberk Özgür
  * @date 2018-05-02
  */
 
-#include "HexTileStandardCoords.h"
+#include "HexTileStdSourceCoords.h"
 
 #include<QDebug>
 
@@ -30,16 +30,16 @@
 
 namespace Cellulo{
 
-HexTileStandardCoords::HexTileStandardCoords(QQuickItem* parent) : QQuickItem(parent){
+HexTileStdSourceCoords::HexTileStdSourceCoords(QQuickItem* parent) : QQuickItem(parent){
     i = 0;
     j = 0;
     u = 0;
     v = 0;
 }
 
-HexTileStandardCoords::~HexTileStandardCoords(){}
+HexTileStdSourceCoords::~HexTileStdSourceCoords(){}
 
-void HexTileStandardCoords::setI(int i){
+void HexTileStdSourceCoords::setI(int i){
     if(i >= 0){
         if(i != this->i){
             this->i = i;
@@ -47,10 +47,10 @@ void HexTileStandardCoords::setI(int i){
         }
     }
     else
-        qCritical() << "HexTileStandardCoords::setI(): i cannot be negative!";
+        qCritical() << "HexTileStdSourceCoords::setI(): i cannot be negative!";
 }
 
-void HexTileStandardCoords::setJ(int j){
+void HexTileStdSourceCoords::setJ(int j){
     if(j >= 0){
         if(j != this->j){
             this->j = j;
@@ -58,10 +58,10 @@ void HexTileStandardCoords::setJ(int j){
         }
     }
     else
-        qCritical() << "HexTileStandardCoords::setJ(): j cannot be negative!";
+        qCritical() << "HexTileStdSourceCoords::setJ(): j cannot be negative!";
 }
 
-void HexTileStandardCoords::setU(int u){
+void HexTileStdSourceCoords::setU(int u){
     if(u == 0 || u == 1){
         if(u != this->u){
             this->u = u;
@@ -69,10 +69,10 @@ void HexTileStandardCoords::setU(int u){
         }
     }
     else
-        qCritical() << "HexTileStandardCoords::setU(): u can only be 0 or 1!";
+        qCritical() << "HexTileStdSourceCoords::setU(): u can only be 0 or 1!";
 }
 
-void HexTileStandardCoords::setV(int v){
+void HexTileStdSourceCoords::setV(int v){
     if(v == 0 || v == 1){
         if(v != this->v){
             this->v = v;
@@ -80,24 +80,24 @@ void HexTileStandardCoords::setV(int v){
         }
     }
     else
-        qCritical() << "HexTileStandardCoords::setV(): v can only be 0 or 1!";
+        qCritical() << "HexTileStdSourceCoords::setV(): v can only be 0 or 1!";
 }
 
-void HexTileStandardCoords::connectHexTileChangedSignals(Cellulo::HexTile* tile){
-    connect(this, SIGNAL(iChanged()), tile, SIGNAL(standardCoordsChanged()));
-    connect(this, SIGNAL(jChanged()), tile, SIGNAL(standardCoordsChanged()));
-    connect(this, SIGNAL(uChanged()), tile, SIGNAL(standardCoordsChanged()));
-    connect(this, SIGNAL(vChanged()), tile, SIGNAL(standardCoordsChanged()));
+void HexTileStdSourceCoords::connectHexTileChangedSignals(Cellulo::HexTile* tile){
+    connect(this, SIGNAL(iChanged()), tile, SIGNAL(stdSourceCoordsChanged()));
+    connect(this, SIGNAL(jChanged()), tile, SIGNAL(stdSourceCoordsChanged()));
+    connect(this, SIGNAL(uChanged()), tile, SIGNAL(stdSourceCoordsChanged()));
+    connect(this, SIGNAL(vChanged()), tile, SIGNAL(stdSourceCoordsChanged()));
 }
 
-void HexTileStandardCoords::disconnectHexTileChangedSignals(Cellulo::HexTile* tile){
-    disconnect(this, SIGNAL(iChanged()), tile, SIGNAL(standardCoordsChanged()));
-    disconnect(this, SIGNAL(jChanged()), tile, SIGNAL(standardCoordsChanged()));
-    disconnect(this, SIGNAL(uChanged()), tile, SIGNAL(standardCoordsChanged()));
-    disconnect(this, SIGNAL(vChanged()), tile, SIGNAL(standardCoordsChanged()));
+void HexTileStdSourceCoords::disconnectHexTileChangedSignals(Cellulo::HexTile* tile){
+    disconnect(this, SIGNAL(iChanged()), tile, SIGNAL(stdSourceCoordsChanged()));
+    disconnect(this, SIGNAL(jChanged()), tile, SIGNAL(stdSourceCoordsChanged()));
+    disconnect(this, SIGNAL(uChanged()), tile, SIGNAL(stdSourceCoordsChanged()));
+    disconnect(this, SIGNAL(vChanged()), tile, SIGNAL(stdSourceCoordsChanged()));
 }
 
-bool HexTileStandardCoords::estimateFromCoords(QVector2D const& coords){
+bool HexTileStdSourceCoords::estimateFromCoords(QVector2D const& coords){
     if(coords.x() >= 0 && coords.y() >= 0){
         setI((int)(coords.x()/210.0));
         setJ((int)(coords.y()/260.0));
@@ -106,12 +106,12 @@ bool HexTileStandardCoords::estimateFromCoords(QVector2D const& coords){
         return true;
     }
     else{
-        qCritical() << "HexTileStandardCoords::estimateFromCoords(): Coordinates must not be negative!";
+        qCritical() << "HexTileStdSourceCoords::estimateFromCoords(): Coordinates must not be negative!";
         return false;
     }
 }
 
-bool HexTileStandardCoords::equals(HexTileStandardCoords const& other) const {
+bool HexTileStdSourceCoords::equals(HexTileStdSourceCoords const& other) const {
     return
         getI() == other.getI() &&
         getJ() == other.getJ() &&

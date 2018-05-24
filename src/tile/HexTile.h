@@ -28,12 +28,12 @@
 #include <QQuickItem>
 #include <QJsonObject>
 
-#include "HexTileStandardCoords.h"
+#include "HexTileStdSourceCoords.h"
 #include "AxialHexCoords.h"
 
 namespace Cellulo {
 
-class HexTileStandardCoords;
+class HexTileStdSourceCoords;
 
 /**
  * @addtogroup tile
@@ -70,7 +70,7 @@ class HexTile : public QQuickItem {
     Q_PROPERTY(float sourceCenterY MEMBER sourceCenterY NOTIFY sourceCenterYChanged)
 
     /** @brief Standard coordinate description, null by default; if used, autosets the source* properties so they must not be manually modified */
-    Q_PROPERTY(Cellulo::HexTileStandardCoords* standardCoords WRITE setStandardCoords READ getStandardCoords NOTIFY standardCoordsChanged)
+    Q_PROPERTY(Cellulo::HexTileStdSourceCoords* stdSourceCoords WRITE setStdSourceCoords READ getStdSourceCoords NOTIFY stdSourceCoordsChanged)
 
     /** @brief The fill color of the rendering of this tile, white by default */
     Q_PROPERTY(QColor fillColor MEMBER fillColor NOTIFY fillColorChanged)
@@ -105,16 +105,16 @@ public:
     /**
      * @brief Sets the new standard hex tile coordinate description
      *
-     * @param standardCoords New standard hex tile coordinate description
+     * @param stdSourceCoords New standard hex tile coordinate description
      */
-    void setStandardCoords(Cellulo::HexTileStandardCoords* standardCoords);
+    void setStdSourceCoords(Cellulo::HexTileStdSourceCoords* stdSourceCoords);
 
     /**
      * @brief Gets the standard hex tile coordinate description
      *
      * @return The current standard hex tile coordinate description
      */
-    Cellulo::HexTileStandardCoords* getStandardCoords(){ return standardCoords; }
+    Cellulo::HexTileStdSourceCoords* getStdSourceCoords(){ return stdSourceCoords; }
 
     /**
      * @brief Dumps all properties of this tile to the JSON object
@@ -144,7 +144,7 @@ signals:
     /**
      * @brief Emitted when the standard hex tile coordinate definition changes
      */
-    void standardCoordsChanged();
+    void stdSourceCoordsChanged();
 
     /**
      * @brief Emitted when sourceLeft changes
@@ -225,7 +225,7 @@ private slots:
     /**
      * @brief Sets the appropriate source coordinates according to the standard coordinate description
      */
-    void updateFromStandardCoords();
+    void updateFromStdSourceCoords();
 
     /**
      * @brief If the parent is a HexTileMap, recalculates x, y, width and height accordingly
@@ -260,18 +260,18 @@ private:
      */
     QSGNode* updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* updatePaintNodeData) override;
 
-    Cellulo::AxialHexCoords* coords;                ///< Axial hex tile coordinates
-    float sourceLeft;                               ///< Starting X coordinate of the rectangular source space (mm)
-    float sourceTop;                                ///< Starting Y coordinate of the rectangular source space (mm)
-    float sourceRight;                              ///< Ending X coordinate of the rectangular source space (mm)
-    float sourceBottom;                             ///< Ending Y coordinate of the rectangular source space (mm)
-    float sourceCenterX;                            ///< X coordinate of the center of the hex tile in the source space, with respect to the top/left of the source space (mm)
-    float sourceCenterY;                            ///< Y coordinate of the center of the hex tile in the source space, with respect to the top/left of the source space (mm)
-    Cellulo::HexTileStandardCoords* standardCoords; ///< Standard hex tile coordinate description if available
+    Cellulo::AxialHexCoords* coords;                  ///< Axial hex tile coordinates
+    float sourceLeft;                                 ///< Starting X coordinate of the rectangular source space (mm)
+    float sourceTop;                                  ///< Starting Y coordinate of the rectangular source space (mm)
+    float sourceRight;                                ///< Ending X coordinate of the rectangular source space (mm)
+    float sourceBottom;                               ///< Ending Y coordinate of the rectangular source space (mm)
+    float sourceCenterX;                              ///< X coordinate of the center of the hex tile in the source space, with respect to the top/left of the source space (mm)
+    float sourceCenterY;                              ///< Y coordinate of the center of the hex tile in the source space, with respect to the top/left of the source space (mm)
+    Cellulo::HexTileStdSourceCoords* stdSourceCoords; ///< Standard hex tile coordinate description if available
 
-    QColor fillColor;                               ///< Fill color of the rendering of this tile
-    QColor borderColor;                             ///< Border color of the rendering of this tile
-    qreal borderSize;                               ///< Border size of the rendering with respect to the width
+    QColor fillColor;                                 ///< Fill color of the rendering of this tile
+    QColor borderColor;                               ///< Border color of the rendering of this tile
+    qreal borderSize;                                 ///< Border size of the rendering with respect to the width
 };
 
 /** @} */

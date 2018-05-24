@@ -32,7 +32,6 @@
 
 #include "PoseRemapper.h"
 #include "CoordSpaceConverter.h"
-#include "HexTileStandardCoords.h"
 #include "../util/math/CelluloMathUtil.h"
 #include "HexTileMapAutoBuilder.h"
 
@@ -167,7 +166,7 @@ public:
      * @return Current tile component
      */
     QQmlComponent* getTileComponent(){ return tileComponent; }
-    
+
     /**
      * @brief Sets the tile component that creates new tiles
      *

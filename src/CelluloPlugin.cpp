@@ -61,7 +61,7 @@
 #include "tile/OffsetRemapper.h"
 #include "tile/HexTileMap.h"
 #include "tile/HexTile.h"
-#include "tile/HexTileStandardCoords.h"
+#include "tile/HexTileStdSourceCoords.h"
 #include "tile/AxialHexCoords.h"
 #include "tile/CoordSpaceConverter.h"
 
@@ -180,7 +180,7 @@ void CelluloPlugin::registerTypes(const char *uri){
     qmlRegisterType<OffsetRemapper>(uri, 1, 0, "OffsetRemapper");
     qmlRegisterType<HexTileMap>(uri, 1, 0, "HexTileMap");
     qmlRegisterType<HexTile>(uri, 1, 0, "HexTile");
-    qmlRegisterType<HexTileStandardCoords>(uri, 1, 0, "HexTileStandardCoords");
+    qmlRegisterType<HexTileStdSourceCoords>(uri, 1, 0, "HexTileStdSourceCoords");
     qmlRegisterType<AxialHexCoords>(uri, 1, 0, "AxialHexCoords");
     qmlRegisterType<CoordSpaceConverter>(uri, 1, 0, "CoordSpaceConverter");
 }

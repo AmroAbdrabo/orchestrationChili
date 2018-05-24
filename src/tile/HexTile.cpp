@@ -53,9 +53,9 @@ HexTile::HexTile(QQuickItem* parent) : QQuickItem(parent){
     sourceCenterX = 0;
     sourceCenterY = 0;
 
-    standardCoords = nullptr;
+    stdSourceCoords = nullptr;
 
-    connect(this, SIGNAL(standardCoordsChanged()), this, SLOT(updateFromStandardCoords()), Qt::DirectConnection); //Update immediately
+    connect(this, SIGNAL(stdSourceCoordsChanged()), this, SLOT(updateFromStdSourceCoords()), Qt::DirectConnection); //Update immediately
 
     setFlag(QQuickItem::ItemHasContents, true);
     fillColor = QColor(250, 250, 250);
@@ -84,27 +84,27 @@ QVector2D HexTile::sourceCoordinates(QVector2D const& point){
     return point - QVector2D(sourceLeft + sourceCenterX, sourceTop + sourceCenterY);
 }
 
-void HexTile::setStandardCoords(Cellulo::HexTileStandardCoords* standardCoords){
-    if(standardCoords != this->standardCoords){
-        if(this->standardCoords)
-            this->standardCoords->disconnectHexTileChangedSignals(this);
-        this->standardCoords = standardCoords;
-        if(this->standardCoords)
-            this->standardCoords->connectHexTileChangedSignals(this);
-        emit standardCoordsChanged();
+void HexTile::setStdSourceCoords(Cellulo::HexTileStdSourceCoords* stdSourceCoords){
+    if(stdSourceCoords != this->stdSourceCoords){
+        if(this->stdSourceCoords)
+            this->stdSourceCoords->disconnectHexTileChangedSignals(this);
+        this->stdSourceCoords = stdSourceCoords;
+        if(this->stdSourceCoords)
+            this->stdSourceCoords->connectHexTileChangedSignals(this);
+        emit stdSourceCoordsChanged();
     }
 }
 
-void HexTile::updateFromStandardCoords(){
-    if(standardCoords){
-        float sourceLeft = standardCoords->getI()*210.0f;
+void HexTile::updateFromStdSourceCoords(){
+    if(stdSourceCoords){
+        float sourceLeft = stdSourceCoords->getI()*210.0f;
         float sourceRight = sourceLeft;
-        float sourceTop = standardCoords->getJ()*260.0f;
+        float sourceTop = stdSourceCoords->getJ()*260.0f;
         float sourceBottom = sourceTop;
         float sourceCenterX;
         float sourceCenterY;
 
-        if(standardCoords->getU() == 0){
+        if(stdSourceCoords->getU() == 0){
             sourceLeft += 0.0f;
             sourceRight += 105.7f;
             sourceCenterX = 54.3f;
@@ -115,7 +115,7 @@ void HexTile::updateFromStandardCoords(){
             sourceCenterX = 50.0f;
         }
 
-        if(standardCoords->getV() == 0){
+        if(stdSourceCoords->getV() == 0){
             sourceTop += 0.0f;
             sourceBottom += 130.0f;
             sourceCenterY = 67.0f;
@@ -284,11 +284,11 @@ QJsonObject HexTile::dumpToJSON() const {
     json["physicalWidth"] = coords->getPhysicalWidth();
     json["q"] = coords->getQ();
     json["r"] = coords->getR();
-    if(standardCoords){
-        json["standardCoordsI"] = standardCoords->getI();
-        json["standardCoordsJ"] = standardCoords->getJ();
-        json["standardCoordsU"] = standardCoords->getU();
-        json["standardCoordsV"] = standardCoords->getV();
+    if(stdSourceCoords){
+        json["stdSourceCoordsI"] = stdSourceCoords->getI();
+        json["stdSourceCoordsJ"] = stdSourceCoords->getJ();
+        json["stdSourceCoordsU"] = stdSourceCoords->getU();
+        json["stdSourceCoordsV"] = stdSourceCoords->getV();
     }
     else{
         json["sourceLeft"] = sourceLeft;
@@ -331,13 +331,13 @@ void HexTile::loadFromJSON(QJsonObject const& json){
     coords->setPhysicalWidth(json["physicalWidth"].toDouble());
     coords->setQ(json["q"].toInt());
     coords->setR(json["r"].toInt());
-    if(json.contains("standardCoordsI") && json.contains("standardCoordsJ") && json.contains("standardCoordsU") && json.contains("standardCoordsV")){
-        HexTileStandardCoords* std = new HexTileStandardCoords();
-        std->setI(json["standardCoordsI"].toInt());
-        std->setJ(json["standardCoordsJ"].toInt());
-        std->setU(json["standardCoordsU"].toInt());
-        std->setV(json["standardCoordsV"].toInt());
-        setStandardCoords(std);
+    if(json.contains("stdSourceCoordsI") && json.contains("stdSourceCoordsJ") && json.contains("stdSourceCoordsU") && json.contains("stdSourceCoordsV")){
+        HexTileStdSourceCoords* std = new HexTileStdSourceCoords();
+        std->setI(json["stdSourceCoordsI"].toInt());
+        std->setJ(json["stdSourceCoordsJ"].toInt());
+        std->setU(json["stdSourceCoordsU"].toInt());
+        std->setV(json["stdSourceCoordsV"].toInt());
+        setStdSourceCoords(std);
     }
     else{
         sourceLeft      = json["sourceLeft"     ].toDouble();

@@ -60,7 +60,7 @@ HEADERS += \
     src/tile/OffsetRemapper.h \
     src/tile/HexTileMap.h \
     src/tile/HexTile.h \
-    src/tile/HexTileStandardCoords.h \
+    src/tile/HexTileStdSourceCoords.h \
     src/tile/CoordSpaceConverter.h \
     src/tile/AxialHexCoords.h \
     src/tile/HexTileMapAutoBuilder.h
@@ -106,7 +106,7 @@ SOURCES += \
     src/tile/OffsetRemapper.cpp \
     src/tile/HexTileMap.cpp \
     src/tile/HexTile.cpp \
-    src/tile/HexTileStandardCoords.cpp \
+    src/tile/HexTileStdSourceCoords.cpp \
     src/tile/CoordSpaceConverter.cpp \
     src/tile/AxialHexCoords.cpp \
     src/tile/HexTileMapAutoBuilder.cpp

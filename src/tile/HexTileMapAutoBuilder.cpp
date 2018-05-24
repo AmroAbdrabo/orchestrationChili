@@ -68,7 +68,7 @@ QVector3D HexTileMapAutoBuilder::processUnknownTile(QVector3D const& sourcePose,
     QVector3D result(0,0,0);
 
     //Get the standard tile coords of the unknown position
-    HexTileStandardCoords* newUnknownStdCoords = new HexTileStandardCoords();
+    HexTileStdSourceCoords* newUnknownStdCoords = new HexTileStdSourceCoords();
     if(newUnknownStdCoords->estimateFromCoords(sourcePosition)){
 
         //Update old std coords if necessary and position history
@@ -104,7 +104,7 @@ QVector3D HexTileMapAutoBuilder::processUnknownTile(QVector3D const& sourcePose,
         }
         if(!imaginaryTile)
             imaginaryTile = new HexTile(); //No need for screen rendering now, no need for parent
-        imaginaryTile->setStandardCoords(unknownStdCoords);
+        imaginaryTile->setStdSourceCoords(unknownStdCoords);
 
         //This is the first tile ever, assume q,r = 0,0
         if(!knownCoordsExist){
