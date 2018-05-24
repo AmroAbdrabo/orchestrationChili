@@ -16,28 +16,23 @@ ApplicationWindow {
 
     property int currentNumRobots: client.robots.length
 
-    property int nearestSquareEdge: Math.ceil(Math.sqrt(currentNumRobots))
-
-    CelluloRobotPoolClient{
-        id: client
-
-        property var robotComponent: Qt.createComponent("LatticeRobot.qml")
-
-        createRobot: function (macAddr){
-            var newRobot = robotComponent.createObject(window);
-            newRobot.autoConnect = false;
-            newRobot.macAddr = macAddr;
-            newRobot.index = robots.length;
-            return newRobot;
-        }
-    }
-
     property vector3d latticePose: Qt.vector3d(200, 500, 0)
     property real latticeDist: 80
     property var touchedRobot1: null
     property var touchedRobot2: null
     property int touchedRobot1Index: -1
     property int touchedRobot2Index: -1
+    property int nearestSquareEdge: Math.ceil(Math.sqrt(currentNumRobots))
+    property bool goChecked: go.checked
+
+    CelluloRobotPoolClient{
+        id: client
+        robotComponent: Qt.createComponent("LatticeRobot.qml")
+        onNewRobotFound: {
+            robot.index = robots.length - 1;
+            robot.root = window;
+        }
+    }
 
     function initTouched(robot){
         robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "#202000", 0);

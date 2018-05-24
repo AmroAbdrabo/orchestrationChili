@@ -17,6 +17,7 @@ Below are the USB Bluetooth dongles that were confirmed to work with the Cellulo
   - Conrad 448876, reports a `Cambridge Silicon Radio, Ltd` to be present, bought from https://www.conrad.ch/ce/fr/product/448876/
   - Digitus DN-30210-1, reports a `Cambridge Silicon Radio, Ltd` to be present, bought from https://www.conrad.ch/ce/fr/product/395775/
   - Renkforce Bluetooth® 4.0 stick, reports a `Cambridge Silicon Radio, Ltd` to be present, bought from https://www.conrad.ch/ce/fr/product/1483951/
+  - D-Link DBT-120, reports a `Cambridge Silicon Radio, Ltd` to be present, bought from ????
 
 Tools are under [tools/](tools/), samples are under [samples/](samples/). See their README's for instructions.
 

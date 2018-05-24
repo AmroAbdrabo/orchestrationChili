@@ -30,8 +30,9 @@
 #include "../CelluloBluetooth.h"
 
 #include <QJSValue>
+#include <QQmlComponent>
 
-namespace Cellulo{
+namespace Cellulo {
 
 /**
  * @addtogroup comm-relay
@@ -48,10 +49,13 @@ namespace Cellulo{
 class CelluloRobotPoolClient : public CelluloLocalRelayClient {
     /* *INDENT-OFF* */
     Q_OBJECT
-    /* *INDENT-ON* */
+        /* *INDENT-ON* */
+
+    /** @brief If set, robots will be created out of this component instead of the standard CelluloRobot, default null */
+    Q_PROPERTY(QQmlComponent* robotComponent READ getRobotComponent WRITE setRobotComponent NOTIFY robotComponentChanged)
 
     /**
-     * @brief Must be set to a user-defined javascript function that takes the MAC address (string) of an already connected robot and returns a CelluloBluetooth object or CelluloBluetooth-derived object
+     * @brief Can be set to a user-defined javascript function that takes the MAC address (string) of an already connected robot and returns a CelluloBluetooth object or CelluloBluetooth-derived object; ignored if robotComponent is also set
      */
     Q_PROPERTY(QJSValue createRobot READ getCreateRobot WRITE setCreateRobot NOTIFY createRobotChanged)
 
@@ -70,6 +74,20 @@ public:
      * @brief Destroys this CelluloRobotPoolClient
      */
     virtual ~CelluloRobotPoolClient();
+
+    /**
+     * @brief Gets the robot component that creates new robots
+     *
+     * @return Current robot component
+     */
+    QQmlComponent* getRobotComponent(){ return robotComponent; }
+
+    /**
+     * @brief Sets the robot component that creates new robots
+     *
+     * @param robotComponent New robot component
+     */
+    void setRobotComponent(QQmlComponent* robotComponent);
 
     /**
      * @brief Gets the createRobot function
@@ -92,11 +110,23 @@ signals:
     /** @cond DO_NOT_DOCUMENT */
 
     /**
+     * @brief Emitted when the robot component changes
+     */
+    void robotComponentChanged();
+
+    /**
      * @brief Emitted when the createRobot function changes
      */
     void createRobotChanged();
 
     /** @endcond */
+
+    /**
+     * @brief Emitted when a new robot is found in the pool
+     *
+     * @param robot The newly found robot
+     */
+    void newRobotFound(CelluloBluetooth* robot);
 
 private slots:
 
@@ -109,7 +139,8 @@ private slots:
 
 private:
 
-     QJSValue createRobotFunction;  ///< A Javascript function that takes a string and returns a CelluloBluetooth pointer or CelluloBluetooth-derived object pointer
+    QQmlComponent* robotComponent; ///< Component to create robots out of
+    QJSValue createRobotFunction;  ///< A Javascript function that takes a string and returns a CelluloBluetooth pointer or CelluloBluetooth-derived object pointer
 
 };
 

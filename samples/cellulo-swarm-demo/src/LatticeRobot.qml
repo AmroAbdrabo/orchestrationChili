@@ -10,6 +10,9 @@ import Cellulo 1.0
 CelluloRobot{
     id: robot
 
+    property var root: null
+
+    //Internal properties
     property int index: 0
 
     /*
@@ -36,7 +39,7 @@ CelluloRobot{
             init();
     }
 
-    onKeysTouchedChanged: recalcTouchedRobots()
+    onKeysTouchedChanged: root.recalcTouchedRobots()
 
     function anyKey(){
         for(var i=0;i<6;i++)
@@ -48,11 +51,11 @@ CelluloRobot{
     property vector3d goalXYTheta: Qt.vector3d(0,0,0)
 
     function calcLatticeGoal(){
-        var myX = index % nearestSquareEdge;
-        var myY = (index - myX)/nearestSquareEdge;
-        var myVec = Qt.vector2d(myX*latticeDist, myY*latticeDist);
+        var myX = index % root.nearestSquareEdge;
+        var myY = (index - myX)/root.nearestSquareEdge;
+        var myVec = Qt.vector2d(myX*root.latticeDist, myY*root.latticeDist);
 
-        var rotRad = latticePose.z*Math.PI/180;
+        var rotRad = root.latticePose.z*Math.PI/180;
         var rotMat = [
                     [Math.cos(rotRad), -Math.sin(rotRad)],
                     [Math.sin(rotRad), Math.cos(rotRad)]
@@ -60,28 +63,28 @@ CelluloRobot{
 
         myVec = Qt.vector2d(rotMat[0][0]*myVec.x + rotMat[0][1]*myVec.y, rotMat[1][0]*myVec.x + rotMat[1][1]*myVec.y);
 
-        goalXYTheta = Qt.vector3d(latticePose.x + myVec.x, latticePose.y + myVec.y, latticePose.z);
+        goalXYTheta = Qt.vector3d(root.latticePose.x + myVec.x, root.latticePose.y + myVec.y, root.latticePose.z);
     }
 
     property bool reached: false
 
     function calcUserInput(){
-        if(touchedRobot1 === robot){
+        if(root.touchedRobot1 === robot){
 
             //Resize and rotate lattice according to the first and second held robot
-            if(touchedRobot2 !== null)
-                recalcResize();
+            if(root.touchedRobot2 !== null)
+                root.recalcResize();
 
             //Rotate according to the first held robot
             else
-                latticePose.z = theta;
+                root.latticePose.z = theta;
 
             //Move lattice according to the first held robot
-            var myX = index % nearestSquareEdge;
-            var myY = (index - myX)/nearestSquareEdge;
+            var myX = index % root.nearestSquareEdge;
+            var myY = (index - myX)/root.nearestSquareEdge;
 
-            var latticeCornerPos = Qt.vector2d(-myX*latticeDist, -myY*latticeDist);
-            var rotRad = latticePose.z*Math.PI/180;
+            var latticeCornerPos = Qt.vector2d(-myX*root.latticeDist, -myY*root.latticeDist);
+            var rotRad = root.latticePose.z*Math.PI/180;
             var rotMat = [
                         [Math.cos(rotRad), -Math.sin(rotRad)],
                         [Math.sin(rotRad), Math.cos(rotRad)]
@@ -91,8 +94,8 @@ CelluloRobot{
                         rotMat[1][0]*latticeCornerPos.x + rotMat[1][1]*latticeCornerPos.y
                         );
 
-            latticePose.x = x + latticeCornerPos.x;
-            latticePose.y = y + latticeCornerPos.y;
+            root.latticePose.x = x + latticeCornerPos.x;
+            root.latticePose.y = y + latticeCornerPos.y;
         }
     }
 
@@ -110,10 +113,10 @@ CelluloRobot{
         calcLatticeGoal();
         calcReached();
 
-        if(touchedRobot1 === robot || touchedRobot2 === robot){
+        if(root.touchedRobot1 === robot || root.touchedRobot2 === robot){
             setGoalVelocity(0,0,0);
         }
-        else if(go.checked){
+        else if(root.goChecked){
             while(goalXYTheta.z >= 360)
                 goalXYTheta.z -= 360;
             while(goalXYTheta.z < 0)
