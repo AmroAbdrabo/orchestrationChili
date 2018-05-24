@@ -26,16 +26,16 @@
 #ifndef CELLULOMATHUTIL_H
 #define CELLULOMATHUTIL_H
 
+#include <QObject>
+#include <QVector2D>
+#include <QVariantList>
+
 #if defined(Q_OS_WIN)
 	#define _USE_MATH_DEFINES
 	#include <math.h>
 #else
 	#include <cmath>
 #endif
-
-#include <QObject>
-#include <QVector2D>
-#include <QVariantList>
 
 namespace Cellulo{
 
