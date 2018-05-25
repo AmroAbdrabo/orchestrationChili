@@ -273,6 +273,14 @@ public slots:
     Cellulo::HexTile* getTile(int q, int r);
 
     /**
+     * @brief Tile lookup by output coordinates
+     *
+     * @param  position Output coordinates (i.e regular coordinates in the hex tile map space and not source coordinates) in mm
+     * @return Tile if found, nullptr otherwise
+     */
+    Cellulo::HexTile* getTile(QVector2D const& position);
+
+    /**
      * @brief Removes the given tile
      *
      * @param oldTile Tile to remove
@@ -348,7 +356,7 @@ private:
      * @param  position Raw source coordinates in mm
      * @return Tile if found, nullptr otherwise
      */
-    Cellulo::HexTile* getTile(QVector2D const& position);
+    Cellulo::HexTile* getTileBySourceCoords(QVector2D const& position);
 
     /**
      * @brief Reset all auto builders

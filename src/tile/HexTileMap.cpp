@@ -175,7 +175,7 @@ void HexTileMap::updateToScreenCoords(){
 
 QVector3D HexTileMap::remapPose(QVector3D const& pose, QObject* sender){
     QVector2D sourcePosition = pose.toVector2D();
-    HexTile* tile = getTile(sourcePosition);
+    HexTile* tile = getTileBySourceCoords(sourcePosition);
     HexTileMapAutoBuilder* builder = autoBuilders.value(sender, nullptr);
     if(!builder){
         builder = new HexTileMapAutoBuilder(this);
@@ -213,6 +213,26 @@ HexTile* HexTileMap::getTile(int q, int r){
 }
 
 HexTile* HexTileMap::getTile(QVector2D const& position){
+    HexTile* result = nullptr;
+    float minDist = std::numeric_limits<float>::infinity();
+
+    //TODO: More efficient lookup by hex coords (q,r) !!!
+    for(auto const& tileVariant : tiles){
+        HexTile* tile = tileVariant.value<HexTile*>();
+        if(tile){
+            float dist = (position - tile->getCoords()->hexOffset()).lengthSquared();
+            if(dist < minDist){
+                minDist = dist;
+                result = tile;
+            }
+        }
+        else
+            qCritical() << "HexTileMap::getTile(): tiles can only contain HexTile type!";
+    }
+    return result;
+}
+
+HexTile* HexTileMap::getTileBySourceCoords(QVector2D const& position){
     //TODO: More efficient lookup by standard source coords!!!
     for(auto const& tileVariant : tiles){
         HexTile* tile = tileVariant.value<HexTile*>();
