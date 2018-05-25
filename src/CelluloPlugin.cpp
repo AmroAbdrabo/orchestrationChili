@@ -58,6 +58,7 @@
 #include "util/lang/TranslationTool.h"
 #include "util/system/CelluloSystemUtil.h"
 #include "util/ui/CelluloUIUtil.h"
+#include "util/ui/ProgressCircle.h"
 #include "tile/OffsetRemapper.h"
 #include "tile/HexTileMap.h"
 #include "tile/HexTile.h"
@@ -176,6 +177,7 @@ void CelluloPlugin::registerTypes(const char *uri){
                                                     Q_UNUSED(jsEngine)
                                                     return new CelluloUIUtil();
                                                 });
+    qmlRegisterType<ProgressCircle>(uri, 1, 0, "ProgressCircle");
 
     qmlRegisterType<OffsetRemapper>(uri, 1, 0, "OffsetRemapper");
     qmlRegisterType<HexTileMap>(uri, 1, 0, "HexTileMap");

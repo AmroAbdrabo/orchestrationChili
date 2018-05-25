@@ -56,6 +56,7 @@ HEADERS += \
     src/util/lang/TranslationTool.h \
     src/util/system/CelluloSystemUtil.h \
     src/util/ui/CelluloUIUtil.h \
+    src/util/ui/ProgressCircle.h \
     src/tile/PoseRemapper.h \
     src/tile/OffsetRemapper.h \
     src/tile/HexTileMap.h \
@@ -102,6 +103,7 @@ SOURCES += \
     src/util/lang/TranslationTool.cpp \
     src/util/system/CelluloSystemUtil.cpp \
     src/util/ui/CelluloUIUtil.cpp \
+    src/util/ui/ProgressCircle.cpp \
     src/tile/PoseRemapper.cpp \
     src/tile/OffsetRemapper.cpp \
     src/tile/HexTileMap.cpp \
