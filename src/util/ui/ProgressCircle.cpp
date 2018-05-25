@@ -114,7 +114,7 @@ QSGNode* ProgressCircle::updatePaintNode(QSGNode* oldRoot, UpdatePaintNodeData* 
 
         //Foreground
         foregroundGeo = foregroundFill->geometry();
-        foregroundGeo->allocate(2*RESOLUTION);
+        foregroundGeo->allocate(2*(RESOLUTION + 1));
         QSGFlatColorMaterial* foregroundMat = static_cast<QSGFlatColorMaterial*>(foregroundFill->material());
         foregroundMat->setColor(color);
     }
