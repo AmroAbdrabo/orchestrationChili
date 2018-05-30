@@ -41,6 +41,8 @@ ApplicationWindow {
 
         function goToCurrent(){
             if(Math.floor(currentGoal/3) < 12){
+                if((currentGoal % 3) == 1)
+                    toast.show("Testing " + robot.testAngles[Math.floor(currentGoal/3)] + "°");
                 setGoalPose(goals[currentGoal].x, goals[currentGoal].y, goals[currentGoal].z, linearMaxVel, angularMaxVel);
                 resultsScrollView.scrollTo(Math.floor(currentGoal/3));
             }
