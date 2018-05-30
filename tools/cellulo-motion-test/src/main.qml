@@ -328,40 +328,38 @@ ApplicationWindow {
                         ChartView{
                             id: angleChartObj
 
-                            property var tHist: []
-                            property var aHist: []
+                            property var startT: 0
 
                             function clear(){
-                                tHist = [];
-                                aHist = [];
+                                startT = 0;
                                 removeAllSeries();
+                                createSeries(ChartView.SeriesTypeLine, "", axisXAng, axisYAng);
+                                createSeries(ChartView.SeriesTypeLine, "", axisXAng, axisYAng);
                             }
 
                             function add(t, angle){
-                                removeAllSeries();
-
                                 while(angle < robot.testAngles[index] - 180)
                                     angle += 360;
                                 while(angle > robot.testAngles[index] + 180)
                                     angle -= 360;
 
-                                tHist.push(t);
-                                aHist.push(angle);
+                                var ideal = series(0);
+                                if(startT == 0){
+                                    startT = t;
+                                    axisXAng.min = startT;
+                                    axisXAng.max = startT + 1;
 
-                                if(tHist.length >= 2){
-                                    axisXAng.min = tHist[0];
-                                    axisXAng.max = tHist[tHist.length - 1];
-
-                                    var ideal = createSeries(ChartView.SeriesTypeLine, "", axisXAng, axisYAng);
-                                    ideal.append(tHist[0], robot.testAngles[index]);
-                                    ideal.append(tHist[tHist.length - 1], robot.testAngles[index]);
-
-                                    var measured = createSeries(ChartView.SeriesTypeLine, "", axisXAng, axisYAng);
-                                    for(var i=0;i<tHist.length;i++)
-                                        measured.append(tHist[i], aHist[i]);
+                                    ideal.append(startT, robot.testAngles[index]);
+                                    ideal.append(startT + 1, robot.testAngles[index]);
+                                }
+                                else{
+                                    axisXAng.max = t;
+                                    ideal.remove(1);
+                                    ideal.append(t, robot.testAngles[index]);
                                 }
 
-                                update();
+                                var measured = series(1);
+                                measured.append(t, angle);
                             }
 
                             backgroundRoundness: 0
@@ -388,35 +386,33 @@ ApplicationWindow {
                         ChartView{
                             id: magnitudeChartObj
 
-                            property var tHist: []
-                            property var mHist: []
+                            property var startT: 0
 
                             function clear(){
-                                tHist = [];
-                                mHist = [];
+                                startT = 0;
                                 removeAllSeries();
+                                createSeries(ChartView.SeriesTypeLine, "", axisXMag, axisYMag);
+                                createSeries(ChartView.SeriesTypeLine, "", axisXMag, axisYMag);
                             }
 
                             function add(t, magnitude){
-                                removeAllSeries();
+                                var ideal = series(0);
+                                if(startT == 0){
+                                    startT = t;
+                                    axisXMag.min = startT;
+                                    axisXMag.max = startT + 1;
 
-                                tHist.push(t);
-                                mHist.push(magnitude);
-
-                                if(tHist.length >= 2){
-                                    axisXMag.min = tHist[0];
-                                    axisXMag.max = tHist[tHist.length - 1];
-
-                                    var ideal = createSeries(ChartView.SeriesTypeLine, "", axisXMag, axisYMag);
-                                    ideal.append(tHist[0], linearMaxVel);
-                                    ideal.append(tHist[tHist.length - 1], linearMaxVel);
-
-                                    var measured = createSeries(ChartView.SeriesTypeLine, "", axisXMag, axisYMag);
-                                    for(var i=0;i<tHist.length;i++)
-                                        measured.append(tHist[i], mHist[i]);
+                                    ideal.append(startT, linearMaxVel);
+                                    ideal.append(startT + 1, linearMaxVel);
+                                }
+                                else{
+                                    axisXMag.max = t;
+                                    ideal.remove(1);
+                                    ideal.append(t, linearMaxVel);
                                 }
 
-                                update();
+                                var measured = series(1);
+                                measured.append(t, magnitude);
                             }
 
                             backgroundRoundness: 0
