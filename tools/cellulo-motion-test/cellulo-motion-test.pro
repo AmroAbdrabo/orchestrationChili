@@ -1,6 +1,6 @@
 TEMPLATE = app
 
-QT += qml quick bluetooth svg
+QT += qml quick bluetooth svg charts
 
 SOURCES += src/main.cpp
 
