@@ -6,7 +6,8 @@ Tests the locomotion quality of a Cellulo robot.
 Tested with Qt 5.10.1 on:
 
 - Ubuntu 18.04
-- Android 7.1.2 with Ubuntu 17.10 host with Android API 23, Android SDK Tools 25.2.5 and Android NDK r10e
+- macOS 10.13.3 with Xcode 9.3
+- Android 7.1.2 with Ubuntu 18.04 host with Android API 23, Android SDK Tools 25.2.5 and Android NDK r10e
 
 Dependencies:
 
