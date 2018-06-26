@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['w',['w',['../group__robot.html#adba256d1ff2391f395d99dacd3111b5f',1,'Cellulo::CelluloRobot']]],
-  ['width',['width',['../group__zone.html#a02f1b9f0667164115c62cad18109f96d',1,'Cellulo::CelluloZoneRectangle']]]
+  ['u',['u',['../group__tile.html#a1b2e5157f647dd4285a50a97f139e6c9',1,'Cellulo::HexTileStdSourceCoords']]],
+  ['unknownrobotatserver',['unknownRobotAtServer',['../group__comm-relay.html#a8744b4de8ab1164e8b4e1659f56281ff',1,'Cellulo::CelluloRelayClient']]],
+  ['util',['Util',['../group__util.html',1,'']]]
 ];

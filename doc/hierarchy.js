@@ -12,10 +12,11 @@ var hierarchy =
       [ "Cellulo::CelluloUIUtil", "group__util.html#classCellulo_1_1CelluloUIUtil", null ],
       [ "Cellulo::CelluloZoneJsonHandler", "group__zone.html#classCellulo_1_1CelluloZoneJsonHandler", null ],
       [ "Cellulo::CelluloZoneTypes", "group__zone.html#classCellulo_1_1CelluloZoneTypes", null ],
-      [ "Cellulo::PositionRemapper", "group__tile.html#classCellulo_1_1PositionRemapper", null ],
+      [ "Cellulo::HexTileMapAutoBuilder", "group__tile.html#classCellulo_1_1HexTileMapAutoBuilder", null ],
       [ "Cellulo::TranslationTool", "group__util.html#classCellulo_1_1TranslationTool", null ]
     ] ],
     [ "QQuickItem", null, [
+      [ "Cellulo::AxialHexCoords", "group__tile.html#classCellulo_1_1AxialHexCoords", null ],
       [ "Cellulo::CelluloBluetoothEMP", "group__comm.html#classCellulo_1_1CelluloBluetoothEMP", null ],
       [ "Cellulo::CelluloBluetoothScanner", "group__comm.html#classCellulo_1_1CelluloBluetoothScanner", null ],
       [ "Cellulo::CelluloRelayClient", "group__comm-relay.html#classCellulo_1_1CelluloRelayClient", [
@@ -82,7 +83,15 @@ var hierarchy =
           [ "Cellulo::CelluloRobot", "group__robot.html#classCellulo_1_1CelluloRobot", null ]
         ] ]
       ] ],
-      [ "Cellulo::CelluloZoneEngine", "group__zone.html#classCellulo_1_1CelluloZoneEngine", null ]
+      [ "Cellulo::CelluloZoneEngine", "group__zone.html#classCellulo_1_1CelluloZoneEngine", null ],
+      [ "Cellulo::CoordSpaceConverter", "group__tile.html#classCellulo_1_1CoordSpaceConverter", null ],
+      [ "Cellulo::HexTile", "group__tile.html#classCellulo_1_1HexTile", null ],
+      [ "Cellulo::HexTileStdSourceCoords", "group__tile.html#classCellulo_1_1HexTileStdSourceCoords", null ],
+      [ "Cellulo::PoseRemapper", "group__tile.html#classCellulo_1_1PoseRemapper", [
+        [ "Cellulo::HexTileMap", "group__tile.html#classCellulo_1_1HexTileMap", null ],
+        [ "Cellulo::OffsetRemapper", "group__tile.html#classCellulo_1_1OffsetRemapper", null ]
+      ] ],
+      [ "Cellulo::ProgressCircle", "group__util.html#classCellulo_1_1ProgressCircle", null ]
     ] ],
     [ "QQuickPaintedItem", null, [
       [ "Cellulo::CelluloZonePaintedItem", "group__zone.html#classCellulo_1_1CelluloZonePaintedItem", null ]

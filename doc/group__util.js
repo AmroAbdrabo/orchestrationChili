@@ -6,17 +6,21 @@ var group__util =
       [ "languageList", "group__util.html#ae9be279823bda83156d8771a6ece9e00", null ]
     ] ],
     [ "CelluloMathUtil", "group__util.html#classCellulo_1_1CelluloMathUtil", [
+      [ "angleBetween", "group__util.html#a1c169cbccb2ad1d88b52f3d75bd4988f", null ],
       [ "c_rand", "group__util.html#ab5ca178d6b922ecdc14e9f11cb258099", null ],
       [ "c_srand", "group__util.html#a972aab4558a5493a68005ec5c1a49185", null ],
       [ "clamp", "group__util.html#a802dd180acb91fdea9d3b1e4b18469d6", null ],
       [ "collinear", "group__util.html#a0d2b1423fd9c17dbd4fd412827f56830", null ],
-      [ "degToRad", "group__util.html#afff0351c85b4147b57d01d10abf837c3", null ],
+      [ "crossProduct", "group__util.html#a6afa31120e3c2963cc74c6a8ff5f7c23", null ],
+      [ "degToRad", "group__util.html#a9bc1c50fc88dba122222bf96afdfd2a7", null ],
       [ "hRayCrossesLineSeg", "group__util.html#af13569931204ec6b3f1ae1b0a305e907", null ],
+      [ "pointAboveLine", "group__util.html#acbd2510b5d2f4e4fb1da2cb1c7c49d28", null ],
       [ "pointInPoly", "group__util.html#aefa1f8e82c7c4c54e95964b7d6d09de7", null ],
       [ "pointToLineDistSigned", "group__util.html#ae3dc27d0fc111c4a0128f933c0970033", null ],
       [ "pointToPolyBorderDist", "group__util.html#ae1771e133a7a8b41efde0f6e22e030f7", null ],
       [ "pointToSegmentDist", "group__util.html#aaaebc0a7dd54bc2e0b4bb47237530054", null ],
-      [ "radToDeg", "group__util.html#aebd81ebb37fb050b70bd9ed2f044d825", null ],
+      [ "radToDeg", "group__util.html#a2e64079b6fc54a6b94e24c592e35ce10", null ],
+      [ "rayCrossesLineSeg", "group__util.html#ab5ab14fa2737fbb9f9dc1688fb155704", null ],
       [ "rotateVector", "group__util.html#a3bb6db1423e9d3e4755f54ca73a27fb6", null ],
       [ "shuffle", "group__util.html#a4c0226775e3f0a42b29282e704f4132b", null ],
       [ "sigmoid", "group__util.html#a3edaa9eb57c9a98fe58639fd92b83f6d", null ]
@@ -42,6 +46,12 @@ var group__util =
       [ "connectionStatus", "group__util.html#a093d56caa0a8e16770a4682bdd6c9a7f", null ],
       [ "selectedAddress", "group__util.html#a7c34aa5cc712e4f1563ab2dc9f980a92", null ],
       [ "selectedLocalAdapterAddress", "group__util.html#a48231dcf6a4bd1a7af8d80391c1005e6", null ]
+    ] ],
+    [ "ProgressCircle", "group__util.html#classCellulo_1_1ProgressCircle", [
+      [ "backgroundColor", "group__util.html#a4298ac93128abfab761836b626a6e536", null ],
+      [ "color", "group__util.html#ab4b44d5aa5764b41eef5178c71603813", null ],
+      [ "progress", "group__util.html#a3c7b05918b72a3083685d7607583df3d", null ],
+      [ "thickness", "group__util.html#ad27725714903ea9b6d5083ca3118232f", null ]
     ] ],
     [ "Toast", "group__util.html#classCellulo_1_1Toast", [
       [ "show", "group__util.html#a3109b6b63038539291ac3d9c9e9459e5", null ],

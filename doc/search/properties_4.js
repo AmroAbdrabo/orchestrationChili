@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['foundrobots',['foundRobots',['../group__comm.html#ac93b05ef41326660bd48f6eca8a2ffb2',1,'Cellulo::CelluloBluetoothScanner']]],
-  ['framerate',['framerate',['../group__comm.html#aa64ae00fc5683f384940db4b9e72ac8d',1,'Cellulo::CelluloBluetooth']]],
-  ['fromangle',['fromAngle',['../group__zone.html#ae53f35485ff46c07d6e2128957a6b67c',1,'Cellulo::CelluloZoneAngleInterval']]]
+  ['estr',['estr',['../group__util.html#ad2205b8c75514bcb5fb7512809e11466',1,'Cellulo::TranslationTool']]]
 ];

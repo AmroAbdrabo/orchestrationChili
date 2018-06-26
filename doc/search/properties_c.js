@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['r',['r',['../group__zone.html#ade7234cb3d3fa818aef69bdfb0f67ab8',1,'Cellulo::CelluloZoneCircle::r()'],['../group__zone.html#ae22f178d345bedaeb2653fa433b28f4c',1,'Cellulo::CelluloZoneRegularPolygon::r()']]],
-  ['robots',['robots',['../group__comm-relay.html#ae88af0add6b8a6ecfa0e04ee5d34a53c',1,'Cellulo::CelluloRelayClient']]],
-  ['rotangle',['rotAngle',['../group__zone.html#a45d92afd34af8621c79a1a9ef2e668f0',1,'Cellulo::CelluloZoneRegularPolygon']]]
+  ['macaddr',['macAddr',['../group__comm.html#a3a4f9fd2da2440be2368bd4b9e74f0f2',1,'Cellulo::CelluloBluetooth']]],
+  ['macaddrblasted',['macAddrBlasted',['../group__comm.html#a1af9f3d90c9cf47bd112d8a453d3a6da',1,'Cellulo::CelluloBluetoothEMP']]],
+  ['macaddrtoblast',['macAddrToBlast',['../group__comm.html#a948d8212e52c2514a0329cfcbfabeff3',1,'Cellulo::CelluloBluetoothEMP']]]
 ];

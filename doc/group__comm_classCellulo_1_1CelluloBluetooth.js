@@ -49,6 +49,7 @@ var group__comm_classCellulo_1_1CelluloBluetooth =
     [ "lastTimestamp", "group__comm.html#a7884ff94eaf821db9310d20f95024ad5", null ],
     [ "localAdapterMacAddr", "group__comm.html#a31ca21c1a395893cbfe0e4ea4bb6e590", null ],
     [ "macAddr", "group__comm.html#a3a4f9fd2da2440be2368bd4b9e74f0f2", null ],
+    [ "poseRemapper", "group__comm.html#a0adb9c6cc803237a75b51a5a3a3c008c", null ],
     [ "theta", "group__comm.html#acaee9ee4adc6528bcaae8c9577790d02", null ],
     [ "timestampingEnabled", "group__comm.html#ab93e751696cdaa7635681bb05b5598f5", null ],
     [ "x", "group__comm.html#af13c47b29e25220131c182d963e41034", null ],

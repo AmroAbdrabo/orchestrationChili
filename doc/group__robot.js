@@ -9,6 +9,8 @@ var group__robot =
       [ "poseVelControlKGoalPoseErr", "group__robot.html#a0461ff18bdf125f1587ff616368db7c2", null ],
       [ "poseVelControlKGoalVel", "group__robot.html#afd3187099bb2b39dc99967e0631d4fd2", null ],
       [ "poseVelControlKGoalVelErr", "group__robot.html#ad0bd66a4a9b1744517a744e4470ec492", null ],
+      [ "poseVelControlMaxAngularVel", "group__robot.html#a7f1dacf93710652a1be1e58ae7937848", null ],
+      [ "poseVelControlMaxLinearVel", "group__robot.html#af7ba1c08849ca5ba7b23a7c391101873", null ],
       [ "poseVelControlPeriod", "group__robot.html#ae9623a6305f54063ac903d13aefb49f1", null ],
       [ "vx", "group__robot.html#a88f98737ed629ece9b4ded6d69f2090d", null ],
       [ "vxyw", "group__robot.html#a3ff41aa3eaa381074e5553a126de3ce0", null ],

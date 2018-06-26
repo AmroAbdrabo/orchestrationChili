@@ -1,5 +1,6 @@
 var namespaceCellulo =
 [
+    [ "AxialHexCoords", "group__tile.html#classCellulo_1_1AxialHexCoords", "group__tile_classCellulo_1_1AxialHexCoords" ],
     [ "CelluloBluetooth", "group__comm.html#classCellulo_1_1CelluloBluetooth", "group__comm_classCellulo_1_1CelluloBluetooth" ],
     [ "CelluloBluetoothEMP", "group__comm.html#classCellulo_1_1CelluloBluetoothEMP", "group__comm_classCellulo_1_1CelluloBluetoothEMP" ],
     [ "CelluloBluetoothEnums", "group__comm.html#classCellulo_1_1CelluloBluetoothEnums", "group__comm_classCellulo_1_1CelluloBluetoothEnums" ],
@@ -59,8 +60,15 @@ var namespaceCellulo =
     [ "CelluloZoneRegularPolygonDistance", "group__zone.html#classCellulo_1_1CelluloZoneRegularPolygonDistance", null ],
     [ "CelluloZoneRegularPolygonInner", "group__zone.html#classCellulo_1_1CelluloZoneRegularPolygonInner", null ],
     [ "CelluloZoneTypes", "group__zone.html#classCellulo_1_1CelluloZoneTypes", "group__zone_classCellulo_1_1CelluloZoneTypes" ],
+    [ "CoordSpaceConverter", "group__tile.html#classCellulo_1_1CoordSpaceConverter", "group__tile_classCellulo_1_1CoordSpaceConverter" ],
+    [ "HexTile", "group__tile.html#classCellulo_1_1HexTile", "group__tile_classCellulo_1_1HexTile" ],
+    [ "HexTileMap", "group__tile.html#classCellulo_1_1HexTileMap", "group__tile_classCellulo_1_1HexTileMap" ],
+    [ "HexTileMapAutoBuilder", "group__tile.html#classCellulo_1_1HexTileMapAutoBuilder", "group__tile_classCellulo_1_1HexTileMapAutoBuilder" ],
+    [ "HexTileStdSourceCoords", "group__tile.html#classCellulo_1_1HexTileStdSourceCoords", "group__tile_classCellulo_1_1HexTileStdSourceCoords" ],
     [ "MacAddrSelector", "group__util.html#classCellulo_1_1MacAddrSelector", "group__util_classCellulo_1_1MacAddrSelector" ],
-    [ "PositionRemapper", "group__tile.html#classCellulo_1_1PositionRemapper", "group__tile_classCellulo_1_1PositionRemapper" ],
+    [ "OffsetRemapper", "group__tile.html#classCellulo_1_1OffsetRemapper", "group__tile_classCellulo_1_1OffsetRemapper" ],
+    [ "PoseRemapper", "group__tile.html#classCellulo_1_1PoseRemapper", "group__tile_classCellulo_1_1PoseRemapper" ],
+    [ "ProgressCircle", "group__util.html#classCellulo_1_1ProgressCircle", "group__util_classCellulo_1_1ProgressCircle" ],
     [ "Toast", "group__util.html#classCellulo_1_1Toast", "group__util_classCellulo_1_1Toast" ],
     [ "ToastManager", "group__util.html#classCellulo_1_1ToastManager", "group__util_classCellulo_1_1ToastManager" ],
     [ "TranslationTool", "group__util.html#classCellulo_1_1TranslationTool", "group__util_classCellulo_1_1TranslationTool" ]
