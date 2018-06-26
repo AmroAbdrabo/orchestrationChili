@@ -10,6 +10,7 @@ var searchData=
   ['resetlater',['resetLater',['../group__comm.html#ab12436c821fecc2050cc3c37925229b2',1,'Cellulo::CelluloBluetoothEMP']]],
   ['robot',['Robot',['../group__robot.html',1,'']]],
   ['robotadded',['robotAdded',['../group__comm-relay.html#a6f4ac79e3ce85bdf24ba05f1b71495ba',1,'Cellulo::CelluloRelayServer']]],
+  ['robotcomponent',['robotComponent',['../group__comm-relay.html#acbdc166089a34e85bc424b27891840c4',1,'Cellulo::CelluloRobotPoolClient']]],
   ['robotdiscovered',['robotDiscovered',['../group__comm.html#a3107786d8400a26b0cf8f5ef970f3ca4',1,'Cellulo::CelluloBluetoothScanner']]],
   ['robotremoved',['robotRemoved',['../group__comm-relay.html#ac9a0a3c6db06a0e11b6f01910774295f',1,'Cellulo::CelluloRelayServer']]],
   ['robots',['robots',['../group__comm-relay.html#ae88af0add6b8a6ecfa0e04ee5d34a53c',1,'Cellulo::CelluloRelayClient']]],

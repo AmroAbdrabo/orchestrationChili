@@ -1,6 +1,6 @@
 <map id="src/comm/relay/CelluloRobotPoolClient.cpp" name="src/comm/relay/CelluloRobotPoolClient.cpp">
-<area shape="rect" id="node2" href="$CelluloRobotPoolClient_8h.html" title="Uses the robots at a cellulo&#45;robot&#45;pool. " alt="" coords="1460,95,1628,121"/>
-<area shape="rect" id="node3" href="$CelluloLocalRelayClient_8h.html" title="Relays packets between a server and virtual robot objects over a Unix domain socket. " alt="" coords="835,169,1007,196"/>
+<area shape="rect" id="node2" href="$CelluloRobotPoolClient_8h.html" title="Uses the robots at a cellulo&#45;robot&#45;pool. " alt="" coords="1400,95,1568,121"/>
+<area shape="rect" id="node3" href="$CelluloLocalRelayClient_8h.html" title="Relays packets between a server and virtual robot objects over a Unix domain socket. " alt="" coords="762,169,934,196"/>
 <area shape="rect" id="node11" href="$CelluloBluetooth_8h.html" title="Header for Bluetooth communication with Cellulo robots. " alt="" coords="1513,319,1653,345"/>
 <area shape="rect" id="node4" href="$CelluloRelayClient_8h.html" title="Relays packets between a server and virtual robot objects. " alt="" coords="479,244,620,271"/>
 <area shape="rect" id="node23" href="$CelluloBluetoothPacket_8h.html" title="Header for a Bluetooth message to/from Cellulo robots. " alt="" coords="825,483,994,509"/>

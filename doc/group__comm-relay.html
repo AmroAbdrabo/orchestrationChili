@@ -827,10 +827,30 @@ Inheritance diagram for Cellulo::CelluloRobotPoolClient:</div>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
+<tr><td colspan="2"><h3>Signals</h3></td></tr>
+<tr class="memitem:a2b9f1b7984cabc7dd940740c366e27c4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__comm-relay.html#a2b9f1b7984cabc7dd940740c366e27c4">newRobotFound</a> (<a class="el" href="group__comm.html#classCellulo_1_1CelluloBluetooth">CelluloBluetooth</a> *robot)</td></tr>
+<tr class="memdesc:a2b9f1b7984cabc7dd940740c366e27c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Emitted when a new robot is found in the pool.  <a href="#a2b9f1b7984cabc7dd940740c366e27c4">More...</a><br /></td></tr>
+<tr class="separator:a2b9f1b7984cabc7dd940740c366e27c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header signals_group__comm-relay"><td colspan="2" onclick="javascript:toggleInherit('signals_group__comm-relay')"><img src="closed.png" alt="-"/>&#160;Signals inherited from <a class="el" href="group__comm-relay.html#classCellulo_1_1CelluloRelayClient">Cellulo::CelluloRelayClient</a></td></tr>
+<tr class="memitem:a7d5937c7d07a5a07f471f4e956a0b9a4 inherit signals_group__comm-relay"><td class="memItemLeft" align="right" valign="top"><a id="a7d5937c7d07a5a07f471f4e956a0b9a4"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__comm-relay.html#a7d5937c7d07a5a07f471f4e956a0b9a4">connected</a> ()</td></tr>
+<tr class="memdesc:a7d5937c7d07a5a07f471f4e956a0b9a4 inherit signals_group__comm-relay"><td class="mdescLeft">&#160;</td><td class="mdescRight">Emitted when the server socket is connected. <br /></td></tr>
+<tr class="separator:a7d5937c7d07a5a07f471f4e956a0b9a4 inherit signals_group__comm-relay"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10cfb3ae0feb9843741af7cfa4125196 inherit signals_group__comm-relay"><td class="memItemLeft" align="right" valign="top"><a id="a10cfb3ae0feb9843741af7cfa4125196"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__comm-relay.html#a10cfb3ae0feb9843741af7cfa4125196">disconnected</a> ()</td></tr>
+<tr class="memdesc:a10cfb3ae0feb9843741af7cfa4125196 inherit signals_group__comm-relay"><td class="mdescLeft">&#160;</td><td class="mdescRight">Emitted when the server socket is disconected. <br /></td></tr>
+<tr class="separator:a10cfb3ae0feb9843741af7cfa4125196 inherit signals_group__comm-relay"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8744b4de8ab1164e8b4e1659f56281ff inherit signals_group__comm-relay"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__comm-relay.html#a8744b4de8ab1164e8b4e1659f56281ff">unknownRobotAtServer</a> (QString macAddr)</td></tr>
+<tr class="memdesc:a8744b4de8ab1164e8b4e1659f56281ff inherit signals_group__comm-relay"><td class="mdescLeft">&#160;</td><td class="mdescRight">Emitted when the server has a robot already connected that is not in the robots list covered by this client.  <a href="group__comm-relay.html#a8744b4de8ab1164e8b4e1659f56281ff">More...</a><br /></td></tr>
+<tr class="separator:a8744b4de8ab1164e8b4e1659f56281ff inherit signals_group__comm-relay"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><h3>Properties</h3></td></tr>
+<tr class="memitem:acbdc166089a34e85bc424b27891840c4"><td class="memItemLeft" align="right" valign="top"><a id="acbdc166089a34e85bc424b27891840c4"></a>
+QQmlComponent&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__comm-relay.html#acbdc166089a34e85bc424b27891840c4">robotComponent</a></td></tr>
+<tr class="memdesc:acbdc166089a34e85bc424b27891840c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">If set, robots will be created out of this component instead of the standard <a class="el" href="group__robot.html#classCellulo_1_1CelluloRobot" title="The main object that represents a Cellulo robot. Inherits from CelluloBluetooth and has all its funct...">CelluloRobot</a>, default null. <br /></td></tr>
+<tr class="separator:acbdc166089a34e85bc424b27891840c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a54e7e3a28f5ca7902b2834f836e1b6f2"><td class="memItemLeft" align="right" valign="top"><a id="a54e7e3a28f5ca7902b2834f836e1b6f2"></a>
 QJSValue&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__comm-relay.html#a54e7e3a28f5ca7902b2834f836e1b6f2">createRobot</a></td></tr>
-<tr class="memdesc:a54e7e3a28f5ca7902b2834f836e1b6f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Must be set to a user-defined javascript function that takes the MAC address (string) of an already connected robot and returns a <a class="el" href="group__comm.html#classCellulo_1_1CelluloBluetooth" title="Object that communicates with one Cellulo robot over Bluetooth. ">CelluloBluetooth</a> object or CelluloBluetooth-derived object. <br /></td></tr>
+<tr class="memdesc:a54e7e3a28f5ca7902b2834f836e1b6f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Can be set to a user-defined javascript function that takes the MAC address (string) of an already connected robot and returns a <a class="el" href="group__comm.html#classCellulo_1_1CelluloBluetooth" title="Object that communicates with one Cellulo robot over Bluetooth. ">CelluloBluetooth</a> object or CelluloBluetooth-derived object; ignored if robotComponent is also set. <br /></td></tr>
 <tr class="separator:a54e7e3a28f5ca7902b2834f836e1b6f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header properties_group__comm-relay"><td colspan="2" onclick="javascript:toggleInherit('properties_group__comm-relay')"><img src="closed.png" alt="-"/>&#160;Properties inherited from <a class="el" href="group__comm-relay.html#classCellulo_1_1CelluloRelayClient">Cellulo::CelluloRelayClient</a></td></tr>
 <tr class="memitem:a8425b7761ae0c840c8e34dc741c162f0 inherit properties_group__comm-relay"><td class="memItemLeft" align="right" valign="top"><a id="a8425b7761ae0c840c8e34dc741c162f0"></a>
@@ -873,19 +893,42 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="grou
 <tr class="memitem:a7eccd090383468345b0de682ca98368a inherit pub_slots_group__comm-relay"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__comm-relay.html#a7eccd090383468345b0de682ca98368a">removeRobot</a> (<a class="el" href="group__comm.html#classCellulo_1_1CelluloBluetooth">Cellulo::CelluloBluetooth</a> *robot)</td></tr>
 <tr class="memdesc:a7eccd090383468345b0de682ca98368a inherit pub_slots_group__comm-relay"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes the robot from the robots list.  <a href="group__comm-relay.html#a7eccd090383468345b0de682ca98368a">More...</a><br /></td></tr>
 <tr class="separator:a7eccd090383468345b0de682ca98368a inherit pub_slots_group__comm-relay"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header signals_group__comm-relay"><td colspan="2" onclick="javascript:toggleInherit('signals_group__comm-relay')"><img src="closed.png" alt="-"/>&#160;Signals inherited from <a class="el" href="group__comm-relay.html#classCellulo_1_1CelluloRelayClient">Cellulo::CelluloRelayClient</a></td></tr>
-<tr class="memitem:a7d5937c7d07a5a07f471f4e956a0b9a4 inherit signals_group__comm-relay"><td class="memItemLeft" align="right" valign="top"><a id="a7d5937c7d07a5a07f471f4e956a0b9a4"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__comm-relay.html#a7d5937c7d07a5a07f471f4e956a0b9a4">connected</a> ()</td></tr>
-<tr class="memdesc:a7d5937c7d07a5a07f471f4e956a0b9a4 inherit signals_group__comm-relay"><td class="mdescLeft">&#160;</td><td class="mdescRight">Emitted when the server socket is connected. <br /></td></tr>
-<tr class="separator:a7d5937c7d07a5a07f471f4e956a0b9a4 inherit signals_group__comm-relay"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a10cfb3ae0feb9843741af7cfa4125196 inherit signals_group__comm-relay"><td class="memItemLeft" align="right" valign="top"><a id="a10cfb3ae0feb9843741af7cfa4125196"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__comm-relay.html#a10cfb3ae0feb9843741af7cfa4125196">disconnected</a> ()</td></tr>
-<tr class="memdesc:a10cfb3ae0feb9843741af7cfa4125196 inherit signals_group__comm-relay"><td class="mdescLeft">&#160;</td><td class="mdescRight">Emitted when the server socket is disconected. <br /></td></tr>
-<tr class="separator:a10cfb3ae0feb9843741af7cfa4125196 inherit signals_group__comm-relay"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8744b4de8ab1164e8b4e1659f56281ff inherit signals_group__comm-relay"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__comm-relay.html#a8744b4de8ab1164e8b4e1659f56281ff">unknownRobotAtServer</a> (QString macAddr)</td></tr>
-<tr class="memdesc:a8744b4de8ab1164e8b4e1659f56281ff inherit signals_group__comm-relay"><td class="mdescLeft">&#160;</td><td class="mdescRight">Emitted when the server has a robot already connected that is not in the robots list covered by this client.  <a href="group__comm-relay.html#a8744b4de8ab1164e8b4e1659f56281ff">More...</a><br /></td></tr>
-<tr class="separator:a8744b4de8ab1164e8b4e1659f56281ff inherit signals_group__comm-relay"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h4 class="groupheader">Member Function Documentation</h4>
+<a id="a2b9f1b7984cabc7dd940740c366e27c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b9f1b7984cabc7dd940740c366e27c4">&#9670;&nbsp;</a></span>newRobotFound</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Cellulo::CelluloRobotPoolClient::newRobotFound </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__comm.html#classCellulo_1_1CelluloBluetooth">CelluloBluetooth</a> *&#160;</td>
+          <td class="paramname"><em>robot</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Emitted when a new robot is found in the pool. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">robot</td><td>The newly found robot </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 
 </div>
 </div>

@@ -26,7 +26,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "CameraFrameImageProvider_8cpp.html",
-"group__comm.html#a9bd4f2f2feb7ff0f00c4f05767aca0ea"
+"group__comm.html#a929b9cbdd80e6408606a6aa89072475e"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
