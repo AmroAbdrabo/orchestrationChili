@@ -28,14 +28,20 @@
 
 #include <cmath>
 
+#include <QStack>
+#include <QPair>
+#include <QDebug>
+
 namespace Cellulo{
 
 CubicBezier::CubicBezier(){}
 
-CubicBezier::CubicBezier(const QVector2D& p0, const QVector2D& p1, const QVector2D& p2, const QVector2D& p3){
+CubicBezier::CubicBezier(const QVector2D& p0, const QVector2D& p1, const QVector2D& p2, const QVector2D& p3, bool calculateNow){
     setControlPoints(p0, p1, p2, p3);
-    buildEquidistantTLUT();
-    calculateBoundingBox();
+    if(calculateNow){
+        calculateLUTs();
+        calculateBoundingBox();
+    }
 }
 
 CubicBezier& CubicBezier::dumbClone(){
@@ -54,13 +60,6 @@ void CubicBezier::setControlPoints(const QVector2D& p0, const QVector2D& p1, con
     invalidateCalc();
 }
 
-void CubicBezier::translate(const QVector2D& t){
-    p[0] += t;
-    p[1] += t;
-    p[2] += t;
-    p[3] += t;
-}
-
 QVector2D CubicBezier::getControlPoint(unsigned char i) const {
     if(i > 3)
         return QVector2D();
@@ -68,9 +67,73 @@ QVector2D CubicBezier::getControlPoint(unsigned char i) const {
         return p[i];
 }
 
-void CubicBezier::invalidateCalc(){
-    boundingBoxCalculated = false;
-    equidistantTLutCalculated = false;
+qreal CubicBezier::getArcLength(){
+    calculateLUTs();
+    return arcLength;
+}
+
+qreal CubicBezier::getTByArcLengthRatio(qreal r){
+    if(r > 1)
+        return 1;
+    else if(r < 0)
+        return 0;
+
+    //Calculate equidistant t/point lookup table if not already calculated
+    calculateLUTs();
+
+    qreal realIndex = r*(tLUT.size() - 1);
+    int prevIndex = std::floor(realIndex);
+    int nextIndex = std::ceil(realIndex);
+    if(prevIndex == nextIndex)
+        return tLUT[prevIndex];
+    else
+        return (realIndex - prevIndex)*tLUT[prevIndex] + (nextIndex - realIndex)*tLUT[nextIndex];
+}
+
+qreal CubicBezier::getClosest(const QVector2D& m, QVector2D& closestPoint, qreal& closestDist){
+    qreal closestT = 0;
+
+    //Calculate equidistant t/point lookup table if not already calculated
+    calculateLUTs();
+
+    closestDist = std::numeric_limits<qreal>::max();
+
+    //Find closest point in lookup table
+    for(int i=0; i<tLUT.size(); i++){
+        qreal currentDist = pointLUT[i].distanceToPoint(m);
+        if(currentDist < closestDist){
+            closestT = tLUT[i];
+            closestDist = currentDist;
+            closestPoint = pointLUT[i];
+        }
+    }
+
+    //Check interval around for a closer point
+    qreal intervalSizeEpsilon = CLOSEST_T_SEARCH_EPSILON/arcLength;
+    qreal currentIntervalSize = 0.5*(1.0/((qreal)(tLUT.size() - 1)));
+    while(currentIntervalSize > intervalSizeEpsilon){
+        qreal leftT = closestT - currentIntervalSize;
+        qreal rightT = closestT + currentIntervalSize;
+        QVector2D leftPoint = leftT >= 0 ? getPoint(leftT) : QVector2D();
+        QVector2D rightPoint = rightT <= 1 ? getPoint(rightT) : QVector2D();
+        qreal leftDist = leftT >= 0 ? leftPoint.distanceToPoint(m) : std::numeric_limits<qreal>::max();
+        qreal rightDist = rightT <= 1 ? rightPoint.distanceToPoint(m) : std::numeric_limits<qreal>::max();
+
+        if(leftDist < closestDist && leftDist < rightDist){
+            closestT = leftT;
+            closestDist = leftDist;
+            closestPoint = leftPoint;
+        }
+        else if(rightDist < closestDist && rightDist < leftDist){
+            closestT = rightT;
+            closestDist = rightDist;
+            closestPoint = rightPoint;
+        }
+
+        currentIntervalSize /= 2;
+    }
+
+    return closestT;
 }
 
 QVector2D CubicBezier::getPoint(qreal t){
@@ -123,81 +186,52 @@ void CubicBezier::split(qreal t, CubicBezier& left, CubicBezier& right){
     right.setControlPoints(p01121223, p1223, p23, p[3]);
 }
 
-qreal CubicBezier::getClosest(const QVector2D& m, QVector2D& closestPoint, qreal& closestDist){
-    qreal closestT = 0;
-
-    //Calculate equidistant t/point lookup table if not already calculated
-    buildEquidistantTLUT();
-
-    closestDist = std::numeric_limits<qreal>::max();
-
-    //Find closest point in lookup table
-    for(int i=0; i<T_LUT_SIZE; i++){
-        qreal currentDist = equidistantPointLut[i].distanceToPoint(m);
-        if(currentDist < closestDist){
-            closestT = equidistantTLut[i];
-            closestDist = currentDist;
-            closestPoint = equidistantPointLut[i];
-        }
-    }
-
-    //Check interval around for a closer point
-    qreal intervalSizeEpsilon = T_INTERVAL_EPSILON/curveLength;
-    qreal currentIntervalSize = T_INTERVAL_SIZE;
-    while(currentIntervalSize > intervalSizeEpsilon){
-        qreal leftT = closestT - currentIntervalSize;
-        qreal rightT = closestT + currentIntervalSize;
-        QVector2D leftPoint = leftT >= 0 ? getPoint(leftT) : QVector2D();
-        QVector2D rightPoint = rightT <= 1 ? getPoint(rightT) : QVector2D();
-        qreal leftDist = leftT >= 0 ? leftPoint.distanceToPoint(m) : std::numeric_limits<qreal>::max();
-        qreal rightDist = rightT <= 1 ? rightPoint.distanceToPoint(m) : std::numeric_limits<qreal>::max();
-
-        if(leftDist < closestDist && leftDist < rightDist){
-            closestT = leftT;
-            closestDist = leftDist;
-            closestPoint = leftPoint;
-        }
-        else if(rightDist < closestDist && rightDist < leftDist){
-            closestT = rightT;
-            closestDist = rightDist;
-            closestPoint = rightPoint;
-        }
-
-        currentIntervalSize /= 2;
-    }
-
-    return closestT;
+void CubicBezier::invalidateCalc(){
+    boundingBoxCalculated = false;
+    LUTsCalculated = false;
 }
 
-void CubicBezier::buildEquidistantTLUT(){
-    if(equidistantTLutCalculated)
+void CubicBezier::calculateLUTs(){
+    if(LUTsCalculated)
         return;
 
-    static const int numSteps = 100; //Number of discretization steps
-    qreal distances[numSteps + 1];
-    QVector2D points[numSteps + 1];
+    arcLength = 0;
+    tLUT.clear();
+    pointLUT.clear();
 
-    //First pass, calculate distances to equidistant t
-    distances[0] = 0;
-    points[0] = getPoint(0);
-    for(int i=1; i<=numSteps; i++){
-        qreal t = i/((qreal)numSteps);
-        points[i] = getPoint(t);
-        distances[i] = distances[i - 1] + points[i].distanceToPoint(points[i - 1]);
-    }
-    curveLength = distances[numSteps];
-    qreal lutDist = curveLength/((qreal)(T_LUT_SIZE - 1));
-
-    //Second pass, pick t that are equidistant on the curve
-    int ti = 0;
-    for(int i=0; i<=numSteps; i++)
-        if(distances[i] >= ti*lutDist){
-            equidistantTLut[ti] = i/((qreal)numSteps);
-            equidistantPointLut[ti] = points[i];
-            ti++;
+    //Adaptively calculate arc length and number of discretization steps
+    QStack<QPair<qreal,qreal>> segStack;
+    segStack.push(QPair<qreal,qreal>(0.0,1.0));
+    while(!segStack.isEmpty()){
+        QPair<qreal,qreal> currentSeg = segStack.pop();
+        qreal begT = currentSeg.first;
+        QVector2D begPoint = getPoint(begT);
+        qreal endT = currentSeg.second;
+        qreal midT = 0.5*(begT + endT);
+        qreal segLength = begPoint.distanceToPoint(getPoint(endT));
+        if(segLength < ARC_LENGTH_EPSILON){
+            arcLength += segLength;
+            tLUT.push_back(begT);
+            pointLUT.push_back(begPoint);
         }
+        else{
+            segStack.push(QPair<qreal,qreal>(midT, endT));
+            segStack.push(QPair<qreal,qreal>(begT, midT));
+        }
+    }
+    tLUT.push_back(1.0);
+    pointLUT.push_back(getPoint(1.0));
 
-    equidistantTLutCalculated = true;
+
+
+
+
+    qDebug() << "LUT SIZE: " << tLUT.size();
+
+
+
+
+    LUTsCalculated = true;
 }
 
 inline void CubicBezier::updateMinMaxX(qreal newX){

@@ -26,6 +26,7 @@
 #define CUBICBEZIER_H
 
 #include <QVector2D>
+#include <QList>
 
 namespace Cellulo{
 
@@ -45,8 +46,9 @@ public:
      * @param p1 Second control point
      * @param p2 Third control point
      * @param p3 Fourth control point
+     * @param calculateNow Whether to calculate the fast lookup tables and bounding box immediately
      */
-    CubicBezier(const QVector2D &p0, const QVector2D &p1, const QVector2D &p2, const QVector2D &p3);
+    CubicBezier(const QVector2D &p0, const QVector2D &p1, const QVector2D &p2, const QVector2D &p3, bool calculateNow = true);
 
     /**
      * @brief Creates a new cubic Bézier curve with undefined control points
@@ -78,11 +80,21 @@ public:
     QVector2D getControlPoint(unsigned char i) const;
 
     /**
-     * @brief Translates the entire curve, i.e the control points, by t
+     * @brief Gets the approximate arc length of this curve
      *
-     * @param t Translation vector
+     * Arc length is defined as the sum of segments where each segment's length is guaranteed to be less than ARC_LENGTH_EPSILON
+     *
+     * @return Approximate arc length of the curve
      */
-    void translate(const QVector2D& t);
+    qreal getArcLength();
+
+    /**
+     * @brief Gets the parameter t corresponding to the desired arc length ratio
+     *
+     * @param  r Arc length ratio in [0,1] where 0 corresponds to the beginning, 0.5 corresponds to exactly halfway through the length of the curve etc.
+     * @return   Parameter t corresponding to r
+     */
+    qreal getTByArcLengthRatio(qreal r);
 
     /**
      * @brief Gets the closest point on the curve to the given point
@@ -185,9 +197,9 @@ private:
     void invalidateCalc();
 
     /**
-     * @brief Calculates the equidistant t lookup table
+     * @brief Calculates the arc length, equidistant t lookup table etc.
      */
-    void buildEquidistantTLUT();
+    void calculateLUTs();
 
     /**
      * @brief Sets the min/max X of the bounding box from the given value if value is less/greater than the min/max
@@ -218,16 +230,18 @@ private:
     static bool boundingBoxesIntersect(CubicBezier& curve1, CubicBezier& curve2);
 
     bool boundingBoxCalculated = false;                                       ///< Whether the bounding box is calculated for this curve
-    bool equidistantTLutCalculated = false;                                   ///< Whether the equidistant t/point lookup table is calculated
+    bool LUTsCalculated = false;                                              ///< Whether the equidistant t/point lookup table is calculated
 
     bool isDegenerate = false;                                                ///< Whether this curve is an approximation of a line
     QVector2D p[4];                                                           ///< Control points
-    static const int T_LUT_SIZE = 20;                                         ///< Approximate equidistant lookup table size
-    static constexpr qreal T_INTERVAL_SIZE = (1/((qreal)(T_LUT_SIZE - 1)))/2; ///< Initial t interval size for closest point search
-    static constexpr qreal T_INTERVAL_EPSILON = 0.01;                         ///< Closest point search interval limit, in mm
-    qreal curveLength;                                                        ///< Approximate length of the curve
-    qreal equidistantTLut[T_LUT_SIZE];                                        ///< List of t that are approximately equidistant to eachother on the curve
-    QVector2D equidistantPointLut[T_LUT_SIZE];                                ///< List of points that correspond to equidistantTLut
+
+    static constexpr qreal ARC_LENGTH_EPSILON = 10.0;                         ///< Maximum subdivision length in mm for adaptive geometry approximation
+    static constexpr qreal CLOSEST_T_SEARCH_EPSILON = 0.01;                   ///< Closest point search interval limit, in mm
+    qreal arcLength;                                                          ///< Approximate length of the curve
+
+    QList<qreal> tLUT;                                                        ///< List of t that are approximately equidistant to eachother on the curve
+    QList<QVector2D> pointLUT;                                                ///< List of points that correspond to equidistantTLut
+
     qreal minX = std::numeric_limits<qreal>::max();                           ///< Minimal x bound for the curve
     qreal maxX = std::numeric_limits<qreal>::min();                           ///< Maximum x bound for the curve
     qreal minY = std::numeric_limits<qreal>::max();                           ///< Minimum y bound for the curve
