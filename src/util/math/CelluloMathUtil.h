@@ -30,6 +30,13 @@
 #include <QVector2D>
 #include <QVariantList>
 
+#if defined(Q_OS_WIN)
+	#define _USE_MATH_DEFINES
+	#include <math.h>
+#else
+	#include <cmath>
+#endif
+
 namespace Cellulo{
 
 /**
@@ -74,6 +81,16 @@ public:
      * @return Distance between the point and line segment, negative if point is below the line
      */
     Q_INVOKABLE static qreal pointToLineDistSigned(const QVector2D& p, const QVector2D& lp1, const QVector2D& lp2);
+
+    /**
+     * @brief Calculates whether the point is above a line in 2D
+     *
+     * @param p The point
+     * @param lp1 First point the line passes through
+     * @param lp2 Second point the line passes through
+     * @return Whether the point is above the line
+     */
+    Q_INVOKABLE static bool pointAboveLine(const QVector2D& p, const QVector2D& lp1, const QVector2D& lp2);
 
     /**
      * @brief Calculates whether the given point is in the given polygon
@@ -153,6 +170,17 @@ public:
     Q_INVOKABLE static bool hRayCrossesLineSeg(const QVector2D& r, const QVector2D& seg1, const QVector2D& seg2);
 
     /**
+     * @brief Calculates whether the ray crosses the line segment
+     *
+     * @param origin Ray origin
+     * @param dir Ray direction
+     * @param seg1 Line segment first endpoint
+     * @param seg2 Line segment second endpoint
+     * @return Whether the ray crosses the line segment
+     */
+    Q_INVOKABLE static bool rayCrossesLineSeg(QVector2D const& origin, QVector2D const& dir, QVector2D const& seg1, QVector2D const& seg2);
+
+    /**
      * @brief Initializes c's random number generator seed
      *
      * This will be called with time(NULL) at CelluloMathUtil creation time.
@@ -202,7 +230,7 @@ public:
      * @param deg Angle in degrees
      * @return Corresponding angle in radians
      */
-    Q_INVOKABLE static qreal degToRad(qreal deg);
+    Q_INVOKABLE static constexpr qreal degToRad(qreal deg){ return deg*M_PI/180.0; }
 
     /**
      * @brief Converts radians to degrees
@@ -210,7 +238,7 @@ public:
      * @param rad Angle in radians
      * @return Corresponding angle in degrees
      */
-    Q_INVOKABLE static qreal radToDeg(qreal rad);
+    Q_INVOKABLE static constexpr qreal radToDeg(qreal rad){ return rad*180.0/M_PI; }
 
     /**
      * @brief Calculates a parametric sigmoid function value
@@ -232,6 +260,24 @@ public:
      * @return Value in [min, max]
      */
     Q_INVOKABLE static qreal clamp(qreal val, qreal min, qreal max);
+
+    /**
+     * @brief Returns the angle between two vectors
+     *
+     * @param  vec1 First vector, must have positive length
+     * @param  vec2 Second vector, must have positive length
+     * @return      Angle between in rad
+     */
+    Q_INVOKABLE static qreal angleBetween(QVector2D const& vec1, QVector2D const& vec2);
+
+    /**
+     * @brief Returns the signed cross product length of two 2D vectors
+     *
+     * @param  vec1 First vector, must have positive length
+     * @param  vec2 Second vector, must have positive length
+     * @return      vec1.x*vec2.y - vec1.y*vec2.x
+     */
+    Q_INVOKABLE static qreal crossProduct(QVector2D const& vec1, QVector2D const& vec2);
 
 private:
 

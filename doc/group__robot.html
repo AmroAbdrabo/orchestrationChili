@@ -280,6 +280,12 @@ qreal&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gro
 <tr class="memitem:ae9623a6305f54063ac903d13aefb49f1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__robot.html#ae9623a6305f54063ac903d13aefb49f1">poseVelControlPeriod</a></td></tr>
 <tr class="memdesc:ae9623a6305f54063ac903d13aefb49f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Desired pose/velocity control period in ms, set to 0 for highest possible frequency, default 20.  <a href="#ae9623a6305f54063ac903d13aefb49f1">More...</a><br /></td></tr>
 <tr class="separator:ae9623a6305f54063ac903d13aefb49f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7ba1c08849ca5ba7b23a7c391101873"><td class="memItemLeft" align="right" valign="top">qreal&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__robot.html#af7ba1c08849ca5ba7b23a7c391101873">poseVelControlMaxLinearVel</a></td></tr>
+<tr class="memdesc:af7ba1c08849ca5ba7b23a7c391101873"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum linear velocity to clamp goal velocity to during pose vel control, in mm/s, default 185 mm/s.  <a href="#af7ba1c08849ca5ba7b23a7c391101873">More...</a><br /></td></tr>
+<tr class="separator:af7ba1c08849ca5ba7b23a7c391101873"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f1dacf93710652a1be1e58ae7937848"><td class="memItemLeft" align="right" valign="top">qreal&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__robot.html#a7f1dacf93710652a1be1e58ae7937848">poseVelControlMaxAngularVel</a></td></tr>
+<tr class="memdesc:a7f1dacf93710652a1be1e58ae7937848"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum angular velocity to clamp goal velocity to during pose vel control, in rad/s, default 7.5 mm/s.  <a href="#a7f1dacf93710652a1be1e58ae7937848">More...</a><br /></td></tr>
+<tr class="separator:a7f1dacf93710652a1be1e58ae7937848"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afd3187099bb2b39dc99967e0631d4fd2"><td class="memItemLeft" align="right" valign="top">QVector3D&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__robot.html#afd3187099bb2b39dc99967e0631d4fd2">poseVelControlKGoalVel</a></td></tr>
 <tr class="memdesc:afd3187099bb2b39dc99967e0631d4fd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Goal velocity coefficients when tracking pose/velocity, default (0.9, 0.9, 0.9), do not change if you don't have a good reason.  <a href="#afd3187099bb2b39dc99967e0631d4fd2">More...</a><br /></td></tr>
 <tr class="separator:afd3187099bb2b39dc99967e0631d4fd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -338,6 +344,8 @@ qreal&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gro
 <tr class="memitem:aa64ae00fc5683f384940db4b9e72ac8d inherit properties_group__comm"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__comm.html#aa64ae00fc5683f384940db4b9e72ac8d">framerate</a></td></tr>
 <tr class="memdesc:aa64ae00fc5683f384940db4b9e72ac8d inherit properties_group__comm"><td class="mdescLeft">&#160;</td><td class="mdescRight">Localization framerate calculated from local timestamps received along with pose (is valid if <b>timestampingEnabled</b> is true), read-only.  <a href="group__comm.html#aa64ae00fc5683f384940db4b9e72ac8d">More...</a><br /></td></tr>
 <tr class="separator:aa64ae00fc5683f384940db4b9e72ac8d inherit properties_group__comm"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0adb9c6cc803237a75b51a5a3a3c008c inherit properties_group__comm"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__tile.html#classCellulo_1_1PoseRemapper">Cellulo::PoseRemapper</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__comm.html#a0adb9c6cc803237a75b51a5a3a3c008c">poseRemapper</a></td></tr>
+<tr class="separator:a0adb9c6cc803237a75b51a5a3a3c008c inherit properties_group__comm"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h4 class="groupheader">Member Function Documentation</h4>
 <a id="a9d942783a095a74edf14065de5e6e529"></a>
@@ -593,6 +601,40 @@ qreal&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gro
 
 <p>Goal velocity error coefficients when tracking pose/velocity, default (0.2, 0.2, 0.2), do not change if you don't have a good reason. </p>
 <p>Goal velocity error coefficients when tracking pose/velocity. </p>
+
+</div>
+</div>
+<a id="a7f1dacf93710652a1be1e58ae7937848"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7f1dacf93710652a1be1e58ae7937848">&#9670;&nbsp;</a></span>poseVelControlMaxAngularVel</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">qreal Cellulo::CelluloRobot::poseVelControlMaxAngularVel</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Maximum angular velocity to clamp goal velocity to during pose vel control, in rad/s, default 7.5 mm/s. </p>
+<p>Maximum angular velocity to clamp goal velocity to during pose vel control, in rad/s. </p>
+
+</div>
+</div>
+<a id="af7ba1c08849ca5ba7b23a7c391101873"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af7ba1c08849ca5ba7b23a7c391101873">&#9670;&nbsp;</a></span>poseVelControlMaxLinearVel</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">qreal Cellulo::CelluloRobot::poseVelControlMaxLinearVel</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Maximum linear velocity to clamp goal velocity to during pose vel control, in mm/s, default 185 mm/s. </p>
+<p>Maximum linear velocity to clamp goal velocity to during pose vel control, in mm/s. </p>
 
 </div>
 </div>

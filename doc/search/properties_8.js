@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['languagelist',['languageList',['../group__util.html#ae9be279823bda83156d8771a6ece9e00',1,'Cellulo::TranslationTool']]],
-  ['lasttimestamp',['lastTimestamp',['../group__comm.html#a7884ff94eaf821db9310d20f95024ad5',1,'Cellulo::CelluloBluetooth']]],
-  ['listen',['listen',['../group__comm-relay.html#a501f390e6c5c9c88e92c8dee8550e14f',1,'Cellulo::CelluloRelayServer']]],
-  ['localadaptermacaddr',['localAdapterMacAddr',['../group__comm.html#a31ca21c1a395893cbfe0e4ea4bb6e590',1,'Cellulo::CelluloBluetooth']]]
+  ['i',['i',['../group__tile.html#a8046eed0250276a827801dbb61e06ca4',1,'Cellulo::HexTileStdSourceCoords']]],
+  ['inputorigin',['inputOrigin',['../group__tile.html#a80a7a8ce500e34d6c8dee93a16c6ef26',1,'Cellulo::CoordSpaceConverter']]],
+  ['inputsize',['inputSize',['../group__tile.html#a37cb1191cdcc1e4e842040d6101cbea8',1,'Cellulo::CoordSpaceConverter']]]
 ];

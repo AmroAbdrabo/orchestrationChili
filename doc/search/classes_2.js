@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['toast',['Toast',['../group__util.html#classCellulo_1_1Toast',1,'Cellulo']]],
-  ['toastmanager',['ToastManager',['../group__util.html#classCellulo_1_1ToastManager',1,'Cellulo']]],
-  ['translationtool',['TranslationTool',['../group__util.html#classCellulo_1_1TranslationTool',1,'Cellulo']]]
+  ['hextile',['HexTile',['../group__tile.html#classCellulo_1_1HexTile',1,'Cellulo']]],
+  ['hextilemap',['HexTileMap',['../group__tile.html#classCellulo_1_1HexTileMap',1,'Cellulo']]],
+  ['hextilemapautobuilder',['HexTileMapAutoBuilder',['../group__tile.html#classCellulo_1_1HexTileMapAutoBuilder',1,'Cellulo']]],
+  ['hextilestdsourcecoords',['HexTileStdSourceCoords',['../group__tile.html#classCellulo_1_1HexTileStdSourceCoords',1,'Cellulo']]]
 ];

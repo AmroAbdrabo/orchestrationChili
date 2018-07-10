@@ -55,7 +55,16 @@ HEADERS += \
     src/util/svg/CelluloSVGUtil.h \
     src/util/lang/TranslationTool.h \
     src/util/system/CelluloSystemUtil.h \
-    src/util/ui/CelluloUIUtil.h
+    src/util/ui/CelluloUIUtil.h \
+    src/util/ui/ProgressCircle.h \
+    src/tile/PoseRemapper.h \
+    src/tile/OffsetRemapper.h \
+    src/tile/HexTileMap.h \
+    src/tile/HexTile.h \
+    src/tile/HexTileStdSourceCoords.h \
+    src/tile/CoordSpaceConverter.h \
+    src/tile/AxialHexCoords.h \
+    src/tile/HexTileMapAutoBuilder.h
 
 SOURCES += \
     src/CelluloPlugin.cpp \
@@ -93,7 +102,16 @@ SOURCES += \
     src/util/svg/CelluloSVGUtil.cpp \
     src/util/lang/TranslationTool.cpp \
     src/util/system/CelluloSystemUtil.cpp \
-    src/util/ui/CelluloUIUtil.cpp
+    src/util/ui/CelluloUIUtil.cpp \
+    src/util/ui/ProgressCircle.cpp \
+    src/tile/PoseRemapper.cpp \
+    src/tile/OffsetRemapper.cpp \
+    src/tile/HexTileMap.cpp \
+    src/tile/HexTile.cpp \
+    src/tile/HexTileStdSourceCoords.cpp \
+    src/tile/CoordSpaceConverter.cpp \
+    src/tile/AxialHexCoords.cpp \
+    src/tile/HexTileMapAutoBuilder.cpp
 
 INCLUDEPATH += \
     include/

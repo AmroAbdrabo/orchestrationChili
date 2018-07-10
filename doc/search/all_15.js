@@ -1,6 +1,20 @@
 var searchData=
 [
-  ['x',['x',['../group__comm.html#af13c47b29e25220131c182d963e41034',1,'Cellulo::CelluloBluetooth::x()'],['../group__zone.html#a645768a86591f37a6bd00ed80f494313',1,'Cellulo::CelluloZoneCircle::x()'],['../group__zone.html#a77446bf66d11c3da82fdfd40d67cbb45',1,'Cellulo::CelluloZonePoint::x()'],['../group__zone.html#a835d0a798a7234fe9006026efd1a5ae8',1,'Cellulo::CelluloZoneRegularPolygon::x()'],['../group__zone.html#a5eda2e9d4a29010c745f3547108d4cfb',1,'Cellulo::CelluloZoneRectangle::x()']]],
-  ['x1',['x1',['../group__zone.html#ac45f2632a93c3b15c876ce5465d42437',1,'Cellulo::CelluloZoneLine']]],
-  ['x2',['x2',['../group__zone.html#a42be2206fdbddbebc610bf2165f60b14',1,'Cellulo::CelluloZoneLine']]]
+  ['v',['v',['../group__tile.html#a3ac1dc1b4f3c06fefcd259e5586b324b',1,'Cellulo::HexTileStdSourceCoords']]],
+  ['vertices',['vertices',['../group__zone.html#ad5fc1b6e859473d220237d98169f7ffe',1,'Cellulo::CelluloZonePolygon']]],
+  ['vibrateonmotion',['vibrateOnMotion',['../group__comm.html#a0b0ce5e1c237cbbc7d0ffc00e8b08192',1,'Cellulo::CelluloBluetooth']]],
+  ['visualeffect',['VisualEffect',['../group__comm.html#a810aca61e84c1e31fb751335cd776361',1,'Cellulo::CelluloBluetoothEnums']]],
+  ['visualeffectalertall',['VisualEffectAlertAll',['../group__comm.html#a810aca61e84c1e31fb751335cd776361a687df104e1fbc21e800c78308f15dcdb',1,'Cellulo::CelluloBluetoothEnums']]],
+  ['visualeffectalertsingle',['VisualEffectAlertSingle',['../group__comm.html#a810aca61e84c1e31fb751335cd776361aaff2e7f0e43e014a936a35e904e236a0',1,'Cellulo::CelluloBluetoothEnums']]],
+  ['visualeffectblink',['VisualEffectBlink',['../group__comm.html#a810aca61e84c1e31fb751335cd776361afbcea37375d92e236eada27e2bc97e99',1,'Cellulo::CelluloBluetoothEnums']]],
+  ['visualeffectbreathe',['VisualEffectBreathe',['../group__comm.html#a810aca61e84c1e31fb751335cd776361a0fb39ec6734b9bf37d11602b076444f8',1,'Cellulo::CelluloBluetoothEnums']]],
+  ['visualeffectconstall',['VisualEffectConstAll',['../group__comm.html#a810aca61e84c1e31fb751335cd776361af9bcff37f0547e1ec704283d5c1befa8',1,'Cellulo::CelluloBluetoothEnums']]],
+  ['visualeffectconstsingle',['VisualEffectConstSingle',['../group__comm.html#a810aca61e84c1e31fb751335cd776361a379857bb0779f8fbb446170135430144',1,'Cellulo::CelluloBluetoothEnums']]],
+  ['visualeffectdirection',['VisualEffectDirection',['../group__comm.html#a810aca61e84c1e31fb751335cd776361a2691ad5c332195d61ef50a6f99271d36',1,'Cellulo::CelluloBluetoothEnums']]],
+  ['visualeffectprogress',['VisualEffectProgress',['../group__comm.html#a810aca61e84c1e31fb751335cd776361a90c6602cc623b63379f2655e28536add',1,'Cellulo::CelluloBluetoothEnums']]],
+  ['visualeffectpulse',['VisualEffectPulse',['../group__comm.html#a810aca61e84c1e31fb751335cd776361aa66e7715ce025a769a27e79730d4b0e3',1,'Cellulo::CelluloBluetoothEnums']]],
+  ['visualeffectwaiting',['VisualEffectWaiting',['../group__comm.html#a810aca61e84c1e31fb751335cd776361a0a55cdb1b0edc10a3c4f2a7fe667eb58',1,'Cellulo::CelluloBluetoothEnums']]],
+  ['vx',['vx',['../group__robot.html#a88f98737ed629ece9b4ded6d69f2090d',1,'Cellulo::CelluloRobot']]],
+  ['vxyw',['vxyw',['../group__robot.html#a3ff41aa3eaa381074e5553a126de3ce0',1,'Cellulo::CelluloRobot']]],
+  ['vy',['vy',['../group__robot.html#ae34e11c148c9a77dacf1fc94af910153',1,'Cellulo::CelluloRobot']]]
 ];

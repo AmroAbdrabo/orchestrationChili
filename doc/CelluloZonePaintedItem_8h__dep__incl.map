@@ -1,7 +1,7 @@
 <map id="src/zones/CelluloZonePaintedItem.h" name="src/zones/CelluloZonePaintedItem.h">
 <area shape="rect" id="node2" href="$CelluloZone_8h.html" title="Header for base class zone architecture. " alt="" coords="2231,102,2393,129"/>
 <area shape="rect" id="node46" href="$CelluloZonePaintedItem_8cpp.html" title="Source for a QML compatible QQuickPaintedItem for Cellulo zones. " alt="" coords="2418,95,2614,136"/>
-<area shape="rect" id="node3" href="$CelluloZonePolyBezier_8h.html" title="Header for composite cubic Bézier curves. " alt="" coords="1215,184,1393,225"/>
+<area shape="rect" id="node3" href="$CelluloZonePolyBezier_8h.html" title="Header for composite cubic Bézier curves. " alt="" coords="1216,184,1395,225"/>
 <area shape="rect" id="node25" href="$CelluloSVGUtil_8h.html" title="Source for SVG file parsing and dumping utils. " alt="" coords="1775,281,1964,307"/>
 <area shape="rect" id="node28" href="$CelluloZonePolygon_8h.html" title="Header for the polygon zone. " alt="" coords="2679,191,2889,218"/>
 <area shape="rect" id="node33" href="$CelluloZonePoint_8h.html" title="Header for the point zone. " alt="" coords="2215,191,2409,218"/>

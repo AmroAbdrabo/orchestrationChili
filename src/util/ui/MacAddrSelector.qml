@@ -31,7 +31,7 @@ Row{
     readonly property string selectedLocalAdapterAddress: localAdapterSelectionBox.currentText
 
     /** type:enum Current connection status to display, set by the user, one of CelluloBluetoothEnums.ConnectionStatus */
-    property var connectionStatus: CelluloBluetooth.ConnectionStatusDisconnected
+    property var connectionStatus: CelluloBluetoothEnums.ConnectionStatusDisconnected
 
     /**
      * @brief Selects the given address if it exists in the list of addresses

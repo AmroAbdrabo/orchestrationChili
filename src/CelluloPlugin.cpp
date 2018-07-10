@@ -58,6 +58,13 @@
 #include "util/lang/TranslationTool.h"
 #include "util/system/CelluloSystemUtil.h"
 #include "util/ui/CelluloUIUtil.h"
+#include "util/ui/ProgressCircle.h"
+#include "tile/OffsetRemapper.h"
+#include "tile/HexTileMap.h"
+#include "tile/HexTile.h"
+#include "tile/HexTileStdSourceCoords.h"
+#include "tile/AxialHexCoords.h"
+#include "tile/CoordSpaceConverter.h"
 
 /**
  * @brief Scope for core Cellulo objects
@@ -170,6 +177,14 @@ void CelluloPlugin::registerTypes(const char *uri){
                                                     Q_UNUSED(jsEngine)
                                                     return new CelluloUIUtil();
                                                 });
+    qmlRegisterType<ProgressCircle>(uri, 1, 0, "ProgressCircle");
+
+    qmlRegisterType<OffsetRemapper>(uri, 1, 0, "OffsetRemapper");
+    qmlRegisterType<HexTileMap>(uri, 1, 0, "HexTileMap");
+    qmlRegisterType<HexTile>(uri, 1, 0, "HexTile");
+    qmlRegisterType<HexTileStdSourceCoords>(uri, 1, 0, "HexTileStdSourceCoords");
+    qmlRegisterType<AxialHexCoords>(uri, 1, 0, "AxialHexCoords");
+    qmlRegisterType<CoordSpaceConverter>(uri, 1, 0, "CoordSpaceConverter");
 }
 
 void CelluloPlugin::initializeEngine(QQmlEngine *engine, const char *uri){

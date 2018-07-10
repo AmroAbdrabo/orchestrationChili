@@ -62,6 +62,12 @@ class CelluloRobot : public CelluloBluetooth {
     /** @brief Desired pose/velocity control period in ms, set to 0 for highest possible frequency, default 20 */
     Q_PROPERTY(int poseVelControlPeriod READ getPoseVelControlPeriod WRITE setPoseVelControlPeriod NOTIFY poseVelControlPeriodChanged)
 
+    /** @brief Maximum linear velocity to clamp goal velocity to during pose vel control, in mm/s, default 185 mm/s */
+    Q_PROPERTY(qreal poseVelControlMaxLinearVel MEMBER poseVelControlMaxLinearVel NOTIFY poseVelControlMaxLinearVelChanged)
+
+    /** @brief Maximum angular velocity to clamp goal velocity to during pose vel control, in rad/s, default 7.5 mm/s */
+    Q_PROPERTY(qreal poseVelControlMaxAngularVel MEMBER poseVelControlMaxAngularVel NOTIFY poseVelControlMaxAngularVelChanged)
+
     /** @brief Goal velocity coefficients when tracking pose/velocity, default (0.9, 0.9, 0.9), do not change if you don't have a good reason */
     Q_PROPERTY(QVector3D poseVelControlKGoalVel MEMBER poseVelControlKGoalVel)
 
@@ -185,6 +191,16 @@ signals:
     void poseVelControlPeriodChanged();
 
     /**
+     * @brief Emitted when the linear velocity limit for pose vel control changes
+     */
+    void poseVelControlMaxLinearVelChanged();
+
+    /**
+     * @brief Emitted when the linear velocity limit for pose vel control changes
+     */
+    void poseVelControlMaxAngularVelChanged();
+
+    /**
      * @brief Emitted when a key is touched/released
      */
     void keysTouchedChanged();
@@ -269,6 +285,9 @@ private:
     bool poseVelControlEnabled;                ///< Whether the simultaneous pose and velocity controller is enabled, must be enabled by the user
     int poseVelControlPeriod;                  ///< Desired pose/velocity control period in ms, set to 0 for highest possible frequency
     QVector3D poseVelControlEnabledComponents; ///< Contains 1.0 or 0.0 on each element depending on whether control is enabled on components
+
+    qreal poseVelControlMaxLinearVel;          ///< Maximum linear velocity to clamp goal velocity to during pose vel control, in mm/s
+    qreal poseVelControlMaxAngularVel;         ///< Maximum angular velocity to clamp goal velocity to during pose vel control, in rad/s
 
     QVector3D poseVelControlKGoalVel;          ///< Goal velocity coefficients when tracking pose/velocity
     QVector3D poseVelControlKGoalVelErr;       ///< Goal velocity error coefficients when tracking pose/velocity

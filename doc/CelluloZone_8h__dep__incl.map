@@ -1,5 +1,5 @@
 <map id="src/zones/CelluloZone.h" name="src/zones/CelluloZone.h">
-<area shape="rect" id="node2" href="$CelluloZonePolyBezier_8h.html" title="Header for composite cubic Bézier curves. " alt="" coords="1007,80,1185,121"/>
+<area shape="rect" id="node2" href="$CelluloZonePolyBezier_8h.html" title="Header for composite cubic Bézier curves. " alt="" coords="1008,80,1187,121"/>
 <area shape="rect" id="node24" href="$CelluloSVGUtil_8h.html" title="Source for SVG file parsing and dumping utils. " alt="" coords="1345,177,1535,203"/>
 <area shape="rect" id="node27" href="$CelluloZonePaintedItem_8h.html" title="Header for a QML compatible QQuickPaintedItem for Cellulo zones. " alt="" coords="3133,80,3329,121"/>
 <area shape="rect" id="node29" href="$CelluloZonePolygon_8h.html" title="Header for the polygon zone. " alt="" coords="2473,87,2684,114"/>
