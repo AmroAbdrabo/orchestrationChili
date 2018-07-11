@@ -91,11 +91,11 @@ qreal CubicBezier::getTByArcLengthRatio(qreal r){
 }
 
 qreal CubicBezier::getClosest(const QVector2D& m, QVector2D& closestPoint, qreal& closestDist){
-    qreal closestT = 0;
 
     //Calculate equidistant t/point lookup table if not already calculated
     calculateLUTs();
 
+    qreal closestT = 0;
     closestDist = std::numeric_limits<qreal>::max();
 
     //Find closest point in lookup table
@@ -175,6 +175,35 @@ qreal CubicBezier::getPointY(qreal t){
     }
 }
 
+QVector2D CubicBezier::getDerivative(qreal t){
+    if(t == 0)
+        return 3*(p[1] - p[0]);
+    else if(t == 1)
+        return 3*(p[3] - p[2]);
+    else{
+        qreal one_minus_t = 1 - t;
+        return 3*one_minus_t*one_minus_t*(p[1] - p[0]) + 6*one_minus_t*t*(p[2] - p[1]) + 3*t*t*(p[3] - p[2]);
+    }
+}
+
+bool CubicBezier::side(const QVector2D& m){
+
+    //Get the closest point on the curve
+    qreal dummy;
+    QVector2D curvePoint;
+    qreal curveT = getClosest(m, curvePoint, dummy);
+
+    //Get the direction vector of the tangent line to the curve on the closest point
+    QVector2D curveDirection = getDerivative(curveT);
+
+    //Get the direction vector from the closest point to the given point
+    QVector2D pointDirection = m - curvePoint;
+
+    //curveDirection and pointDirection are orthogonal by definition,
+    //find whether pointDirection is located clockwise or counterclockwise with respect to curveDirection via cross product
+    return curveDirection.x()*pointDirection.y() > curveDirection.y()*pointDirection.x();
+}
+
 void CubicBezier::split(qreal t, CubicBezier& left, CubicBezier& right){
     QVector2D p01 = (1 - t)*p[0] + t*p[1];
     QVector2D p12 = (1 - t)*p[1] + t*p[2];
@@ -221,15 +250,6 @@ void CubicBezier::calculateLUTs(){
     }
     tLUT.push_back(1.0);
     pointLUT.push_back(getPoint(1.0));
-
-
-
-
-
-    qDebug() << "LUT SIZE: " << tLUT.size();
-
-
-
 
     LUTsCalculated = true;
 }
@@ -300,48 +320,12 @@ bool CubicBezier::inBoundingBox(const QVector2D& m){
 }
 
 qreal CubicBezier::getDistToBoundingBox(const QVector2D& m){
+    calculateBoundingBox();
+
     //Taken from http://gamedev.stackexchange.com/a/44496
     qreal dx = fmax(fabs(m.x() - (minX + maxX)/2) - (maxX - minX)/2, 0);
     qreal dy = fmax(fabs(m.y() - (minY + maxY)/2) - (maxY - minY)/2, 0);
     return sqrt(dx*dx + dy*dy);
-}
-
-bool CubicBezier::boundingBoxesIntersect(CubicBezier& curve1, CubicBezier& curve2){
-
-    //Calculate bounding boxes for both curves if not already calculated
-    curve1.calculateBoundingBox();
-    curve2.calculateBoundingBox();
-
-    return !(curve1.maxX < curve2.minX || curve1.minX > curve2.maxX || curve1.maxY < curve2.minY || curve1.minY > curve2.maxY);
-}
-
-QVector2D CubicBezier::getDerivative(qreal t){
-    if(t == 0)
-        return 3*(p[1] - p[0]);
-    else if(t == 1)
-        return 3*(p[3] - p[2]);
-    else{
-        qreal one_minus_t = 1 - t;
-        return 3*one_minus_t*one_minus_t*(p[1] - p[0]) + 6*one_minus_t*t*(p[2] - p[1]) + 3*t*t*(p[3] - p[2]);
-    }
-}
-
-bool CubicBezier::side(const QVector2D& m){
-
-    //Get the closest point on the curve
-    qreal dummy;
-    QVector2D curvePoint;
-    qreal curveT = getClosest(m, curvePoint, dummy);
-
-    //Get the direction vector of the tangent line to the curve on the closest point
-    QVector2D curveDirection = getDerivative(curveT);
-
-    //Get the direction vector from the closest point to the given point
-    QVector2D pointDirection = m - curvePoint;
-
-    //curveDirection and pointDirection are orthogonal by definition,
-    //find whether pointDirection is located clockwise or counterclockwise with respect to curveDirection via cross product
-    return curveDirection.x()*pointDirection.y() > curveDirection.y()*pointDirection.x();
 }
 
 int CubicBezier::getNumCrossings(const QVector2D& m){
@@ -379,6 +363,15 @@ int CubicBezier::getNumCrossings(const QVector2D& m){
 
         return numCrossings;
     }
+}
+
+bool CubicBezier::boundingBoxesIntersect(CubicBezier& curve1, CubicBezier& curve2){
+
+    //Calculate bounding boxes for both curves if not already calculated
+    curve1.calculateBoundingBox();
+    curve2.calculateBoundingBox();
+
+    return !(curve1.maxX < curve2.minX || curve1.minX > curve2.maxX || curve1.maxY < curve2.minY || curve1.minY > curve2.maxY);
 }
 
 }

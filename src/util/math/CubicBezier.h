@@ -131,20 +131,20 @@ public:
     qreal getPointY(qreal t);
 
     /**
-     * @brief Calculates which side of the curve the given point is located
-     *
-     * @param m Given point
-     * @return True if the point is on the right (clockwise) false if the point is on the left (counter-clockwise)
-     */
-    bool side(const QVector2D& m);
-
-    /**
      * @brief Calculates the direction vector of the tangent line to the curve at the given parameter
      *
      * @param t Parameter
      * @return The direction vector of the tangent line to the curve
      */
     QVector2D getDerivative(qreal t);
+    
+    /**
+     * @brief Calculates which side of the curve the given point is located
+     *
+     * @param m Given point
+     * @return True if the point is on the right (clockwise) false if the point is on the left (counter-clockwise)
+     */
+    bool side(const QVector2D& m);
 
     /**
      * @brief Splits the curve into two parts which make up this curve
