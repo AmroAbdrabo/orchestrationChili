@@ -132,14 +132,7 @@ void PolyBezier::appendPoint(QVector2D const& targetPoint, qreal entrySmoothness
     //to the target:
     QVector2D controlPoint2 = exitSmoothness*controlPoint1 + (1 - exitSmoothness)*targetPoint;
 
-    segments.push_back(
-        CubicBezier(
-            lastPoint,
-            controlPoint1,
-            controlPoint2,
-            targetPoint,
-            false)
-        );
+    segments.push_back(CubicBezier(lastPoint, controlPoint1, controlPoint2, targetPoint, false));
 
     invalidateCalc();
     emit controlPointsChanged();
@@ -159,6 +152,37 @@ int PolyBezier::getSegmentIndex(qreal& t){
         t = t - i;
         return i;
     }
+}
+
+qreal PolyBezier::getTByArcLengthRatio(qreal r){
+    if(r > 1)
+        return 1;
+    else if(r < 0)
+        return 0;
+
+    //Calculate cumulative arc lengths of all segments
+    calculateCumulativeArcLengths();
+
+    if(cumulativeArcLengths.size() <= 1){
+        qCritical() << "PolyBezier::getTByArcLengthRatio(): No segments present, invalid result will be returned!";
+        return 0;
+    }
+
+    //TODO: CACHE BEGININDEX AND CHECK BEFORE BINARY SEARCH
+
+    //Binary search over cumulative arc lengths of segments
+    qreal rReal = r*cumulativeArcLengths.last();
+    int beginIndex = 0;
+    int endIndex = cumulativeArcLengths.size() - 1;
+    while(beginIndex + 1 < endIndex){
+        int midIndex = (beginIndex + endIndex)/2;
+        if(cumulativeArcLengths[midIndex] < rReal)
+            beginIndex = midIndex;
+        else
+            endIndex = midIndex;
+    }
+
+    return segments[beginIndex].getTByArcLengthRatio((rReal - cumulativeArcLengths[beginIndex])/segments[beginIndex].getArcLength());
 }
 
 qreal PolyBezier::getClosest(const QVector2D& m, QVector2D& closestPoint, qreal& closestDist){
@@ -247,8 +271,25 @@ bool PolyBezier::isInBoundingBox(QVector2D const& point){
     return minX <= point.x() && point.x() <= maxX && minY <= point.y() && point.y() <= maxY;
 }
 
+void PolyBezier::calculateCumulativeArcLengths(){
+    if(cumulativeArcLengthsCalculated)
+        return;
+
+    cumulativeArcLengths.clear();
+
+    qreal cumulativeArcLength = 0;
+    cumulativeArcLengths.push_back(0);
+    for(CubicBezier& segment : segments){
+        cumulativeArcLength += segment.getArcLength();
+        cumulativeArcLengths.push_back(cumulativeArcLength);
+    }
+
+    cumulativeArcLengthsCalculated = true;
+}
+
 void PolyBezier::invalidateCalc(){
     boundingBoxCalculated = false;
+    cumulativeArcLengthsCalculated = false;
 }
 
 }

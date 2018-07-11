@@ -90,7 +90,6 @@ qreal CubicBezier::getTByArcLengthRatio(qreal r){
         return (realIndex - prevIndex)*tLUT[prevIndex] + (nextIndex - realIndex)*tLUT[nextIndex];
 }
 
-
 qreal CubicBezier::getArcLengthRatioByT(qreal t){
     if(t > 1)
         return 1;

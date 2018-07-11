@@ -128,6 +128,16 @@ public slots:
     void removeFirstSegment();
 
     /**
+     * @brief Gets the parameter t corresponding to the desired arc length ratio
+     *
+     * Takes O(logN) time where N is the number of segments, assuming that all LUTs are precalculated.
+     *
+     * @param  r Arc length ratio in [0,1] where 0 corresponds to the beginning, 0.5 corresponds to exactly halfway through the length of the curve, 1 corresponds to the end of the curve etc.
+     * @return   Parameter t between [0,numSegments] corresponding to r
+     */
+    qreal getTByArcLengthRatio(qreal r);
+
+    /**
      * @brief Gets the point on the curve corresponding to the given parameter
      *
      * @param t Given parameter t in [0,numSegments]
@@ -177,6 +187,11 @@ private:
     void calculateBoundingBox();
 
     /**
+     * @brief Updates the bounding rectangle from the new list of vertices
+     */
+    void calculateCumulativeArcLengths();
+
+    /**
      * @brief Forces heavy calculations to be redone at a later time
      */
     void invalidateCalc();
@@ -200,11 +215,15 @@ private:
     qreal getClosest(QVector2D const& m, QVector2D& closestPoint, qreal& closestDist);
 
     QList<CubicBezier> segments;                    ///< Consecutive Bézier curve segments
+
     bool boundingBoxCalculated = false;             ///< Whether the bounding box is calculated and ready
     qreal minX = std::numeric_limits<qreal>::max(); ///< Minimal x bound for the curve
     qreal maxX = std::numeric_limits<qreal>::min(); ///< Maximum x bound for the curve
     qreal minY = std::numeric_limits<qreal>::max(); ///< Minimum y bound for the curve
     qreal maxY = std::numeric_limits<qreal>::min(); ///< Maximum y bound for the curve
+
+    bool cumulativeArcLengthsCalculated = false;    ///< Whether the cumulative arc lengths list is calculated and ready
+    QList<qreal> cumulativeArcLengths;              ///< Cumulative arc lengths, i.e index i contains the total arc length until the end of the i^th segment
 
 };
 
