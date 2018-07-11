@@ -76,7 +76,7 @@ public:
     /**
      * @brief Sets the curve's control points
      *
-     * @param newControlPoints List of curve's control points, must contain 3*numSegments + 1 points where points at indices [3k, 3k+1, 3k+2, 3k+3] correspond to a Bézier curve
+     * @param newControlPoints List of curve's control points, must contain 3*numSegments + 1 QVector2Ds where points at indices [3k, 3k+1, 3k+2, 3k+3] correspond to a Bézier curve
      */
     void setControlPoints(QVariantList const& newControlPoints);
 
@@ -94,6 +94,38 @@ signals:
     /** @endcond */
 
 public slots:
+
+    /**
+     * @brief Discards all existing segments, obtaining an empty curve.
+     */
+    void clear();
+
+    /**
+     * @brief Starts the curve with a linear segment, autogenerating the in-between 2 control points
+     *
+     * Discards previously existing segments if any.
+     *
+     * @param firstPoint  Start of the segment
+     * @param secondPoint End of the segment
+     * @param smoothness  Smoothness parameter (not for this segment but for upcoming segments), in ]0,1] where 0 signifies quickest possible arrival to the target (don't actually use 0 but use a value close to 0) and 1 signifies smoothest possible continuation of the segment
+     */
+    void start(QVector2D const& firstPoint, QVector2D const& secondPoint, qreal smoothness = 0.2);
+
+    /**
+     * @brief Appends a new segment that ends with the given point to the curve, autogenerating the in-between 2 control points
+     *
+     * If there is no existing segment, does nothing.
+     *
+     * @param targetPoint     Target point
+     * @param entrySmoothness Smoothness parameter of the new segment's beginning, in ]0,1] where 0 signifies quickest possible turn to the target (don't actually use 0 but use a value close to 0) and 1 signifies equal smoothness to the previous segment
+     * @param exitSmoothness  Smoothness parameter of the new segment's end, in ]0,1] where 0 signifies quickest possible arrival to the target (don't actually use 0 but use a value close to 0) and 1 signifies smoothest possible continuation of the segment
+     */
+    void appendPoint(QVector2D const& targetPoint, qreal entrySmoothness = 0.2, qreal exitSmoothness = 0.2);
+
+    /**
+     * @brief Removes the first segment in the curve
+     */
+    void removeFirstSegment();
 
     /**
      * @brief Gets the point on the curve corresponding to the given parameter

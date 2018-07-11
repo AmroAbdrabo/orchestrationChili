@@ -36,7 +36,7 @@ PolyBezier::PolyBezier(QQuickItem* parent) : QQuickItem(parent) { }
 QVariantList PolyBezier::getControlPoints() const {
     QVariantList points;
     if(segments.size() > 0){
-    points.push_back(QVariant(segments[0].getControlPoint(0)));
+        points.push_back(QVariant(segments[0].getControlPoint(0)));
         for(auto& segment : segments){
             points.push_back(QVariant(segment.getControlPoint(1)));
             points.push_back(QVariant(segment.getControlPoint(2)));
@@ -68,6 +68,78 @@ void PolyBezier::setControlPoints(QVariantList const& newControlPoints){
                 newControlPoints[i + 3].value<QVector2D>(),
                 false)
             );
+
+    invalidateCalc();
+    emit controlPointsChanged();
+}
+
+void PolyBezier::removeFirstSegment(){
+    if(segments.size() > 0){
+        segments.removeFirst();
+        invalidateCalc();
+        emit controlPointsChanged();
+    }
+    else
+        qWarning() << "PolyBezier::removeFirstSegment(): Curve empty, doing nothing.";
+}
+
+void PolyBezier::clear(){
+    if(!segments.isEmpty()){
+        segments.clear();
+        invalidateCalc();
+        emit controlPointsChanged();
+    }
+}
+
+void PolyBezier::start(QVector2D const& firstPoint, QVector2D const& secondPoint, qreal smoothness){
+    if(!segments.isEmpty()){
+        qWarning() << "PolyBezier::start(): Called on a nonempty curve, clearing.";
+        segments.clear();
+    }
+
+    segments.push_back(
+        CubicBezier(
+            firstPoint,
+            (1 - smoothness)*firstPoint     + smoothness*secondPoint,
+            (1 - smoothness)*secondPoint    + smoothness*firstPoint,
+            secondPoint,
+            false)
+        );
+
+    invalidateCalc();
+    emit controlPointsChanged();
+}
+
+void PolyBezier::appendPoint(QVector2D const& targetPoint, qreal entrySmoothness, qreal exitSmoothness){
+    if(segments.isEmpty()){
+        qWarning() << "PolyBezier::appendPoint(): Called on an empty curve, doing nothing.";
+        return;
+    }
+
+    QVector2D lastPoint = segments.last().getControlPoint(3);
+
+    //Maximum entry smoothness (C1 continuous) implies equal derivative in previous segment's exit and this segment's
+    //entry i.e vector connecting last two control points of the previous segment must be equal to the one connecting
+    //the first two control points of this segment. Lower smoothness ensures the same derivative direction (G1
+    //continuous) but takes lower magnitude to get the new segment closer to a line:
+    QVector2D controlPoint1 = lastPoint + entrySmoothness*(lastPoint - segments.last().getControlPoint(2));
+
+    //We take the second control point on the line segment connecting the first control point to the target point,
+    //thus ensuring shortest segment length (by not being outside the triangle made by the starting point, first control
+    //point and target point) while having no inflection point (by not being inside the aforementioned triangle),
+    //i.e no turning direction change while traveling on the curve. Maximum smoothness makes the second control point
+    //equal to the first, minimizing the sharpness. Lower smoothness ensures shorter curve length and quicker arrival
+    //to the target:
+    QVector2D controlPoint2 = exitSmoothness*controlPoint1 + (1 - exitSmoothness)*targetPoint;
+
+    segments.push_back(
+        CubicBezier(
+            lastPoint,
+            controlPoint1,
+            controlPoint2,
+            targetPoint,
+            false)
+        );
 
     invalidateCalc();
     emit controlPointsChanged();
