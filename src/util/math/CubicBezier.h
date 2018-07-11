@@ -89,12 +89,24 @@ public:
     qreal getArcLength();
 
     /**
-     * @brief Gets the parameter t corresponding to the desired arc length ratio
+     * @brief Gets the parameter (approximate) t corresponding to the desired arc length ratio
+     *
+     * Takes O(1) time after building LUT.
      *
      * @param  r Arc length ratio in [0,1] where 0 corresponds to the beginning, 0.5 corresponds to exactly halfway through the length of the curve etc.
      * @return   Parameter t corresponding to r
      */
     qreal getTByArcLengthRatio(qreal r);
+
+    /**
+     * @brief Gets the (approximate) arc length ratio corresponding to the parameter t
+     *
+     * Takes O(logN) time after building LUT where N is the LUT size.
+     *
+     * @param  t Parameter t
+     * @return   Arc length ratio in [0,1] where 0 corresponds to the beginning, 0.5 corresponds to exactly halfway through the length of the curve etc.
+     */
+    qreal getArcLengthRatioByT(qreal t);
 
     /**
      * @brief Gets the closest point on the curve to the given point
@@ -137,7 +149,7 @@ public:
      * @return The direction vector of the tangent line to the curve
      */
     QVector2D getDerivative(qreal t);
-    
+
     /**
      * @brief Calculates which side of the curve the given point is located
      *

@@ -90,6 +90,33 @@ qreal CubicBezier::getTByArcLengthRatio(qreal r){
         return (realIndex - prevIndex)*tLUT[prevIndex] + (nextIndex - realIndex)*tLUT[nextIndex];
 }
 
+
+qreal CubicBezier::getArcLengthRatioByT(qreal t){
+    if(t > 1)
+        return 1;
+    else if(t < 0)
+        return 0;
+
+    //Calculate equidistant t/point lookup table if not already calculated
+    calculateLUTs();
+
+    //Binary search over t LUT
+    int beginIndex = 0;
+    int endIndex = tLUT.size() - 1;
+    while(beginIndex + 1 < endIndex){
+        int midIndex = (beginIndex + endIndex)/2;
+        if(tLUT[midIndex] < t)
+            beginIndex = midIndex;
+        else
+            endIndex = midIndex;
+    }
+
+    if(beginIndex == endIndex)
+        return ((qreal)beginIndex)/((qreal)(tLUT.size() - 1));
+    else
+        return ((t - tLUT[beginIndex])*((qreal)beginIndex) + (tLUT[endIndex] - t)*((qreal)endIndex))/((qreal)(tLUT.size() - 1));
+}
+
 qreal CubicBezier::getClosest(const QVector2D& m, QVector2D& closestPoint, qreal& closestDist){
 
     //Calculate equidistant t/point lookup table if not already calculated
