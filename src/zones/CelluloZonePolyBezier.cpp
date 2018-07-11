@@ -87,6 +87,8 @@ void CelluloZonePolyBezier::paint(QPainter* painter, QColor color, qreal canvasW
     painter->setRenderHint(QPainter::Antialiasing);
 }
 
+//TODO: REPLACE IMPL. WITH PolyBezier
+
 bool CelluloZonePolyBezier::isMouseInside(QVector2D  mousePosition, qreal canvasWidth, qreal canvasHeight, qreal physicalWidth, qreal physicalHeight){
     float mouseX = mousePosition.x()/canvasWidth*physicalWidth;
     float mouseY = mousePosition.y()/canvasHeight*physicalHeight;
