@@ -54,6 +54,7 @@
 #include "zones/CelluloZoneTypes.h"
 #include "zones/CelluloZonePaintedItem.h"
 #include "util/math/CelluloMathUtil.h"
+#include "util/math/PolyBezier.h"
 #include "util/svg/CelluloSVGUtil.h"
 #include "util/lang/TranslationTool.h"
 #include "util/system/CelluloSystemUtil.h"
@@ -154,6 +155,7 @@ void CelluloPlugin::registerTypes(const char *uri){
                                                   Q_UNUSED(jsEngine)
                                                   return new CelluloMathUtil();
                                               });
+    qmlRegisterType<PolyBezier>(uri, 1, 0, "PolyBezier");
 
     qmlRegisterSingletonType<CelluloSVGUtil>(uri, 1, 0, "CelluloSVGUtil",
                                              [] (QQmlEngine* qmlEngine, QJSEngine* jsEngine)->QObject* {

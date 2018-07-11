@@ -31,22 +31,22 @@
 
 namespace Cellulo{
 
-PolyBezier::PolyBezier(){ }
+PolyBezier::PolyBezier(QQuickItem* parent) : QQuickItem(parent) { }
 
-QList<QVector2D> PolyBezier::getControlPoints() const {
-    QList<QVector2D> points;
+QVariantList PolyBezier::getControlPoints() const {
+    QVariantList points;
     if(segments.size() > 0){
-        points.push_back(segments[0].getControlPoint(0));
+    points.push_back(QVariant(segments[0].getControlPoint(0)));
         for(auto& segment : segments){
-            points.push_back(segment.getControlPoint(1));
-            points.push_back(segment.getControlPoint(2));
-            points.push_back(segment.getControlPoint(3));
+            points.push_back(QVariant(segment.getControlPoint(1)));
+            points.push_back(QVariant(segment.getControlPoint(2)));
+            points.push_back(QVariant(segment.getControlPoint(3)));
         }
     }
     return points;
 }
 
-void PolyBezier::setControlPoints(QList<QVector2D> const& newControlPoints){
+void PolyBezier::setControlPoints(QVariantList const& newControlPoints){
     int newSize = newControlPoints.size();
     if(newSize < 4){
         qWarning() << "PolyBezier::setControlPoints(): At least 4 points must be provided, not initializing.";
@@ -62,18 +62,15 @@ void PolyBezier::setControlPoints(QList<QVector2D> const& newControlPoints){
     for(int i=0; i+3<newSize; i+=3)
         segments.push_back(
             CubicBezier(
-                newControlPoints[i],
-                newControlPoints[i + 1],
-                newControlPoints[i + 2],
-                newControlPoints[i + 3],
+                newControlPoints[i].value<QVector2D>(),
+                newControlPoints[i + 1].value<QVector2D>(),
+                newControlPoints[i + 2].value<QVector2D>(),
+                newControlPoints[i + 3].value<QVector2D>(),
                 false)
             );
 
     invalidateCalc();
-}
-
-int PolyBezier::getNumSegments(){
-    return segments.size();
+    emit controlPointsChanged();
 }
 
 int PolyBezier::getSegmentIndex(qreal& t){

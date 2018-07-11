@@ -52,6 +52,7 @@ HEADERS += \
     src/zones/CelluloZonePaintedItem.h \
     src/util/math/CelluloMathUtil.h \
     src/util/math/CubicBezier.h \
+    src/util/math/PolyBezier.h \
     src/util/svg/CelluloSVGUtil.h \
     src/util/lang/TranslationTool.h \
     src/util/system/CelluloSystemUtil.h \
@@ -99,6 +100,7 @@ SOURCES += \
     src/zones/CelluloZonePaintedItem.cpp \
     src/util/math/CelluloMathUtil.cpp \
     src/util/math/CubicBezier.cpp \
+    src/util/math/PolyBezier.cpp \
     src/util/svg/CelluloSVGUtil.cpp \
     src/util/lang/TranslationTool.cpp \
     src/util/system/CelluloSystemUtil.cpp \

@@ -27,12 +27,17 @@
 
 #include "CubicBezier.h"
 
+#include <QQuickItem>
+#include <QVariantList>
 #include <QList>
 #include <QVector2D>
 
 namespace Cellulo{
 
-/** @cond DO_NOT_DOCUMENT */
+/**
+ * @addtogroup util
+ * @{
+ */
 
 /**
  * @brief A composite cubic Bézier curve, i.e sequential list cubic Bézier curves whose endpoints coincide
@@ -42,35 +47,53 @@ namespace Cellulo{
  *
  * It is composed of 3n+1 control points where the points at indices [3k, 3k+1, 3k+2, 3k+3] correspond to a Bézier curve.
  */
-class PolyBezier {
+class PolyBezier : public QQuickItem {
+    /* *INDENT-OFF* */
+    Q_OBJECT
+    /* *INDENT-ON* */
 
 public:
 
+    /** @brief List of consecutive control points, must contain `3N + 1` points; `N` is the number of segments */
+    Q_PROPERTY(QVariantList controlPoints WRITE setControlPoints READ getControlPoints NOTIFY controlPointsChanged)
+
+    /** @cond DO_NOT_DOCUMENT */
+
     /**
      * @brief Creates a new composite cubic Bézier curve
+     *
+     * @param parent The QML parent
      */
-    PolyBezier();
+    PolyBezier(QQuickItem* parent = nullptr);
 
     /**
      * @brief Gets the curve's control points
      *
      * @return List of curve's control points, contains 3*numSegments + 1 points where points at indices [3k, 3k+1, 3k+2, 3k+3] correspond to a Bézier curve
      */
-    QList<QVector2D> getControlPoints() const;
+    QVariantList getControlPoints() const;
 
     /**
      * @brief Sets the curve's control points
      *
      * @param newControlPoints List of curve's control points, must contain 3*numSegments + 1 points where points at indices [3k, 3k+1, 3k+2, 3k+3] correspond to a Bézier curve
      */
-    void setControlPoints(QList<QVector2D> const& newControlPoints);
+    void setControlPoints(QVariantList const& newControlPoints);
+
+    /** @endcond */
+
+signals:
+
+    /** @cond DO_NOT_DOCUMENT */
 
     /**
-     * @brief Gets the number of cubic Bézier curves making up this composite curve
-     *
-     * @return Number of cubic Bézier curves making up this composite curve
+     * @brief Emitted when the control points change
      */
-    int getNumSegments();
+    void controlPointsChanged();
+
+    /** @endcond */
+
+public slots:
 
     /**
      * @brief Gets the point on the curve corresponding to the given parameter
@@ -95,24 +118,6 @@ public:
      * @return Normal direction of the point on curve corresponding to t
      */
     QVector2D getNormal(qreal t);
-
-    /**
-     * @brief Gets the segment index from the given parameter t, pulls t to [0,1]
-     *
-     * @param t [in/out] Parameter t in [0,numSegments], changes to segment parameter that is in [0,1]
-     * @return Segment index
-     */
-    int getSegmentIndex(qreal& t);
-
-    /**
-     * @brief Gets the closest point on the curve to the given point
-     *
-     * @param m Given point
-     * @param closestPoint [out] Returns the closest point
-     * @param closestDist [out] Returns the closest distance
-     * @return Returns the parameter t corresponding to the closest point
-     */
-    qreal getClosest(const QVector2D& m, QVector2D& closestPoint, qreal& closestDist);
 
     /**
      * @brief Calculates whether the given point is in the area defined by the curve
@@ -144,6 +149,24 @@ private:
      */
     void invalidateCalc();
 
+    /**
+     * @brief Gets the segment index from the given parameter t, pulls t to [0,1]
+     *
+     * @param t [in/out] Parameter t in [0,numSegments], changes to segment parameter that is in [0,1]
+     * @return Segment index
+     */
+    int getSegmentIndex(qreal& t);
+
+    /**
+     * @brief Gets the closest point on the curve to the given point
+     *
+     * @param m Given point
+     * @param closestPoint [out] Returns the closest point
+     * @param closestDist [out] Returns the closest distance
+     * @return Returns the parameter t corresponding to the closest point
+     */
+    qreal getClosest(QVector2D const& m, QVector2D& closestPoint, qreal& closestDist);
+
     QList<CubicBezier> segments;                    ///< Consecutive Bézier curve segments
     bool boundingBoxCalculated = false;             ///< Whether the bounding box is calculated and ready
     qreal minX = std::numeric_limits<qreal>::max(); ///< Minimal x bound for the curve
@@ -153,7 +176,7 @@ private:
 
 };
 
-/** @endcond */
+/** @} */
 
 }
 
