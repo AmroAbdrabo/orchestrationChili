@@ -154,6 +154,11 @@ int PolyBezier::getSegmentIndex(qreal& t){
     }
 }
 
+qreal PolyBezier::getArcLength(){
+    calculateCumulativeArcLengths();
+    return cumulativeArcLengths.last();
+}
+
 qreal PolyBezier::getTByArcLengthRatio(qreal r){
     if(r > 1)
         return 1;
@@ -183,6 +188,16 @@ qreal PolyBezier::getTByArcLengthRatio(qreal r){
     }
 
     return segments[beginIndex].getTByArcLengthRatio((rReal - cumulativeArcLengths[beginIndex])/segments[beginIndex].getArcLength());
+}
+
+qreal PolyBezier::getArcLengthRatioByT(qreal t){
+
+    //Calculate cumulative arc lengths of all segments
+    calculateCumulativeArcLengths();
+
+    int segIndex = getSegmentIndex(t); //Pulls t into local [0,1]
+    CubicBezier& segment = segments[segIndex];
+    return cumulativeArcLengths[segIndex] + segment.getArcLength()*segment.getArcLengthRatioByT(t);
 }
 
 qreal PolyBezier::getClosest(const QVector2D& m, QVector2D& closestPoint, qreal& closestDist){

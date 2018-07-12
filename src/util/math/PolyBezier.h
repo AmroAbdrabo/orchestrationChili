@@ -128,6 +128,13 @@ public slots:
     void removeFirstSegment();
 
     /**
+     * @brief Gets the approximate length of this curve
+     *
+     * @return Approximate arc length of this curve
+     */
+    qreal getArcLength();
+
+    /**
      * @brief Gets the parameter t corresponding to the desired arc length ratio
      *
      * Takes O(logN) time where N is the number of segments, assuming that all LUTs are precalculated.
@@ -136,6 +143,16 @@ public slots:
      * @return   Parameter t between [0,numSegments] corresponding to r
      */
     qreal getTByArcLengthRatio(qreal r);
+
+    /**
+     * @brief Gets the arc length ratio r corresponding to the desired parameter t
+     *
+     * Takes O(logN) time after building the corrsponding segment's LUT where N is the LUT size.
+     *
+     * @param  t Parameter t between [0,numSegments]
+     * @return   Arc length ratio in [0,1] where 0 corresponds to the beginning, 0.5 corresponds to exactly halfway through the length of the curve, 1 corresponds to the end of the curve etc.
+     */
+    qreal getArcLengthRatioByT(qreal t);
 
     /**
      * @brief Gets the point on the curve corresponding to the given parameter
