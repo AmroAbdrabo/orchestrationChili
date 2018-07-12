@@ -30,6 +30,7 @@
 #include <QQuickItem>
 #include <QVariantList>
 #include <QList>
+#include <QVector>
 #include <QVector2D>
 
 namespace Cellulo{
@@ -231,7 +232,7 @@ private:
      */
     qreal getClosest(QVector2D const& m, QVector2D& closestPoint, qreal& closestDist);
 
-    QList<CubicBezier> segments;                    ///< Consecutive Bézier curve segments
+    QVector<CubicBezier> segments;                  ///< Consecutive Bézier curve segments
 
     bool boundingBoxCalculated = false;             ///< Whether the bounding box is calculated and ready
     qreal minX = std::numeric_limits<qreal>::max(); ///< Minimal x bound for the curve
@@ -240,7 +241,9 @@ private:
     qreal maxY = std::numeric_limits<qreal>::min(); ///< Maximum y bound for the curve
 
     bool cumulativeArcLengthsCalculated = false;    ///< Whether the cumulative arc lengths list is calculated and ready
-    QList<qreal> cumulativeArcLengths;              ///< Cumulative arc lengths, i.e index i contains the total arc length until the end of the i^th segment
+    QVector<qreal> cumulativeArcLengths;            ///< Cumulative arc lengths, i.e index i contains the total arc length until the end of the i^th segment
+
+    int lastLookupBeginIndex;
 
 };
 

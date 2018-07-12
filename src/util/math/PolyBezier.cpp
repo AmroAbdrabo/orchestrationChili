@@ -31,7 +31,9 @@
 
 namespace Cellulo{
 
-PolyBezier::PolyBezier(QQuickItem* parent) : QQuickItem(parent) { }
+PolyBezier::PolyBezier(QQuickItem* parent) : QQuickItem(parent) {
+    lastLookupBeginIndex = 0;
+}
 
 QVariantList PolyBezier::getControlPoints() const {
     QVariantList points;
@@ -176,17 +178,27 @@ qreal PolyBezier::getTByArcLengthRatio(qreal r){
     //TODO: CACHE BEGININDEX AND CHECK BEFORE BINARY SEARCH
 
     //Binary search over cumulative arc lengths of segments
+    //Cache last found index and check it, as well as one next to it before search
     qreal rReal = r*cumulativeArcLengths.last();
-    int beginIndex = 0;
-    int endIndex = cumulativeArcLengths.size() - 1;
-    while(beginIndex + 1 < endIndex){
-        int midIndex = (beginIndex + endIndex)/2;
-        if(cumulativeArcLengths[midIndex] < rReal)
-            beginIndex = midIndex;
-        else
-            endIndex = midIndex;
+    int beginIndex;
+    if(lastLookupBeginIndex < segments.size() &&
+        cumulativeArcLengths[lastLookupBeginIndex + 0] < rReal && rReal < cumulativeArcLengths[lastLookupBeginIndex + 1])
+            beginIndex = lastLookupBeginIndex;
+    else if(lastLookupBeginIndex + 1 < segments.size() &&
+        cumulativeArcLengths[lastLookupBeginIndex + 1] < rReal && rReal < cumulativeArcLengths[lastLookupBeginIndex + 2])
+            beginIndex = lastLookupBeginIndex + 1;
+    else{
+        beginIndex = 0;
+        int endIndex = cumulativeArcLengths.size() - 1;
+        while(beginIndex + 1 < endIndex){
+            int midIndex = (beginIndex + endIndex)/2;
+            if(cumulativeArcLengths[midIndex] < rReal)
+                beginIndex = midIndex;
+            else
+                endIndex = midIndex;
+        }
     }
-
+    lastLookupBeginIndex = beginIndex;
     return beginIndex + segments[beginIndex].getTByArcLengthRatio((rReal - cumulativeArcLengths[beginIndex])/segments[beginIndex].getArcLength());
 }
 
@@ -305,6 +317,7 @@ void PolyBezier::calculateCumulativeArcLengths(){
 void PolyBezier::invalidateCalc(){
     boundingBoxCalculated = false;
     cumulativeArcLengthsCalculated = false;
+    lastLookupBeginIndex = 0;
 }
 
 }
