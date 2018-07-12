@@ -187,7 +187,7 @@ qreal PolyBezier::getTByArcLengthRatio(qreal r){
             endIndex = midIndex;
     }
 
-    return segments[beginIndex].getTByArcLengthRatio((rReal - cumulativeArcLengths[beginIndex])/segments[beginIndex].getArcLength());
+    return beginIndex + segments[beginIndex].getTByArcLengthRatio((rReal - cumulativeArcLengths[beginIndex])/segments[beginIndex].getArcLength());
 }
 
 qreal PolyBezier::getArcLengthRatioByT(qreal t){

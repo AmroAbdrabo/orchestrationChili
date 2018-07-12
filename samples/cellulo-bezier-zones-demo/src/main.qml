@@ -215,6 +215,23 @@ ApplicationWindow {
                             radius: 2.5
                         }
                     }
+
+
+
+
+                    Rectangle{
+                        id: marker
+                        x: realCoords.x*parent.scaleCoeff - width/2
+                        y: realCoords.y*parent.scaleCoeff - height/2
+                        height: 10*parent.scaleCoeff
+                        width: 10*parent.scaleCoeff
+                        transformOrigin: Item.Center
+                        color: "#800000FF"
+                        radius: 5
+                        z: 1
+
+                        property vector2d realCoords: Qt.vector2d(0,0)
+                    }
                 }
         }
     }
@@ -245,11 +262,37 @@ ApplicationWindow {
 
         Button{
             text: "Follow the path"
+
+            PolyBezier{
+                id: curve
+            }
+
             onClicked: {
                 robotComm.setCasualBackdriveAssistEnabled(false);
-                robotComm.polyBezierSetFromZone(zoneEngine.zoneClosestT);
-                robotComm.setGoalPolyBezier(parseFloat(vel.text), parseFloat(w.text));
+
+                curve.controlPoints = zoneEngine.zoneClosestT.controlPoints;
+
+                tim.restart();
+
+
+
+                //robotComm.polyBezierSetFromZone(zoneEngine.zoneClosestT);
+                //robotComm.setGoalPolyBezier(parseFloat(vel.text), parseFloat(w.text));
             }
+        }
+
+        Timer{
+            id: tim
+            repeat: true
+            interval: 10
+            onTriggered: {
+                r += 0.001;
+                if(r > 1)
+                    r = 0;
+                marker.realCoords = curve.getPoint(curve.getTByArcLengthRatio(r));
+            }
+
+            property real r: 0
         }
 
         Button{
