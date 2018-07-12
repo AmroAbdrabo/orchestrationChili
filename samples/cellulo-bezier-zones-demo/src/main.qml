@@ -274,6 +274,8 @@ ApplicationWindow {
 
                 tim.restart();
 
+                var pt = curve.getPoint(curve.getTByArcLengthRatio(0));
+
 
 
                 //robotComm.polyBezierSetFromZone(zoneEngine.zoneClosestT);
@@ -286,13 +288,19 @@ ApplicationWindow {
             repeat: true
             interval: 10
             onTriggered: {
-                r += 0.001;
+                r += 0.003;
                 if(r > 1)
                     r = 0;
-                marker.realCoords = curve.getPoint(curve.getTByArcLengthRatio(r));
+                var pt = curve.getPoint(curve.getTByArcLengthRatio(r));
+                marker.realCoords = pt;
+
+                console.log(prevpos.minus(pt).length());
+
+                prevpos = pt;
             }
 
             property real r: 0
+            property vector2d prevpos: Qt.vector2d(0,0)
         }
 
         Button{

@@ -27,6 +27,7 @@
 
 #include <QVector2D>
 #include <QList>
+#include <QVector>
 
 namespace Cellulo{
 
@@ -247,12 +248,13 @@ private:
     bool isDegenerate = false;                                                ///< Whether this curve is an approximation of a line
     QVector2D p[4];                                                           ///< Control points
 
-    static constexpr qreal ARC_LENGTH_EPSILON = 10.0;                         ///< Maximum subdivision length in mm for adaptive geometry approximation
+    static constexpr qreal ARC_LENGTH_FIRST_PASS_EPSILON = 1.0;               ///< Maximum subdivision length in mm for adaptive geometry approximation
+    static constexpr qreal ARC_LENGTH_EPSILON = 10.0;                         ///< Desired subdivision length in mm for piecewise equidistant linear approximation
     static constexpr qreal CLOSEST_T_SEARCH_EPSILON = 0.01;                   ///< Closest point search interval limit, in mm
     qreal arcLength;                                                          ///< Approximate length of the curve
 
-    QList<qreal> tLUT;                                                        ///< List of t that are approximately equidistant to eachother on the curve
-    QList<QVector2D> pointLUT;                                                ///< List of points that correspond to equidistantTLut
+    QVector<qreal> tLUT;                                                      ///< List of t that are approximately equidistant to eachother on the curve
+    QVector<QVector2D> pointLUT;                                              ///< List of points that correspond to equidistantTLut
 
     qreal minX = std::numeric_limits<qreal>::max();                           ///< Minimal x bound for the curve
     qreal maxX = std::numeric_limits<qreal>::min();                           ///< Maximum x bound for the curve

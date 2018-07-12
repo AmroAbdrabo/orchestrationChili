@@ -87,7 +87,7 @@ qreal CubicBezier::getTByArcLengthRatio(qreal r){
     if(prevIndex == nextIndex)
         return tLUT[prevIndex];
     else
-        return (realIndex - prevIndex)*tLUT[prevIndex] + (nextIndex - realIndex)*tLUT[nextIndex];
+        return (realIndex - prevIndex)*tLUT[nextIndex] + (nextIndex - realIndex)*tLUT[prevIndex];
 }
 
 qreal CubicBezier::getArcLengthRatioByT(qreal t){
@@ -251,31 +251,68 @@ void CubicBezier::calculateLUTs(){
         return;
 
     arcLength = 0;
-    tLUT.clear();
-    pointLUT.clear();
 
-    //Adaptively calculate arc length and number of discretization steps
+    //First pass, build temporary LUT of segments whose lengths are max. ARC_LENGTH_FIRST_PASS_EPSILON
+    QList<qreal> tLUTFirstPass;
+    QList<qreal> segLengthsFirstPass;
     QStack<QPair<qreal,qreal>> segStack;
     segStack.push(QPair<qreal,qreal>(0.0,1.0));
     while(!segStack.isEmpty()){
-        QPair<qreal,qreal> currentSeg = segStack.pop();
+        auto currentSeg = segStack.pop();
         qreal begT = currentSeg.first;
-        QVector2D begPoint = getPoint(begT);
         qreal endT = currentSeg.second;
         qreal midT = 0.5*(begT + endT);
-        qreal segLength = begPoint.distanceToPoint(getPoint(endT));
-        if(segLength < ARC_LENGTH_EPSILON){
+        qreal segLength = getPoint(begT).distanceToPoint(getPoint(endT));
+        if(segLength < ARC_LENGTH_FIRST_PASS_EPSILON){
             arcLength += segLength;
-            tLUT.push_back(begT);
-            pointLUT.push_back(begPoint);
+            segLengthsFirstPass.push_back(segLength);
+            tLUTFirstPass.push_back(endT);
         }
         else{
             segStack.push(QPair<qreal,qreal>(midT, endT));
             segStack.push(QPair<qreal,qreal>(begT, midT));
         }
     }
-    tLUT.push_back(1.0);
-    pointLUT.push_back(getPoint(1.0));
+
+    //Second pass, build final LUT of segments whose lengths are approximately equal and around ARC_LENGTH_EPSILON
+    tLUT.clear();
+
+    qreal currentT = 0.0;
+    qreal currentL = 0.0;
+    tLUT.push_back(currentT);
+
+    auto t = tLUTFirstPass.begin();
+    auto l = segLengthsFirstPass.begin();
+    for(; t != tLUTFirstPass.end(); t++, l++){
+        currentT = *t;
+        currentL += *l;
+
+        //Decide to add segment
+        if(currentL >= ARC_LENGTH_EPSILON){
+            tLUT.push_back(currentT);
+            currentL = 0;
+        }
+    }
+
+    //Final pass, "stretch" all t's so that the final t ends up at 1.0, also calculate final point LUT
+    qreal extraT = (1.0 - tLUT.last())/(tLUT.size() - 1);
+    qDebug() << extraT << "***********************";
+    auto tFinal = tLUT.begin();
+    qreal inc = 0;
+    for(; tFinal != tLUT.end(); tFinal++){
+        *tFinal += inc;
+        inc += extraT;
+        pointLUT.push_back(getPoint(*tFinal));
+    }
+
+
+
+    qDebug() << tLUT[0];
+    for(int i=1;i<tLUT.size();i++)
+        qDebug() << tLUT[i] << " " << (pointLUT[i] - pointLUT[i-1]).length();
+
+
+
 
     LUTsCalculated = true;
 }
