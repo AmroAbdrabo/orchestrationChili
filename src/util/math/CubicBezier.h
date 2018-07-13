@@ -248,7 +248,7 @@ private:
     bool isDegenerate = false;                                                ///< Whether this curve is an approximation of a line
     QVector2D p[4];                                                           ///< Control points
 
-    static constexpr qreal ARC_LENGTH_FIRST_PASS_EPSILON = 1.0;               ///< Maximum subdivision length in mm for adaptive geometry approximation
+    static constexpr qreal ARC_LENGTH_FIRST_PASS_EPSILON = 0.5;               ///< Maximum subdivision length in mm for adaptive geometry approximation
     static constexpr qreal ARC_LENGTH_EPSILON = 10.0;                         ///< Desired subdivision length in mm for piecewise equidistant linear approximation
     static constexpr qreal CLOSEST_T_SEARCH_EPSILON = 0.01;                   ///< Closest point search interval limit, in mm
     qreal arcLength;                                                          ///< Approximate length of the curve

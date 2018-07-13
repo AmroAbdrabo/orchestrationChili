@@ -28,6 +28,10 @@
 
 #include <QPointF>
 #include <QDebug>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonValue>
+#include <QJsonObject>
 
 namespace Cellulo{
 
@@ -73,6 +77,22 @@ void PolyBezier::setControlPoints(QVariantList const& newControlPoints){
 
     invalidateCalc();
     emit controlPointsChanged();
+}
+
+void PolyBezier::loadFromFile(QString const& path){
+    QFile loadFile(path);
+    if(!loadFile.open(QIODevice::ReadOnly)){
+        qWarning("PolyBezier::loadZones(): Couldn't open file.");
+        return;
+    }
+
+    QJsonArray controlPointsJson = QJsonDocument::fromJson(loadFile.readAll()).array();
+    QVariantList newControlPoints;
+    for(const QJsonValue& controlPointJson : controlPointsJson){
+        const QJsonObject& controlPointObj = controlPointJson.toObject();
+        newControlPoints.append(QVariant(QVector2D(controlPointObj["x"].toDouble(), controlPointObj["y"].toDouble())));
+    }
+    setControlPoints(newControlPoints);
 }
 
 void PolyBezier::removeFirstSegment(){

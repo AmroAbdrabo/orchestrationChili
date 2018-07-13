@@ -97,6 +97,15 @@ signals:
 public slots:
 
     /**
+     * @brief Loads the curve control points from a JSON file
+     *
+     * The file must contain an array of 3N + 1 control points in the form of { "x": mmCoord, "y": mmCoord }
+     *
+     * @param path File path
+     */
+    void loadFromFile(QString const& path);
+
+    /**
      * @brief Discards all existing segments, obtaining an empty curve.
      */
     void clear();

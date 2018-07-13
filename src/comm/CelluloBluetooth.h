@@ -532,14 +532,14 @@ public slots:
     void setVisualEffect(Cellulo::CelluloBluetoothEnums::VisualEffect effect, QColor color, int value);
 
     /**
-     * @brief Sends the first control point of the composite Bézier curve for motion tracking
+     * @brief [THIS METHOD IS BUGGY, USE AT YOUR OWN RISK] Sends the first control point of the composite Bézier curve for motion tracking
      *
      * @param point0 The initial point, i.e the first control point of the first segment
      */
     void polyBezierInit(const QVector2D& point0);
 
     /**
-     * @brief Adds a segment to the composite Bézier curve for motion tracking; polyBezierInit() must be called before
+     * @brief [THIS METHOD IS BUGGY, USE AT YOUR OWN RISK] Adds a segment to the composite Bézier curve for motion tracking; polyBezierInit() must be called before
      *
      * The first control point is the last control point of the previously added segment or the initial point.
      *
@@ -550,14 +550,14 @@ public slots:
     void polyBezierAppend(const QVector2D& point1, const QVector2D& point2, const QVector2D& point3);
 
     /**
-     * @brief Sends the composite Bézier curve in the zone to the robot
+     * @brief [THIS METHOD IS BUGGY, USE AT YOUR OWN RISK] Sends the composite Bézier curve in the zone to the robot
      *
      * @param zone The zone that contains the composite Bézier curve path
      */
     void polyBezierSetFromZone(Cellulo::CelluloZone* zone);
 
     /**
-     * @brief Starts tracking the previously set composite Bézier curve
+     * @brief [THIS METHOD IS BUGGY, USE AT YOUR OWN RISK] Starts tracking the previously set composite Bézier curve
      *
      * @param v Linear velocity tangent to the curve
      * @param w Angular velocity throughout the traversal
@@ -565,7 +565,7 @@ public slots:
     void setGoalPolyBezier(float v, float w);
 
     /**
-     * @brief Starts tracking the previously set composite Bézier curve while keeping orientation aligned to the curve
+     * @brief [THIS METHOD IS BUGGY, USE AT YOUR OWN RISK] Starts tracking the previously set composite Bézier curve while keeping orientation aligned to the curve
      *
      * @param v Linear velocity tangent to the curve
      * @param theta Orientation to track with respect to the curve tangent orientation, in degrees
