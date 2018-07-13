@@ -335,4 +335,6 @@ private:
 
 }
 
+Q_DECLARE_METATYPE(Cellulo::CelluloRobot*)
+
 #endif // CELLULOROBOT_H

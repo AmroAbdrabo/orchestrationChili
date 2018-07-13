@@ -182,10 +182,10 @@ qreal PolyBezier::getArcLength(){
 }
 
 qreal PolyBezier::getTByArcLengthRatio(qreal r){
-    if(r > 1)
-        return 1;
-    else if(r < 0)
-        return 0;
+    if(r >= 1.0)
+        return segments.size();
+    else if(r <= 0.0)
+        return 0.0;
 
     //Calculate cumulative arc lengths of all segments
     calculateCumulativeArcLengths();

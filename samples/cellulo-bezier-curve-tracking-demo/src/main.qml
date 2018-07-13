@@ -16,63 +16,32 @@ ApplicationWindow {
     CelluloRobot{
         id: robotComm
 
-        poseVelControlPeriod: 100 //ms
-        property real targetVel: 50 //mm/s
-        property real rInc: 0
+        PolyBezierTracker{
+            id: tracker
+            robot: robotComm
+            curve: pbcurve
 
-        property real currentR: 0
+            PolyBezier{
+                id: pbcurve
+                Component.onCompleted: loadFromFile(":/assets/curve.json")
+            }
 
-        property vector2d goalPos: Qt.vector2d(0,0)
-        property vector2d goalVel: Qt.vector2d(0,0)
+            onEnabledChanged: console.log(enabled)
+        }
 
         //poseVelControlKGoalPoseErr: Qt.vector3d(5,5,0.0)
         //poseVelControlKGoalVel: Qt.vector3d(0,0,0.0)
-        poseVelControlKGoalVelErr: Qt.vector3d(0,0,0)
-
-        onNextGoalPoseVelRequested: {
-            if(poseVelControlEnabled){
-                var goalT = curve.getTByArcLengthRatio(currentR);
-                goalPos = curve.getPoint(goalT);
-                goalVel = curve.getTangent(goalT).normalized().times(targetVel);
-
-                currentR += rInc;
-                if(currentR > 1.0){
-                    //setGoalVelocity(0,0,0);
-                    currentR = 0.0;
-                    //poseVelControlEnabled = false;
-                }
-                //else{
-                    setGoalPoseAndVelocity(goalPos.x, goalPos.y, 0, goalVel.x, goalVel.y, 0, true, true, false);
-
-                //}
-            }
-            else
-                setGoalVelocity(0,0,0);
-        }
-
-        function startTracking(){
-            currentR = 0;
-            robotComm.poseVelControlEnabled = true;
-        }
-    }
-
-    PolyBezier{
-        id: curve
-
-        Component.onCompleted: loadFromFile(":/assets/curve.json")
-
-        onControlPointsChanged: robotComm.rInc = (robotComm.targetVel*robotComm.poseVelControlPeriod/1000)/getArcLength()
+        //poseVelControlKGoalVelErr: Qt.vector3d(0,0,0)
     }
 
     //Visible items
-
     GroupBox {
         id: addressBox
         title: "Robots"
 
         Column{
             property var addresses: [
-                "00:06:66:D2:CF:7B"
+                "00:06:66:74:40:FE"
             ]
 
             MacAddrSelector{
@@ -115,14 +84,14 @@ ApplicationWindow {
                 MouseArea{
                     anchors.fill: parent
                     onClicked: {
-                        curve.appendPoint(Qt.vector2d(mouse.x/page.scaleCoeff, mouse.y/page.scaleCoeff), 0.5, 0.5)
+                        pbcurve.appendPoint(Qt.vector2d(mouse.x/page.scaleCoeff, mouse.y/page.scaleCoeff), 0.5, 0.5)
                     }
                 }
 
-                BezierCurveVisual{
+                PolyBezierVisual{
                     anchors.fill: parent
                     scaleCoeff: page.scaleCoeff
-                    controlPoints: curve.controlPoints
+                    controlPoints: pbcurve.controlPoints
                 }
 
                 Image{
@@ -145,6 +114,7 @@ ApplicationWindow {
                     }
                 }
 
+                /*
                 Rectangle{
                     x: robotComm.goalPos.x*parent.scaleCoeff - width/2
                     y: robotComm.goalPos.y*parent.scaleCoeff - height/2
@@ -154,8 +124,9 @@ ApplicationWindow {
                     color: "#800000FF"
                     radius: 5*parent.scaleCoeff
                     z: 1
-                }
+                }*/
 
+                /*
                 Rectangle{
                     x: robotComm.goalPos.x*parent.scaleCoeff
                     y: robotComm.goalPos.y*parent.scaleCoeff
@@ -165,7 +136,7 @@ ApplicationWindow {
                     rotation: Math.atan2(robotComm.goalVel.y, robotComm.goalVel.x)/Math.PI*180
                     color: "#80FF0000"
                     z: 1
-                }
+                }*/
             }
         }
     }
@@ -200,7 +171,6 @@ ApplicationWindow {
 
 
             onClicked: {
-                robotComm.setCasualBackdriveAssistEnabled(false);
 
 
                 //var pt = curve.getPoint(curve.getTByArcLengthRatio(0));
@@ -210,30 +180,8 @@ ApplicationWindow {
                 //robotComm.polyBezierSetFromZone(zoneEngine.zoneClosestT);
                 //robotComm.setGoalPolyBezier(parseFloat(vel.text), parseFloat(w.text));
 
-                robotComm.startTracking();
+                tracker.trackConstLinearVel(50);
             }
-        }
-
-        Timer{
-            id: tim
-            repeat: true
-            interval: 10
-            onTriggered: {
-                r += 0.001;
-                if(r > 1)
-                    r = 0;
-                var pt = curve.getPoint(curve.getTByArcLengthRatio(r));
-                marker.realCoords = pt;
-
-                console.log(prevpos.minus(pt).length());
-
-                //console.log(curve.getTByArcLengthRatio(r) + " " + r);
-
-                prevpos = pt;
-            }
-
-            property real r: 0
-            property vector2d prevpos: Qt.vector2d(0,0)
         }
 
         Button{

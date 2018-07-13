@@ -26,6 +26,7 @@
 #define POLYBEZIERTRACKER_H
 
 #include "../util/math/PolyBezier.h"
+#include "CelluloRobot.h"
 
 #include <QQuickItem>
 #include <QVariantList>
@@ -33,7 +34,7 @@
 #include <QVector>
 #include <QVector2D>
 
-namespace Cellulo{
+namespace Cellulo {
 
 /**
  * @addtogroup robot
@@ -41,17 +42,20 @@ namespace Cellulo{
  */
 
 /**
- * @brief Makes a CelluloRobot track a PolyBezier curve, parent must be a CelluloRobot
+ * @brief Makes a CelluloRobot track a PolyBezier curve
  */
 class PolyBezierTracker : public QQuickItem {
     /* *INDENT-OFF* */
     Q_OBJECT
-    /* *INDENT-ON* */
+        /* *INDENT-ON* */
 
 public:
 
     /** @brief PolyBezier curve to track */
     Q_PROPERTY(Cellulo::PolyBezier* curve WRITE setCurve READ getCurve NOTIFY curveChanged)
+
+    /** @brief Robot that will track the curve */
+    Q_PROPERTY(Cellulo::CelluloRobot* robot WRITE setRobot READ getRobot NOTIFY robotChanged)
 
     /** @cond DO_NOT_DOCUMENT */
 
@@ -68,18 +72,32 @@ public:
     ~PolyBezierTracker();
 
     /**
-     * @brief Gets the curve's control points
+     * @brief Gets the curve to track
      *
-     * @return List of curve's control points, contains 3*numSegments + 1 points where points at indices [3k, 3k+1, 3k+2, 3k+3] correspond to a Bézier curve
+     * @return The current curve to track
      */
     Cellulo::PolyBezier* getCurve() const { return curve; }
 
     /**
-     * @brief Sets the curve's control points
+     * @brief Sets the curve to track
      *
-     * @param newControlPoints List of curve's control points, must contain 3*numSegments + 1 QVector2Ds where points at indices [3k, 3k+1, 3k+2, 3k+3] correspond to a Bézier curve
+     * @param newCurve The new curve to track
      */
     void setCurve(Cellulo::PolyBezier* newCurve);
+
+    /**
+     * @brief Gets the robot that will track
+     *
+     * @return The current robot that will track
+     */
+    Cellulo::CelluloRobot* getRobot() const { return robot; }
+
+    /**
+     * @brief Sets the robot that will track
+     *
+     * @param newCurve The new robot that will track
+     */
+    void setRobot(Cellulo::CelluloRobot* newRobot);
 
     /** @endcond */
 
@@ -88,21 +106,53 @@ signals:
     /** @cond DO_NOT_DOCUMENT */
 
     /**
-     * @brief Emitted when the control points change
+     * @brief Emitted when the curve changes
      */
     void curveChanged();
+
+    /**
+     * @brief Emitted when the robot that tracks changes
+     */
+    void robotChanged();
 
     /** @endcond */
 
 public slots:
 
+    /**
+     * @brief Tracks the curve with constant velocity
+     *
+     * @param vel       Linear velocity magnitude
+     * @param goToStart Whether to go to the start of the curve to begin; if false, tracking will start from the closest point of the robot to the curve
+     */
+    void trackConstLinearVel(qreal vel, bool goToStart = true);
 
+private slots:
+
+    /**
+     * @brief Refreshes the tracking when the curve control points change
+     */
+    void updateCurve();
+
+    /**
+     * @brief Sends control velocities to the robot depending on the current state of tracking
+     *
+     * @param deltaTime The milliseconds elapsed since last iteration of the loop
+     */
+    void robotControlLoop(qreal deltaTime);
 
 private:
 
+    bool goingToStart = false;                 ///< Whether going to the start of the curve
+    constexpr static qreal GOAL_EPSILON = 5.0; ///< This close to goal is considered reached
 
+    qreal trackingVel;                         ///< Linear tracking velocity
 
-    PolyBezier* curve; ///< Curve to be tracked
+    qreal currentT = 0.0;                      ///< Last parameter t of the curve that is being tracked
+    qreal currentR = 0.0;                      ///< Last arc length ratio r of the curve that is being tracked
+
+    PolyBezier* curve;                         ///< Curve to be tracked
+    CelluloRobot* robot;                       ///< Robot to track the curve
 
 };
 
