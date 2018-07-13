@@ -17,7 +17,7 @@ ApplicationWindow {
         id: robotComm
 
         poseVelControlPeriod: 100 //ms
-        property real targetVel: 185 //mm/s
+        property real targetVel: 50 //mm/s
         property real rInc: 0
 
         property real currentR: 0
@@ -25,8 +25,8 @@ ApplicationWindow {
         property vector2d goalPos: Qt.vector2d(0,0)
         property vector2d goalVel: Qt.vector2d(0,0)
 
-        poseVelControlKGoalPoseErr: Qt.vector3d(5,5,0.0)
-        poseVelControlKGoalVel: Qt.vector3d(0,0,0.0)
+        //poseVelControlKGoalPoseErr: Qt.vector3d(5,5,0.0)
+        //poseVelControlKGoalVel: Qt.vector3d(0,0,0.0)
         poseVelControlKGoalVelErr: Qt.vector3d(0,0,0)
 
         onNextGoalPoseVelRequested: {
@@ -59,12 +59,7 @@ ApplicationWindow {
     PolyBezier{
         id: curve
 
-        Component.onCompleted: {
-            loadFromFile(":/assets/curve.json");
-            curveVisual.start(controlPoints[0]);
-            for(var i=1;i<controlPoints.length;i+=3)
-                curveVisual.addCubic(controlPoints[i], controlPoints[i + 1], controlPoints[i + 2]);
-        }
+        Component.onCompleted: loadFromFile(":/assets/curve.json")
 
         onControlPointsChanged: robotComm.rInc = (robotComm.targetVel*robotComm.poseVelControlPeriod/1000)/getArcLength()
     }
@@ -77,7 +72,7 @@ ApplicationWindow {
 
         Column{
             property var addresses: [
-                "00:06:66:D2:CF:96"
+                "00:06:66:D2:CF:7B"
             ]
 
             MacAddrSelector{
@@ -117,41 +112,17 @@ ApplicationWindow {
                 border.width: 2
                 radius: 5
 
-                Shape{
+                MouseArea{
                     anchors.fill: parent
-
-                    ShapePath{
-                        id: curveVisual
-                        strokeWidth: 2
-                        strokeColor: "black"
-                        fillColor: "transparent"
-
-                        function start(startPoint){
-                            startX = Qt.binding(function(){ return startPoint.x*page.scaleCoeff; });
-                            startY = Qt.binding(function(){ return startPoint.y*page.scaleCoeff; });
-                        }
-
-                        function addCubic(cp1, cp2, end){
-                            var newCubic = Qt.createQmlObject('
-                                import QtQuick 2.0; \
-                                import QtQuick.Shapes 1.0; \
-                                \
-                                PathCubic{ \
-                                    control1X: ' + cp1.x + '*page.scaleCoeff; \
-                                    control1Y: ' + cp1.y + '*page.scaleCoeff; \
-                                    control2X: ' + cp2.x + '*page.scaleCoeff; \
-                                    control2Y: ' + cp2.y + '*page.scaleCoeff; \
-                                    x: ' + end.x + '*page.scaleCoeff; \
-                                    y: ' + end.y + '*page.scaleCoeff; \
-                                }',
-                                curveVisual);
-                            var pathElements_ = []; //var pathElements_ = pathElements; doesn't work, not a plain Javascript array
-                            for(var i=0;i<pathElements.length;i++)
-                                pathElements_.push(pathElements[i]);
-                            pathElements_.push(newCubic);
-                            pathElements = pathElements_;
-                        }
+                    onClicked: {
+                        curve.appendPoint(Qt.vector2d(mouse.x/page.scaleCoeff, mouse.y/page.scaleCoeff), 0.5, 0.5)
                     }
+                }
+
+                BezierCurveVisual{
+                    anchors.fill: parent
+                    scaleCoeff: page.scaleCoeff
+                    controlPoints: curve.controlPoints
                 }
 
                 Image{
