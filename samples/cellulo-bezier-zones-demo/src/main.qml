@@ -140,176 +140,87 @@ ApplicationWindow {
         title: "Playground"
         anchors.top: addressBox.bottom
 
-            Item{
-                width: page.width + page.physicalRobotWidth*page.scaleCoeff
-                height: page.height + page.physicalRobotWidth*page.scaleCoeff
+        Item{
+            width: page.width + page.physicalRobotWidth*page.scaleCoeff
+            height: page.height + page.physicalRobotWidth*page.scaleCoeff
+
+            Rectangle{
+                id: page
+
+                anchors.centerIn: parent
+
+                property real physicalWidth: 210        ///< Physical paper width in mm
+                property real physicalHeight: 297       ///< Physical paper height in mm
+                property real physicalRobotWidth: 75    ///< Physical robot width in mm
+
+                width: height*physicalWidth/physicalHeight
+                height: Screen.height/2
+
+                property real scaleCoeff: width/physicalWidth
+
+                color: "#EEEEEE"
+                border.color: "black"
+                border.width: 2
+                radius: 5
 
                 Rectangle{
-                    id: page
-
-                    anchors.centerIn: parent
-
-                    property real physicalWidth: 210        ///< Physical paper width in mm
-                    property real physicalHeight: 297       ///< Physical paper height in mm
-                    property real physicalRobotWidth: 75    ///< Physical robot width in mm
-
-                    width: height*physicalWidth/physicalHeight
-                    height: Screen.height/2
-
-                    property real scaleCoeff: width/physicalWidth
-
-                    color: "#EEEEEE"
-                    border.color: "black"
-                    border.width: 2
+                    x: zoneEngine.closestPoint.x*parent.scaleCoeff
+                    y: zoneEngine.closestPoint.y*parent.scaleCoeff
+                    height: 3*parent.scaleCoeff
+                    width: 30*parent.scaleCoeff
+                    transformOrigin: Item.TopLeft
+                    rotation: Math.atan2(zoneEngine.closestPointTangent.y, zoneEngine.closestPointTangent.x)/Math.PI*180
+                    color: "#800000FF"
                     radius: 5
+                    z: 1
+                }
+
+                Rectangle{
+                    x: zoneEngine.closestPoint.x*parent.scaleCoeff
+                    y: zoneEngine.closestPoint.y*parent.scaleCoeff
+                    height: 3*parent.scaleCoeff
+                    width: 30*parent.scaleCoeff
+                    transformOrigin: Item.TopLeft
+                    rotation: Math.atan2(zoneEngine.closestPointNormal.y, zoneEngine.closestPointNormal.x)/Math.PI*180
+                    color: "#80FF0000"
+                    z: 1
+                }
+
+                Rectangle{
+                    x: zoneEngine.closestPoint.x*parent.scaleCoeff - width/2
+                    y: zoneEngine.closestPoint.y*parent.scaleCoeff - height/2
+                    height: parent.scaleCoeff*zoneEngine.closestPointTangent.length
+                    rotation: Math.atan2(zoneEngine.closestPointTangent.y, zoneEngine.closestPointTangent.x)/Math.PI*180
+                    width: 3
+                    color: "#800000FF"
+                    z: 1
+                }
+
+                Image{
+                    source: robotComm.kidnapped ? "../assets/redHexagon.svg" : "../assets/greenHexagon.svg"
+                    rotation: robotComm.theta
+                    x: robotComm.x*parent.scaleCoeff - width/2
+                    y: robotComm.y*parent.scaleCoeff - height/2
+                    width: parent.physicalRobotWidth*parent.scaleCoeff
+                    fillMode: Image.PreserveAspectFit
 
                     Rectangle{
-                        x: zoneEngine.closestPoint.x*parent.scaleCoeff
-                        y: zoneEngine.closestPoint.y*parent.scaleCoeff
-                        height: 3*parent.scaleCoeff
-                        width: 30*parent.scaleCoeff
-                        transformOrigin: Item.TopLeft
-                        rotation: Math.atan2(zoneEngine.closestPointTangent.y, zoneEngine.closestPointTangent.x)/Math.PI*180
-                        color: "#800000FF"
-                        radius: 5
-                        z: 1
-                    }
-
-                    Rectangle{
-                        x: zoneEngine.closestPoint.x*parent.scaleCoeff
-                        y: zoneEngine.closestPoint.y*parent.scaleCoeff
-                        height: 3*parent.scaleCoeff
-                        width: 30*parent.scaleCoeff
-                        transformOrigin: Item.TopLeft
-                        rotation: Math.atan2(zoneEngine.closestPointNormal.y, zoneEngine.closestPointNormal.x)/Math.PI*180
-                        color: "#80FF0000"
-                        z: 1
-                    }
-
-                    Rectangle{
-                        x: zoneEngine.closestPoint.x*parent.scaleCoeff - width/2
-                        y: zoneEngine.closestPoint.y*parent.scaleCoeff - height/2
-                        height: parent.scaleCoeff*zoneEngine.closestPointTangent.length
-                        rotation: Math.atan2(zoneEngine.closestPointTangent.y, zoneEngine.closestPointTangent.x)/Math.PI*180
-                        width: 3
-                        color: "#800000FF"
-                        z: 1
-                    }
-
-                    Image{
-                        source: robotComm.kidnapped ? "../assets/redHexagon.svg" : "../assets/greenHexagon.svg"
-                        rotation: robotComm.theta
-                        x: robotComm.x*parent.scaleCoeff - width/2
-                        y: robotComm.y*parent.scaleCoeff - height/2
-                        width: parent.physicalRobotWidth*parent.scaleCoeff
-                        fillMode: Image.PreserveAspectFit
-
-                        Rectangle{
-                            x: parent.width/2 - width/2
-                            y: parent.height/2 - height/2
-                            height: 5
-                            width: 5
-                            color: "black"
-                            border.color: "black"
-                            border.width: 1
-                            radius: 2.5
-                        }
-                    }
-
-
-
-
-                    Rectangle{
-                        id: marker
-                        x: realCoords.x*parent.scaleCoeff - width/2
-                        y: realCoords.y*parent.scaleCoeff - height/2
-                        height: 10*parent.scaleCoeff
-                        width: 10*parent.scaleCoeff
-                        transformOrigin: Item.Center
-                        color: "#800000FF"
-                        radius: 5
-                        z: 1
-
-                        property vector2d realCoords: Qt.vector2d(0,0)
+                        x: parent.width/2 - width/2
+                        y: parent.height/2 - height/2
+                        height: 5
+                        width: 5
+                        color: "black"
+                        border.color: "black"
+                        border.width: 1
+                        radius: 2.5
                     }
                 }
+            }
         }
     }
 
     Text{
         id: distText
         anchors.top: playgroundBox.bottom
-    }
-
-    Row{
-        anchors.top: distText.bottom
-        spacing: 5
-
-        TextField{
-            id: vel
-            placeholderText: "Velocity (mm/s)"
-        }
-
-        TextField{
-            id: w
-            placeholderText: "w (rad/s)"
-        }
-
-        TextField{
-            id: theta
-            placeholderText: "Aligned theta (°)"
-        }
-
-        Button{
-            text: "Follow the path"
-
-            PolyBezier{
-                id: curve
-            }
-
-            onClicked: {
-                robotComm.setCasualBackdriveAssistEnabled(false);
-
-                curve.controlPoints = zoneEngine.zoneClosestT.controlPoints;
-
-                tim.restart();
-
-                var pt = curve.getPoint(curve.getTByArcLengthRatio(0));
-
-
-
-                //robotComm.polyBezierSetFromZone(zoneEngine.zoneClosestT);
-                //robotComm.setGoalPolyBezier(parseFloat(vel.text), parseFloat(w.text));
-            }
-        }
-
-        Timer{
-            id: tim
-            repeat: true
-            interval: 10
-            onTriggered: {
-                r += 0.003;
-                if(r > 1)
-                    r = 0;
-                var pt = curve.getPoint(curve.getTByArcLengthRatio(r));
-                marker.realCoords = pt;
-
-                console.log(prevpos.minus(pt).length());
-
-                prevpos = pt;
-            }
-
-            property real r: 0
-            property vector2d prevpos: Qt.vector2d(0,0)
-        }
-
-        Button{
-            text: "Follow the path (aligned)"
-            onClicked: {
-                robotComm.setCasualBackdriveAssistEnabled(false);
-                robotComm.polyBezierSetFromZone(zoneEngine.zoneClosestT);
-                robotComm.setGoalPolyBezierAligned(parseFloat(vel.text), parseFloat(theta.text), parseFloat(w.text));
-            }
-        }
     }
 }
