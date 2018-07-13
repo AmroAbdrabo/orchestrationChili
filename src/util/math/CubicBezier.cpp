@@ -276,11 +276,9 @@ void CubicBezier::calculateLUTs(){
 
     //Second pass, build final LUT of segments whose lengths are approximately equal and around ARC_LENGTH_EPSILON
     tLUT.clear();
-
     qreal currentT = 0.0;
     qreal currentL = 0.0;
     tLUT.push_back(currentT);
-
     auto t = tLUTFirstPass.begin();
     auto l = segLengthsFirstPass.begin();
     for(; t != tLUTFirstPass.end(); t++, l++){
@@ -294,9 +292,12 @@ void CubicBezier::calculateLUTs(){
         }
     }
 
+    //Check if segment is too short to benefit from first pass
+    if(tLUT.size() == 1)
+        tLUT.push_back(1.0);
+
     //Final pass, "stretch" all t's so that the final t ends up at 1.0, also calculate final point LUT
     qreal extraT = (1.0 - tLUT.last())/(tLUT.size() - 1);
-    qDebug() << extraT << "***********************";
     auto tFinal = tLUT.begin();
     qreal inc = 0;
     for(; tFinal != tLUT.end(); tFinal++){
@@ -304,15 +305,6 @@ void CubicBezier::calculateLUTs(){
         inc += extraT;
         pointLUT.push_back(getPoint(*tFinal));
     }
-
-
-
-    qDebug() << tLUT[0];
-    for(int i=1;i<tLUT.size();i++)
-        qDebug() << tLUT[i] << " " << (pointLUT[i] - pointLUT[i-1]).length();
-
-
-
 
     LUTsCalculated = true;
 }

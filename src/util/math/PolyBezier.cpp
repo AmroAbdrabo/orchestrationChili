@@ -175,8 +175,6 @@ qreal PolyBezier::getTByArcLengthRatio(qreal r){
         return 0;
     }
 
-    //TODO: CACHE BEGININDEX AND CHECK BEFORE BINARY SEARCH
-
     //Binary search over cumulative arc lengths of segments
     //Cache last found index and check it, as well as one next to it before search
     qreal rReal = r*cumulativeArcLengths.last();
