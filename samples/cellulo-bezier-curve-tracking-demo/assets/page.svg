@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="page.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.63404606"
+     inkscape:cx="-83.751744"
+     inkscape:cy="652.81141"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1013"
+     inkscape:window-x="0"
+     inkscape:window-y="38"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="fill:none;stroke:#ff3838;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 23.575216,30.708092 c 49.997379,3.01189 125.779914,10.371732 164.441034,38.940766 0.40175,0.296875 0.78049,0.674367 0.98335,1.130855 0.22125,0.497855 0.20881,1.077863 0.19668,1.622531 -0.0133,0.598003 -0.0773,1.212923 -0.29501,1.770036 -0.20684,0.529229 -0.51905,1.037884 -0.93419,1.425861 -0.43963,0.410863 -0.9995,0.704005 -1.57336,0.885018 -40.75847,12.856484 -86.915813,-0.48457 -127.590014,12.636082 -4.976052,1.605171 -9.711796,4.338382 -13.570265,7.866821 -4.026766,3.682338 -7.645811,8.220478 -9.440188,13.373598 -1.554574,4.46445 -2.008453,9.59352 -0.78668,14.16028 1.456796,5.44524 4.771417,10.72906 9.243515,14.16027 C 65.811272,155.22297 192.20492,111.07593 181.06154,130.02306 -17.022067,466.82552 141.48749,68.449404 32.407303,62.768144"
+       id="path815"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cssssssssssssc" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888855px;line-height:0;font-family:Karumbi;-inkscape-font-specification:Karumbi;letter-spacing:1.10595822px;word-spacing:0px;fill:#ff3838;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="12.147797"
+       y="22.362274"
+       id="text818"><tspan
+         sodipodi:role="line"
+         id="tspan816"
+         x="12.147797"
+         y="22.362274"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:sans-serif;fill:#ff3838;fill-opacity:1;stroke-width:0.26458332">Begin</tspan></text>
+    <text
+       id="text822"
+       y="59.256405"
+       x="16.131256"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888855px;line-height:0;font-family:Karumbi;-inkscape-font-specification:Karumbi;letter-spacing:1.10595822px;word-spacing:0px;fill:#ff3838;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:sans-serif;fill:#ff3838;fill-opacity:1;stroke-width:0.26458332"
+         y="59.256405"
+         x="16.131256"
+         id="tspan820"
+         sodipodi:role="line">End</tspan></text>
+  </g>
+</svg>
