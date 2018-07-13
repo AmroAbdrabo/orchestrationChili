@@ -16,17 +16,57 @@ ApplicationWindow {
     CelluloRobot{
         id: robotComm
 
-        onConnectionStatusChanged: {
-            if(connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected){
-                setCasualBackdriveAssistEnabled(true);
-                setPoseBcastPeriod(0);
+        poseVelControlPeriod: 100 //ms
+        property real targetVel: 185 //mm/s
+        property real rInc: 0
+
+        property real currentR: 0
+
+        property vector2d goalPos: Qt.vector2d(0,0)
+        property vector2d goalVel: Qt.vector2d(0,0)
+
+        poseVelControlKGoalPoseErr: Qt.vector3d(5,5,0.0)
+        poseVelControlKGoalVel: Qt.vector3d(0,0,0.0)
+        poseVelControlKGoalVelErr: Qt.vector3d(0,0,0)
+
+        onNextGoalPoseVelRequested: {
+            if(poseVelControlEnabled){
+                var goalT = curve.getTByArcLengthRatio(currentR);
+                goalPos = curve.getPoint(goalT);
+                goalVel = curve.getTangent(goalT).normalized().times(targetVel);
+
+                currentR += rInc;
+                if(currentR > 1.0){
+                    //setGoalVelocity(0,0,0);
+                    currentR = 0.0;
+                    //poseVelControlEnabled = false;
+                }
+                //else{
+                    setGoalPoseAndVelocity(goalPos.x, goalPos.y, 0, goalVel.x, goalVel.y, 0, true, true, false);
+
+                //}
             }
+            else
+                setGoalVelocity(0,0,0);
         }
 
-        onTrackingGoalReached: {
-            setCasualBackdriveAssistEnabled(true);
-            clearTracking();
+        function startTracking(){
+            currentR = 0;
+            robotComm.poseVelControlEnabled = true;
         }
+    }
+
+    PolyBezier{
+        id: curve
+
+        Component.onCompleted: {
+            loadFromFile(":/assets/curve.json");
+            curveVisual.start(controlPoints[0]);
+            for(var i=1;i<controlPoints.length;i+=3)
+                curveVisual.addCubic(controlPoints[i], controlPoints[i + 1], controlPoints[i + 2]);
+        }
+
+        onControlPointsChanged: robotComm.rInc = (robotComm.targetVel*robotComm.poseVelControlPeriod/1000)/getArcLength()
     }
 
     //Visible items
@@ -37,23 +77,7 @@ ApplicationWindow {
 
         Column{
             property var addresses: [
-                "00:06:66:74:40:D2",
-                "00:06:66:74:40:D4",
-                "00:06:66:74:40:D5",
-                "00:06:66:74:40:DB",
-                "00:06:66:74:40:DC",
-                "00:06:66:74:40:E4",
-                "00:06:66:74:40:EC",
-                "00:06:66:74:40:EE",
-                "00:06:66:74:41:03",
-                "00:06:66:74:41:04",
-                "00:06:66:74:41:14",
-                "00:06:66:74:41:4C",
-                "00:06:66:74:43:00",
-                "00:06:66:74:43:01",
-                "00:06:66:74:46:58",
-                "00:06:66:74:46:60",
-                "00:06:66:74:48:A7"
+                "00:06:66:D2:CF:96"
             ]
 
             MacAddrSelector{
@@ -150,21 +174,26 @@ ApplicationWindow {
                     }
                 }
 
-
-
-
                 Rectangle{
-                    id: marker
-                    x: realCoords.x*parent.scaleCoeff - width/2
-                    y: realCoords.y*parent.scaleCoeff - height/2
+                    x: robotComm.goalPos.x*parent.scaleCoeff - width/2
+                    y: robotComm.goalPos.y*parent.scaleCoeff - height/2
                     height: 10*parent.scaleCoeff
                     width: 10*parent.scaleCoeff
-                    transformOrigin: Item.Center
+                    transformOrigin: Item.Left
                     color: "#800000FF"
-                    radius: 5
+                    radius: 5*parent.scaleCoeff
                     z: 1
+                }
 
-                    property vector2d realCoords: Qt.vector2d(0,0)
+                Rectangle{
+                    x: robotComm.goalPos.x*parent.scaleCoeff
+                    y: robotComm.goalPos.y*parent.scaleCoeff
+                    height: 3*parent.scaleCoeff
+                    width: 30*parent.scaleCoeff
+                    transformOrigin: Item.TopLeft
+                    rotation: Math.atan2(robotComm.goalVel.y, robotComm.goalVel.x)/Math.PI*180
+                    color: "#80FF0000"
+                    z: 1
                 }
             }
         }
@@ -197,30 +226,20 @@ ApplicationWindow {
         Button{
             text: "Follow the path"
 
-            PolyBezier{
-                id: curve
 
-                Component.onCompleted: {
-                    loadFromFile(":/assets/curve.json");
-
-                    curveVisual.start(controlPoints[0]);
-                    console.log(controlPoints.length)
-                    for(var i=1;i<controlPoints.length;i+=3)
-                        curveVisual.addCubic(controlPoints[i], controlPoints[i + 1], controlPoints[i + 2]);
-                }
-            }
 
             onClicked: {
                 robotComm.setCasualBackdriveAssistEnabled(false);
 
-                tim.restart();
 
-                var pt = curve.getPoint(curve.getTByArcLengthRatio(0));
+                //var pt = curve.getPoint(curve.getTByArcLengthRatio(0));
 
 
 
                 //robotComm.polyBezierSetFromZone(zoneEngine.zoneClosestT);
                 //robotComm.setGoalPolyBezier(parseFloat(vel.text), parseFloat(w.text));
+
+                robotComm.startTracking();
             }
         }
 
