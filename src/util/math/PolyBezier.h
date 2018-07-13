@@ -260,4 +260,6 @@ private:
 
 }
 
+Q_DECLARE_METATYPE(Cellulo::PolyBezier*)
+
 #endif // POLYBEZIER_H

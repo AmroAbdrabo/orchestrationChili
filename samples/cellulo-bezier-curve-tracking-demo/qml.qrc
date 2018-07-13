@@ -4,6 +4,6 @@
         <file>assets/redHexagon.svg</file>
         <file>assets/greenHexagon.svg</file>
         <file>assets/curve.json</file>
-        <file>src/BezierCurveVisual.qml</file>
+        <file>src/PolyBezierVisual.qml</file>
     </qresource>
 </RCC>

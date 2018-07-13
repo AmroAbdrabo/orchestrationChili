@@ -22,6 +22,7 @@ android{
 HEADERS += \
     src/CelluloPlugin.h \
     src/robot/CelluloRobot.h \
+    src/robot/PolyBezierTracker.h \
     src/comm/CelluloBluetooth.h \
     src/comm/CelluloCommUtil.h \
     src/comm/CelluloBluetoothEMP.h \
@@ -70,6 +71,7 @@ HEADERS += \
 SOURCES += \
     src/CelluloPlugin.cpp \
     src/robot/CelluloRobot.cpp \
+    src/robot/PolyBezierTracker.cpp \
     src/comm/CelluloBluetooth.cpp \
     src/comm/CelluloCommUtil.cpp \
     src/comm/CelluloBluetoothEMP.cpp \
