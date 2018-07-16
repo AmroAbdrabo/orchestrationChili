@@ -41,7 +41,7 @@ ApplicationWindow {
 
         Column{
             property var addresses: [
-                "00:06:66:E7:8A:E6"
+                "00:06:66:74:40:D2"
             ]
 
             MacAddrSelector{
@@ -185,11 +185,9 @@ ApplicationWindow {
         }
 
         Button{
-            text: "Follow the path (aligned)"
+            text: "Removefirst"
             onClicked: {
-                robotComm.setCasualBackdriveAssistEnabled(false);
-                robotComm.polyBezierSetFromZone(zoneEngine.zoneClosestT);
-                robotComm.setGoalPolyBezierAligned(parseFloat(vel.text), parseFloat(theta.text), parseFloat(w.text));
+                pbcurve.removeFirstSegment();
             }
         }
     }

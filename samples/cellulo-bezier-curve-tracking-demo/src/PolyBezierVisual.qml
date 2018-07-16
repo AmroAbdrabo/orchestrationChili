@@ -12,11 +12,13 @@ Shape{
 
         function clear(){
             pathElements = [];
+            visible = false;
         }
 
         function start(startPoint){
             startX = Qt.binding(function(){ return startPoint.x*scaleCoeff; });
             startY = Qt.binding(function(){ return startPoint.y*scaleCoeff; });
+            visible = true;
         }
 
         function addCubic(cp1, cp2, end){
@@ -43,7 +45,8 @@ Shape{
 
     onControlPointsChanged: {
         shapePath.clear();
-        shapePath.start(controlPoints[0]);
+        if(controlPoints.length > 0)
+            shapePath.start(controlPoints[0]);
         for(var i=1;i<controlPoints.length;i+=3)
             shapePath.addCubic(controlPoints[i], controlPoints[i + 1], controlPoints[i + 2]);
     }

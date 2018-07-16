@@ -161,7 +161,11 @@ void PolyBezier::appendPoint(QVector2D const& targetPoint, qreal entrySmoothness
 }
 
 int PolyBezier::getSegmentIndex(qreal& t){
-    if(t >= segments.size()){
+    if(segments.isEmpty()){
+        qCritical() << "PolyBezier::getSegmentIndex(): Curve empty, returning invalid index.";
+        return -1;
+    }
+    else if(t >= segments.size()){
         t = 1;
         return segments.size() - 1;
     }
@@ -225,31 +229,43 @@ qreal PolyBezier::getArcLengthRatioByT(qreal t){
     //Calculate cumulative arc lengths of all segments
     calculateCumulativeArcLengths();
 
-    int segIndex = getSegmentIndex(t); //Pulls t into local [0,1]
-    CubicBezier& segment = segments[segIndex];
-    return (cumulativeArcLengths[segIndex] + segment.getArcLength()*segment.getArcLengthRatioByT(t))/getArcLength();
+    if(segments.isEmpty()){
+        qCritical() << "PolyBezier::getArcLengthRatioByT(): Curve empty, returning invalid t.";
+        return 0.0;
+    }
+    else{
+        int segIndex = getSegmentIndex(t); //Pulls t into local [0,1]
+        CubicBezier& segment = segments[segIndex];
+        return (cumulativeArcLengths[segIndex] + segment.getArcLength()*segment.getArcLengthRatioByT(t))/getArcLength();
+    }
 }
 
 qreal PolyBezier::getClosest(const QVector2D& m, QVector2D& closestPoint, qreal& closestDist){
-    qreal dist, t, closestT = 0;
-    QVector2D point;
-    closestDist = std::numeric_limits<qreal>::max();
-    int closestSegment = 0;
-    for(int i=0;i<segments.size();i++){
-        CubicBezier& segment = segments[i];
+    if(segments.isEmpty()){
+        qCritical() << "PolyBezier::getClosest(): Curve empty, returning invalid t.";
+        return 0;
+    }
+    else{
+        qreal dist, t, closestT = 0;
+        QVector2D point;
+        closestDist = std::numeric_limits<qreal>::max();
+        int closestSegment = 0;
+        for(int i=0;i<segments.size();i++){
+            CubicBezier& segment = segments[i];
 
-        //First, check distance to bounding box, if this rough distance is not good enough, actual curve distance won't be
-        if(segment.getDistToBoundingBox(m) < closestDist){
-            t = segment.getClosest(m, point, dist);
-            if(dist < closestDist){
-                closestPoint = point;
-                closestDist = dist;
-                closestT = t;
-                closestSegment = i;
+            //First, check distance to bounding box, if this rough distance is not good enough, actual curve distance won't be
+            if(segment.getDistToBoundingBox(m) < closestDist){
+                t = segment.getClosest(m, point, dist);
+                if(dist < closestDist){
+                    closestPoint = point;
+                    closestDist = dist;
+                    closestT = t;
+                    closestSegment = i;
+                }
             }
         }
+        return closestT + closestSegment;
     }
-    return closestT + closestSegment;
 }
 
 qreal PolyBezier::getClosestT(QVector2D const& point){
@@ -259,13 +275,25 @@ qreal PolyBezier::getClosestT(QVector2D const& point){
 }
 
 QVector2D PolyBezier::getPoint(qreal t){
-    int i = getSegmentIndex(t);
-    return segments[i].getPoint(t);
+    if(segments.isEmpty()){
+        qCritical() << "PolyBezier::getPoint(): Curve empty, returning invalid point.";
+        return QVector2D(0,0);
+    }
+    else{
+        int i = getSegmentIndex(t);
+        return segments[i].getPoint(t);
+    }
 }
 
 QVector2D PolyBezier::getTangent(qreal t){
-    int i = getSegmentIndex(t);
-    return segments[i].getDerivative(t);
+    if(segments.isEmpty()){
+        qCritical() << "PolyBezier::getTangent(): Curve empty, returning invalid tangent.";
+        return QVector2D(0,0);
+    }
+    else{
+        int i = getSegmentIndex(t);
+        return segments[i].getDerivative(t);
+    }
 }
 
 QVector2D PolyBezier::getNormal(qreal t){

@@ -158,6 +158,7 @@ private:
 
     qreal currentT = 0.0;                      ///< Last parameter t of the curve that is being tracked
     qreal currentR = 0.0;                      ///< Last arc length ratio r of the curve that is being tracked
+    QVector2D currentP;                        ///< Last point on the curve that is being tracked
 
     PolyBezier* curve;                         ///< Curve to be tracked
     CelluloRobot* robot;                       ///< Robot to track the curve

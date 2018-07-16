@@ -95,9 +95,29 @@ void PolyBezierTracker::trackConstLinearVel(qreal vel, bool goToStart){
 }
 
 void PolyBezierTracker::updateCurve(){
+    QVector2D newP;
+
+    //Check segment addition to the end, currentT should be unchanged
+    newP = curve->getPoint(currentT);
+    if(newP.x() == currentP.x() && newP.y() == currentP.y()){
+        currentR = curve->getArcLengthRatioByT(currentT);
 
 
+        qDebug() << "SEGMENT ADDED";
+        
+        return;
+    }
 
+    //Check segment removal from the beginning, currentT - 1 should correspond to the new t
+    newP = curve->getPoint(currentT - 1);
+    if(newP.x() == currentP.x() && newP.y() == currentP.y()){
+        currentT = currentT - 1;
+        currentR = curve->getArcLengthRatioByT(currentT);
+
+        qDebug() << "SEGMENT REMOVED";
+
+        return;
+    }
 //TODO: RECALCULATE lastR
 //TODO: RECALCULATE lastT
 
@@ -115,14 +135,14 @@ void PolyBezierTracker::robotControlLoop(qreal deltaTime){
             //TODO: REIMPLEMENT THIS PART IN PURE VIRTUAL FUNCTIONS
             QVector2D currentPos(robot->getX(), robot->getY());
             if(goingToStart){
-                QVector2D goalPos = curve->getPoint(0.0);
-                QVector2D goalDiff = goalPos - currentPos;
+                currentP = curve->getPoint(0.0);
+                QVector2D goalDiff = currentP - currentPos;
                 QVector2D goalDir = goalDiff/(10*GOAL_EPSILON);
                 if(goalDir.length() > 1.0)
                     goalDir.normalize();
                 QVector2D goalVel = goalDir*trackingVel;
 
-                robot->setGoalPoseAndVelocity(goalPos.x(), goalPos.y(), 0, goalVel.x(), goalVel.y(), 0, true, true, false);
+                robot->setGoalPoseAndVelocity(currentP.x(), currentP.y(), 0, goalVel.x(), goalVel.y(), 0, true, true, false);
 
                 if(goalDiff.length() <= GOAL_EPSILON){
                     qDebug() << "REACHED BEGIN";
@@ -131,7 +151,7 @@ void PolyBezierTracker::robotControlLoop(qreal deltaTime){
             }
             else{
                 currentT = curve->getTByArcLengthRatio(currentR);
-                QVector2D goalPos = curve->getPoint(currentT);
+                currentP = curve->getPoint(currentT);
                 QVector2D goalVel;
                 if(currentR < 1.0)
                     goalVel = curve->getTangent(currentT).normalized()*trackingVel;
@@ -142,7 +162,7 @@ void PolyBezierTracker::robotControlLoop(qreal deltaTime){
                     goalVel = goalDir*trackingVel;
                 }
 
-                robot->setGoalPoseAndVelocity(goalPos.x(), goalPos.y(), 0, goalVel.x(), goalVel.y(), 0, true, true, false);
+                robot->setGoalPoseAndVelocity(currentP.x(), currentP.y(), 0, goalVel.x(), goalVel.y(), 0, true, true, false);
 
                 if(currentR < 1.0){
                     currentR += (trackingVel*100.0/1000.0)/curve->getArcLength(); //TODO: GET PERIOD FROM ADJUSTED
@@ -152,7 +172,7 @@ void PolyBezierTracker::robotControlLoop(qreal deltaTime){
                 else{
                     if(currentPos.distanceToPoint(curve->getPoint(curve->getTByArcLengthRatio(1.0))) <= GOAL_EPSILON){
                         qDebug() << "REACHED END";
-                        setEnabled(false);
+                        //setEnabled(false);
                     }
                 }
             }
