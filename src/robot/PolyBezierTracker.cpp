@@ -101,10 +101,6 @@ void PolyBezierTracker::updateCurve(){
     newP = curve->getPoint(currentT);
     if(newP.x() == currentP.x() && newP.y() == currentP.y()){
         currentR = curve->getArcLengthRatioByT(currentT);
-
-
-        qDebug() << "SEGMENT ADDED";
-        
         return;
     }
 
@@ -113,19 +109,14 @@ void PolyBezierTracker::updateCurve(){
     if(newP.x() == currentP.x() && newP.y() == currentP.y()){
         currentT = currentT - 1;
         currentR = curve->getArcLengthRatioByT(currentT);
-
-        qDebug() << "SEGMENT REMOVED";
-
         return;
     }
-//TODO: RECALCULATE lastR
-//TODO: RECALCULATE lastT
 
-
-
-
-
-
+    //Curve changed more than just one removed from the beginning or one added to the end; get closest point and continue from there
+    qreal dummyR;
+    currentT = curve->getClosest(currentP, newP, dummyR);
+    currentP = newP;
+    currentR = curve->getArcLengthRatioByT(currentT);
 }
 
 void PolyBezierTracker::robotControlLoop(qreal deltaTime){

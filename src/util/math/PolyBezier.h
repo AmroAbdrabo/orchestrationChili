@@ -81,6 +81,16 @@ public:
      */
     void setControlPoints(QVariantList const& newControlPoints);
 
+    /**
+     * @brief Gets the closest point on the curve to the given point
+     *
+     * @param m Given point
+     * @param closestPoint [out] Returns the closest point
+     * @param closestDist [out] Returns the closest distance
+     * @return Returns the parameter t corresponding to the closest point
+     */
+    Q_INVOKABLE qreal getClosest(QVector2D const& m, QVector2D& closestPoint, qreal& closestDist);
+
     /** @endcond */
 
 signals:
@@ -238,16 +248,6 @@ private:
      * @return Segment index
      */
     int getSegmentIndex(qreal& t);
-
-    /**
-     * @brief Gets the closest point on the curve to the given point
-     *
-     * @param m Given point
-     * @param closestPoint [out] Returns the closest point
-     * @param closestDist [out] Returns the closest distance
-     * @return Returns the parameter t corresponding to the closest point
-     */
-    Q_INVOKABLE qreal getClosest(QVector2D const& m, QVector2D& closestPoint, qreal& closestDist);
 
     QVector<CubicBezier> segments;                  ///< Consecutive Bézier curve segments
 

@@ -190,5 +190,12 @@ ApplicationWindow {
                 pbcurve.removeFirstSegment();
             }
         }
+
+        Button{
+            text: "Reset"
+            onClicked: {
+                pbcurve.loadFromFile(":/assets/curve.json")
+            }
+        }
     }
 }

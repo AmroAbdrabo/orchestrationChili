@@ -57,6 +57,8 @@ public:
     /** @brief Robot that will track the curve */
     Q_PROPERTY(Cellulo::CelluloRobot* robot WRITE setRobot READ getRobot NOTIFY robotChanged)
 
+    
+
     /** @cond DO_NOT_DOCUMENT */
 
     /**
