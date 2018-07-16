@@ -121,6 +121,13 @@ public slots:
     void clear();
 
     /**
+     * @brief Gets whether the curve is empty
+     *
+     * @return Whether the curve is empty
+     */
+    bool isEmpty();
+
+    /**
      * @brief Starts the curve with a linear segment, autogenerating the in-between 2 control points
      *
      * Discards previously existing segments if any.

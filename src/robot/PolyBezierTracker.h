@@ -47,7 +47,7 @@ namespace Cellulo {
 class PolyBezierTracker : public QQuickItem {
     /* *INDENT-OFF* */
     Q_OBJECT
-        /* *INDENT-ON* */
+    /* *INDENT-ON* */
 
 public:
 
@@ -56,6 +56,12 @@ public:
 
     /** @brief Robot that will track the curve */
     Q_PROPERTY(Cellulo::CelluloRobot* robot WRITE setRobot READ getRobot NOTIFY robotChanged)
+
+    /** @brief Whether to go the the start of the curve first (by default) or to start tracking from the closest point */
+    Q_PROPERTY(bool goToStartFirst MEMBER goToStartFirst)
+
+    /** @brief Whether to stop (i.e disable tracker) once the curve is completely tracked (i.e final point on the curve is reached), default false */
+    Q_PROPERTY(bool stopWhenGoalReached MEMBER stopWhenGoalReached)
 
     /** @brief The currently tracked pose, in (mm,mm,deg), read-only */
     Q_PROPERTY(QVector3D trackedPose READ getTrackedPose NOTIFY trackedPoseChanged)
@@ -147,15 +153,24 @@ signals:
 
     /** @endcond */
 
+    /**
+     * @brief Emitted when the robot reaches the start of the curve, if goToStart was marked true when tracking command was given
+     */
+    void startReached();
+
+    /**
+     * @brief Emitted when the robot reaches the end of the curve
+     */
+    void endReached();
+
 public slots:
 
     /**
      * @brief Tracks the curve with constant velocity
      *
-     * @param vel       Linear velocity magnitude
-     * @param goToStart Whether to go to the start of the curve to begin; if false, tracking will start from the closest point of the robot to the curve
+     * @param vel Linear velocity magnitude
      */
-    void trackConstLinearVel(qreal vel, bool goToStart = true);
+    void trackConstLinearVel(qreal vel);
 
 private slots:
 
@@ -180,6 +195,11 @@ private:
      * @param value Points to the relevant item/data
      */
     void itemChange(ItemChange change, ItemChangeData const& value) override;
+
+    bool goToStartFirst = true;                ///< Whether to go to the start of the curve first
+    bool stopWhenGoalReached = false;          ///< Whether to stop when curve is completely tracked
+
+    bool endReachedFlag = false;               ///< Internal flag to mark whether the end of the curve is reached
 
     bool goingToStart = false;                 ///< Whether going to the start of the curve
     constexpr static qreal GOAL_EPSILON = 5.0; ///< This close to goal is considered reached

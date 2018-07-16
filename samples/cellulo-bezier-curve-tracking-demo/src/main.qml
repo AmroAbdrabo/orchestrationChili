@@ -16,8 +16,6 @@ ApplicationWindow {
     CelluloRobot{
         id: robotComm
 
-        property vector2d closest: pbcurve.getPoint(pbcurve.getTByArcLengthRatio(pbcurve.getArcLengthRatioByT(pbcurve.getClosestT(Qt.vector2d(x,y)))))
-
         PolyBezierTracker{
             id: tracker
 
@@ -26,12 +24,12 @@ ApplicationWindow {
                 Component.onCompleted: loadFromFile(":/assets/curve.json")
             }
 
-            onEnabledChanged: console.log(enabled)
-        }
+            goToStartFirst: goToStartFirstCheckbox.checked
+            stopWhenGoalReached: stopWhenGoalReachedCheckbox.checked
 
-        //poseVelControlKGoalPoseErr: Qt.vector3d(5,5,0.0)
-        //poseVelControlKGoalVel: Qt.vector3d(0,0,0.0)
-        //poseVelControlKGoalVelErr: Qt.vector3d(0,0,0)
+            onStartReached: console.info("Start of the curve reached.")
+            onEndReached: console.info("End of the curve reached.")
+        }
     }
 
     //Visible items
@@ -140,60 +138,67 @@ ApplicationWindow {
         }
     }
 
-    Text{
-        id: distText
+    GroupBox{
+        id: controlsBox
+        title: "Controls"
         anchors.top: playgroundBox.bottom
-    }
 
-    Row{
-        anchors.top: distText.bottom
-        spacing: 5
+        Column{
+            spacing: 5
 
-        TextField{
-            id: vel
-            placeholderText: "Velocity (mm/s)"
-        }
+            Row{
+                spacing: 5
 
-        TextField{
-            id: w
-            placeholderText: "w (rad/s)"
-        }
+                CheckBox{
+                    id: goToStartFirstCheckbox
+                    text: "Go to start of the curve first"
+                    checked: true
+                }
 
-        TextField{
-            id: theta
-            placeholderText: "Aligned theta (°)"
-        }
-
-        Button{
-            text: "Follow the path"
-
-
-
-            onClicked: {
-
-
-                //var pt = curve.getPoint(curve.getTByArcLengthRatio(0));
-
-
-
-                //robotComm.polyBezierSetFromZone(zoneEngine.zoneClosestT);
-                //robotComm.setGoalPolyBezier(parseFloat(vel.text), parseFloat(w.text));
-
-                tracker.trackConstLinearVel(50, false);
+                CheckBox{
+                    id: stopWhenGoalReachedCheckbox
+                    text: "Stop tracker when end is reached"
+                    checked: false
+                }
             }
-        }
 
-        Button{
-            text: "Removefirst"
-            onClicked: {
-                pbcurve.removeFirstSegment();
-            }
-        }
+            Row{
+                spacing: 5
 
-        Button{
-            text: "Reset"
-            onClicked: {
-                pbcurve.loadFromFile(":/assets/curve.json")
+                Text{
+                    text: "(1) Constant velocity tracker:"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                TextField{
+                    id: velText
+                    placeholderText: "Velocity (mm/s)"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Button{
+                    text: "Start"
+                    anchors.verticalCenter: parent.verticalCenter
+                    onClicked: {
+                        var vel = parseInt(velText.text);
+                        if(!isNaN(vel))
+                            tracker.trackConstLinearVel(vel);
+                        else
+                            console.error("Please enter a valid velocity to the text box.");
+                    }
+                }
+
+                Button{
+                    text: "Stop"
+                    anchors.verticalCenter: parent.verticalCenter
+                    onClicked: tracker.enabled = false
+                }
+
+                Text{
+                    text: tracker.enabled ? "Running" : "Not running"
+                    color: tracker.enabled ? "green" : "black"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
             }
         }
     }

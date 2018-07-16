@@ -105,6 +105,10 @@ void PolyBezier::removeFirstSegment(){
         qWarning() << "PolyBezier::removeFirstSegment(): Curve empty, doing nothing.";
 }
 
+bool PolyBezier::isEmpty(){
+    return segments.isEmpty();
+}
+
 void PolyBezier::clear(){
     if(!segments.isEmpty()){
         segments.clear();

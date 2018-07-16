@@ -76,11 +76,11 @@ void PolyBezierTracker::setRobot(CelluloRobot* newRobot){
     emit robotChanged();
 }
 
-void PolyBezierTracker::trackConstLinearVel(qreal vel, bool goToStart){
+void PolyBezierTracker::trackConstLinearVel(qreal vel){
     if(robot && curve){
         trackingVel = vel;
-        goingToStart = goToStart;
-        if(goToStart){
+        goingToStart = goToStartFirst;
+        if(goToStartFirst){
             currentT = 0.0;
             currentR = 0.0;
         }
@@ -88,6 +88,7 @@ void PolyBezierTracker::trackConstLinearVel(qreal vel, bool goToStart){
             currentT = curve->getClosestT(QVector2D(robot->getX(), robot->getY()));
             currentR = curve->getArcLengthRatioByT(currentT);
         }
+        endReachedFlag = false;
         setEnabled(true);
     }
     else
@@ -123,53 +124,64 @@ void PolyBezierTracker::updateCurve(){
 void PolyBezierTracker::robotControlLoop(qreal deltaTime){
     if(robot && curve){
         if(isEnabled()){
-
-            //TODO: REIMPLEMENT THIS PART IN PURE VIRTUAL FUNCTIONS
-            QVector2D currentRobotPos(robot->getX(), robot->getY());
-            if(goingToStart){
-                currentP = curve->getPoint(0.0).toVector3D();
-                QVector2D goalDiff = currentP.toVector2D() - currentRobotPos;
-                QVector2D goalDir = goalDiff/(10*GOAL_EPSILON);
-                if(goalDir.length() > 1.0)
-                    goalDir.normalize();
-                currentV = (goalDir*trackingVel).toVector3D();
-
-                robot->setGoalPoseAndVelocity(currentP.x(), currentP.y(), 0, currentV.x(), currentV.y(), 0, true, true, false);
-
-                if(goalDiff.length() <= GOAL_EPSILON){
-                    qDebug() << "REACHED BEGIN";
-                    goingToStart = false;
-                }
+            if(curve->isEmpty()){
+                qWarning() << "PolyBezierTracker::robotControlLoop(): Curve is empty, stopping tracker.";
+                setEnabled(false);
             }
             else{
-                currentT = curve->getTByArcLengthRatio(currentR);
-                currentP = curve->getPoint(currentT).toVector3D();
-                if(currentR < 1.0)
-                    currentV = (curve->getTangent(currentT).normalized()*trackingVel).toVector3D();
-                else{
-                    QVector2D goalDir = (curve->getPoint(curve->getTByArcLengthRatio(1.0)) - currentRobotPos)/(10*GOAL_EPSILON);
+
+                //TODO: REIMPLEMENT THIS PART IN PURE VIRTUAL FUNCTIONS
+                QVector2D currentRobotPos(robot->getX(), robot->getY());
+                if(goingToStart){
+                    currentP = curve->getPoint(0.0).toVector3D();
+                    QVector2D goalDiff = currentP.toVector2D() - currentRobotPos;
+                    QVector2D goalDir = goalDiff/(10*GOAL_EPSILON);
                     if(goalDir.length() > 1.0)
                         goalDir.normalize();
                     currentV = (goalDir*trackingVel).toVector3D();
-                }
 
-                robot->setGoalPoseAndVelocity(currentP.x(), currentP.y(), 0, currentV.x(), currentV.y(), 0, true, true, false);
+                    robot->setGoalPoseAndVelocity(currentP.x(), currentP.y(), 0, currentV.x(), currentV.y(), 0, true, true, false);
 
-                if(currentR < 1.0){
-                    currentR += (trackingVel*100.0/1000.0)/curve->getArcLength(); //TODO: GET PERIOD FROM ADJUSTED
-                    if(currentR > 1.0)
-                        currentR = 1.0;
-                }
-                else{
-                    if(currentRobotPos.distanceToPoint(curve->getPoint(curve->getTByArcLengthRatio(1.0))) <= GOAL_EPSILON){
-                        qDebug() << "REACHED END";
-                        //setEnabled(false);
+                    if(goalDiff.length() <= GOAL_EPSILON){
+                        emit startReached();
+                        goingToStart = false;
                     }
                 }
-            }
+                else{
+                    currentT = curve->getTByArcLengthRatio(currentR);
+                    currentP = curve->getPoint(currentT).toVector3D();
+                    if(currentR < 1.0)
+                        currentV = (curve->getTangent(currentT).normalized()*trackingVel).toVector3D();
+                    else{
+                        QVector2D goalDir = (curve->getPoint(curve->getTByArcLengthRatio(1.0)) - currentRobotPos)/(10*GOAL_EPSILON);
+                        if(goalDir.length() > 1.0)
+                            goalDir.normalize();
+                        currentV = (goalDir*trackingVel).toVector3D();
+                    }
 
-            emit trackedPoseChanged();
-            emit trackedVelocityChanged();
+                    robot->setGoalPoseAndVelocity(currentP.x(), currentP.y(), 0, currentV.x(), currentV.y(), 0, true, true, false);
+
+                    if(currentR < 1.0){
+                        currentR += (trackingVel*100.0/1000.0)/curve->getArcLength(); //TODO: GET PERIOD FROM ADJUSTED
+                        if(currentR > 1.0)
+                            currentR = 1.0;
+                    }
+                    else{
+                        if(currentRobotPos.distanceToPoint(curve->getPoint(curve->getTByArcLengthRatio(1.0))) <= GOAL_EPSILON){
+                            if(!endReachedFlag)
+                                emit endReached();
+                            endReachedFlag = true;
+                            if(stopWhenGoalReached)
+                                setEnabled(false);
+                        }
+                        else
+                            endReachedFlag = false;
+                    }
+                }
+
+                emit trackedPoseChanged();
+                emit trackedVelocityChanged();
+            }
         }
         else
             robot->setGoalPoseAndVelocity(0, 0, 0, 0, 0, 0, false, false, false);
