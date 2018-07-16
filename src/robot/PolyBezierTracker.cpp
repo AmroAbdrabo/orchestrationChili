@@ -35,26 +35,45 @@ PolyBezierTracker::PolyBezierTracker(QQuickItem* parent) : QQuickItem(parent) {
 PolyBezierTracker::~PolyBezierTracker(){
 }
 
-void PolyBezierTracker::setCurve(PolyBezier* newCurve){
-    if(newCurve){
-        if(curve)
-            disconnect(curve, SIGNAL(controlPointsChanged()), this, SLOT(updateCurve()));
-        curve = newCurve;
-        connect(curve, SIGNAL(controlPointsChanged()), this, SLOT(updateCurve()));
-        emit curveChanged();
+void PolyBezierTracker::itemChange(ItemChange change, ItemChangeData const& value){
+    if(change == ItemChange::ItemChildRemovedChange){
+        PolyBezier* removedChild = qobject_cast<PolyBezier*>(value.item);
+        if(removedChild == curve)
+            setCurve(nullptr);
     }
+    else if(change == ItemChange::ItemChildAddedChange){
+        PolyBezier* addedChild = qobject_cast<PolyBezier*>(value.item);
+        if(addedChild)
+            setCurve(addedChild);
+    }
+    else if(change == ItemChange::ItemParentHasChanged){
+        CelluloRobot* newParent = qobject_cast<CelluloRobot*>(value.item);
+        if(newParent)
+            setRobot(newParent);
+    }
+
+    QQuickItem::itemChange(change, value);
+}
+
+void PolyBezierTracker::setCurve(PolyBezier* newCurve){
+    if(curve)
+        disconnect(curve, SIGNAL(controlPointsChanged()), this, SLOT(updateCurve()));
+    curve = newCurve;
+    if(curve)
+        connect(curve, SIGNAL(controlPointsChanged()), this, SLOT(updateCurve()));
+    emit curveChanged();
 }
 
 void PolyBezierTracker::setRobot(CelluloRobot* newRobot){
-    if(newRobot){
-        if(robot)
-            disconnect(robot, SIGNAL(nextGoalPoseVelRequested(qreal)), this, SLOT(robotControlLoop(qreal)));
-        robot = newRobot;
+    if(robot)
+        disconnect(robot, SIGNAL(nextGoalPoseVelRequested(qreal)), this, SLOT(robotControlLoop(qreal)));
+    robot = newRobot;
+    if(robot){
         connect(robot, SIGNAL(nextGoalPoseVelRequested(qreal)), this, SLOT(robotControlLoop(qreal)));
         robot->setPoseVelControlPeriod(100); //TODO: MAKE ADJUSTABLE
         robot->setPoseVelControlEnabled(true);
-        emit robotChanged();
     }
+    emit robotChanged();
 }
 
 void PolyBezierTracker::trackConstLinearVel(qreal vel, bool goToStart){

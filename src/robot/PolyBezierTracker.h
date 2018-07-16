@@ -143,6 +143,14 @@ private slots:
 
 private:
 
+    /**
+     * @brief Override; adds child as curve if PolyBezier, adds parent as robot if CelluloRobot
+     *
+     * @param change The change that occurred
+     * @param value Points to the relevant item/data
+     */
+    void itemChange(ItemChange change, ItemChangeData const& value) override;
+
     bool goingToStart = false;                 ///< Whether going to the start of the curve
     constexpr static qreal GOAL_EPSILON = 5.0; ///< This close to goal is considered reached
 

@@ -18,8 +18,6 @@ ApplicationWindow {
 
         PolyBezierTracker{
             id: tracker
-            robot: robotComm
-            curve: pbcurve
 
             PolyBezier{
                 id: pbcurve
@@ -41,7 +39,7 @@ ApplicationWindow {
 
         Column{
             property var addresses: [
-                "00:06:66:74:40:FE"
+                "00:06:66:E7:8A:E6"
             ]
 
             MacAddrSelector{
