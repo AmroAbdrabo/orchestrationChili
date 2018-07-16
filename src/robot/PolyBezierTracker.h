@@ -57,7 +57,11 @@ public:
     /** @brief Robot that will track the curve */
     Q_PROPERTY(Cellulo::CelluloRobot* robot WRITE setRobot READ getRobot NOTIFY robotChanged)
 
-    
+    /** @brief The currently tracked pose, in (mm,mm,deg), read-only */
+    Q_PROPERTY(QVector3D trackedPose READ getTrackedPose NOTIFY trackedPoseChanged)
+
+    /** @brief The currently tracked velocity, in (mm/s,mm/s,rad/s), read-only */
+    Q_PROPERTY(QVector3D trackedVelocity READ getTrackedVelocity NOTIFY trackedVelocityChanged)
 
     /** @cond DO_NOT_DOCUMENT */
 
@@ -101,6 +105,20 @@ public:
      */
     void setRobot(Cellulo::CelluloRobot* newRobot);
 
+    /**
+     * @brief Gets the currently tracked pose
+     *
+     * @return The currently tracked pose in (mm,mm,deg)
+     */
+    QVector3D getTrackedPose() const { return currentP; }
+
+    /**
+     * @brief Gets the currently tracked velocities
+     *
+     * @return The currently tracked velocities in (mm/s,mm/s,rad/s)
+     */
+    QVector3D getTrackedVelocity() const { return currentV; }
+
     /** @endcond */
 
 signals:
@@ -116,6 +134,16 @@ signals:
      * @brief Emitted when the robot that tracks changes
      */
     void robotChanged();
+
+    /**
+     * @brief Emitted when the tracked pose changes
+     */
+    void trackedPoseChanged();
+
+    /**
+     * @brief Emitted when the tracked velocity changes
+     */
+    void trackedVelocityChanged();
 
     /** @endcond */
 
@@ -160,7 +188,8 @@ private:
 
     qreal currentT = 0.0;                      ///< Last parameter t of the curve that is being tracked
     qreal currentR = 0.0;                      ///< Last arc length ratio r of the curve that is being tracked
-    QVector2D currentP;                        ///< Last point on the curve that is being tracked
+    QVector3D currentP;                        ///< Last point on the curve that is being tracked
+    QVector3D currentV;                        ///< Last velocity that is being tracked
 
     PolyBezier* curve;                         ///< Curve to be tracked
     CelluloRobot* robot;                       ///< Robot to track the curve

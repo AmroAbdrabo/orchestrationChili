@@ -116,8 +116,8 @@ ApplicationWindow {
 
 
                 Rectangle{
-                    x: robotComm.closest.x*parent.scaleCoeff - width/2
-                    y: robotComm.closest.y*parent.scaleCoeff - height/2
+                    x: tracker.trackedPose.x*parent.scaleCoeff - width/2
+                    y: tracker.trackedPose.y*parent.scaleCoeff - height/2
                     height: 10*parent.scaleCoeff
                     width: 10*parent.scaleCoeff
                     transformOrigin: Item.Left
@@ -126,17 +126,16 @@ ApplicationWindow {
                     z: 1
                 }
 
-                /*
                 Rectangle{
-                    x: robotComm.goalPos.x*parent.scaleCoeff
-                    y: robotComm.goalPos.y*parent.scaleCoeff
+                    x: tracker.trackedPose.x*parent.scaleCoeff
+                    y: tracker.trackedPose.y*parent.scaleCoeff
                     height: 3*parent.scaleCoeff
                     width: 30*parent.scaleCoeff
-                    transformOrigin: Item.TopLeft
-                    rotation: Math.atan2(robotComm.goalVel.y, robotComm.goalVel.x)/Math.PI*180
+                    transformOrigin: Item.Left
+                    rotation: Math.atan2(tracker.trackedVelocity.y, tracker.trackedVelocity.x)/Math.PI*180
                     color: "#80FF0000"
                     z: 1
-                }*/
+                }
             }
         }
     }
