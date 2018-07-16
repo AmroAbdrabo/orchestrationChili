@@ -23,6 +23,7 @@ HEADERS += \
     src/CelluloPlugin.h \
     src/robot/CelluloRobot.h \
     src/robot/PolyBezierTracker.h \
+    src/robot/PolyBezierTrackerConstVel.h \
     src/comm/CelluloBluetooth.h \
     src/comm/CelluloCommUtil.h \
     src/comm/CelluloBluetoothEMP.h \
@@ -72,6 +73,7 @@ SOURCES += \
     src/CelluloPlugin.cpp \
     src/robot/CelluloRobot.cpp \
     src/robot/PolyBezierTracker.cpp \
+    src/robot/PolyBezierTrackerConstVel.cpp \
     src/comm/CelluloBluetooth.cpp \
     src/comm/CelluloCommUtil.cpp \
     src/comm/CelluloBluetoothEMP.cpp \

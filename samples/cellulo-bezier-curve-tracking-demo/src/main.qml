@@ -17,13 +17,15 @@ ApplicationWindow {
     CelluloRobot{
         id: robotComm
 
-        PolyBezierTracker{
+        PolyBezierTrackerConstVel{
             id: tracker
 
             PolyBezier{
                 id: pbcurve
                 Component.onCompleted: loadFromFile(":/assets/curve.json")
             }
+
+            trackingVelocity: parseFloat(velText.text)
 
             goToStartFirst: goToStartFirstCheckbox.checked
             stopWhenGoalReached: stopWhenGoalReachedCheckbox.checked
@@ -228,13 +230,7 @@ ApplicationWindow {
                 Button{
                     text: "Start"
                     anchors.verticalCenter: parent.verticalCenter
-                    onClicked: {
-                        var vel = parseInt(velText.text);
-                        if(!isNaN(vel))
-                            tracker.trackConstLinearVel(vel);
-                        else
-                            console.error("Please enter a valid velocity to the text box.");
-                    }
+                    onClicked: tracker.startTracking()
                 }
 
                 Button{

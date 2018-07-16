@@ -43,6 +43,7 @@ namespace Cellulo {
 
 /**
  * @brief Makes a CelluloRobot track a PolyBezier curve
+ * @abstract
  */
 class PolyBezierTracker : public QQuickItem {
     /* *INDENT-OFF* */
@@ -81,7 +82,7 @@ public:
     /**
      * @brief Destroys the tracker
      */
-    ~PolyBezierTracker();
+    virtual ~PolyBezierTracker();
 
     /**
      * @brief Gets the curve to track
@@ -166,11 +167,9 @@ signals:
 public slots:
 
     /**
-     * @brief Tracks the curve with constant velocity
-     *
-     * @param vel Linear velocity magnitude
+     * @brief Starts tracking according to the rules of the extending class
      */
-    void trackConstLinearVel(qreal vel);
+    void startTracking();
 
 private slots:
 
@@ -186,15 +185,7 @@ private slots:
      */
     void robotControlLoop(qreal deltaTime);
 
-private:
-
-    /**
-     * @brief Override; adds child as curve if PolyBezier, adds parent as robot if CelluloRobot
-     *
-     * @param change The change that occurred
-     * @param value Points to the relevant item/data
-     */
-    void itemChange(ItemChange change, ItemChangeData const& value) override;
+protected:
 
     bool goToStartFirst = true;                ///< Whether to go to the start of the curve first
     bool stopWhenGoalReached = false;          ///< Whether to stop when curve is completely tracked
@@ -204,8 +195,6 @@ private:
     bool goingToStart = false;                 ///< Whether going to the start of the curve
     constexpr static qreal GOAL_EPSILON = 5.0; ///< This close to goal is considered reached
 
-    qreal trackingVel;                         ///< Linear tracking velocity
-
     qreal currentT = 0.0;                      ///< Last parameter t of the curve that is being tracked
     qreal currentR = 0.0;                      ///< Last arc length ratio r of the curve that is being tracked
     QVector3D currentP;                        ///< Last point on the curve that is being tracked
@@ -213,6 +202,23 @@ private:
 
     PolyBezier* curve;                         ///< Curve to be tracked
     CelluloRobot* robot;                       ///< Robot to track the curve
+
+private:
+
+    /**
+     * @brief Sets the actual robot velocities assuming that the tracker is enabled
+     *
+     * @param deltaTime Miliseconds elapsed since last loop
+     */
+    virtual void spinLoop(qreal deltaTime) = 0;
+
+    /**
+     * @brief Override; adds child as curve if PolyBezier, adds parent as robot if CelluloRobot
+     *
+     * @param change The change that occurred
+     * @param value Points to the relevant item/data
+     */
+    void itemChange(ItemChange change, ItemChangeData const& value) override;
 
 };
 
