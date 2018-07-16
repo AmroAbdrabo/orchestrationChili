@@ -227,7 +227,7 @@ qreal PolyBezier::getArcLengthRatioByT(qreal t){
 
     int segIndex = getSegmentIndex(t); //Pulls t into local [0,1]
     CubicBezier& segment = segments[segIndex];
-    return cumulativeArcLengths[segIndex] + segment.getArcLength()*segment.getArcLengthRatioByT(t);
+    return (cumulativeArcLengths[segIndex] + segment.getArcLength()*segment.getArcLengthRatioByT(t))/getArcLength();
 }
 
 qreal PolyBezier::getClosest(const QVector2D& m, QVector2D& closestPoint, qreal& closestDist){
@@ -250,6 +250,12 @@ qreal PolyBezier::getClosest(const QVector2D& m, QVector2D& closestPoint, qreal&
         }
     }
     return closestT + closestSegment;
+}
+
+qreal PolyBezier::getClosestT(QVector2D const& point){
+    QVector2D dummyV;
+    qreal dummyD;
+    return getClosest(point, dummyV, dummyD);
 }
 
 QVector2D PolyBezier::getPoint(qreal t){

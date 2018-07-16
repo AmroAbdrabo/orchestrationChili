@@ -16,6 +16,8 @@ ApplicationWindow {
     CelluloRobot{
         id: robotComm
 
+        property vector2d closest: pbcurve.getPoint(pbcurve.getTByArcLengthRatio(pbcurve.getArcLengthRatioByT(pbcurve.getClosestT(Qt.vector2d(x,y)))))
+
         PolyBezierTracker{
             id: tracker
 
@@ -112,17 +114,17 @@ ApplicationWindow {
                     }
                 }
 
-                /*
+
                 Rectangle{
-                    x: robotComm.goalPos.x*parent.scaleCoeff - width/2
-                    y: robotComm.goalPos.y*parent.scaleCoeff - height/2
+                    x: robotComm.closest.x*parent.scaleCoeff - width/2
+                    y: robotComm.closest.y*parent.scaleCoeff - height/2
                     height: 10*parent.scaleCoeff
                     width: 10*parent.scaleCoeff
                     transformOrigin: Item.Left
                     color: "#800000FF"
                     radius: 5*parent.scaleCoeff
                     z: 1
-                }*/
+                }
 
                 /*
                 Rectangle{
@@ -178,7 +180,7 @@ ApplicationWindow {
                 //robotComm.polyBezierSetFromZone(zoneEngine.zoneClosestT);
                 //robotComm.setGoalPolyBezier(parseFloat(vel.text), parseFloat(w.text));
 
-                tracker.trackConstLinearVel(50);
+                tracker.trackConstLinearVel(50, false);
             }
         }
 

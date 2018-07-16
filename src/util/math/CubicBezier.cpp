@@ -34,7 +34,9 @@
 
 namespace Cellulo{
 
-CubicBezier::CubicBezier(){}
+CubicBezier::CubicBezier(){
+    setControlPoints(QVector2D(0,0), QVector2D(0,1), QVector2D(0,2), QVector2D(0,3));
+}
 
 CubicBezier::CubicBezier(const QVector2D& p0, const QVector2D& p1, const QVector2D& p2, const QVector2D& p3, bool calculateNow){
     setControlPoints(p0, p1, p2, p3);
@@ -91,9 +93,9 @@ qreal CubicBezier::getTByArcLengthRatio(qreal r){
 }
 
 qreal CubicBezier::getArcLengthRatioByT(qreal t){
-    if(t > 1)
+    if(t >= 1)
         return 1;
-    else if(t < 0)
+    else if(t <= 0)
         return 0;
 
     //Calculate equidistant t/point lookup table if not already calculated
@@ -112,8 +114,11 @@ qreal CubicBezier::getArcLengthRatioByT(qreal t){
 
     if(beginIndex == endIndex)
         return ((qreal)beginIndex)/((qreal)(tLUT.size() - 1));
-    else
-        return ((t - tLUT[beginIndex])*((qreal)beginIndex) + (tLUT[endIndex] - t)*((qreal)endIndex))/((qreal)(tLUT.size() - 1));
+    else{
+        qreal tBegin = tLUT[beginIndex];
+        qreal tEnd = tLUT[endIndex];
+        return (((t - tBegin)*((qreal)endIndex) + (tEnd - t)*((qreal)beginIndex))/(tEnd - tBegin))/((qreal)(tLUT.size() - 1));
+    }
 }
 
 qreal CubicBezier::getClosest(const QVector2D& m, QVector2D& closestPoint, qreal& closestDist){

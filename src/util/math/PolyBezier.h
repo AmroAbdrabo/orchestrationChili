@@ -165,6 +165,14 @@ public slots:
     qreal getArcLengthRatioByT(qreal t);
 
     /**
+     * @brief Gets the parameter corresponding to the closest point on the curve to the given point
+     *
+     * @param  point Given point
+     * @return       Parameter corresponding to the closest point on the curve
+     */
+    qreal getClosestT(QVector2D const& point);
+
+    /**
      * @brief Gets the point on the curve corresponding to the given parameter
      *
      * @param t Given parameter t in [0,numSegments]
@@ -239,7 +247,7 @@ private:
      * @param closestDist [out] Returns the closest distance
      * @return Returns the parameter t corresponding to the closest point
      */
-    qreal getClosest(QVector2D const& m, QVector2D& closestPoint, qreal& closestDist);
+    Q_INVOKABLE qreal getClosest(QVector2D const& m, QVector2D& closestPoint, qreal& closestDist);
 
     QVector<CubicBezier> segments;                  ///< Consecutive Bézier curve segments
 

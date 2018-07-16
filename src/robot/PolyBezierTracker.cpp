@@ -77,16 +77,21 @@ void PolyBezierTracker::setRobot(CelluloRobot* newRobot){
 }
 
 void PolyBezierTracker::trackConstLinearVel(qreal vel, bool goToStart){
-    trackingVel = vel;
-    goingToStart = goToStart;
-    if(!goToStart){
-        //TODO: GET CLOSEST T, calculate R
+    if(robot && curve){
+        trackingVel = vel;
+        goingToStart = goToStart;
+        if(goToStart){
+            currentT = 0.0;
+            currentR = 0.0;
+        }
+        else{
+            currentT = curve->getClosestT(QVector2D(robot->getX(), robot->getY()));
+            currentR = curve->getArcLengthRatioByT(currentT);
+        }
+        setEnabled(true);
     }
-    else{
-        currentT = 0.0;
-        currentR = 0.0;
-    }
-    setEnabled(true);
+    else
+        qCritical() << "PolyBezierTracker::trackConstLinearVel(): Robot or curve not yet set, doing nothing.";
 }
 
 void PolyBezierTracker::updateCurve(){
