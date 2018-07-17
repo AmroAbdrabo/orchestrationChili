@@ -30,6 +30,7 @@
 #include "robot/CelluloRobot.h"
 #include "robot/PolyBezierTrackerConstVel.h"
 #include "robot/PolyBezierTrackerAdaptiveVel.h"
+#include "robot/PolyBezierTrackerProfiledVel.h"
 #include "comm/CelluloBluetooth.h"
 #include "comm/CelluloCommUtil.h"
 #include "comm/relay/CelluloLocalRelayClient.h"

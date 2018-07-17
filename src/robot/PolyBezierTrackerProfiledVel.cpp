@@ -15,43 +15,47 @@
  * along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
-/**
- * @file PolyBezierTrackerAdaptiveVel.cpp
- * @brief Makes CelluloRobots track PolyBezier curves with constant velocity
- * @author Ayberk Özgür
- * @date 2018-07-13
- */
+ /**
+  * @file PolyBezierTrackerProfiledVel.cpp
+  * @brief Makes CelluloRobots track PolyBezier curves with the desired velocity profile
+  * @author Ayberk Özgür
+  * @date 2018-07-13
+  */
 
-#include "PolyBezierTrackerAdaptiveVel.h"
-
-#include <QtMath>
+#include "PolyBezierTrackerProfiledVel.h"
 
 namespace Cellulo {
 
-PolyBezierTrackerAdaptiveVel::PolyBezierTrackerAdaptiveVel(QQuickItem* parent) : PolyBezierTracker(parent) {}
+PolyBezierTrackerProfiledVel::PolyBezierTrackerProfiledVel(QQuickItem* parent) : PolyBezierTracker(parent) {}
 
-PolyBezierTrackerAdaptiveVel::~PolyBezierTrackerAdaptiveVel(){}
+PolyBezierTrackerProfiledVel::~PolyBezierTrackerProfiledVel(){}
 
-void PolyBezierTrackerAdaptiveVel::setMaxTrackingVelocity(qreal maxTrackingVelocity){
-    if(0.0 < maxTrackingVelocity && maxTrackingVelocity <= 200.0){
-        this->maxTrackingVelocity = maxTrackingVelocity;
-        emit maxTrackingVelocityChanged();
-    }
-    else
-        qCritical() << "PolyBezierTrackerAdaptiveVel::setMaxTrackingVelocity(): Tracking velocity must be between 0 and 200 mm/s, doing nothing.";
+QVariantList PolyBezierTrackerProfiledVel::getTrackingVelocityProfile() const {
+    QVariantList variantList;
+    for(qreal vel : trackingVelocityProfile)
+        variantList.append(QVariant(vel));
+    return variantList;
 }
 
-void PolyBezierTrackerAdaptiveVel::setMinTrackingVelocity(qreal minTrackingVelocity){
-    if(0.0 < minTrackingVelocity && minTrackingVelocity <= 200.0){
-        this->minTrackingVelocity = minTrackingVelocity;
-        emit minTrackingVelocityChanged();
+void PolyBezierTrackerProfiledVel::setTrackingVelocityProfile(QVariantList const& trackingVelocityProfile){
+    if(trackingVelocityProfile.size() >= 2){
+        this->trackingVelocityProfile.clear();
+        for(QVariant velVariant : trackingVelocityProfile)
+            this->trackingVelocityProfile.append(velVariant.toReal());
+        emit trackingVelocityProfileChanged();
     }
     else
-        qCritical() << "PolyBezierTrackerAdaptiveVel::setMinTrackingVelocity(): Tracking velocity must be between 0 and 200 mm/s, doing nothing.";
+        qCritical() << "PolyBezierTrackerProfiledVel::setTrackingVelocityProfile(): Velocity profile must contain at least 2 elements!";
 }
 
-void PolyBezierTrackerAdaptiveVel::spinLoop(qreal deltaTime){
+void PolyBezierTrackerProfiledVel::spinLoop(qreal deltaTime){
     Q_UNUSED(deltaTime);
+
+    if(trackingVelocityProfile.size() < 2){
+        qCritical() << "PolyBezierTrackerProfiledVel::spinLoop(): Velocity profile must contain at least 2 elements!";
+        trackingVelocityProfile = {0,0};
+        emit trackingVelocityProfileChanged();
+    }
 
     QVector2D currentRobotPos(robot->getX(), robot->getY());
     if(goingToStart){
@@ -60,7 +64,7 @@ void PolyBezierTrackerAdaptiveVel::spinLoop(qreal deltaTime){
         QVector2D goalDir = goalDiff/(10*GOAL_EPSILON);
         if(goalDir.length() > 1.0)
             goalDir.normalize();
-        currentV = (goalDir*maxTrackingVelocity).toVector3D();
+        currentV = (goalDir*trackingVelocityProfile.first()).toVector3D();
 
         robot->setGoalPoseAndVelocity(currentP.x(), currentP.y(), 0, currentV.x(), currentV.y(), 0, true, true, false);
 
@@ -72,24 +76,19 @@ void PolyBezierTrackerAdaptiveVel::spinLoop(qreal deltaTime){
     else{
         currentT = curve->getTByArcLengthRatio(currentR);
         currentP = curve->getPoint(currentT).toVector3D();
-        qreal currentCurvatureRatio = 1 - curve->getCurvatureByArcLengthRatio(currentR)/curve->getMaxCurvature();
-        currentCurvatureRatio = qPow(currentCurvatureRatio, attenuationPower);
-        currentTrackingVelocity = (1 - currentCurvatureRatio)*minTrackingVelocity + currentCurvatureRatio*maxTrackingVelocity;
-        emit currentTrackingVelocityChanged();
-
         if(currentR < 1.0)
-            currentV = (curve->getTangent(currentT).normalized()*currentTrackingVelocity).toVector3D();
+            currentV = (curve->getTangent(currentT).normalized()*trackingVelocity).toVector3D();
         else{
             QVector2D goalDir = (curve->getPoint(curve->getTByArcLengthRatio(1.0)) - currentRobotPos)/(10*GOAL_EPSILON);
             if(goalDir.length() > 1.0)
                 goalDir.normalize();
-            currentV = (goalDir*maxTrackingVelocity).toVector3D();
+            currentV = (goalDir*trackingVelocity).toVector3D();
         }
 
         robot->setGoalPoseAndVelocity(currentP.x(), currentP.y(), 0, currentV.x(), currentV.y(), 0, true, true, false);
 
         if(currentR < 1.0){
-            currentR += (currentTrackingVelocity*100.0/1000.0)/curve->getArcLength();             //TODO: GET PERIOD FROM ADJUSTED
+            currentR += (trackingVelocity*100.0/1000.0)/curve->getArcLength();             //TODO: GET PERIOD FROM ADJUSTED
             if(currentR > 1.0)
                 currentR = 1.0;
             emit trackingPercentageChanged();

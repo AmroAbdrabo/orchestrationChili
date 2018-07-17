@@ -16,7 +16,7 @@
  */
 
 /**
- * @file PolyBezierTrackerConstVel.h
+ * @file PolyBezierTrackerConstVel.cpp
  * @brief Makes CelluloRobots track PolyBezier curves with constant velocity
  * @author Ayberk Özgür
  * @date 2018-07-13

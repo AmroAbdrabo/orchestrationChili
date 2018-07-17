@@ -76,7 +76,7 @@ ApplicationWindow {
     //Visible items
     GroupBox {
         id: addressBox
-        title: "Robots"
+        title: "Robot"
 
         Column{
             spacing: 5
@@ -142,7 +142,7 @@ ApplicationWindow {
 
     GroupBox{
         id: playgroundBox
-        title: "Playground"
+        title: "Playground (Click somewhere to add a point to the curve)"
         anchors.top: addressBox.bottom
 
         Item{
@@ -171,7 +171,9 @@ ApplicationWindow {
                 MouseArea{
                     anchors.fill: parent
                     onClicked: {
-                        pbcurve.appendPoint(Qt.vector2d(mouse.x/page.scaleCoeff, mouse.y/page.scaleCoeff), 0.5, 0.5)
+                        var point = Qt.vector2d(mouse.x/page.scaleCoeff, mouse.y/page.scaleCoeff);
+                        pbcurve.appendPoint(point, 0.5, 0.5);
+                        console.log("Point added: " + point);
                     }
                 }
 
