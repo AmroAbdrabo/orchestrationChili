@@ -95,7 +95,6 @@ void PolyBezierTracker::startTracking(){
         qCritical() << "PolyBezierTracker::track(): Robot or curve not yet set, doing nothing.";
 }
 
-
 void PolyBezierTracker::updateCurve(){
     QVector2D newP;
 

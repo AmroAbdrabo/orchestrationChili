@@ -17,39 +17,55 @@ ApplicationWindow {
     CelluloRobot{
         id: robotComm
 
-        PolyBezierTrackerConstVel{
-            id: trackerConstVel
-
-            curve: pbcurve
-
-            trackingVelocity: parseFloat(constVelText.text)
-
-            goToStartFirst: goToStartFirstCheckbox.checked
-            stopWhenGoalReached: stopWhenGoalReachedCheckbox.checked
-
-            onStartReached: console.info("Start of the curve reached.")
-            onEndReached: console.info("End of the curve reached.")
+        property vector2d trackedPosition: {
+            if(trackerConstVel.enabled)
+                return trackerConstVel.trackedPose.toVector2d();
+            if(trackerAdaptiveVel.enabled)
+                return trackerAdaptiveVel.trackedPose.toVector2d();
+            return Qt.vector2d(0,0);
         }
 
-        PolyBezierTrackerAdaptiveVel{
-            id: trackerAdaptiveVel
-
-            curve: pbcurve
-
-            maxTrackingVelocity: parseFloat(adaptiveMaxVelText.text)
-            minTrackingVelocity: parseFloat(adaptiveMinVelText.text)
-
-            goToStartFirst: goToStartFirstCheckbox.checked
-            stopWhenGoalReached: stopWhenGoalReachedCheckbox.checked
-
-            onStartReached: console.info("Start of the curve reached.")
-            onEndReached: console.info("End of the curve reached.")
+        property vector2d trackedVelocity: {
+            if(trackerConstVel.enabled)
+                return trackerConstVel.trackedVelocity.toVector2d();
+            if(trackerAdaptiveVel.enabled)
+                return trackerAdaptiveVel.trackedVelocity.toVector2d();
+            return Qt.vector2d(0,0);
         }
+    }
 
-        PolyBezier{
-            id: pbcurve
-            Component.onCompleted: loadFromFile(":/assets/curve.json")
-        }
+    PolyBezierTrackerConstVel{
+        id: trackerConstVel
+
+        curve: pbcurve
+
+        trackingVelocity: parseFloat(constVelText.text)
+
+        goToStartFirst: goToStartFirstCheckbox.checked
+        stopWhenGoalReached: stopWhenGoalReachedCheckbox.checked
+
+        onStartReached: console.info("Start of the curve reached.")
+        onEndReached: console.info("End of the curve reached.")
+    }
+
+    PolyBezierTrackerAdaptiveVel{
+        id: trackerAdaptiveVel
+
+        curve: pbcurve
+
+        maxTrackingVelocity: parseFloat(adaptiveMaxVelText.text)
+        minTrackingVelocity: parseFloat(adaptiveMinVelText.text)
+
+        goToStartFirst: goToStartFirstCheckbox.checked
+        stopWhenGoalReached: stopWhenGoalReachedCheckbox.checked
+
+        onStartReached: console.info("Start of the curve reached.")
+        onEndReached: console.info("End of the curve reached.")
+    }
+
+    PolyBezier{
+        id: pbcurve
+        Component.onCompleted: loadFromFile(":/assets/curve.json")
     }
 
     //Visible items
@@ -180,10 +196,9 @@ ApplicationWindow {
                     }
                 }
 
-
                 Rectangle{
-                    x: trackerConstVel.trackedPose.x*parent.scaleCoeff - width/2
-                    y: trackerConstVel.trackedPose.y*parent.scaleCoeff - height/2
+                    x: robotComm.trackedPosition.x*parent.scaleCoeff - width/2
+                    y: robotComm.trackedPosition.y*parent.scaleCoeff - height/2
                     height: 10*parent.scaleCoeff
                     width: 10*parent.scaleCoeff
                     transformOrigin: Item.Left
@@ -193,12 +208,12 @@ ApplicationWindow {
                 }
 
                 Rectangle{
-                    x: trackerConstVel.trackedPose.x*parent.scaleCoeff
-                    y: trackerConstVel.trackedPose.y*parent.scaleCoeff
+                    x: robotComm.trackedPosition.x*parent.scaleCoeff
+                    y: robotComm.trackedPosition.y*parent.scaleCoeff
                     height: 3*parent.scaleCoeff
                     width: 30*parent.scaleCoeff
                     transformOrigin: Item.Left
-                    rotation: Math.atan2(trackerConstVel.trackedVelocity.y, trackerConstVel.trackedVelocity.x)/Math.PI*180
+                    rotation: Math.atan2(robotComm.trackedVelocity.y, robotComm.trackedVelocity.x)/Math.PI*180
                     color: "#80FF0000"
                     z: 1
                 }
@@ -249,6 +264,8 @@ ApplicationWindow {
                     anchors.verticalCenter: parent.verticalCenter
                     onClicked: {
                         trackerAdaptiveVel.enabled = false;
+                        trackerAdaptiveVel.robot = null;
+                        trackerConstVel.robot = robotComm;
                         trackerConstVel.startTracking();
                     }
                 }
@@ -270,7 +287,7 @@ ApplicationWindow {
                 spacing: 5
 
                 Text{
-                    text: "(1) Adaptive velocity tracker:"
+                    text: "(2) Adaptive velocity tracker:"
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
@@ -291,6 +308,8 @@ ApplicationWindow {
                     anchors.verticalCenter: parent.verticalCenter
                     onClicked: {
                         trackerConstVel.enabled = false;
+                        trackerConstVel.robot = null;
+                        trackerAdaptiveVel.robot = robotComm;
                         trackerAdaptiveVel.startTracking();
                     }
                 }
