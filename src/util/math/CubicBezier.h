@@ -144,12 +144,20 @@ public:
     qreal getPointY(qreal t);
 
     /**
-     * @brief Calculates the direction vector of the tangent line to the curve at the given parameter
+     * @brief Calculates the vector of the tangent line to the curve at the given parameter
      *
      * @param t Parameter
      * @return The direction vector of the tangent line to the curve
      */
     QVector2D getDerivative(qreal t);
+
+    /**
+     * @brief Calculates the rate and direction of change of the tangent af the given parameter
+     *
+     * @param t Parameter
+     * @return The rate and direction of change of the tangent line to the curve
+     */
+    QVector2D getSecondDerivative(qreal t);
 
     /**
      * @brief Calculates which side of the curve the given point is located
@@ -254,7 +262,8 @@ private:
     qreal arcLength;                                                          ///< Approximate length of the curve
 
     QVector<qreal> tLUT;                                                      ///< List of t that are approximately equidistant to eachother on the curve
-    QVector<QVector2D> pointLUT;                                              ///< List of points that correspond to equidistantTLut
+    QVector<QVector2D> pointLUT;                                              ///< List of points that correspond to tLUT
+    QVector<qreal> kappaLUT;                                                  ///< List of curvatures that currespond to tLUT
 
     qreal minX = std::numeric_limits<qreal>::max();                           ///< Minimal x bound for the curve
     qreal maxX = std::numeric_limits<qreal>::min();                           ///< Maximum x bound for the curve

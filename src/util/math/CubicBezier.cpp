@@ -213,8 +213,17 @@ QVector2D CubicBezier::getDerivative(qreal t){
         return 3*(p[3] - p[2]);
     else{
         qreal one_minus_t = 1 - t;
-        return 3*one_minus_t*one_minus_t*(p[1] - p[0]) + 6*one_minus_t*t*(p[2] - p[1]) + 3*t*t*(p[3] - p[2]);
+        return 3*(one_minus_t*one_minus_t*(p[1] - p[0]) + 2*one_minus_t*t*(p[2] - p[1]) + t*t*(p[3] - p[2]));
     }
+}
+
+QVector2D CubicBezier::getSecondDerivative(qreal t){
+    if(t == 0)
+        return 6*(p[2] - 2*p[1] + p[0]);
+    else if(t == 1)
+        return 6*(p[3] - 2*p[2] + p[1]);
+    else
+        return 6*((1 - t)*(p[2] - 2*p[1] + p[0]) + t*(p[3] - 2*p[2] + p[1]));
 }
 
 bool CubicBezier::side(const QVector2D& m){
