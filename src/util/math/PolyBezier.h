@@ -150,9 +150,11 @@ public slots:
     void appendPoint(QVector2D const& targetPoint, qreal entrySmoothness = 0.2, qreal exitSmoothness = 0.2);
 
     /**
-     * @brief Removes the first segment in the curve
+     * @brief Removes some segments from the beginning of the curve
+     *
+     * @param num Number of segments to remove
      */
-    void removeFirstSegment();
+    void removeSegmentsFromStart(int num);
 
     /**
      * @brief Gets the approximate length of this curve

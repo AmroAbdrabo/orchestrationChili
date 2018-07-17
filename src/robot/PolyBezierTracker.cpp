@@ -24,6 +24,8 @@
 
 #include "PolyBezierTracker.h"
 
+#include <cmath>
+
 namespace Cellulo{
 
 PolyBezierTracker::PolyBezierTracker(QQuickItem* parent) : QQuickItem(parent) {
@@ -135,6 +137,13 @@ void PolyBezierTracker::robotControlLoop(qreal deltaTime){
                 spinLoop(deltaTime);
                 emit trackedPoseChanged();
                 emit trackedVelocityChanged();
+
+                if(cleanCurve){
+                    int numComplete = (int)currentT;
+                    if(std::floor(currentT) == currentT && numComplete > 0)
+                        numComplete--;
+                    curve->removeSegmentsFromStart(numComplete);
+                }
             }
         }
         else

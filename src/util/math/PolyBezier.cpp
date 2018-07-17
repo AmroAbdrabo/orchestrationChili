@@ -95,14 +95,16 @@ void PolyBezier::loadFromFile(QString const& path){
     setControlPoints(newControlPoints);
 }
 
-void PolyBezier::removeFirstSegment(){
-    if(segments.size() > 0){
-        segments.removeFirst();
-        invalidateCalc();
-        emit controlPointsChanged();
+void PolyBezier::removeSegmentsFromStart(int num){
+    if(segments.size() >= num){
+        if(num > 0){
+            segments.remove(0, num);
+            invalidateCalc();
+            emit controlPointsChanged();
+        }
     }
     else
-        qWarning() << "PolyBezier::removeFirstSegment(): Curve empty, doing nothing.";
+        qWarning() << "PolyBezier::removeSegmentsFromStart(): Not enough segments to remove, doing nothing.";
 }
 
 bool PolyBezier::isEmpty(){

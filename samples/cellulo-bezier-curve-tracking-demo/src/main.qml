@@ -43,6 +43,7 @@ ApplicationWindow {
 
         goToStartFirst: goToStartFirstCheckbox.checked
         stopWhenGoalReached: stopWhenGoalReachedCheckbox.checked
+        cleanCurve: cleanCurveCheckbox.checked
 
         onStartReached: console.info("Start of the curve reached.")
         onEndReached: console.info("End of the curve reached.")
@@ -58,6 +59,7 @@ ApplicationWindow {
 
         goToStartFirst: goToStartFirstCheckbox.checked
         stopWhenGoalReached: stopWhenGoalReachedCheckbox.checked
+        cleanCurve: cleanCurveCheckbox.checked
 
         onStartReached: console.info("Start of the curve reached.")
         onEndReached: console.info("End of the curve reached.")
@@ -65,7 +67,10 @@ ApplicationWindow {
 
     PolyBezier{
         id: pbcurve
-        Component.onCompleted: loadFromFile(":/assets/curve.json")
+
+        Component.onCompleted: reset()
+
+        function reset(){ loadFromFile(":/assets/curve.json"); }
     }
 
     //Visible items
@@ -230,18 +235,33 @@ ApplicationWindow {
             spacing: 5
 
             Row{
-                spacing: 5
+                spacing: 10
+
+                Button{
+                    text: "Reset curve"
+                    onClicked: pbcurve.reset()
+                    anchors.verticalCenter: parent.verticalCenter
+                }
 
                 CheckBox{
                     id: goToStartFirstCheckbox
                     text: "Go to start of the curve first"
                     checked: true
+                    anchors.verticalCenter: parent.verticalCenter
                 }
 
                 CheckBox{
                     id: stopWhenGoalReachedCheckbox
                     text: "Stop tracker when end is reached"
                     checked: false
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                CheckBox{
+                    id: cleanCurveCheckbox
+                    text: "Clean up curve as it is tracked"
+                    checked: false
+                    anchors.verticalCenter: parent.verticalCenter
                 }
             }
 

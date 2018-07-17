@@ -64,6 +64,9 @@ public:
     /** @brief Whether to stop (i.e disable tracker) once the curve is completely tracked (i.e final point on the curve is reached), default false */
     Q_PROPERTY(bool stopWhenGoalReached MEMBER stopWhenGoalReached)
 
+    /** @brief Whether to remove completely tracked segments from the curve, default true */
+    Q_PROPERTY(bool cleanCurve MEMBER cleanCurve)
+
     /** @brief Current percentage in [0,1] of the curve arc length whose tracking is completed, read-only */
     Q_PROPERTY(qreal trackingPercentage READ getTrackingPercentage NOTIFY trackingPercentageChanged)
 
@@ -204,6 +207,7 @@ protected:
 
     bool goToStartFirst = true;                ///< Whether to go to the start of the curve first
     bool stopWhenGoalReached = false;          ///< Whether to stop when curve is completely tracked
+    bool cleanCurve = true;                    ///< Whether to remove completely tracked segments from the curve
 
     bool endReachedFlag = false;               ///< Internal flag to mark whether the end of the curve is reached
 
