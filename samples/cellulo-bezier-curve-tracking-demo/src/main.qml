@@ -29,8 +29,21 @@ ApplicationWindow {
 
             onStartReached: console.info("Start of the curve reached.")
             onEndReached: console.info("End of the curve reached.")
+        }
 
-            onTrackingPercentageChanged: console.log(pbcurve.getMaxCurvature())
+        PolyBezierTrackerAdaptiveVel{
+            id: trackerAdaptiveVel
+
+            curve: pbcurve
+
+            maxTrackingVelocity: parseFloat(adaptiveMaxVelText.text)
+            minTrackingVelocity: parseFloat(adaptiveMinVelText.text)
+
+            goToStartFirst: goToStartFirstCheckbox.checked
+            stopWhenGoalReached: stopWhenGoalReachedCheckbox.checked
+
+            onStartReached: console.info("Start of the curve reached.")
+            onEndReached: console.info("End of the curve reached.")
         }
 
         PolyBezier{
@@ -234,7 +247,10 @@ ApplicationWindow {
                 Button{
                     text: "Start"
                     anchors.verticalCenter: parent.verticalCenter
-                    onClicked: trackerConstVel.startTracking()
+                    onClicked: {
+                        trackerAdaptiveVel.enabled = false;
+                        trackerConstVel.startTracking();
+                    }
                 }
 
                 Button{
@@ -259,26 +275,35 @@ ApplicationWindow {
                 }
 
                 TextField{
-                    id: adaptiveVelText
+                    id: adaptiveMaxVelText
                     placeholderText: "Max velocity (mm/s)"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                TextField{
+                    id: adaptiveMinVelText
+                    placeholderText: "Min velocity (mm/s)"
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
                 Button{
                     text: "Start"
                     anchors.verticalCenter: parent.verticalCenter
-                    onClicked: trackerConstVel.startTracking()
+                    onClicked: {
+                        trackerConstVel.enabled = false;
+                        trackerAdaptiveVel.startTracking();
+                    }
                 }
 
                 Button{
                     text: "Stop"
                     anchors.verticalCenter: parent.verticalCenter
-                    onClicked: trackerConstVel.enabled = false
+                    onClicked: trackerAdaptiveVel.enabled = false
                 }
 
                 Text{
-                    text: trackerConstVel.enabled ? "Running" : "Not running"
-                    color: trackerConstVel.enabled ? "green" : "black"
+                    text: trackerAdaptiveVel.enabled ? "Running" : "Not running"
+                    color: trackerAdaptiveVel.enabled ? "green" : "black"
                     anchors.verticalCenter: parent.verticalCenter
                 }
             }

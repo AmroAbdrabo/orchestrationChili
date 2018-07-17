@@ -29,6 +29,7 @@
 
 #include "robot/CelluloRobot.h"
 #include "robot/PolyBezierTrackerConstVel.h"
+#include "robot/PolyBezierTrackerAdaptiveVel.h"
 #include "comm/CelluloBluetooth.h"
 #include "comm/CelluloCommUtil.h"
 #include "comm/relay/CelluloLocalRelayClient.h"
@@ -76,6 +77,7 @@ namespace Cellulo{
 void CelluloPlugin::registerTypes(const char *uri){
     qmlRegisterType<CelluloRobot>(uri, 1, 0, "CelluloRobot");
     qmlRegisterType<PolyBezierTrackerConstVel>(uri, 1, 0, "PolyBezierTrackerConstVel");
+    qmlRegisterType<PolyBezierTrackerAdaptiveVel>(uri, 1, 0, "PolyBezierTrackerAdaptiveVel");
 
     qmlRegisterType<CelluloBluetooth>(uri, 1, 0, "CelluloBluetooth");
     qmlRegisterType<CelluloLocalRelayClient>(uri, 1, 0, "CelluloLocalRelayClient");
