@@ -189,6 +189,11 @@ qreal PolyBezier::getArcLength(){
     return cumulativeArcLengths.last();
 }
 
+qreal PolyBezier::getMaxCurvature(){
+    calculateMaxCurvature();
+    return maxKappa;
+}
+
 qreal PolyBezier::getTByArcLengthRatio(qreal r){
     if(r >= 1.0)
         return segments.size();
@@ -242,6 +247,45 @@ qreal PolyBezier::getArcLengthRatioByT(qreal t){
         CubicBezier& segment = segments[segIndex];
         return (cumulativeArcLengths[segIndex] + segment.getArcLength()*segment.getArcLengthRatioByT(t))/getArcLength();
     }
+}
+
+qreal PolyBezier::getCurvatureByArcLengthRatio(qreal r){
+    if(r > 1.0)
+        r = 1.0;
+    else if(r < 0.0)
+        r = 0.0;
+
+    //Calculate cumulative arc lengths of all segments
+    calculateCumulativeArcLengths();
+
+    if(cumulativeArcLengths.size() <= 1){
+        qCritical() << "PolyBezier::getCurvatureByArcLengthRatio(): No segments present, invalid result will be returned!";
+        return 0;
+    }
+
+    //Binary search over cumulative arc lengths of segments
+    //Cache last found index and check it, as well as one next to it before search
+    qreal rReal = r*cumulativeArcLengths.last();
+    int beginIndex;
+    if(lastLookupBeginIndex < segments.size() &&
+        cumulativeArcLengths[lastLookupBeginIndex + 0] < rReal && rReal < cumulativeArcLengths[lastLookupBeginIndex + 1])
+            beginIndex = lastLookupBeginIndex;
+    else if(lastLookupBeginIndex + 1 < segments.size() &&
+        cumulativeArcLengths[lastLookupBeginIndex + 1] < rReal && rReal < cumulativeArcLengths[lastLookupBeginIndex + 2])
+            beginIndex = lastLookupBeginIndex + 1;
+    else{
+        beginIndex = 0;
+        int endIndex = cumulativeArcLengths.size() - 1;
+        while(beginIndex + 1 < endIndex){
+            int midIndex = (beginIndex + endIndex)/2;
+            if(cumulativeArcLengths[midIndex] < rReal)
+                beginIndex = midIndex;
+            else
+                endIndex = midIndex;
+        }
+    }
+    lastLookupBeginIndex = beginIndex;
+    return segments[beginIndex].getCurvatureByArcLengthRatio((rReal - cumulativeArcLengths[beginIndex])/segments[beginIndex].getArcLength());
 }
 
 qreal PolyBezier::getClosest(const QVector2D& m, QVector2D& closestPoint, qreal& closestDist){
@@ -370,9 +414,24 @@ void PolyBezier::calculateCumulativeArcLengths(){
     cumulativeArcLengthsCalculated = true;
 }
 
+void PolyBezier::calculateMaxCurvature(){
+    if(maxKappaCalculated)
+        return;
+
+    maxKappa = 0;
+    for(CubicBezier& segment : segments){
+        qreal localMaxKappa = segment.getMaxCurvature();
+        if(localMaxKappa > maxKappa)
+            maxKappa = localMaxKappa;
+    }
+
+    maxKappaCalculated = true;
+}
+
 void PolyBezier::invalidateCalc(){
     boundingBoxCalculated = false;
     cumulativeArcLengthsCalculated = false;
+    maxKappaCalculated = false;
     lastLookupBeginIndex = 0;
 }
 

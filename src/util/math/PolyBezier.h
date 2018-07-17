@@ -162,6 +162,13 @@ public slots:
     qreal getArcLength();
 
     /**
+     * @brief Gets the approximate maximum absolute curvature found along this curve
+     *
+     * @return Approximate maximum absolute curvature found along this curve
+     */
+    qreal getMaxCurvature();
+
+    /**
      * @brief Gets the parameter t corresponding to the desired arc length ratio
      *
      * Takes O(logN) time where N is the number of segments, assuming that all LUTs are precalculated.
@@ -180,6 +187,14 @@ public slots:
      * @return   Arc length ratio in [0,1] where 0 corresponds to the beginning, 0.5 corresponds to exactly halfway through the length of the curve, 1 corresponds to the end of the curve etc.
      */
     qreal getArcLengthRatioByT(qreal t);
+
+    /**
+     * @brief Calculates the approximate absolute curvature (kappa) at given arc length ratio
+     *
+     * @param r Arc length ratio in [0,1] where 0 corresponds to the beginning, 0.5 corresponds to exactly halfway through the length of the curve, 1 corresponds to the end of the curve etc.
+     * @return The approximate absolute curvature (kappa) at given arc length ratio
+     */
+    qreal getCurvatureByArcLengthRatio(qreal r);
 
     /**
      * @brief Gets the parameter corresponding to the closest point on the curve to the given point
@@ -244,6 +259,11 @@ private:
     void calculateCumulativeArcLengths();
 
     /**
+     * @brief Updates the maximum absolute curvature found on the path
+     */
+    void calculateMaxCurvature();
+
+    /**
      * @brief Forces heavy calculations to be redone at a later time
      */
     void invalidateCalc();
@@ -266,6 +286,9 @@ private:
 
     bool cumulativeArcLengthsCalculated = false;    ///< Whether the cumulative arc lengths list is calculated and ready
     QVector<qreal> cumulativeArcLengths;            ///< Cumulative arc lengths, i.e index i contains the total arc length until the end of the i^th segment
+
+    bool maxKappaCalculated = false;                ///< Whether the maximum absolute curvature along the path is calculated
+    qreal maxKappa;                                 ///< Maximum absolute curvature along the path is calculated
 
     int lastLookupBeginIndex;
 

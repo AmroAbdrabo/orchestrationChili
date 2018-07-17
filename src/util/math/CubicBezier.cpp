@@ -226,6 +226,29 @@ QVector2D CubicBezier::getSecondDerivative(qreal t){
         return 6*((1 - t)*(p[2] - 2*p[1] + p[0]) + t*(p[3] - 2*p[2] + p[1]));
 }
 
+qreal CubicBezier::getCurvatureByArcLengthRatio(qreal r){
+    if(r < 0)
+        return kappaLUT.first();
+    else if(r > 1)
+        return kappaLUT.last();
+
+    //Calculate equidistant kappa lookup table if not already calculated
+    calculateKappaLUT();
+
+    qreal realIndex = r*(kappaLUT.size() - 1);
+    int prevIndex = std::floor(realIndex);
+    int nextIndex = std::ceil(realIndex);
+    if(prevIndex == nextIndex)
+        return kappaLUT[prevIndex];
+    else
+        return (realIndex - prevIndex)*kappaLUT[nextIndex] + (nextIndex - realIndex)*kappaLUT[prevIndex];
+}
+
+qreal CubicBezier::getMaxCurvature(){
+    calculateKappaLUT();
+    return maxKappa;
+}
+
 bool CubicBezier::side(const QVector2D& m){
 
     //Get the closest point on the curve
@@ -258,6 +281,7 @@ void CubicBezier::split(qreal t, CubicBezier& left, CubicBezier& right){
 void CubicBezier::invalidateCalc(){
     boundingBoxCalculated = false;
     LUTsCalculated = false;
+    kappaLUTCalculated = false;
 }
 
 void CubicBezier::calculateLUTs(){
@@ -321,6 +345,28 @@ void CubicBezier::calculateLUTs(){
     }
 
     LUTsCalculated = true;
+}
+
+void CubicBezier::calculateKappaLUT(){
+    if(kappaLUTCalculated)
+        return;
+
+    calculateLUTs();
+
+    maxKappa = 0;
+
+    kappaLUT.clear();
+    for(qreal t : tLUT){
+        QVector2D pprime = getDerivative(t);
+        QVector2D pprimeprime = getSecondDerivative(t);
+        qreal pprimelen = pprime.length();
+        qreal kappa = std::abs(pprime.x()*pprimeprime.y() - pprime.y()*pprimeprime.x())/(pprimelen*pprimelen*pprimelen);
+        kappaLUT.push_back(kappa);
+        if(kappa > maxKappa)
+            maxKappa = kappa;
+    }
+
+    kappaLUTCalculated = true;
 }
 
 inline void CubicBezier::updateMinMaxX(qreal newX){

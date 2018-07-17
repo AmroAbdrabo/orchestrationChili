@@ -160,6 +160,21 @@ public:
     QVector2D getSecondDerivative(qreal t);
 
     /**
+     * @brief Calculates the approximate absolute curvature (kappa) at given arc length ratio
+     *
+     * @param r Arc length ratio
+     * @return The approximate absolute curvature (kappa) at given arc length ratio
+     */
+    qreal getCurvatureByArcLengthRatio(qreal r);
+
+    /**
+     * @brief Gets the approximate maximum absolute curvature (kappa) of the curve
+     *
+     * @return Approximate maximum curvature (kappa)
+     */
+    qreal getMaxCurvature();
+
+    /**
      * @brief Calculates which side of the curve the given point is located
      *
      * @param m Given point
@@ -223,6 +238,11 @@ private:
     void calculateLUTs();
 
     /**
+     * @brief Calculates the curvatures along the curve
+     */
+    void calculateKappaLUT();
+
+    /**
      * @brief Sets the min/max X of the bounding box from the given value if value is less/greater than the min/max
      *
      * @param newX New value
@@ -252,6 +272,9 @@ private:
 
     bool boundingBoxCalculated = false;                                       ///< Whether the bounding box is calculated for this curve
     bool LUTsCalculated = false;                                              ///< Whether the equidistant t/point lookup table is calculated
+    bool kappaLUTCalculated = false;                                          ///< Whether the curvatures along the curve are calculated
+
+    qreal maxKappa;                                                           ///< Max absolute curvature found along the curve
 
     bool isDegenerate = false;                                                ///< Whether this curve is an approximation of a line
     QVector2D p[4];                                                           ///< Control points
