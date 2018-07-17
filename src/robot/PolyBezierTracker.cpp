@@ -87,6 +87,7 @@ void PolyBezierTracker::startTracking(){
             currentT = curve->getClosestT(QVector2D(robot->getX(), robot->getY()));
             currentR = curve->getArcLengthRatioByT(currentT);
         }
+        emit trackingPercentageChanged();
         endReachedFlag = false;
         setEnabled(true);
     }
@@ -102,6 +103,7 @@ void PolyBezierTracker::updateCurve(){
     newP = curve->getPoint(currentT);
     if(newP.x() == currentP.x() && newP.y() == currentP.y()){
         currentR = curve->getArcLengthRatioByT(currentT);
+        emit trackingPercentageChanged();
         return;
     }
 
@@ -110,6 +112,7 @@ void PolyBezierTracker::updateCurve(){
     if(newP.x() == currentP.x() && newP.y() == currentP.y()){
         currentT = currentT - 1;
         currentR = curve->getArcLengthRatioByT(currentT);
+        emit trackingPercentageChanged();
         return;
     }
 
@@ -119,6 +122,7 @@ void PolyBezierTracker::updateCurve(){
     currentP.setX(newP.x());
     currentP.setY(newP.y());
     currentR = curve->getArcLengthRatioByT(currentT);
+    emit trackingPercentageChanged();
 }
 
 void PolyBezierTracker::robotControlLoop(qreal deltaTime){

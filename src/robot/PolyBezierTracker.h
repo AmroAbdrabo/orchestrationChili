@@ -64,6 +64,9 @@ public:
     /** @brief Whether to stop (i.e disable tracker) once the curve is completely tracked (i.e final point on the curve is reached), default false */
     Q_PROPERTY(bool stopWhenGoalReached MEMBER stopWhenGoalReached)
 
+    /** @brief Current percentage in [0,1] of the curve arc length whose tracking is completed, read-only */
+    Q_PROPERTY(qreal trackingPercentage READ getTrackingPercentage NOTIFY trackingPercentageChanged)
+
     /** @brief The currently tracked pose, in (mm,mm,deg), read-only */
     Q_PROPERTY(QVector3D trackedPose READ getTrackedPose NOTIFY trackedPoseChanged)
 
@@ -113,6 +116,13 @@ public:
     void setRobot(Cellulo::CelluloRobot* newRobot);
 
     /**
+     * @brief Gets the tracking percentage
+     *
+     * @return Tracking percentage in [0,1]
+     */
+    qreal getTrackingPercentage() const { return currentR; }
+
+    /**
      * @brief Gets the currently tracked pose
      *
      * @return The currently tracked pose in (mm,mm,deg)
@@ -141,6 +151,11 @@ signals:
      * @brief Emitted when the robot that tracks changes
      */
     void robotChanged();
+
+    /**
+     * @brief Emitted when the tracking percentage changes
+     */
+    void trackingPercentageChanged();
 
     /**
      * @brief Emitted when the tracked pose changes

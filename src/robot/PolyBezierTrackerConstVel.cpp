@@ -36,7 +36,7 @@ void PolyBezierTrackerConstVel::setTrackingVelocity(qreal trackingVelocity){
         emit trackingVelocityChanged();
     }
     else
-        qCritical() << "PolyBezierTracker::setTrackingVelocity(): Tracking velocity must be between 0 and 185 mm/s, doing nothing.";
+        qCritical() << "PolyBezierTrackerConstVel::setTrackingVelocity(): Tracking velocity must be between 0 and 185 mm/s, doing nothing.";
 }
 
 void PolyBezierTrackerConstVel::spinLoop(qreal deltaTime){
@@ -76,6 +76,7 @@ void PolyBezierTrackerConstVel::spinLoop(qreal deltaTime){
             currentR += (trackingVelocity*100.0/1000.0)/curve->getArcLength();             //TODO: GET PERIOD FROM ADJUSTED
             if(currentR > 1.0)
                 currentR = 1.0;
+            emit trackingPercentageChanged();
         }
         else{
             if(currentRobotPos.distanceToPoint(curve->getPoint(curve->getTByArcLengthRatio(1.0))) <= GOAL_EPSILON){

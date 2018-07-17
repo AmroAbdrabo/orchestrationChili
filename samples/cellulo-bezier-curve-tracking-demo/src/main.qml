@@ -18,20 +18,24 @@ ApplicationWindow {
         id: robotComm
 
         PolyBezierTrackerConstVel{
-            id: tracker
+            id: trackerConstVel
 
-            PolyBezier{
-                id: pbcurve
-                Component.onCompleted: loadFromFile(":/assets/curve.json")
-            }
+            curve: pbcurve
 
-            trackingVelocity: parseFloat(velText.text)
+            trackingVelocity: parseFloat(constVelText.text)
 
             goToStartFirst: goToStartFirstCheckbox.checked
             stopWhenGoalReached: stopWhenGoalReachedCheckbox.checked
 
             onStartReached: console.info("Start of the curve reached.")
             onEndReached: console.info("End of the curve reached.")
+
+            onTrackingPercentageChanged: console.log(pbcurve.getMaxCurvature())
+        }
+
+        PolyBezier{
+            id: pbcurve
+            Component.onCompleted: loadFromFile(":/assets/curve.json")
         }
     }
 
@@ -165,8 +169,8 @@ ApplicationWindow {
 
 
                 Rectangle{
-                    x: tracker.trackedPose.x*parent.scaleCoeff - width/2
-                    y: tracker.trackedPose.y*parent.scaleCoeff - height/2
+                    x: trackerConstVel.trackedPose.x*parent.scaleCoeff - width/2
+                    y: trackerConstVel.trackedPose.y*parent.scaleCoeff - height/2
                     height: 10*parent.scaleCoeff
                     width: 10*parent.scaleCoeff
                     transformOrigin: Item.Left
@@ -176,12 +180,12 @@ ApplicationWindow {
                 }
 
                 Rectangle{
-                    x: tracker.trackedPose.x*parent.scaleCoeff
-                    y: tracker.trackedPose.y*parent.scaleCoeff
+                    x: trackerConstVel.trackedPose.x*parent.scaleCoeff
+                    y: trackerConstVel.trackedPose.y*parent.scaleCoeff
                     height: 3*parent.scaleCoeff
                     width: 30*parent.scaleCoeff
                     transformOrigin: Item.Left
-                    rotation: Math.atan2(tracker.trackedVelocity.y, tracker.trackedVelocity.x)/Math.PI*180
+                    rotation: Math.atan2(trackerConstVel.trackedVelocity.y, trackerConstVel.trackedVelocity.x)/Math.PI*180
                     color: "#80FF0000"
                     z: 1
                 }
@@ -222,7 +226,7 @@ ApplicationWindow {
                 }
 
                 TextField{
-                    id: velText
+                    id: constVelText
                     placeholderText: "Velocity (mm/s)"
                     anchors.verticalCenter: parent.verticalCenter
                 }
@@ -230,18 +234,51 @@ ApplicationWindow {
                 Button{
                     text: "Start"
                     anchors.verticalCenter: parent.verticalCenter
-                    onClicked: tracker.startTracking()
+                    onClicked: trackerConstVel.startTracking()
                 }
 
                 Button{
                     text: "Stop"
                     anchors.verticalCenter: parent.verticalCenter
-                    onClicked: tracker.enabled = false
+                    onClicked: trackerConstVel.enabled = false
                 }
 
                 Text{
-                    text: tracker.enabled ? "Running" : "Not running"
-                    color: tracker.enabled ? "green" : "black"
+                    text: trackerConstVel.enabled ? "Running" : "Not running"
+                    color: trackerConstVel.enabled ? "green" : "black"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+
+            Row{
+                spacing: 5
+
+                Text{
+                    text: "(1) Adaptive velocity tracker:"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                TextField{
+                    id: adaptiveVelText
+                    placeholderText: "Max velocity (mm/s)"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Button{
+                    text: "Start"
+                    anchors.verticalCenter: parent.verticalCenter
+                    onClicked: trackerConstVel.startTracking()
+                }
+
+                Button{
+                    text: "Stop"
+                    anchors.verticalCenter: parent.verticalCenter
+                    onClicked: trackerConstVel.enabled = false
+                }
+
+                Text{
+                    text: trackerConstVel.enabled ? "Running" : "Not running"
+                    color: trackerConstVel.enabled ? "green" : "black"
                     anchors.verticalCenter: parent.verticalCenter
                 }
             }
