@@ -136,7 +136,7 @@ public slots:
      * @param secondPoint End of the segment
      * @param smoothness  Smoothness parameter (not for this segment but for upcoming segments), in ]0,1] where 0 signifies quickest possible arrival to the target (don't actually use 0 but use a value close to 0) and 1 signifies smoothest possible continuation of the segment
      */
-    void start(QVector2D const& firstPoint, QVector2D const& secondPoint, qreal smoothness = 0.2);
+    void start(QVector2D const& firstPoint, QVector2D const& secondPoint, qreal smoothness = 0.4);
 
     /**
      * @brief Appends a new segment that ends with the given point to the curve, autogenerating the in-between 2 control points
@@ -147,7 +147,7 @@ public slots:
      * @param entrySmoothness Smoothness parameter of the new segment's beginning, in ]0,1] where 0 signifies quickest possible turn to the target (don't actually use 0 but use a value close to 0) and 1 signifies equal smoothness to the previous segment
      * @param exitSmoothness  Smoothness parameter of the new segment's end, in ]0,1] where 0 signifies quickest possible arrival to the target (don't actually use 0 but use a value close to 0) and 1 signifies smoothest possible continuation of the segment
      */
-    void appendPoint(QVector2D const& targetPoint, qreal entrySmoothness = 0.2, qreal exitSmoothness = 0.2);
+    void appendPoint(QVector2D const& targetPoint, qreal entrySmoothness = 0.4, qreal exitSmoothness = 0.4);
 
     /**
      * @brief Removes some segments from the beginning of the curve

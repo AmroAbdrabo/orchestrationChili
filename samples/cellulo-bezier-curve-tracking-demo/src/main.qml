@@ -22,6 +22,8 @@ ApplicationWindow {
                 return trackerConstVel.trackedPose.toVector2d();
             if(trackerAdaptiveVel.enabled)
                 return trackerAdaptiveVel.trackedPose.toVector2d();
+            if(trackerProfiledVel.enabled)
+                return trackerProfiledVel.trackedPose.toVector2d();
             return Qt.vector2d(0,0);
         }
 
@@ -30,6 +32,8 @@ ApplicationWindow {
                 return trackerConstVel.trackedVelocity.toVector2d();
             if(trackerAdaptiveVel.enabled)
                 return trackerAdaptiveVel.trackedVelocity.toVector2d();
+            if(trackerProfiledVel.enabled)
+                return trackerProfiledVel.trackedVelocity.toVector2d();
             return Qt.vector2d(0,0);
         }
     }
@@ -56,6 +60,21 @@ ApplicationWindow {
 
         maxTrackingVelocity: parseFloat(adaptiveMaxVelText.text)
         minTrackingVelocity: parseFloat(adaptiveMinVelText.text)
+
+        goToStartFirst: goToStartFirstCheckbox.checked
+        stopWhenGoalReached: stopWhenGoalReachedCheckbox.checked
+        cleanCurve: cleanCurveCheckbox.checked
+
+        onStartReached: console.info("Start of the curve reached.")
+        onEndReached: console.info("End of the curve reached.")
+    }
+
+    PolyBezierTrackerProfiledVel{
+        id: trackerProfiledVel
+
+        curve: pbcurve
+
+        trackingVelocityProfile: profiledVelText.text.split(",").map(function(v){return parseFloat(v)})
 
         goToStartFirst: goToStartFirstCheckbox.checked
         stopWhenGoalReached: stopWhenGoalReachedCheckbox.checked
@@ -172,7 +191,7 @@ ApplicationWindow {
                     anchors.fill: parent
                     onClicked: {
                         var point = Qt.vector2d(mouse.x/page.scaleCoeff, mouse.y/page.scaleCoeff);
-                        pbcurve.appendPoint(point, 0.5, 0.5);
+                        pbcurve.appendPoint(point);
                         console.log("Point added: " + point);
                     }
                 }
@@ -277,6 +296,7 @@ ApplicationWindow {
 
                 TextField{
                     id: constVelText
+                    text: "70"
                     placeholderText: "Velocity (mm/s)"
                     anchors.verticalCenter: parent.verticalCenter
                 }
@@ -287,6 +307,9 @@ ApplicationWindow {
                     onClicked: {
                         trackerAdaptiveVel.enabled = false;
                         trackerAdaptiveVel.robot = null;
+                        trackerProfiledVel.enabled = false;
+                        trackerProfiledVel.robot = null;
+
                         trackerConstVel.robot = robotComm;
                         trackerConstVel.startTracking();
                     }
@@ -299,7 +322,7 @@ ApplicationWindow {
                 }
 
                 Text{
-                    text: trackerConstVel.enabled ? "Running" : "Not running"
+                    text: trackerConstVel.enabled ? "Running: " + trackerConstVel.trackingPercentage : "Not running"
                     color: trackerConstVel.enabled ? "green" : "black"
                     anchors.verticalCenter: parent.verticalCenter
                 }
@@ -315,12 +338,14 @@ ApplicationWindow {
 
                 TextField{
                     id: adaptiveMaxVelText
+                    text: "100"
                     placeholderText: "Max velocity (mm/s)"
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
                 TextField{
                     id: adaptiveMinVelText
+                    text: "30"
                     placeholderText: "Min velocity (mm/s)"
                     anchors.verticalCenter: parent.verticalCenter
                 }
@@ -331,6 +356,9 @@ ApplicationWindow {
                     onClicked: {
                         trackerConstVel.enabled = false;
                         trackerConstVel.robot = null;
+                        trackerProfiledVel.enabled = false;
+                        trackerProfiledVel.robot = null;
+
                         trackerAdaptiveVel.robot = robotComm;
                         trackerAdaptiveVel.startTracking();
                     }
@@ -343,8 +371,51 @@ ApplicationWindow {
                 }
 
                 Text{
-                    text: trackerAdaptiveVel.enabled ? "Running" : "Not running"
+                    text: trackerAdaptiveVel.enabled ? "Running: " + trackerAdaptiveVel.trackingPercentage : "Not running"
                     color: trackerAdaptiveVel.enabled ? "green" : "black"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+
+            Row{
+                spacing: 5
+
+                Text{
+                    text: "(3) Profiled velocity tracker:"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                TextField{
+                    id: profiledVelText
+                    placeholderText: "Equidistant comma separated velocity list (mm/s)"
+                    text: "100,150,150,60,75,150,150,40,100,75,50"
+                    width: 300
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Button{
+                    text: "Start"
+                    anchors.verticalCenter: parent.verticalCenter
+                    onClicked: {
+                        trackerConstVel.enabled = false;
+                        trackerConstVel.robot = null;
+                        trackerAdaptiveVel.enabled = false;
+                        trackerAdaptiveVel.robot = null;
+
+                        trackerProfiledVel.robot = robotComm;
+                        trackerProfiledVel.startTracking();
+                    }
+                }
+
+                Button{
+                    text: "Stop"
+                    anchors.verticalCenter: parent.verticalCenter
+                    onClicked: trackerProfiledVel.enabled = false
+                }
+
+                Text{
+                    text: trackerProfiledVel.enabled ? "Running: " + trackerProfiledVel.trackingPercentage : "Not running"
+                    color: trackerProfiledVel.enabled ? "green" : "black"
                     anchors.verticalCenter: parent.verticalCenter
                 }
             }

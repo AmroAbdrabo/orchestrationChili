@@ -72,9 +72,16 @@ void PolyBezierTrackerAdaptiveVel::spinLoop(qreal deltaTime){
     else{
         currentT = curve->getTByArcLengthRatio(currentR);
         currentP = curve->getPoint(currentT).toVector3D();
-        qreal currentCurvatureRatio = 1 - curve->getCurvatureByArcLengthRatio(currentR)/curve->getMaxCurvature();
-        currentCurvatureRatio = qPow(currentCurvatureRatio, attenuationPower);
-        currentTrackingVelocity = (1 - currentCurvatureRatio)*minTrackingVelocity + currentCurvatureRatio*maxTrackingVelocity;
+
+        //Adapt velocity according to local curvature
+        qreal maxCurvature = curve->getMaxCurvature();
+        if(maxCurvature > 0){
+            qreal currentCurvatureRatio = 1 - curve->getCurvatureByArcLengthRatio(currentR)/maxCurvature;
+            currentCurvatureRatio = qPow(currentCurvatureRatio, attenuationPower);
+            currentTrackingVelocity = (1 - currentCurvatureRatio)*minTrackingVelocity + currentCurvatureRatio*maxTrackingVelocity;
+        }
+        else
+            currentTrackingVelocity = maxTrackingVelocity;
         emit currentTrackingVelocityChanged();
 
         if(currentR < 1.0)
