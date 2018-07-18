@@ -95,8 +95,6 @@ void PolyBezierTrackerConstAccel::spinLoop(qreal deltaTime){
                 currentVelocity -= deltaTime/1000.0*trackingAcceleration;
                 if(currentVelocity < 0.0)
                     currentVelocity = 0.0;
-
-                qDebug() << "Decelerating: " << currentVelocity << " " << deltaTime;
             }
 
             //Should accelerate
@@ -104,8 +102,6 @@ void PolyBezierTrackerConstAccel::spinLoop(qreal deltaTime){
                 currentVelocity += deltaTime/1000.0*trackingAcceleration;
                 if(currentVelocity > trackingVelocity)
                     currentVelocity = trackingVelocity;
-
-                qDebug() << "Accelerating: " << currentVelocity << " " << deltaTime;
             }
 
             currentR += (currentVelocity*deltaTime/1000.0)/curveLength;

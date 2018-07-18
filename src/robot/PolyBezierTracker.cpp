@@ -109,6 +109,7 @@ void PolyBezierTracker::startTracking(){
 }
 
 void PolyBezierTracker::updateCurve(){
+    endReachedFlag = false;
     QVector2D newP;
 
     //Check segment addition to the end, currentT should be unchanged
