@@ -53,6 +53,22 @@ ApplicationWindow {
         onEndReached: console.info("End of the curve reached.")
     }
 
+    PolyBezierTrackerConstAccel{
+        id: trackerConstAccel
+
+        curve: pbcurve
+
+        trackingVelocity: parseFloat(constAccelVelText.text)
+        trackingAcceleration: parseFloat(constAccelAccelText.text)
+
+        goToStartFirst: goToStartFirstCheckbox.checked
+        stopWhenGoalReached: stopWhenGoalReachedCheckbox.checked
+        cleanCurve: cleanCurveCheckbox.checked
+
+        onStartReached: console.info("Start of the curve reached.")
+        onEndReached: console.info("End of the curve reached.")
+    }
+
     PolyBezierTrackerAdaptiveVel{
         id: trackerAdaptiveVel
 
@@ -305,6 +321,8 @@ ApplicationWindow {
                     text: "Start"
                     anchors.verticalCenter: parent.verticalCenter
                     onClicked: {
+                        trackerConstAccel.enabled = false;
+                        trackerConstAccel.robot = null;
                         trackerAdaptiveVel.enabled = false;
                         trackerAdaptiveVel.robot = null;
                         trackerProfiledVel.enabled = false;
@@ -332,7 +350,58 @@ ApplicationWindow {
                 spacing: 5
 
                 Text{
-                    text: "(2) Adaptive velocity tracker:"
+                    text: "(2) Constant acceleration tracker:"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                TextField{
+                    id: constAccelVelText
+                    text: "50"
+                    placeholderText: "Velocity (mm/s)"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                TextField{
+                    id: constAccelAccelText
+                    text: "100"
+                    placeholderText: "Acceleration (mm/s^2)"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Button{
+                    text: "Start"
+                    anchors.verticalCenter: parent.verticalCenter
+                    onClicked: {
+                        trackerConstVel.enabled = false;
+                        trackerConstVel.robot = null;
+                        trackerAdaptiveVel.enabled = false;
+                        trackerAdaptiveVel.robot = null;
+                        trackerProfiledVel.enabled = false;
+                        trackerProfiledVel.robot = null;
+
+                        trackerConstAccel.robot = robotComm;
+                        trackerConstAccel.startTracking();
+                    }
+                }
+
+                Button{
+                    text: "Stop"
+                    anchors.verticalCenter: parent.verticalCenter
+                    onClicked: trackerConstAccel.enabled = false
+                }
+
+                Text{
+                    text: trackerConstAccel.enabled ? "Running: " + trackerConstAccel.trackingPercentage : "Not running"
+                    color: trackerConstAccel.enabled ? "green" : "black"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+
+            Row{
+                spacing: 5
+
+                Text{
+                    text: "(3) Adaptive velocity tracker:"
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
@@ -356,6 +425,8 @@ ApplicationWindow {
                     onClicked: {
                         trackerConstVel.enabled = false;
                         trackerConstVel.robot = null;
+                        trackerConstAccel.enabled = false;
+                        trackerConstAccel.robot = null;
                         trackerProfiledVel.enabled = false;
                         trackerProfiledVel.robot = null;
 
@@ -381,7 +452,7 @@ ApplicationWindow {
                 spacing: 5
 
                 Text{
-                    text: "(3) Profiled velocity tracker:"
+                    text: "(4) Profiled velocity tracker:"
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
@@ -399,6 +470,8 @@ ApplicationWindow {
                     onClicked: {
                         trackerConstVel.enabled = false;
                         trackerConstVel.robot = null;
+                        trackerConstAccel.enabled = false;
+                        trackerConstAccel.robot = null;
                         trackerAdaptiveVel.enabled = false;
                         trackerAdaptiveVel.robot = null;
 
