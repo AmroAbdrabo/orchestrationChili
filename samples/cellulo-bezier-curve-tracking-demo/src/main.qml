@@ -355,7 +355,7 @@ ApplicationWindow {
                 }
 
                 Text{
-                    text: trackerConstVel.enabled ? "Running: " + trackerConstVel.trackingPercentage : "Not running"
+                    text: trackerConstVel.enabled ? "Running: " + (trackerConstVel.trackingPercentage*100).toFixed(2) + "%" : "Not running"
                     color: trackerConstVel.enabled ? "green" : "black"
                     anchors.verticalCenter: parent.verticalCenter
                 }
@@ -406,7 +406,7 @@ ApplicationWindow {
                 }
 
                 Text{
-                    text: trackerConstAccel.enabled ? "Running: " + trackerConstAccel.trackingPercentage : "Not running"
+                    text: trackerConstAccel.enabled ? "Running: " + (trackerConstAccel.trackingPercentage*100).toFixed(2) + "%" : "Not running"
                     color: trackerConstAccel.enabled ? "green" : "black"
                     anchors.verticalCenter: parent.verticalCenter
                 }
@@ -457,7 +457,7 @@ ApplicationWindow {
                 }
 
                 Text{
-                    text: trackerAdaptiveVel.enabled ? "Running: " + trackerAdaptiveVel.trackingPercentage : "Not running"
+                    text: trackerAdaptiveVel.enabled ? "Running: " + (trackerAdaptiveVel.trackingPercentage*100).toFixed(2) + "%" : "Not running"
                     color: trackerAdaptiveVel.enabled ? "green" : "black"
                     anchors.verticalCenter: parent.verticalCenter
                 }
@@ -502,7 +502,7 @@ ApplicationWindow {
                 }
 
                 Text{
-                    text: trackerProfiledVel.enabled ? "Running: " + trackerProfiledVel.trackingPercentage : "Not running"
+                    text: trackerProfiledVel.enabled ? "Running: " + (trackerProfiledVel.trackingPercentage*100).toFixed(2) + "%" : "Not running"
                     color: trackerProfiledVel.enabled ? "green" : "black"
                     anchors.verticalCenter: parent.verticalCenter
                 }

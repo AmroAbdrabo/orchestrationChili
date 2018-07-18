@@ -1,7 +1,7 @@
 cellulo-bezier-curve-tracking-demo
 ==================================
 
-Demonstrates more complicated PolyBézier zones that can be used with the Cellulo robots.
+Demonstrates the use of advanced curve trackers.
 
 Tested with Qt 5.10.1 on:
 
@@ -22,11 +22,13 @@ Run
 1. Print [assets/page-dotted.pdf](assets/page-dotted.pdf)
 1. Click `Run` inside Qt Creator
 1. Connect to a robot
-1. Move robot on the map and see:
-    - Distance to the PolyBézier curve being calculated
-    - Tangent and normal vectors to the curve on the point closest to the robot being calculated, via the closest point's parameter `t`
-    - Inside of the PolyBézier curve making the robot red
-    - Border of the PolyBézier curve making the robot blue
-    - Intersection of border and inside of the PolyBézier curve making the robot violet
-1. Enter maximum linear (100 mm/s is fine) and angular velocities (1 rad/s is fine) and click `Follow the path`; robot should follow the path with the given linear velocity while turning with the given angular velocity
-1. Now enter desired aligned theta (increase angular velocity if low, 5 rad/s is fine) and click `Follow the path (aligned)`; robot should follow the path while keeping tangent orientation to the curve
+1. Try the available trackers:
+  1. **Constant velocity tracker**: Tracks the curve with the given constant velocity
+  1. **Constant acceleration tracker**: Tracks the curve with the given constant velocity, accelerates and decelerates up/down to speed with the given finite acceleration
+  1. **Adaptive velocity tracker**: Tracks the curve with the given maximum velocity around straight parts of the path, decreases this velocity down to the minimum around the parts with high curvature
+  1. **Profiled velocity tracker**: Tracks the curve with the given velocity profile; this is a list of velocities to adopt within equally spaced points on the curve
+1. Try the common properties of trackers:
+  1. When launched, go to start or start at the closest point
+  1. When done, stop tracking; this may not be desirable if segments are expected to be added to the curve
+  1. Clean up curve as tracked: Remove finished segments from the curve, may be desirable for performance reasons
+1. Try to add segments to the curve by clicking on the playground
