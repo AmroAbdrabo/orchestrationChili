@@ -107,7 +107,7 @@ void PolyBezier::removeSegmentsFromStart(int num){
         qWarning() << "PolyBezier::removeSegmentsFromStart(): Not enough segments to remove, doing nothing.";
 }
 
-bool PolyBezier::isEmpty(){
+bool PolyBezier::isEmpty() const {
     return segments.isEmpty();
 }
 

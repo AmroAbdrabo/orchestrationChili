@@ -91,6 +91,21 @@ public:
      */
     Q_INVOKABLE qreal getClosest(QVector2D const& m, QVector2D& closestPoint, qreal& closestDist);
 
+    /**
+     * @brief Gets the explicit segments
+     *
+     * @return Copy of the segments
+     */
+    QVector<CubicBezier> getSegments() const { return segments; }
+
+    /**
+     * @brief Gets the segment index from the given parameter t, pulls t to [0,1]
+     *
+     * @param t [in/out] Parameter t in [0,numSegments], changes to segment parameter that is in [0,1]
+     * @return Segment index
+     */
+    int getSegmentIndex(qreal& t);
+
     /** @endcond */
 
 signals:
@@ -125,7 +140,7 @@ public slots:
      *
      * @return Whether the curve is empty
      */
-    bool isEmpty();
+    bool isEmpty() const;
 
     /**
      * @brief Starts the curve with a linear segment, autogenerating the in-between 2 control points
@@ -269,14 +284,6 @@ private:
      * @brief Forces heavy calculations to be redone at a later time
      */
     void invalidateCalc();
-
-    /**
-     * @brief Gets the segment index from the given parameter t, pulls t to [0,1]
-     *
-     * @param t [in/out] Parameter t in [0,numSegments], changes to segment parameter that is in [0,1]
-     * @return Segment index
-     */
-    int getSegmentIndex(qreal& t);
 
     QVector<CubicBezier> segments;                  ///< Consecutive Bézier curve segments
 

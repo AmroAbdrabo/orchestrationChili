@@ -27,6 +27,7 @@
 
 #include "CelluloZone.h"
 #include "../util/math/CubicBezier.h"
+#include "../util/math/PolyBezier.h"
 #include "../comm/CelluloBluetooth.h"
 
 namespace Cellulo{
@@ -70,7 +71,7 @@ public:
      *
      * @return List of curve's control points, contains 3n+1 points where points at indices [3k, 3k+1, 3k+2, 3k+3] correspond to a Bézier curve
      */
-    QVariantList getControlPoints();
+    QVariantList getControlPoints() const;
 
     /**
      * @brief Sets the curve's control points
@@ -121,7 +122,7 @@ public:
 public slots:
 
     /**
-     * @brief Sends this path to the given robot in order to be followed
+     * @brief [DEPRECATED, USE PolyBezierTracker INSTEAD] Sends this path to the given robot in order to be followed
      *
      * @param robot The robot to send the path to
      */
@@ -166,63 +167,10 @@ protected:
 
     /** @cond DO_NOT_DOCUMENT */
 
-    /**
-     * @brief Gets the segment index from the given parameter t, pulls t to [0,1]
-     *
-     * @param t [in/out] Parameter t in [0,numSegments], changes to segment parameter that is in [0,1]
-     * @return Segment index
-     */
-    int getSegmentIndex(qreal& t);
-
-    /**
-     * @brief Gets the closest point on the curve to the given point
-     *
-     * @param m Given point
-     * @param closestPoint [out] Returns the closest point
-     * @param closestDist [out] Returns the closest distance
-     * @return Returns the parameter t corresponding to the closest point
-     */
-    qreal getClosest(const QVector2D& m, QVector2D& closestPoint, qreal& closestDist);
-
-    /**
-     * @brief Updates the bounding rectangle from the new list of vertices
-     */
-    void calculateBoundingBox();
-
-    /**
-     * @brief Calculates whether the given point is in the bounding box of this curve
-     *
-     * @param m The point to check
-     * @return Whether this point is in the bounding box
-     */
-    bool inBoundingBox(const QVector2D& m);
-
-    /**
-     * @brief Get if the point is inside the zone or not
-     *
-     * @param pointX x coordinate of the point in mm
-     * @param pointY y coordinate of the point in mm
-     *
-     * @return Whether the point is inside the zone or not
-     */
-    bool isPointInside(float pointX, float pointY);
-
-    QList<CubicBezier> segments;                    ///< Consecutive Bézier curve segments
-    qreal minX = std::numeric_limits<qreal>::max(); ///< Minimal x bound for the curve
-    qreal maxX = std::numeric_limits<qreal>::min(); ///< Maximum x bound for the curve
-    qreal minY = std::numeric_limits<qreal>::max(); ///< Minimum y bound for the curve
-    qreal maxY = std::numeric_limits<qreal>::min(); ///< Maximum y bound for the curve
+    PolyBezier curve;   ///< The underlying curve to this zone
 
     /** @endcond */
 
-private:
-
-    /**
-     * @brief Forces heavy calculations to be redone at a later time
-     */
-    void invalidateCalc();
-
-    bool boundingBoxCalculated = false;          ///< Whether the bounding box is calculated and ready
 };
 
 /**
