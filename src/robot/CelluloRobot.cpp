@@ -90,8 +90,8 @@ void CelluloRobot::setPoseVelControlPeriod(int period){
     }
 
     if(period != poseVelControlPeriod){
-        initialize();
         poseVelControlPeriod = period;
+        initialize();
         emit poseVelControlPeriodChanged();
     }
 }
