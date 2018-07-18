@@ -52,6 +52,7 @@ ApplicationWindow {
         goToStartFirst: goToStartFirstCheckbox.checked
         stopWhenGoalReached: stopWhenGoalReachedCheckbox.checked
         cleanCurve: cleanCurveCheckbox.checked
+        controlPeriod: parseFloat(controlPeriodText.text)
 
         onStartReached: console.info("Start of the curve reached.")
         onEndReached: console.info("End of the curve reached.")
@@ -68,6 +69,7 @@ ApplicationWindow {
         goToStartFirst: goToStartFirstCheckbox.checked
         stopWhenGoalReached: stopWhenGoalReachedCheckbox.checked
         cleanCurve: cleanCurveCheckbox.checked
+        controlPeriod: parseFloat(controlPeriodText.text)
 
         onStartReached: console.info("Start of the curve reached.")
         onEndReached: console.info("End of the curve reached.")
@@ -84,6 +86,7 @@ ApplicationWindow {
         goToStartFirst: goToStartFirstCheckbox.checked
         stopWhenGoalReached: stopWhenGoalReachedCheckbox.checked
         cleanCurve: cleanCurveCheckbox.checked
+        controlPeriod: parseFloat(controlPeriodText.text)
 
         onStartReached: console.info("Start of the curve reached.")
         onEndReached: console.info("End of the curve reached.")
@@ -99,6 +102,7 @@ ApplicationWindow {
         goToStartFirst: goToStartFirstCheckbox.checked
         stopWhenGoalReached: stopWhenGoalReachedCheckbox.checked
         cleanCurve: cleanCurveCheckbox.checked
+        controlPeriod: parseFloat(controlPeriodText.text)
 
         onStartReached: console.info("Start of the curve reached.")
         onEndReached: console.info("End of the curve reached.")
@@ -302,6 +306,13 @@ ApplicationWindow {
                     id: cleanCurveCheckbox
                     text: "Clean up curve as it is tracked"
                     checked: false
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                TextField{
+                    id: controlPeriodText
+                    text: "100"
+                    placeholderText: "Control period (ms)"
                     anchors.verticalCenter: parent.verticalCenter
                 }
             }

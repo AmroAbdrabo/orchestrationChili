@@ -52,10 +52,10 @@ class PolyBezierTracker : public QQuickItem {
 
 public:
 
-    /** @brief PolyBezier curve to track */
+    /** @brief PolyBezier curve to track; if a PolyBezier is a child of this tracker, will set this property to the child automatically */
     Q_PROPERTY(Cellulo::PolyBezier* curve WRITE setCurve READ getCurve NOTIFY curveChanged)
 
-    /** @brief Robot that will track the curve */
+    /** @brief Robot that will track the curve; if a CelluloRobot is the parent of this tracker, will set this property to the parent automatically */
     Q_PROPERTY(Cellulo::CelluloRobot* robot WRITE setRobot READ getRobot NOTIFY robotChanged)
 
     /** @brief Period after which control is updated, default 100 ms */
@@ -131,7 +131,7 @@ public:
     /**
      * @brief Sets the desired control period
      *
-     * @param newControlPeriod Desired control period in ms
+     * @param newControlPeriod Desired control period in ms, must be larger than 0
      */
     void setControlPeriod(qreal newControlPeriod);
 
@@ -227,6 +227,8 @@ private slots:
 
 protected:
 
+    /** @cond DO_NOT_DOCUMENT */
+
     bool goToStartFirst = true;                ///< Whether to go to the start of the curve first
     bool stopWhenGoalReached = false;          ///< Whether to stop when curve is completely tracked
     bool cleanCurve = true;                    ///< Whether to remove completely tracked segments from the curve
@@ -244,6 +246,8 @@ protected:
     PolyBezier* curve;                         ///< Curve to be tracked
     CelluloRobot* robot;                       ///< Robot to track the curve
     qreal controlPeriod = 100;                 ///< Control period in ms
+
+    /** @endcond */
 
 private:
 

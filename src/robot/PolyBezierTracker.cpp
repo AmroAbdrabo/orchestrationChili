@@ -79,11 +79,14 @@ void PolyBezierTracker::setRobot(CelluloRobot* newRobot){
 }
 
 void PolyBezierTracker::setControlPeriod(qreal newControlPeriod){
-    if(robot){
-        robot->setPoseVelControlPeriod(controlPeriod);
+    if(newControlPeriod > 0.0){
         controlPeriod = newControlPeriod;
+        if(robot)
+            robot->setPoseVelControlPeriod(controlPeriod);
         emit controlPeriodChanged();
     }
+    else
+        qCritical() << "PolyBezierTracker::setControlPeriod(): Period must be larger than 0, doing nothing!";
 }
 
 void PolyBezierTracker::startTracking(){
