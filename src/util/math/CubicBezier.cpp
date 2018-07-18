@@ -362,7 +362,11 @@ void CubicBezier::calculateKappaLUT(){
         QVector2D pprime = getDerivative(t);
         QVector2D pprimeprime = getSecondDerivative(t);
         qreal pprimelen = pprime.length();
-        qreal kappa = std::abs(pprime.x()*pprimeprime.y() - pprime.y()*pprimeprime.x())/(pprimelen*pprimelen*pprimelen);
+        qreal kappa;
+        if(pprimelen > 0)
+            kappa = std::abs(pprime.x()*pprimeprime.y() - pprime.y()*pprimeprime.x())/(pprimelen*pprimelen*pprimelen);
+        else
+            kappa = 0.0;
         kappaLUT.push_back(kappa);
         if(kappa > maxKappa)
             maxKappa = kappa;
