@@ -72,10 +72,18 @@ void PolyBezierTracker::setRobot(CelluloRobot* newRobot){
     robot = newRobot;
     if(robot){
         connect(robot, SIGNAL(nextGoalPoseVelRequested(qreal)), this, SLOT(robotControlLoop(qreal)));
-        robot->setPoseVelControlPeriod(100); //TODO: MAKE ADJUSTABLE
+        robot->setPoseVelControlPeriod(controlPeriod);
         robot->setPoseVelControlEnabled(true);
     }
     emit robotChanged();
+}
+
+void PolyBezierTracker::setControlPeriod(qreal newControlPeriod){
+    if(robot){
+        robot->setPoseVelControlPeriod(controlPeriod);
+        controlPeriod = newControlPeriod;
+        emit controlPeriodChanged();
+    }
 }
 
 void PolyBezierTracker::startTracking(){

@@ -20,6 +20,8 @@ ApplicationWindow {
         property vector2d trackedPosition: {
             if(trackerConstVel.enabled)
                 return trackerConstVel.trackedPose.toVector2d();
+            if(trackerConstAccel.enabled)
+                return trackerConstAccel.trackedPose.toVector2d();
             if(trackerAdaptiveVel.enabled)
                 return trackerAdaptiveVel.trackedPose.toVector2d();
             if(trackerProfiledVel.enabled)
@@ -30,6 +32,8 @@ ApplicationWindow {
         property vector2d trackedVelocity: {
             if(trackerConstVel.enabled)
                 return trackerConstVel.trackedVelocity.toVector2d();
+            if(trackerConstAccel.enabled)
+                return trackerConstAccel.trackedVelocity.toVector2d();
             if(trackerAdaptiveVel.enabled)
                 return trackerAdaptiveVel.trackedVelocity.toVector2d();
             if(trackerProfiledVel.enabled)
@@ -312,7 +316,7 @@ ApplicationWindow {
 
                 TextField{
                     id: constVelText
-                    text: "70"
+                    text: "75"
                     placeholderText: "Velocity (mm/s)"
                     anchors.verticalCenter: parent.verticalCenter
                 }
@@ -356,14 +360,14 @@ ApplicationWindow {
 
                 TextField{
                     id: constAccelVelText
-                    text: "50"
+                    text: "75"
                     placeholderText: "Velocity (mm/s)"
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
                 TextField{
                     id: constAccelAccelText
-                    text: "100"
+                    text: "50"
                     placeholderText: "Acceleration (mm/s^2)"
                     anchors.verticalCenter: parent.verticalCenter
                 }
@@ -459,7 +463,7 @@ ApplicationWindow {
                 TextField{
                     id: profiledVelText
                     placeholderText: "Equidistant comma separated velocity list (mm/s)"
-                    text: "100,150,150,60,75,150,150,40,100,75,50"
+                    text: "50,150,150,30,75,150,150,40,100,75,30"
                     width: 300
                     anchors.verticalCenter: parent.verticalCenter
                 }

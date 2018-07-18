@@ -58,6 +58,9 @@ public:
     /** @brief Robot that will track the curve */
     Q_PROPERTY(Cellulo::CelluloRobot* robot WRITE setRobot READ getRobot NOTIFY robotChanged)
 
+    /** @brief Period after which control is updated, default 100 ms */
+    Q_PROPERTY(qreal controlPeriod WRITE setControlPeriod READ getControlPeriod NOTIFY controlPeriodChanged)
+
     /** @brief Whether to go the the start of the curve first (by default) or to start tracking from the closest point */
     Q_PROPERTY(bool goToStartFirst MEMBER goToStartFirst)
 
@@ -119,6 +122,20 @@ public:
     void setRobot(Cellulo::CelluloRobot* newRobot);
 
     /**
+     * @brief Gets the control period
+     *
+     * @return The current control period
+     */
+    qreal getControlPeriod() const { return controlPeriod; }
+
+    /**
+     * @brief Sets the desired control period
+     *
+     * @param newControlPeriod Desired control period in ms
+     */
+    void setControlPeriod(qreal newControlPeriod);
+
+    /**
      * @brief Gets the tracking percentage
      *
      * @return Tracking percentage in [0,1]
@@ -154,6 +171,11 @@ signals:
      * @brief Emitted when the robot that tracks changes
      */
     void robotChanged();
+
+    /**
+     * @brief Emitted when the control period changes
+     */
+    void controlPeriodChanged();
 
     /**
      * @brief Emitted when the tracking percentage changes
@@ -221,6 +243,7 @@ protected:
 
     PolyBezier* curve;                         ///< Curve to be tracked
     CelluloRobot* robot;                       ///< Robot to track the curve
+    qreal controlPeriod = 100;                 ///< Control period in ms
 
 private:
 

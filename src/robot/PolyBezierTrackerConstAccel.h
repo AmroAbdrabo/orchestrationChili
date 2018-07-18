@@ -44,10 +44,10 @@ class PolyBezierTrackerConstAccel : public PolyBezierTracker {
 
 public:
 
-    /** @brief Linear tracking velocity to reach, must be between 0 mm/s and 185 mm/s, default is 50 mm/s */
+    /** @brief Linear tracking velocity to reach, must be between 0 mm/s and 185 mm/s, default is 75 mm/s */
     Q_PROPERTY(qreal trackingVelocity READ getTrackingVelocity WRITE setTrackingVelocity NOTIFY trackingVelocityChanged)
 
-    /** @brief Linear acceleration, must be above 0 mm/s^2, default is *************************** mm/s */
+    /** @brief Linear acceleration, must be above 0 mm/s^2, default is 100 mm/s */
     Q_PROPERTY(qreal trackingAcceleration READ getTrackingAcceleration WRITE setTrackingAcceleration NOTIFY trackingAccelerationChanged)
 
     /** @cond DO_NOT_DOCUMENT */
@@ -120,7 +120,7 @@ private:
     virtual void spinLoop(qreal deltaTime) override;
 
     qreal currentVelocity = 0.0;        ///< Actual linear tracking velocity
-    qreal trackingVelocity = 50.0;      ///< Linear tracking velocity goal
+    qreal trackingVelocity = 75.0;      ///< Linear tracking velocity goal
     qreal trackingAcceleration = 100.0; ///< Linear tracking acceleration
 
 };

@@ -49,9 +49,10 @@ void PolyBezierTrackerConstAccel::setTrackingAcceleration(qreal trackingAccelera
 }
 
 void PolyBezierTrackerConstAccel::spinLoop(qreal deltaTime){
-    Q_UNUSED(deltaTime);
-
-    qDebug() << deltaTime;
+    if(deltaTime < 0.5*controlPeriod)
+        deltaTime = 0.5*controlPeriod;
+    else if(deltaTime > 1.5*controlPeriod)
+        deltaTime = 1.5*controlPeriod;
 
     QVector2D currentRobotPos(robot->getX(), robot->getY());
     if(goingToStart){
@@ -91,23 +92,23 @@ void PolyBezierTrackerConstAccel::spinLoop(qreal deltaTime){
 
             //Should decelerate
             if(lengthTraveledWhenStopping >= lengthLeft){
-                currentVelocity -= 100.0/1000.0*trackingAcceleration;           //TODO: GET PERIOD FROM ADJUSTED
+                currentVelocity -= deltaTime/1000.0*trackingAcceleration;
                 if(currentVelocity < 0.0)
                     currentVelocity = 0.0;
 
-            //    qDebug() << "Decelerating: " << currentVelocity << " " << deltaTime;
+                qDebug() << "Decelerating: " << currentVelocity << " " << deltaTime;
             }
 
             //Should accelerate
             else if(currentVelocity < trackingVelocity){
-                currentVelocity += 100.0/1000.0*trackingAcceleration;           //TODO: GET PERIOD FROM ADJUSTED
+                currentVelocity += deltaTime/1000.0*trackingAcceleration;
                 if(currentVelocity > trackingVelocity)
                     currentVelocity = trackingVelocity;
 
-            //    qDebug() << "Accelerating: " << currentVelocity << " " << deltaTime;
+                qDebug() << "Accelerating: " << currentVelocity << " " << deltaTime;
             }
 
-            currentR += (currentVelocity*100.0/1000.0)/curveLength;             //TODO: GET PERIOD FROM ADJUSTED
+            currentR += (currentVelocity*deltaTime/1000.0)/curveLength;
             if(currentR > 1.0)
                 currentR = 1.0;
             emit trackingPercentageChanged();

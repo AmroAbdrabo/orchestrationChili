@@ -51,7 +51,10 @@ void PolyBezierTrackerAdaptiveVel::setMinTrackingVelocity(qreal minTrackingVeloc
 }
 
 void PolyBezierTrackerAdaptiveVel::spinLoop(qreal deltaTime){
-    Q_UNUSED(deltaTime);
+    if(deltaTime < 0.5*controlPeriod)
+        deltaTime = 0.5*controlPeriod;
+    else if(deltaTime > 1.5*controlPeriod)
+        deltaTime = 1.5*controlPeriod;
 
     QVector2D currentRobotPos(robot->getX(), robot->getY());
     if(goingToStart){
@@ -96,7 +99,7 @@ void PolyBezierTrackerAdaptiveVel::spinLoop(qreal deltaTime){
         robot->setGoalPoseAndVelocity(currentP.x(), currentP.y(), 0, currentV.x(), currentV.y(), 0, true, true, false);
 
         if(currentR < 1.0){
-            currentR += (currentTrackingVelocity*100.0/1000.0)/curve->getArcLength();             //TODO: GET PERIOD FROM ADJUSTED
+            currentR += (currentTrackingVelocity*deltaTime/1000.0)/curve->getArcLength();
             if(currentR > 1.0)
                 currentR = 1.0;
             emit trackingPercentageChanged();
