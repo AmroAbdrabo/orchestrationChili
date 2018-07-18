@@ -24,6 +24,8 @@
 
 #include "PolyBezierTrackerProfiledVel.h"
 
+#include <cmath>
+
 namespace Cellulo {
 
 PolyBezierTrackerProfiledVel::PolyBezierTrackerProfiledVel(QQuickItem* parent) : PolyBezierTracker(parent) {}
@@ -48,14 +50,28 @@ void PolyBezierTrackerProfiledVel::setTrackingVelocityProfile(QVariantList const
         qCritical() << "PolyBezierTrackerProfiledVel::setTrackingVelocityProfile(): Velocity profile must contain at least 2 elements!";
 }
 
+qreal PolyBezierTrackerProfiledVel::getTrackingVelocity(qreal r){
+    if(trackingVelocityProfile.isEmpty()){
+        qCritical() << "PolyBezierTrackerProfiledVel::getTrackingVel(): Velocity profile is empty!";
+        return 0.0;
+    }
+
+    if(r > 1)
+        return trackingVelocityProfile.last();
+    else if(r < 0)
+        return trackingVelocityProfile.first();
+
+    qreal realIndex = r*(trackingVelocityProfile.size() - 1);
+    int prevIndex = std::floor(realIndex);
+    int nextIndex = std::ceil(realIndex);
+    if(prevIndex == nextIndex)
+        return trackingVelocityProfile[prevIndex];
+    else
+        return (realIndex - prevIndex)*trackingVelocityProfile[nextIndex] + (nextIndex - realIndex)*trackingVelocityProfile[prevIndex];
+}
+
 void PolyBezierTrackerProfiledVel::spinLoop(qreal deltaTime){
     Q_UNUSED(deltaTime);
-
-    if(trackingVelocityProfile.size() < 2){
-        qCritical() << "PolyBezierTrackerProfiledVel::spinLoop(): Velocity profile must contain at least 2 elements!";
-        trackingVelocityProfile = {0,0};
-        emit trackingVelocityProfileChanged();
-    }
 
     QVector2D currentRobotPos(robot->getX(), robot->getY());
     if(goingToStart){
@@ -76,6 +92,7 @@ void PolyBezierTrackerProfiledVel::spinLoop(qreal deltaTime){
     else{
         currentT = curve->getTByArcLengthRatio(currentR);
         currentP = curve->getPoint(currentT).toVector3D();
+        qreal trackingVelocity = getTrackingVelocity(currentR);
         if(currentR < 1.0)
             currentV = (curve->getTangent(currentT).normalized()*trackingVelocity).toVector3D();
         else{

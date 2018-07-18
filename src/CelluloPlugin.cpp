@@ -79,6 +79,7 @@ void CelluloPlugin::registerTypes(const char *uri){
     qmlRegisterType<CelluloRobot>(uri, 1, 0, "CelluloRobot");
     qmlRegisterType<PolyBezierTrackerConstVel>(uri, 1, 0, "PolyBezierTrackerConstVel");
     qmlRegisterType<PolyBezierTrackerAdaptiveVel>(uri, 1, 0, "PolyBezierTrackerAdaptiveVel");
+    qmlRegisterType<PolyBezierTrackerProfiledVel>(uri, 1, 0, "PolyBezierTrackerProfiledVel");
 
     qmlRegisterType<CelluloBluetooth>(uri, 1, 0, "CelluloBluetooth");
     qmlRegisterType<CelluloLocalRelayClient>(uri, 1, 0, "CelluloLocalRelayClient");

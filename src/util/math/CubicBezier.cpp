@@ -83,6 +83,8 @@ qreal CubicBezier::getTByArcLengthRatio(qreal r){
     //Calculate equidistant t/point lookup table if not already calculated
     calculateLUTs();
 
+    qDebug() << r << " " << tLUT.size();
+
     qreal realIndex = r*(tLUT.size() - 1);
     int prevIndex = std::floor(realIndex);
     int nextIndex = std::ceil(realIndex);

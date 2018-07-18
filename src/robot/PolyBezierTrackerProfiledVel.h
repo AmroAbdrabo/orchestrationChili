@@ -97,7 +97,15 @@ private:
      */
     virtual void spinLoop(qreal deltaTime) override;
 
-    QVector<qreal> trackingVelocityProfile = {0, 100, 100, 100, 100, 100, 100, 0}; ///< Linear tracking velocity profile
+    /**
+     * @brief Get tracking velocity from the profile that corresponds to the given arc length rate
+     *
+     * @param  r Arc length rate
+     * @return   Velocity to be adopted at that point
+     */
+    qreal getTrackingVelocity(qreal r);
+
+    QVector<qreal> trackingVelocityProfile = {10, 100, 100, 100, 100, 100, 100, 10}; ///< Linear tracking velocity profile
 
 };
 
