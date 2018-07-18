@@ -5,7 +5,7 @@ var searchData=
   ['calculate',['calculate',['../group__zone.html#a404b8449396ad290e001370810b2a62f',1,'Cellulo::CelluloZone']]],
   ['clamp',['clamp',['../group__util.html#a802dd180acb91fdea9d3b1e4b18469d6',1,'Cellulo::CelluloMathUtil']]],
   ['cleansocket',['cleanSocket',['../group__comm-relay.html#aa1afa3b89e0d6a0d40bdf8e1629764f1',1,'Cellulo::CelluloLocalRelayClient::cleanSocket()'],['../group__comm-relay.html#a08701a8f3a2a115665f46087f6347510',1,'Cellulo::CelluloLocalRelayServer::cleanSocket()']]],
-  ['clear',['clear',['../group__comm.html#a9dda86060b992a8104ad9f13e4030a1f',1,'Cellulo::CelluloBluetoothEMP::clear()'],['../group__comm.html#ad289a3fbcb416c37d7c6bd36ec14d2f4',1,'Cellulo::CelluloBluetoothScanner::clear()']]],
+  ['clear',['clear',['../group__comm.html#a9dda86060b992a8104ad9f13e4030a1f',1,'Cellulo::CelluloBluetoothEMP::clear()'],['../group__comm.html#ad289a3fbcb416c37d7c6bd36ec14d2f4',1,'Cellulo::CelluloBluetoothScanner::clear()'],['../group__util.html#a46d66927a61b7534b5d7537f96ca7214',1,'Cellulo::PolyBezier::clear()']]],
   ['clearhapticfeedback',['clearHapticFeedback',['../group__comm.html#aae5231423781a97d4a21ff219750b95d',1,'Cellulo::CelluloBluetooth']]],
   ['cleartiles',['clearTiles',['../group__tile.html#ad8cc09395c2e69030a474e2b22951ec2',1,'Cellulo::HexTileMap']]],
   ['cleartracking',['clearTracking',['../group__comm.html#a7247a33e64f535f33d3e7ecf899f028d',1,'Cellulo::CelluloBluetooth']]],

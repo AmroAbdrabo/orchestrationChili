@@ -34,8 +34,10 @@ var searchData=
   ['simplevibrate',['simpleVibrate',['../group__comm.html#a545e683162225e73ed3a6a2220396a00',1,'Cellulo::CelluloBluetooth']]],
   ['sourcecontains',['sourceContains',['../group__tile.html#ae03cd0cc9e6ac7b210afab0ec7a6c884',1,'Cellulo::HexTile']]],
   ['sourcecoordinates',['sourceCoordinates',['../group__tile.html#ae208bf3624aa34d8533aa887a82532b8',1,'Cellulo::HexTile']]],
-  ['start',['start',['../group__comm.html#aa1d2d32cfc92e514c0e901556b81fafc',1,'Cellulo::CelluloBluetoothScanner']]],
+  ['start',['start',['../group__comm.html#aa1d2d32cfc92e514c0e901556b81fafc',1,'Cellulo::CelluloBluetoothScanner::start()'],['../group__util.html#adf896a4098d1a7528908c76babd81911',1,'Cellulo::PolyBezier::start()']]],
+  ['startreached',['startReached',['../group__robot.html#a697d69f214c00f6487615005648657b6',1,'Cellulo::PolyBezierTracker']]],
   ['startrobotpooldaemon',['startRobotPoolDaemon',['../group__comm.html#ac5e3df561325999389b6927faaa56b35',1,'Cellulo::CelluloCommUtil']]],
+  ['starttracking',['startTracking',['../group__robot.html#a899bb9db60cf264c09affd31b5560bf1',1,'Cellulo::PolyBezierTracker']]],
   ['stop',['stop',['../group__comm.html#a929b9cbdd80e6408606a6aa89072475e',1,'Cellulo::CelluloBluetoothScanner']]],
   ['stoprobotpooldaemon',['stopRobotPoolDaemon',['../group__comm.html#a4c210c0e5c167acc4b9001680094fb11',1,'Cellulo::CelluloCommUtil']]]
 ];

@@ -1,15 +1,15 @@
 <map id="src/comm/relay/CelluloRelayServer.h" name="src/comm/relay/CelluloRelayServer.h">
-<area shape="rect" id="node8" href="$CelluloBluetoothPacket_8h.html" title="Header for a Bluetooth message to/from Cellulo robots. " alt="" coords="1544,259,1725,285"/>
-<area shape="rect" id="node14" href="$CelluloBluetooth_8h.html" title="Header for Bluetooth communication with Cellulo robots. " alt="" coords="743,95,883,121"/>
-<area shape="rect" id="node25" href="$CelluloCommUtil_8h.html" title="Common objects used by Cellulo communication objects. " alt="" coords="2096,259,2240,285"/>
-<area shape="rect" id="node21" href="$CelluloBluetoothEnums_8h.html" title="Header for CelluloBluetooth enums. " alt="" coords="1269,259,1438,285"/>
-<area shape="rect" id="node24" href="$CelluloRelayClient_8h.html" title="Relays packets between a server and virtual robot objects. " alt="" coords="1748,177,1921,203"/>
-<area shape="rect" id="node27" href="$CelluloZoneClient_8h.html" title="Header for the Cellulo zone client. " alt="" coords="245,333,432,360"/>
-<area shape="rect" id="node28" href="$CelluloZonePolyBezier_8h.html" title="Header for composite cubic Bézier curves. " alt="" coords="851,169,1019,211"/>
-<area shape="rect" id="node41" href="$PoseRemapper_8h.html" title="Header for pose remapper base. " alt="" coords="145,177,301,203"/>
-<area shape="rect" id="node22" href="$CelluloEnumDecl_8h.html" title="Header for CelluloBluetooth enums. " alt="" coords="985,408,1132,435"/>
-<area shape="rect" id="node29" href="$CelluloZone_8h.html" title="Header for base class zone architecture. " alt="" coords="942,259,1045,285"/>
-<area shape="rect" id="node39" href="$CubicBezier_8h.html" title="Header for a cubic Bézier curve. " alt="" coords="747,259,917,285"/>
-<area shape="rect" id="node35" href="$CelluloZoneTypes_8h.html" title="Header for zone type tools. " alt="" coords="1193,333,1332,360"/>
-<area shape="rect" id="node36" href="$CelluloZonePaintedItem_8h.html" title="Header for a QML compatible QQuickPaintedItem for Cellulo zones. " alt="" coords="1357,333,1529,360"/>
+<area shape="rect" id="node8" href="$CelluloBluetoothPacket_8h.html" title="Header for a Bluetooth message to/from Cellulo robots. " alt="" coords="1712,259,1893,285"/>
+<area shape="rect" id="node14" href="$CelluloBluetooth_8h.html" title="Header for Bluetooth communication with Cellulo robots. " alt="" coords="965,95,1105,121"/>
+<area shape="rect" id="node25" href="$CelluloCommUtil_8h.html" title="Common objects used by Cellulo communication objects. " alt="" coords="2145,259,2289,285"/>
+<area shape="rect" id="node21" href="$CelluloBluetoothEnums_8h.html" title="Header for CelluloBluetooth enums. " alt="" coords="1518,259,1687,285"/>
+<area shape="rect" id="node24" href="$CelluloRelayClient_8h.html" title="Relays packets between a server and virtual robot objects. " alt="" coords="1931,177,2104,203"/>
+<area shape="rect" id="node27" href="$CelluloZoneClient_8h.html" title="Header for the Cellulo zone client. " alt="" coords="144,333,331,360"/>
+<area shape="rect" id="node28" href="$CelluloZonePolyBezier_8h.html" title="Header for composite cubic Bézier curves. " alt="" coords="1137,169,1305,211"/>
+<area shape="rect" id="node42" href="$PoseRemapper_8h.html" title="Header for pose remapper base. " alt="" coords="957,177,1113,203"/>
+<area shape="rect" id="node22" href="$CelluloEnumDecl_8h.html" title="Header for CelluloBluetooth enums. " alt="" coords="1425,408,1572,435"/>
+<area shape="rect" id="node29" href="$CelluloZone_8h.html" title="Header for base class zone architecture. " alt="" coords="639,259,742,285"/>
+<area shape="rect" id="node39" href="$CubicBezier_8h.html" title="Header for a cubic Bézier curve. " alt="" coords="1161,259,1332,285"/>
+<area shape="rect" id="node35" href="$CelluloZoneTypes_8h.html" title="Header for zone type tools. " alt="" coords="1433,333,1572,360"/>
+<area shape="rect" id="node36" href="$CelluloZonePaintedItem_8h.html" title="Header for a QML compatible QQuickPaintedItem for Cellulo zones. " alt="" coords="981,333,1153,360"/>
 </map>

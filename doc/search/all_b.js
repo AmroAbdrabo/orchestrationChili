@@ -12,6 +12,7 @@ var searchData=
   ['linesegmentdistance',['LINESEGMENTDISTANCE',['../group__zone.html#acb24a099726e8d59124afd691c86f9cfa81ff84f59b86738c1203ca80d27d9c25',1,'Cellulo::CelluloZoneTypes']]],
   ['listen',['listen',['../group__comm-relay.html#a501f390e6c5c9c88e92c8dee8550e14f',1,'Cellulo::CelluloRelayServer']]],
   ['listenerror',['listenError',['../group__comm-relay.html#af2e77447b8d331edcd1156cc378ecb43',1,'Cellulo::CelluloRelayServer']]],
+  ['loadfromfile',['loadFromFile',['../group__util.html#a03a1f7fa25c9d853c91ee1ca24e09ca0',1,'Cellulo::PolyBezier']]],
   ['loadtilesfromjson',['loadTilesFromJSON',['../group__tile.html#aa7523937976e024e986776a276fbe106',1,'Cellulo::HexTileMap']]],
   ['loadzonesqml',['loadZonesQML',['../group__util.html#ab2e7db8bc5c58aa058f42cef70ce78c9',1,'Cellulo::CelluloSVGUtil::loadZonesQML()'],['../group__zone.html#a5f7aeb79df9bcd76770f4661ed2b086e',1,'Cellulo::CelluloZoneJsonHandler::loadZonesQML()']]],
   ['localadaptermacaddr',['localAdapterMacAddr',['../group__comm.html#a31ca21c1a395893cbfe0e4ea4bb6e590',1,'Cellulo::CelluloBluetooth']]],

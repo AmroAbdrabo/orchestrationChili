@@ -1,17 +1,17 @@
 <map id="src/comm/relay/CelluloTcpRelayServer.cpp" name="src/comm/relay/CelluloTcpRelayServer.cpp">
-<area shape="rect" id="node2" href="$CelluloTcpRelayServer_8h.html" title="Relays packets between a client and virtual robot objects over a TCP socket. " alt="" coords="1252,95,1419,121"/>
-<area shape="rect" id="node27" href="$CelluloCommUtil_8h.html" title="Common objects used by Cellulo communication objects. " alt="" coords="77,408,221,435"/>
-<area shape="rect" id="node3" href="$CelluloRelayServer_8h.html" title="Relays packets between a client and robots. " alt="" coords="2379,169,2524,196"/>
-<area shape="rect" id="node10" href="$CelluloBluetoothPacket_8h.html" title="Header for a Bluetooth message to/from Cellulo robots. " alt="" coords="441,408,622,435"/>
-<area shape="rect" id="node16" href="$CelluloBluetooth_8h.html" title="Header for Bluetooth communication with Cellulo robots. " alt="" coords="1726,244,1866,271"/>
-<area shape="rect" id="node23" href="$CelluloBluetoothEnums_8h.html" title="Header for CelluloBluetooth enums. " alt="" coords="1759,408,1928,435"/>
-<area shape="rect" id="node26" href="$CelluloRelayClient_8h.html" title="Relays packets between a server and virtual robot objects. " alt="" coords="2241,326,2414,353"/>
-<area shape="rect" id="node29" href="$CelluloZoneClient_8h.html" title="Header for the Cellulo zone client. " alt="" coords="1930,483,2117,509"/>
-<area shape="rect" id="node30" href="$CelluloZonePolyBezier_8h.html" title="Header for composite cubic Bézier curves. " alt="" coords="1712,319,1880,360"/>
-<area shape="rect" id="node43" href="$PoseRemapper_8h.html" title="Header for pose remapper base. " alt="" coords="2006,326,2162,353"/>
-<area shape="rect" id="node24" href="$CelluloEnumDecl_8h.html" title="Header for CelluloBluetooth enums. " alt="" coords="1181,557,1328,584"/>
-<area shape="rect" id="node31" href="$CelluloZone_8h.html" title="Header for base class zone architecture. " alt="" coords="1134,408,1236,435"/>
-<area shape="rect" id="node41" href="$CubicBezier_8h.html" title="Header for a cubic Bézier curve. " alt="" coords="813,408,984,435"/>
-<area shape="rect" id="node37" href="$CelluloZoneTypes_8h.html" title="Header for zone type tools. " alt="" coords="1296,483,1434,509"/>
-<area shape="rect" id="node38" href="$CelluloZonePaintedItem_8h.html" title="Header for a QML compatible QQuickPaintedItem for Cellulo zones. " alt="" coords="1099,483,1271,509"/>
+<area shape="rect" id="node2" href="$CelluloTcpRelayServer_8h.html" title="Relays packets between a client and virtual robot objects over a TCP socket. " alt="" coords="1768,95,1934,121"/>
+<area shape="rect" id="node27" href="$CelluloCommUtil_8h.html" title="Common objects used by Cellulo communication objects. " alt="" coords="147,408,291,435"/>
+<area shape="rect" id="node3" href="$CelluloRelayServer_8h.html" title="Relays packets between a client and robots. " alt="" coords="2377,169,2522,196"/>
+<area shape="rect" id="node10" href="$CelluloBluetoothPacket_8h.html" title="Header for a Bluetooth message to/from Cellulo robots. " alt="" coords="375,408,556,435"/>
+<area shape="rect" id="node16" href="$CelluloBluetooth_8h.html" title="Header for Bluetooth communication with Cellulo robots. " alt="" coords="1621,244,1761,271"/>
+<area shape="rect" id="node23" href="$CelluloBluetoothEnums_8h.html" title="Header for CelluloBluetooth enums. " alt="" coords="704,408,873,435"/>
+<area shape="rect" id="node26" href="$CelluloRelayClient_8h.html" title="Relays packets between a server and virtual robot objects. " alt="" coords="2239,326,2412,353"/>
+<area shape="rect" id="node29" href="$CelluloZoneClient_8h.html" title="Header for the Cellulo zone client. " alt="" coords="1996,483,2183,509"/>
+<area shape="rect" id="node30" href="$CelluloZonePolyBezier_8h.html" title="Header for composite cubic Bézier curves. " alt="" coords="1435,319,1603,360"/>
+<area shape="rect" id="node44" href="$PoseRemapper_8h.html" title="Header for pose remapper base. " alt="" coords="2058,326,2214,353"/>
+<area shape="rect" id="node24" href="$CelluloEnumDecl_8h.html" title="Header for CelluloBluetooth enums. " alt="" coords="635,557,782,584"/>
+<area shape="rect" id="node31" href="$CelluloZone_8h.html" title="Header for base class zone architecture. " alt="" coords="1509,408,1612,435"/>
+<area shape="rect" id="node41" href="$CubicBezier_8h.html" title="Header for a cubic Bézier curve. " alt="" coords="908,408,1079,435"/>
+<area shape="rect" id="node37" href="$CelluloZoneTypes_8h.html" title="Header for zone type tools. " alt="" coords="1063,483,1202,509"/>
+<area shape="rect" id="node38" href="$CelluloZonePaintedItem_8h.html" title="Header for a QML compatible QQuickPaintedItem for Cellulo zones. " alt="" coords="1328,483,1500,509"/>
 </map>

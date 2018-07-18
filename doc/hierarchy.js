@@ -87,6 +87,13 @@ var hierarchy =
       [ "Cellulo::CoordSpaceConverter", "group__tile.html#classCellulo_1_1CoordSpaceConverter", null ],
       [ "Cellulo::HexTile", "group__tile.html#classCellulo_1_1HexTile", null ],
       [ "Cellulo::HexTileStdSourceCoords", "group__tile.html#classCellulo_1_1HexTileStdSourceCoords", null ],
+      [ "Cellulo::PolyBezier", "group__util.html#classCellulo_1_1PolyBezier", null ],
+      [ "Cellulo::PolyBezierTracker", "group__robot.html#classCellulo_1_1PolyBezierTracker", [
+        [ "Cellulo::PolyBezierTrackerAdaptiveVel", "group__robot.html#classCellulo_1_1PolyBezierTrackerAdaptiveVel", null ],
+        [ "Cellulo::PolyBezierTrackerConstAccel", "group__robot.html#classCellulo_1_1PolyBezierTrackerConstAccel", null ],
+        [ "Cellulo::PolyBezierTrackerConstVel", "group__robot.html#classCellulo_1_1PolyBezierTrackerConstVel", null ],
+        [ "Cellulo::PolyBezierTrackerProfiledVel", "group__robot.html#classCellulo_1_1PolyBezierTrackerProfiledVel", null ]
+      ] ],
       [ "Cellulo::PoseRemapper", "group__tile.html#classCellulo_1_1PoseRemapper", [
         [ "Cellulo::HexTileMap", "group__tile.html#classCellulo_1_1HexTileMap", null ],
         [ "Cellulo::OffsetRemapper", "group__tile.html#classCellulo_1_1OffsetRemapper", null ]

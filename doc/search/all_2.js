@@ -131,8 +131,9 @@ var searchData=
   ['circledistance',['CIRCLEDISTANCE',['../group__zone.html#acb24a099726e8d59124afd691c86f9cfa85676738c657c74732979bc579f531fd',1,'Cellulo::CelluloZoneTypes']]],
   ['circleinner',['CIRCLEINNER',['../group__zone.html#acb24a099726e8d59124afd691c86f9cfa71d08033e163114cf681259a2f0fbff1',1,'Cellulo::CelluloZoneTypes']]],
   ['clamp',['clamp',['../group__util.html#a802dd180acb91fdea9d3b1e4b18469d6',1,'Cellulo::CelluloMathUtil']]],
+  ['cleancurve',['cleanCurve',['../group__robot.html#aaebbd2842421d02c6f09f39faf7b95b3',1,'Cellulo::PolyBezierTracker']]],
   ['cleansocket',['cleanSocket',['../group__comm-relay.html#aa1afa3b89e0d6a0d40bdf8e1629764f1',1,'Cellulo::CelluloLocalRelayClient::cleanSocket()'],['../group__comm-relay.html#a08701a8f3a2a115665f46087f6347510',1,'Cellulo::CelluloLocalRelayServer::cleanSocket()']]],
-  ['clear',['clear',['../group__comm.html#a9dda86060b992a8104ad9f13e4030a1f',1,'Cellulo::CelluloBluetoothEMP::clear()'],['../group__comm.html#ad289a3fbcb416c37d7c6bd36ec14d2f4',1,'Cellulo::CelluloBluetoothScanner::clear()']]],
+  ['clear',['clear',['../group__comm.html#a9dda86060b992a8104ad9f13e4030a1f',1,'Cellulo::CelluloBluetoothEMP::clear()'],['../group__comm.html#ad289a3fbcb416c37d7c6bd36ec14d2f4',1,'Cellulo::CelluloBluetoothScanner::clear()'],['../group__util.html#a46d66927a61b7534b5d7537f96ca7214',1,'Cellulo::PolyBezier::clear()']]],
   ['clearhapticfeedback',['clearHapticFeedback',['../group__comm.html#aae5231423781a97d4a21ff219750b95d',1,'Cellulo::CelluloBluetooth']]],
   ['cleartiles',['clearTiles',['../group__tile.html#ad8cc09395c2e69030a474e2b22951ec2',1,'Cellulo::HexTileMap']]],
   ['cleartracking',['clearTracking',['../group__comm.html#a7247a33e64f535f33d3e7ecf899f028d',1,'Cellulo::CelluloBluetooth']]],
@@ -155,7 +156,8 @@ var searchData=
   ['connectrequested',['connectRequested',['../group__util.html#aa4aaeebaa7f611cb7a8f05c3f3477d16',1,'Cellulo::MacAddrSelector']]],
   ['connecttoserver',['connectToServer',['../group__comm.html#a0872bdaa7029f7e95b224a60469492bf',1,'Cellulo::CelluloBluetooth::connectToServer()'],['../group__comm-relay.html#a53b79491108537bf602cadfe75fc026f',1,'Cellulo::CelluloRelayClient::connectToServer()']]],
   ['continuous',['continuous',['../group__comm.html#aa0ffa9fb0d5d25770529ddfb231e5ec4',1,'Cellulo::CelluloBluetoothEMP::continuous()'],['../group__comm.html#a31ff7b1923a5fd0164407a10bde44667',1,'Cellulo::CelluloBluetoothScanner::continuous()']]],
-  ['controlpoints',['controlPoints',['../group__zone.html#afa67316d98873cfc52f88d28e70e636e',1,'Cellulo::CelluloZonePolyBezier']]],
+  ['controlperiod',['controlPeriod',['../group__robot.html#a61960fec723918e7b46da581933cc12d',1,'Cellulo::PolyBezierTracker']]],
+  ['controlpoints',['controlPoints',['../group__util.html#a204791e939a5286fb6fdaf79c5b3a462',1,'Cellulo::PolyBezier::controlPoints()'],['../group__zone.html#afa67316d98873cfc52f88d28e70e636e',1,'Cellulo::CelluloZonePolyBezier::controlPoints()']]],
   ['convert',['convert',['../group__tile.html#aff98a9afbc5f224f4b863f356e2830a8',1,'Cellulo::CoordSpaceConverter']]],
   ['coords',['coords',['../group__tile.html#afb65b366e9b25633cbe8b2f286fbacd5',1,'Cellulo::HexTile']]],
   ['coordspaceconverter',['CoordSpaceConverter',['../group__tile.html#classCellulo_1_1CoordSpaceConverter',1,'Cellulo']]],
@@ -167,5 +169,7 @@ var searchData=
   ['crossproduct',['crossProduct',['../group__util.html#a6afa31120e3c2963cc74c6a8ff5f7c23',1,'Cellulo::CelluloMathUtil']]],
   ['cubicbezier_2ecpp',['CubicBezier.cpp',['../CubicBezier_8cpp.html',1,'']]],
   ['cubicbezier_2eh',['CubicBezier.h',['../CubicBezier_8h.html',1,'']]],
+  ['currenttrackingvelocity',['currentTrackingVelocity',['../group__robot.html#a04ba2adf2eaefb0da93ba22ee7303d52',1,'Cellulo::PolyBezierTrackerAdaptiveVel']]],
+  ['curve',['curve',['../group__robot.html#a966e8c134120fcc8939feb7bf666f4b4',1,'Cellulo::PolyBezierTracker']]],
   ['cellulo_2dqml_2dplugin',['cellulo-qml-plugin',['../index.html',1,'']]]
 ];

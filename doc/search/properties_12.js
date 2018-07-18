@@ -11,5 +11,6 @@ var searchData=
   ['sourceleft',['sourceLeft',['../group__tile.html#aacd2cf94cbd6330251d5f12a9a67efed',1,'Cellulo::HexTile']]],
   ['sourceright',['sourceRight',['../group__tile.html#a57bc9ebc86d84fdb5d6f191ce6a437d7',1,'Cellulo::HexTile']]],
   ['sourcetop',['sourceTop',['../group__tile.html#af53d5a5dab6ab1bee7c6460d653d0864',1,'Cellulo::HexTile']]],
-  ['stdsourcecoords',['stdSourceCoords',['../group__tile.html#ae2347976125ab14bbd995016b16ae904',1,'Cellulo::HexTile']]]
+  ['stdsourcecoords',['stdSourceCoords',['../group__tile.html#ae2347976125ab14bbd995016b16ae904',1,'Cellulo::HexTile']]],
+  ['stopwhengoalreached',['stopWhenGoalReached',['../group__robot.html#aff8e8f87f1db3d769e03a1408102dd0e',1,'Cellulo::PolyBezierTracker']]]
 ];

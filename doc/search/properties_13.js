@@ -7,5 +7,11 @@ var searchData=
   ['toangle',['toAngle',['../group__zone.html#a8b405d1a360070b5350368feec11c0e4',1,'Cellulo::CelluloZoneAngleInterval']]],
   ['toscreencoords',['toScreenCoords',['../group__tile.html#a3f42dadc33b8652609b7186be3910c57',1,'Cellulo::HexTileMap']]],
   ['toscreensize',['toScreenSize',['../group__tile.html#ad00d78cfa7ae2d3edcb0cbb993b02913',1,'Cellulo::HexTileMap']]],
+  ['trackedpose',['trackedPose',['../group__robot.html#a5306b785580be7a3b99909bc953088d6',1,'Cellulo::PolyBezierTracker']]],
+  ['trackedvelocity',['trackedVelocity',['../group__robot.html#a2dcbb6ccd32939e0996056ab08058f39',1,'Cellulo::PolyBezierTracker']]],
+  ['trackingacceleration',['trackingAcceleration',['../group__robot.html#a8d35870dc376dbab3320de840fbbd985',1,'Cellulo::PolyBezierTrackerConstAccel']]],
+  ['trackingpercentage',['trackingPercentage',['../group__robot.html#a1e5f54e1239da652e24f95ce50baa55b',1,'Cellulo::PolyBezierTracker']]],
+  ['trackingvelocity',['trackingVelocity',['../group__robot.html#af2a6a136c5f3a41c8f415f69c492bbfd',1,'Cellulo::PolyBezierTrackerConstAccel::trackingVelocity()'],['../group__robot.html#a054e3022996f5e0012e165733a5d6e50',1,'Cellulo::PolyBezierTrackerConstVel::trackingVelocity()']]],
+  ['trackingvelocityprofile',['trackingVelocityProfile',['../group__robot.html#a5b0aa2499ffcc56fbe6a52afd97ad920',1,'Cellulo::PolyBezierTrackerProfiledVel']]],
   ['type',['type',['../group__zone.html#a8a43b2651331a4de454a726b73e6c546',1,'Cellulo::CelluloZone']]]
 ];

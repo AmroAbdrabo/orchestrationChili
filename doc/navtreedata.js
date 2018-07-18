@@ -26,8 +26,8 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "AxialHexCoords_8cpp.html",
-"group__comm.html#a72fe2ad6c136c80f7e685b5620a5d394",
-"group__zone.html#a9515cf7877d12c7515012f382cc4f6a0"
+"group__comm.html#a4e127b89e9ac560b558262916d3230f5",
+"group__util.html#aa4aaeebaa7f611cb7a8f05c3f3477d16"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

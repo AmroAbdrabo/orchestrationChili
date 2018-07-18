@@ -1,26 +1,35 @@
 <map id="src/comm/CelluloBluetooth.h" name="src/comm/CelluloBluetooth.h">
-<area shape="rect" id="node2" href="$CelluloRobot_8h.html" title="Object that directly represents a Cellulo robot. " alt="" coords="232,87,395,114"/>
-<area shape="rect" id="node3" href="$CelluloRelayClient_8h.html" title="Relays packets between a server and virtual robot objects. " alt="" coords="419,80,610,121"/>
-<area shape="rect" id="node5" href="$CelluloRobotPoolClient_8h.html" title="Uses the robots at a cellulo&#45;robot&#45;pool. " alt="" coords="445,259,635,300"/>
-<area shape="rect" id="node11" href="$CelluloRelayServer_8h.html" title="Relays packets between a client and robots. " alt="" coords="943,80,1134,121"/>
-<area shape="rect" id="node17" href="$CelluloZonePolyBezier_8h.html" title="Header for composite cubic Bézier curves. " alt="" coords="1265,80,1444,121"/>
-<area shape="rect" id="node21" href="$CelluloBluetoothEMP_8h.html" title="Header of object that mass reset/shuts down all robots. " alt="" coords="1468,80,1647,121"/>
-<area shape="rect" id="node23" href="$CameraFrameImageProvider_8h.html" title="Header for converting the camera image in QByteBuffer to QImage. " alt="" coords="1671,80,1873,121"/>
-<area shape="rect" id="node25" href="$CelluloBluetooth_8cpp.html" title="Source for Bluetooth communication with Cellulo robots. " alt="" coords="1898,87,2102,114"/>
-<area shape="rect" id="node4" href="$CelluloLocalRelayClient_8h.html" title="Relays packets between a server and virtual robot objects over a Unix domain socket. " alt="" coords="208,169,395,211"/>
-<area shape="rect" id="node8" href="$CelluloTcpRelayClient_8h.html" title="Relays packets between a server and virtual robot objects over a TCP socket. " alt="" coords="5,169,184,211"/>
-<area shape="rect" id="node10" href="$CelluloRelayClient_8cpp.html" title="Relays packets between a server and virtual robot objects. " alt="" coords="419,169,610,211"/>
-<area shape="rect" id="node7" href="$CelluloLocalRelayClient_8cpp.html" title="Relays packets between a server and virtual robot objects over a Unix domain socket. " alt="" coords="208,259,395,300"/>
-<area shape="rect" id="node6" href="$CelluloRobotPoolClient_8cpp.html" title="Uses the robots at a cellulo&#45;robot&#45;pool. " alt="" coords="445,348,635,389"/>
-<area shape="rect" id="node9" href="$CelluloTcpRelayClient_8cpp.html" title="Relays packets between a server and virtual robot objects over a TCP socket. " alt="" coords="5,259,184,300"/>
-<area shape="rect" id="node12" href="$CelluloLocalRelayServer_8h.html" title="Relays packets between a client and physical robot objects over a Unix domain socket. " alt="" coords="685,169,872,211"/>
-<area shape="rect" id="node14" href="$CelluloTcpRelayServer_8h.html" title="Relays packets between a client and virtual robot objects over a TCP socket. " alt="" coords="896,169,1075,211"/>
-<area shape="rect" id="node16" href="$CelluloRelayServer_8cpp.html" title="Relays packets between a client and robots. " alt="" coords="1099,169,1290,211"/>
-<area shape="rect" id="node13" href="$CelluloLocalRelayServer_8cpp.html" title="Relays packets between a client and virtual robot objects over a Unix domain socket. " alt="" coords="685,259,872,300"/>
-<area shape="rect" id="node15" href="$CelluloTcpRelayServer_8cpp.html" title="Relays packets between a client and virtual robot objects over a TCP socket. " alt="" coords="896,259,1075,300"/>
-<area shape="rect" id="node18" href="$CelluloSVGUtil_8h.html" title="Source for SVG file parsing and dumping utils. " alt="" coords="1315,177,1504,203"/>
-<area shape="rect" id="node19" href="$CelluloZonePolyBezier_8cpp.html" title="Source for composite cubic Bézier curves. " alt="" coords="1528,169,1707,211"/>
-<area shape="rect" id="node20" href="$CelluloZoneTypes_8cpp.html" title="Source for zone type tools. " alt="" coords="1731,177,1944,203"/>
-<area shape="rect" id="node22" href="$CelluloBluetoothEMP_8cpp.html" title="Source of object that mass reset/shuts down all robots. " alt="" coords="1968,169,2147,211"/>
-<area shape="rect" id="node24" href="$CameraFrameImageProvider_8cpp.html" title="Source for converting the camera image in QByteBuffer to QImage. " alt="" coords="2171,169,2373,211"/>
+<area shape="rect" id="node2" href="$CelluloRobot_8h.html" title="Object that directly represents a Cellulo robot. " alt="" coords="781,87,944,114"/>
+<area shape="rect" id="node12" href="$CelluloRelayClient_8h.html" title="Relays packets between a server and virtual robot objects. " alt="" coords="1218,80,1409,121"/>
+<area shape="rect" id="node14" href="$CelluloRobotPoolClient_8h.html" title="Uses the robots at a cellulo&#45;robot&#45;pool. " alt="" coords="1318,259,1509,300"/>
+<area shape="rect" id="node20" href="$CelluloRelayServer_8h.html" title="Relays packets between a client and robots. " alt="" coords="1739,80,1930,121"/>
+<area shape="rect" id="node26" href="$CelluloZonePolyBezier_8h.html" title="Header for composite cubic Bézier curves. " alt="" coords="2060,80,2239,121"/>
+<area shape="rect" id="node30" href="$CelluloBluetoothEMP_8h.html" title="Header of object that mass reset/shuts down all robots. " alt="" coords="2263,80,2441,121"/>
+<area shape="rect" id="node32" href="$CameraFrameImageProvider_8h.html" title="Header for converting the camera image in QByteBuffer to QImage. " alt="" coords="2465,80,2668,121"/>
+<area shape="rect" id="node34" href="$CelluloBluetooth_8cpp.html" title="Source for Bluetooth communication with Cellulo robots. " alt="" coords="2693,87,2897,114"/>
+<area shape="rect" id="node3" href="$PolyBezierTracker_8h.html" title="Makes CelluloRobots track PolyBezier curves. " alt="" coords="416,177,611,203"/>
+<area shape="rect" id="node4" href="$PolyBezierTrackerConstVel_8h.html" title="Makes CelluloRobots track PolyBezier curves with constant velocity. " alt="" coords="629,259,813,300"/>
+<area shape="rect" id="node6" href="$PolyBezierTrackerConstAccel_8h.html" title="Makes CelluloRobots track PolyBezier curves with constant velocity and finite constant acceleration..." alt="" coords="5,259,189,300"/>
+<area shape="rect" id="node8" href="$PolyBezierTrackerAdaptiveVel_8h.html" title="Makes CelluloRobots track PolyBezier curves with adaptive velocity, i.e decreases velocity when turni..." alt="" coords="213,259,397,300"/>
+<area shape="rect" id="node10" href="$PolyBezierTrackerProfiledVel_8h.html" title="Makes CelluloRobots track PolyBezier curves with the desired velocity profile. " alt="" coords="421,259,605,300"/>
+<area shape="rect" id="node5" href="$PolyBezierTrackerConstVel_8cpp.html" title="Makes CelluloRobots track PolyBezier curves with constant velocity. " alt="" coords="629,348,813,389"/>
+<area shape="rect" id="node7" href="$PolyBezierTrackerConstAccel_8cpp.html" title="Makes CelluloRobots track PolyBezier curves with constant velocity and finite constant acceleration..." alt="" coords="5,348,189,389"/>
+<area shape="rect" id="node9" href="$PolyBezierTrackerAdaptiveVel_8cpp.html" title="Makes CelluloRobots track PolyBezier curves with constant velocity. " alt="" coords="213,348,397,389"/>
+<area shape="rect" id="node11" href="$PolyBezierTrackerProfiledVel_8cpp.html" title="Makes CelluloRobots track PolyBezier curves with the desired velocity profile. " alt="" coords="421,348,605,389"/>
+<area shape="rect" id="node13" href="$CelluloLocalRelayClient_8h.html" title="Relays packets between a server and virtual robot objects over a Unix domain socket. " alt="" coords="1223,169,1409,211"/>
+<area shape="rect" id="node17" href="$CelluloTcpRelayClient_8h.html" title="Relays packets between a server and virtual robot objects over a TCP socket. " alt="" coords="804,169,983,211"/>
+<area shape="rect" id="node19" href="$CelluloRelayClient_8cpp.html" title="Relays packets between a server and virtual robot objects. " alt="" coords="1007,169,1198,211"/>
+<area shape="rect" id="node16" href="$CelluloLocalRelayClient_8cpp.html" title="Relays packets between a server and virtual robot objects over a Unix domain socket. " alt="" coords="1107,259,1293,300"/>
+<area shape="rect" id="node15" href="$CelluloRobotPoolClient_8cpp.html" title="Uses the robots at a cellulo&#45;robot&#45;pool. " alt="" coords="1318,348,1509,389"/>
+<area shape="rect" id="node18" href="$CelluloTcpRelayClient_8cpp.html" title="Relays packets between a server and virtual robot objects over a TCP socket. " alt="" coords="837,259,1016,300"/>
+<area shape="rect" id="node21" href="$CelluloLocalRelayServer_8h.html" title="Relays packets between a client and physical robot objects over a Unix domain socket. " alt="" coords="1903,169,2089,211"/>
+<area shape="rect" id="node23" href="$CelluloTcpRelayServer_8h.html" title="Relays packets between a client and virtual robot objects over a TCP socket. " alt="" coords="1484,169,1663,211"/>
+<area shape="rect" id="node25" href="$CelluloRelayServer_8cpp.html" title="Relays packets between a client and robots. " alt="" coords="1687,169,1878,211"/>
+<area shape="rect" id="node22" href="$CelluloLocalRelayServer_8cpp.html" title="Relays packets between a client and virtual robot objects over a Unix domain socket. " alt="" coords="1903,259,2089,300"/>
+<area shape="rect" id="node24" href="$CelluloTcpRelayServer_8cpp.html" title="Relays packets between a client and virtual robot objects over a TCP socket. " alt="" coords="1533,259,1712,300"/>
+<area shape="rect" id="node27" href="$CelluloSVGUtil_8h.html" title="Source for SVG file parsing and dumping utils. " alt="" coords="2553,177,2743,203"/>
+<area shape="rect" id="node28" href="$CelluloZonePolyBezier_8cpp.html" title="Source for composite cubic Bézier curves. " alt="" coords="2113,169,2292,211"/>
+<area shape="rect" id="node29" href="$CelluloZoneTypes_8cpp.html" title="Source for zone type tools. " alt="" coords="2316,177,2529,203"/>
+<area shape="rect" id="node31" href="$CelluloBluetoothEMP_8cpp.html" title="Source of object that mass reset/shuts down all robots. " alt="" coords="2767,169,2945,211"/>
+<area shape="rect" id="node33" href="$CameraFrameImageProvider_8cpp.html" title="Source for converting the camera image in QByteBuffer to QImage. " alt="" coords="2969,169,3172,211"/>
 </map>
