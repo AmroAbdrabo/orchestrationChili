@@ -28,18 +28,24 @@
 namespace Cellulo{
 
 CelluloLocalRelayServer::CelluloLocalRelayServer(QQuickItem* parent) :
-    #if defined(Q_OS_ANDROID)
+    CelluloRelayServer(CelluloCommUtil::RelayProtocol::Tcp, parent)
+    //Until Qt supports abstract local sockets (see https://bugreports.qt.io/browse/QTBUG-16090), we totally fall back to TCP since non-abstract (file-based) local sockets are a nightmare
+    {
+        address = "127.0.0.1";
+    }
+    /*#if defined(Q_OS_ANDROID)
         CelluloRelayServer(CelluloCommUtil::RelayProtocol::Tcp, parent){ //On Android QLocalServer path defaults to an app-specific path and abstract sockets are not supported yet, so we fall back to Tcp sockets for now
             address = "127.0.0.1";
         }
     #else
         CelluloRelayServer(CelluloCommUtil::RelayProtocol::Local, parent){}
-    #endif
+    #endif*/
 
 CelluloLocalRelayServer::~CelluloLocalRelayServer(){}
 
 bool CelluloLocalRelayServer::cleanSocket(){
-    return QLocalServer::removeServer(address);
+    //return QLocalServer::removeServer(address); //See above fallback
+    return true;
 }
 
 }
