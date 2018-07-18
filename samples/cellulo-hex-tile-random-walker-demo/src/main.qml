@@ -6,6 +6,7 @@ import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.3
 import QtBluetooth 5.2
 import Cellulo 1.0
+import QMLCache 1.0
 
 ApplicationWindow {
     id: window
@@ -18,25 +19,71 @@ ApplicationWindow {
         title: "Robot Address"
 
         Column{
-
-            MacAddrSelector{
-                addresses: [
-                    "00:06:66:d2:cf:7a"
-                ]
-                onConnectRequested: robotComm1.macAddr = selectedAddress
-                onDisconnectRequested: robotComm1.disconnectFromServer()
-                connectionStatus: robotComm1.connectionStatus
+            CelluloBluetoothScanner{
+                id: scanner
+                onRobotDiscovered: {
+                    var newAddresses = macAddrSelector.addresses;
+                    if(newAddresses.indexOf(macAddr) < 0){
+                        console.log(macAddr + " discovered.");
+                        newAddresses.push(macAddr);
+                        newAddresses.sort();
+                    }
+                    macAddrSelector.addresses = newAddresses;
+                    QMLCache.write("addresses", macAddrSelector.addresses.join(','));
+                }
             }
 
-            MacAddrSelector{
-                addresses: [
-                    "00:06:66:74:40:DB"
-                ]
-                onConnectRequested: robotComm2.macAddr = selectedAddress
-                onDisconnectRequested: robotComm2.disconnectFromServer()
-                connectionStatus: robotComm2.connectionStatus
+            Row{
+                spacing: 5
+
+                MacAddrSelector{
+                    id: macAddrSelector
+                    addresses: QMLCache.read("addresses").split(",")
+                    onConnectRequested: {
+                        robotComm.localAdapterMacAddr = selectedLocalAdapterAddress;
+                        robotComm.macAddr = selectedAddress;
+                    }
+                    onDisconnectRequested: robotComm.disconnectFromServer()
+                    connectionStatus: robotComm.connectionStatus
+                }
+
+                Button{
+                    text: "Reset"
+                    onClicked: robotComm.reset()
+                }
             }
 
+            Row{
+                spacing: 5
+
+                BusyIndicator{
+                    running: scanner.scanning
+                    height: scanButton.height
+                }
+
+                Button{
+                    id: scanButton
+                    text: "Scan"
+                    onClicked: scanner.start()
+                }
+
+                Button{
+                    text: "Clear List"
+                    onClicked: {
+                        macAddrSelector.addresses = [];
+                        QMLCache.write("addresses","");
+                    }
+                }
+            }
+        }
+    }
+
+    GroupBox {
+        id: controlsBox
+        title: "Controls"
+        anchors.top: addressBox.bottom
+
+        Column{
             Row{
                 spacing: 5
                 CheckBox{
@@ -72,7 +119,7 @@ ApplicationWindow {
 
     Rectangle{
         id: page
-        anchors.top: addressBox.bottom
+        anchors.top: controlsBox.bottom
         anchors.left: parent.left
         anchors.margins: 50
 
@@ -107,25 +154,10 @@ ApplicationWindow {
 
             Image{
                 property vector2d screenSize: parent.toScreenSize.convert(Qt.vector2d(75, 75*2/Math.sqrt(3)))
-                property vector2d screenCoords: parent.toScreenCoords.convert(Qt.vector2d(robotComm1.x, robotComm1.y))
+                property vector2d screenCoords: parent.toScreenCoords.convert(Qt.vector2d(robotComm.x, robotComm.y))
 
-                source: robotComm1.kidnapped ? "../assets/redHexagon.svg" : "../assets/greenHexagon.svg"
-                rotation: robotComm1.theta
-                width: screenSize.x
-                height: screenSize.y
-                sourceSize.width: screenSize.x
-                sourceSize.height: screenSize.y
-                x: screenCoords.x - width/2
-                y: screenCoords.y - height/2
-                visible: true
-            }
-
-            Image{
-                property vector2d screenSize: parent.toScreenSize.convert(Qt.vector2d(75, 75*2/Math.sqrt(3)))
-                property vector2d screenCoords: parent.toScreenCoords.convert(Qt.vector2d(robotComm2.x, robotComm2.y))
-
-                source: robotComm2.kidnapped ? "../assets/redHexagon.svg" : "../assets/greenHexagon.svg"
-                rotation: robotComm2.theta
+                source: robotComm.kidnapped ? "../assets/redHexagon.svg" : "../assets/greenHexagon.svg"
+                rotation: robotComm.theta
                 width: screenSize.x
                 height: screenSize.y
                 sourceSize.width: screenSize.x
@@ -148,13 +180,7 @@ ApplicationWindow {
     }
 
     RandomWalkerRobot{
-        id: robotComm1
-        hexMap: map
-        walk: walkCheckbox.checked
-    }
-
-    RandomWalkerRobot{
-        id: robotComm2
+        id: robotComm
         hexMap: map
         walk: walkCheckbox.checked
     }

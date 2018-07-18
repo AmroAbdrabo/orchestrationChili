@@ -5,6 +5,7 @@ import QtQuick.Controls 1.2
 import QtQuick.Controls.Styles 1.3
 import QtBluetooth 5.2
 import Cellulo 1.0
+import QMLCache 1.0
 
 ApplicationWindow {
     id: window
@@ -195,41 +196,94 @@ ApplicationWindow {
 
     GroupBox {
         id: addressBox
-        title: "Robots"
+        title: "Robot"
 
         Column{
-            property variant addresses: [
-                "00:06:66:74:40:D2",
-                "00:06:66:74:40:D4",
-                "00:06:66:74:40:D5",
-                "00:06:66:74:40:DB",
-                "00:06:66:74:40:DC",
-                "00:06:66:74:40:E4",
-                "00:06:66:74:40:EC",
-                "00:06:66:74:40:EE",
-                "00:06:66:74:41:03",
-                "00:06:66:74:41:04",
-                "00:06:66:74:41:14",
-                "00:06:66:74:41:4C",
-                "00:06:66:74:43:00",
-                "00:06:66:74:43:01",
-                "00:06:66:74:46:58",
-                "00:06:66:74:46:60",
-                "00:06:66:74:48:A7"
-            ]
+            spacing: 5
 
-            MacAddrSelector{
-                addresses: parent.addresses
-                onConnectRequested: robotComm1.macAddr = selectedAddress
-                onDisconnectRequested: robotComm1.disconnectFromServer()
-                connectionStatus: robotComm1.connectionStatus
+            CelluloBluetoothScanner{
+                id: scanner
+                onRobotDiscovered: {
+                    var newAddresses = macAddrSelector1.addresses;
+                    if(newAddresses.indexOf(macAddr) < 0){
+                        console.log(macAddr + " discovered.");
+                        newAddresses.push(macAddr);
+                        newAddresses.sort();
+                    }
+                    macAddrSelector1.addresses = newAddresses;
+
+                    newAddresses = macAddrSelector2.addresses;
+                    if(newAddresses.indexOf(macAddr) < 0){
+                        newAddresses.push(macAddr);
+                        newAddresses.sort();
+                    }
+                    macAddrSelector2.addresses = newAddresses;
+
+                    QMLCache.write("addresses", macAddrSelector1.addresses.join(','));
+                }
             }
 
-            MacAddrSelector{
-                addresses: parent.addresses
-                onConnectRequested: robotComm2.macAddr = selectedAddress
-                onDisconnectRequested: robotComm2.disconnectFromServer()
-                connectionStatus: robotComm2.connectionStatus
+            Row{
+                spacing: 5
+
+                MacAddrSelector{
+                    id: macAddrSelector1
+                    addresses: QMLCache.read("addresses").split(",")
+                    onConnectRequested: {
+                        robotComm1.localAdapterMacAddr = selectedLocalAdapterAddress;
+                        robotComm1.macAddr = selectedAddress;
+                    }
+                    onDisconnectRequested: robotComm1.disconnectFromServer()
+                    connectionStatus: robotComm1.connectionStatus
+                }
+
+                Button{
+                    text: "Reset"
+                    onClicked: robotComm1.reset()
+                }
+            }
+
+            Row{
+                spacing: 5
+
+                MacAddrSelector{
+                    id: macAddrSelector2
+                    addresses: QMLCache.read("addresses").split(",")
+                    onConnectRequested: {
+                        robotComm2.localAdapterMacAddr = selectedLocalAdapterAddress;
+                        robotComm2.macAddr = selectedAddress;
+                    }
+                    onDisconnectRequested: robotComm2.disconnectFromServer()
+                    connectionStatus: robotComm2.connectionStatus
+                }
+
+                Button{
+                    text: "Reset"
+                    onClicked: robotComm2.reset()
+                }
+            }
+
+            Row{
+                spacing: 5
+
+                BusyIndicator{
+                    running: scanner.scanning
+                    height: scanButton.height
+                }
+
+                Button{
+                    id: scanButton
+                    text: "Scan"
+                    onClicked: scanner.start()
+                }
+
+                Button{
+                    text: "Clear List"
+                    onClicked: {
+                        macAddrSelector.addresses = [];
+                        QMLCache.write("addresses","");
+                    }
+                }
             }
         }
     }
