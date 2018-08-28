@@ -4,7 +4,7 @@ TARGET = cellulorobothubd
 
 QT += core bluetooth quick
 
-SOURCES += src/main_linux.cpp
+SOURCES += src/main.cpp
 
 INCLUDEPATH += \
     ../../../src/comm/ \
