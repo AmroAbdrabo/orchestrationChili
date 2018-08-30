@@ -202,12 +202,14 @@ void CelluloRelayServer::addClient(){
         switch(protocol){
             case CelluloCommUtil::RelayProtocol::Local:
                 clientSocket = localServer->nextPendingConnection();
+                qDebug() << "CelluloRelayServer::addClient(): Local client connected.";
                 connect((QLocalSocket*)clientSocket, static_cast<void (QLocalSocket::*)(QLocalSocket::LocalSocketError)>(&QLocalSocket::error),
                         [=](QLocalSocket::LocalSocketError error){ qDebug() << "CelluloRelayServer clientSocket error: " << error; });
                 break;
 
             case CelluloCommUtil::RelayProtocol::Tcp:
                 clientSocket = tcpServer->nextPendingConnection();
+                qDebug() << "CelluloRelayServer::addClient(): Client from " << ((QTcpSocket*)clientSocket)->peerAddress() << " connected.";
                 connect((QTcpSocket*)clientSocket, static_cast<void (QTcpSocket::*)(QTcpSocket::SocketError)>(&QTcpSocket::error),
                         [=](QTcpSocket::SocketError error){ qDebug() << "CelluloRelayServer clientSocket error: " << error; });
                 break;
@@ -223,8 +225,6 @@ void CelluloRelayServer::addClient(){
 
         for(CelluloBluetooth* robot : robots)
             robot->announceConnectionStatusToRelayServer();
-
-        qDebug() << "CelluloRelayServer::addClient(): Client from " << clientSocket->peerAddress() << " connected.";
 
         emit clientConnected();
     }
