@@ -224,6 +224,8 @@ void CelluloRelayServer::addClient(){
         for(CelluloBluetooth* robot : robots)
             robot->announceConnectionStatusToRelayServer();
 
+        qDebug() << "CelluloRelayServer::addClient(): Client from " << clientSocket->peerAddress() << " connected.";
+
         emit clientConnected();
     }
 
@@ -268,6 +270,9 @@ void CelluloRelayServer::deleteClient(){
 
         clientSocket->deleteLater();
         clientSocket = NULL;
+
+        qDebug() << "CelluloRelayServer::deleteClient(): Client disconnected.";
+
         emit clientDisconnected();
 
         setListening(true);
