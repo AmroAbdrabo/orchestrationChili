@@ -40,6 +40,7 @@
 #include "comm/relay/CelluloRobotHubClient.h"
 #include "comm/relay/CelluloTcpRelayClient.h"
 #include "comm/relay/CelluloTcpRelayServer.h"
+#include "comm/relay/CelluloRelayEnums.h"
 #include "comm/CelluloBluetoothScanner.h"
 #include "comm/CelluloBluetoothEMP.h"
 #include "comm/CelluloBluetoothEnums.h"
@@ -93,6 +94,12 @@ void CelluloPlugin::registerTypes(const char *uri){
     qmlRegisterType<CelluloTcpRelayServer>(uri, 1, 0, "CelluloTcpRelayServer");
     qmlRegisterType<CelluloBluetoothEMP>(uri, 1, 0, "CelluloBluetoothEMP");
     qmlRegisterType<CelluloBluetoothScanner>(uri, 1, 0, "CelluloBluetoothScanner");
+    qmlRegisterSingletonType<CelluloRelayEnums>(uri, 1, 0, "CelluloRelayEnums",
+                                                    [] (QQmlEngine* qmlEngine, QJSEngine* jsEngine)->QObject* {
+                                                        Q_UNUSED(qmlEngine)
+                                                        Q_UNUSED(jsEngine)
+                                                        return new CelluloRelayEnums();
+                                                    });
 
     qmlRegisterSingletonType<CelluloBluetoothEnums>(uri, 1, 0, "CelluloBluetoothEnums",
                                                     [] (QQmlEngine* qmlEngine, QJSEngine* jsEngine)->QObject* {
