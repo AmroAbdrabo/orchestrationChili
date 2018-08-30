@@ -39,6 +39,7 @@ HEADERS += \
     src/comm/relay/CelluloLocalRelayServer.h \
     src/comm/relay/CelluloLocalRelayClient.h \
     src/comm/relay/CelluloRobotPoolClient.h \
+    src/comm/relay/CelluloRobotHubClient.h \
     src/comm/relay/CelluloTcpRelayServer.h \
     src/comm/relay/CelluloTcpRelayClient.h \
     src/zones/CelluloZoneClient.h \
@@ -92,6 +93,7 @@ SOURCES += \
     src/comm/relay/CelluloLocalRelayServer.cpp \
     src/comm/relay/CelluloLocalRelayClient.cpp \
     src/comm/relay/CelluloRobotPoolClient.cpp \
+    src/comm/relay/CelluloRobotHubClient.cpp \
     src/comm/relay/CelluloTcpRelayServer.cpp \
     src/comm/relay/CelluloTcpRelayClient.cpp \
     src/zones/CelluloZoneClient.cpp \

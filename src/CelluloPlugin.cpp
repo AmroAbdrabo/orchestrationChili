@@ -37,6 +37,7 @@
 #include "comm/relay/CelluloLocalRelayClient.h"
 #include "comm/relay/CelluloLocalRelayServer.h"
 #include "comm/relay/CelluloRobotPoolClient.h"
+#include "comm/relay/CelluloRobotHubClient.h"
 #include "comm/relay/CelluloTcpRelayClient.h"
 #include "comm/relay/CelluloTcpRelayServer.h"
 #include "comm/CelluloBluetoothScanner.h"
@@ -87,6 +88,7 @@ void CelluloPlugin::registerTypes(const char *uri){
     qmlRegisterType<CelluloLocalRelayClient>(uri, 1, 0, "CelluloLocalRelayClient");
     qmlRegisterType<CelluloLocalRelayServer>(uri, 1, 0, "CelluloLocalRelayServer");
     qmlRegisterType<CelluloRobotPoolClient>(uri, 1, 0, "CelluloRobotPoolClient");
+    qmlRegisterType<CelluloRobotHubClient>(uri, 1, 0, "CelluloRobotHubClient");
     qmlRegisterType<CelluloTcpRelayClient>(uri, 1, 0, "CelluloTcpRelayClient");
     qmlRegisterType<CelluloTcpRelayServer>(uri, 1, 0, "CelluloTcpRelayServer");
     qmlRegisterType<CelluloBluetoothEMP>(uri, 1, 0, "CelluloBluetoothEMP");
