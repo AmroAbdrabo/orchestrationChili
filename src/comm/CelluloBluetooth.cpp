@@ -208,7 +208,7 @@ void CelluloBluetooth::connectToServer(){
 
     //Virtual robot (representing a real robot over a relay connection)
     if(relayClient != NULL){
-        qDebug() << "CelluloBluetooth::connectToServer(): " << macAddr << " over a relay...";
+        qDebug() << "CelluloBluetooth::connectToServer(): " << macAddr << " through local adapter " << localAdapterMacAddr << " over a relay...";
 
         //Connection status message
         sendPacket.clear();
