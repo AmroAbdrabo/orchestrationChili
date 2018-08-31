@@ -102,18 +102,18 @@ void CelluloRelayClient::decideReconnect(){
 
 void CelluloRelayClient::setServerAddress(QString serverAddress){
     if(serverAddress != this->serverAddress){
-        bool unconnected = false;
+        bool notUnconnected = false;
         switch(protocol){
             case CelluloCommUtil::RelayProtocol::Local:
-                unconnected = ((QLocalSocket*)serverSocket)->state() != QLocalSocket::UnconnectedState;
+                notUnconnected = ((QLocalSocket*)serverSocket)->state() != QLocalSocket::UnconnectedState;
                 break;
 
             case CelluloCommUtil::RelayProtocol::Tcp:
-                unconnected = ((QTcpSocket*)serverSocket)->state() != QTcpSocket::UnconnectedState;
+                notUnconnected = ((QTcpSocket*)serverSocket)->state() != QTcpSocket::UnconnectedState;
                 break;
         }
 
-        if(!unconnected){
+        if(notUnconnected){
             disconnectFromServer();
             this->serverAddress = serverAddress;
             emit serverAddressChanged();

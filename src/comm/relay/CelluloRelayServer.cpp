@@ -445,7 +445,7 @@ void CelluloRelayServer::announceLocalAdapter(bool added, QString const& address
         }
 
         CelluloBluetoothPacket announceLocalAdapterPacket;
-        announceLocalAdapterPacket.setEventPacketType(CelluloBluetoothPacket::EventPacketTypeSetAddress);
+        announceLocalAdapterPacket.setEventPacketType(CelluloBluetoothPacket::EventPacketTypeAnnounceLocalAdapter);
         announceLocalAdapterPacket.load((qint8)added);
         announceLocalAdapterPacket.load(octets[0]);
         announceLocalAdapterPacket.load(octets[1]);
