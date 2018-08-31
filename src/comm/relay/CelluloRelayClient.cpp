@@ -81,8 +81,21 @@ void CelluloRelayClient::setAutoConnect(bool autoConnect){
 }
 
 void CelluloRelayClient::decideReconnect(){
-    if(!isConnected() && autoConnect)
-        connectToServer();
+    if(autoConnect){
+        switch(protocol){
+            case CelluloCommUtil::RelayProtocol::Local:
+                if((QLocalSocket*)serverSocket)->state() == QLocalSocket::UnconnectedState){
+                    reconnectTimer.stop();
+                    connectToServer();
+                }
+                break;
+
+            case CelluloCommUtil::RelayProtocol::Tcp:
+                unconnected = ((QTcpSocket*)serverSocket)->state() != QTcpSocket::UnconnectedState;
+
+                break;
+        }
+    }
 }
 
 void CelluloRelayClient::setServerAddress(QString serverAddress){
@@ -98,8 +111,17 @@ void CelluloRelayClient::setServerAddress(QString serverAddress){
                 break;
         }
 
-        if(!unconnected)
-            qWarning() << "CelluloRelayClient::setServerAddress(): Can only set server address while disconnected.";
+        if(!unconnected){
+            disconnectFromServer();
+            this->serverAddress = serverAddress;
+            emit serverAddressChanged();
+            if(autoConnect)
+                reconnectTimer.start(SERVER_RECONNECT_TIME_MILLIS);
+            else{
+                reconnectTimer.stop();
+                connectToServer();
+            }
+        }
         else{
             this->serverAddress = serverAddress;
             emit serverAddressChanged();
@@ -123,8 +145,17 @@ void CelluloRelayClient::setPort(int port){
     }
 
     if(port != this->port){
-        if(((QTcpSocket*)serverSocket)->state() != QTcpSocket::UnconnectedState)
-            qWarning() << "CelluloRelayClient::setPort(): Can only set port while disconnected.";
+        if(((QTcpSocket*)serverSocket)->state() != QTcpSocket::UnconnectedState){
+            disconnectFromServer();
+            this->port = port;
+            emit portChanged();
+            if(autoConnect)
+                reconnectTimer.start(SERVER_RECONNECT_TIME_MILLIS);
+            else{
+                reconnectTimer.stop();
+                connectToServer();
+            }
+        }
         else{
             this->port = port;
             emit portChanged();
