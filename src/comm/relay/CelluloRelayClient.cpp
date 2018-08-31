@@ -274,7 +274,7 @@ void CelluloRelayClient::processServerPacket(){
         quint8 fourthOctet = serverPacket.unloadUInt8();
         quint8 fifthOctet = serverPacket.unloadUInt8();
         quint8 sixthOctet = serverPacket.unloadUInt8();
-        QString localAdapter = CelluloCommUtil::getMacAddr(QList<quint8>({firstOctet, secondOctet, thirdOctet, fourthOctet, fifthOctet, sixthOctet})).toLower();
+        QString localAdapter = CelluloCommUtil::getMacAddr(QList<quint8>({firstOctet, secondOctet, thirdOctet, fourthOctet, fifthOctet, sixthOctet})).toUpper();
 
         if(added && !localAdapters.contains(localAdapter)){
             localAdapters.append(localAdapter);

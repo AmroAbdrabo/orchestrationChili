@@ -423,7 +423,7 @@ void CelluloRelayServer::sendToClient(QString macAddr, CelluloBluetoothPacket co
 void CelluloRelayServer::checkLocalAdapters(){
     QList<QString> newLocalAdapters;
     for(QBluetoothHostInfo localAdapterInfo : QBluetoothLocalDevice::allDevices())
-        newLocalAdapters << localAdapterInfo.address().toString().toLower();
+        newLocalAdapters << localAdapterInfo.address().toString().toUpper();
 
     for(QString const& newLocalAdapter : newLocalAdapters)
         if(!localAdapters.contains(newLocalAdapter))
