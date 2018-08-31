@@ -24,6 +24,8 @@
 
 #include "CelluloRelayServer.h"
 
+#include <QBluetoothLocalDevice>
+
 namespace Cellulo{
 
 CelluloRelayServer::CelluloRelayServer(CelluloCommUtil::RelayProtocol protocol, QQuickItem* parent) :
@@ -52,6 +54,9 @@ CelluloRelayServer::CelluloRelayServer(CelluloCommUtil::RelayProtocol protocol, 
             connect(tcpServer, SIGNAL(newConnection()), this, SLOT(addClient()));
             break;
     }
+
+    connect(&localAdapterCheckTimer, SIGNAL(timeout()), this, SLOT(checkLocalAdapters()));
+    localAdapterCheckTimer.start(LOCAL_ADAPTER_CHECK_PERIOD);
 }
 
 CelluloRelayServer::~CelluloRelayServer(){
@@ -225,6 +230,9 @@ void CelluloRelayServer::addClient(){
 
         for(CelluloBluetooth* robot : robots)
             robot->announceConnectionStatusToRelayServer();
+
+        for(QString const& localAdapter : localAdapters)
+            announceLocalAdapter(true, localAdapter);
 
         emit clientConnected();
     }
@@ -410,6 +418,45 @@ void CelluloRelayServer::sendToClient(QString macAddr, CelluloBluetoothPacket co
     }
     else
         qWarning() << "CelluloRelayServer::sendToClient(): Trying to relay packet but no client connected yet.";
+}
+
+void CelluloRelayServer::checkLocalAdapters(){
+    QList<QString> newLocalAdapters;
+    for(QBluetoothHostInfo localAdapterInfo : QBluetoothLocalDevice::allDevices())
+        newLocalAdapters << localAdapterInfo.address().toString().toLower();
+
+    for(QString const& newLocalAdapter : newLocalAdapters)
+        if(!localAdapters.contains(newLocalAdapter))
+            announceLocalAdapter(true, newLocalAdapter);
+
+    for(QString const& oldLocalAdapter : localAdapters)
+        if(!newLocalAdapters.contains(oldLocalAdapter))
+            announceLocalAdapter(false, oldLocalAdapter);
+
+    localAdapters = newLocalAdapters;
+}
+
+void CelluloRelayServer::announceLocalAdapter(bool added, QString const& address){
+    if(clientSocket != NULL){
+        QList<quint8> octets = CelluloCommUtil::getOctets(address);
+        if(octets[0] == 0 && octets[1] == 0 && octets[2] == 0 && octets[3] == 0 && octets[4] == 0 && octets[5] == 0){
+            qWarning() << "CelluloRelayServer::announceLocalAdapter(): Provided MAC address is in the wrong format.";
+            return;
+        }
+
+        CelluloBluetoothPacket announceLocalAdapterPacket;
+        announceLocalAdapterPacket.setEventPacketType(CelluloBluetoothPacket::EventPacketTypeSetAddress);
+        announceLocalAdapterPacket.load((qint8)added);
+        announceLocalAdapterPacket.load(octets[0]);
+        announceLocalAdapterPacket.load(octets[1]);
+        announceLocalAdapterPacket.load(octets[2]);
+        announceLocalAdapterPacket.load(octets[3]);
+        announceLocalAdapterPacket.load(octets[4]);
+        announceLocalAdapterPacket.load(octets[5]);
+        clientSocket->write(announceLocalAdapterPacket.getEventSendData());
+    }
+    else
+        qWarning() << "CelluloRelayServer::announceLocalAdapter(): Trying to send packet but no client connected yet.";
 }
 
 }

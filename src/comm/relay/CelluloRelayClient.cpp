@@ -84,15 +84,17 @@ void CelluloRelayClient::decideReconnect(){
     if(autoConnect){
         switch(protocol){
             case CelluloCommUtil::RelayProtocol::Local:
-                if((QLocalSocket*)serverSocket)->state() == QLocalSocket::UnconnectedState){
+                if(((QLocalSocket*)serverSocket)->state() == QLocalSocket::UnconnectedState){
                     reconnectTimer.stop();
                     connectToServer();
                 }
                 break;
 
             case CelluloCommUtil::RelayProtocol::Tcp:
-                unconnected = ((QTcpSocket*)serverSocket)->state() != QTcpSocket::UnconnectedState;
-
+                if(((QTcpSocket*)serverSocket)->state() == QTcpSocket::UnconnectedState){
+                    reconnectTimer.stop();
+                    connectToServer();
+                }
                 break;
         }
     }
@@ -176,6 +178,9 @@ bool CelluloRelayClient::isConnected(){
 
 void CelluloRelayClient::connectToServer(){
     lastMacAddr = "";
+    localAdapters.clear();
+    emit localAdaptersChanged();
+
     switch(protocol){
         case CelluloCommUtil::RelayProtocol::Local:
             ((QLocalSocket*)serverSocket)->connectToServer(serverAddress);
@@ -188,7 +193,6 @@ void CelluloRelayClient::connectToServer(){
 }
 
 void CelluloRelayClient::disconnectFromServer(){
-    lastMacAddr = "";
     switch(protocol){
         case CelluloCommUtil::RelayProtocol::Local:
             ((QLocalSocket*)serverSocket)->disconnectFromServer();
@@ -198,6 +202,10 @@ void CelluloRelayClient::disconnectFromServer(){
             ((QTcpSocket*)serverSocket)->disconnectFromHost();
             break;
     }
+
+    lastMacAddr = "";
+    localAdapters.clear();
+    emit localAdaptersChanged();
 }
 
 void CelluloRelayClient::addRobot(CelluloBluetooth* robot, bool select){
@@ -237,6 +245,13 @@ QVariantList CelluloRelayClient::getRobots() const {
     return robotsVar;
 }
 
+QVariantList CelluloRelayClient::getLocalAdapters() const {
+    QVariantList adaptersVar;
+    for(QString const& adapter : localAdapters)
+        adaptersVar << QVariant::fromValue(adapter);
+    return adaptersVar;
+}
+
 void CelluloRelayClient::incomingServerData(){
     QByteArray message = serverSocket->readAll();
 
@@ -250,8 +265,29 @@ void CelluloRelayClient::incomingServerData(){
 void CelluloRelayClient::processServerPacket(){
     CelluloBluetoothPacket::EventPacketType packetType = serverPacket.getEventPacketType();
 
-    //Set target robot command
-    if(packetType == CelluloBluetoothPacket::EventPacketTypeSetAddress){
+    //Local adapter announcement
+    if(packetType == CelluloBluetoothPacket::EventPacketTypeAnnounceLocalAdapter){
+        bool added = (bool)serverPacket.unloadUInt8();
+        quint8 firstOctet = serverPacket.unloadUInt8();
+        quint8 secondOctet = serverPacket.unloadUInt8();
+        quint8 thirdOctet = serverPacket.unloadUInt8();
+        quint8 fourthOctet = serverPacket.unloadUInt8();
+        quint8 fifthOctet = serverPacket.unloadUInt8();
+        quint8 sixthOctet = serverPacket.unloadUInt8();
+        QString localAdapter = CelluloCommUtil::getMacAddr(QList<quint8>({firstOctet, secondOctet, thirdOctet, fourthOctet, fifthOctet, sixthOctet})).toLower();
+
+        if(added && !localAdapters.contains(localAdapter)){
+            localAdapters.append(localAdapter);
+            emit localAdaptersChanged();
+        }
+        else if(!added && localAdapters.contains(localAdapter)){
+            localAdapters.removeAll(localAdapter);
+            emit localAdaptersChanged();
+        }
+    }
+
+    //Set target robot event
+    else if(packetType == CelluloBluetoothPacket::EventPacketTypeSetAddress){
         quint8 firstOctet = serverPacket.unloadUInt8();
         quint8 secondOctet = serverPacket.unloadUInt8();
         quint8 thirdOctet = serverPacket.unloadUInt8();
@@ -275,7 +311,7 @@ void CelluloRelayClient::processServerPacket(){
             currentRobot = newRobot;
     }
 
-    //Some other command but no robot selected yet
+    //Some other event but no robot selected yet
     else if(currentRobot < 0)
         qWarning() << "CelluloRelayClient::processServerPacket(): Received event packet but no robot is chosen yet, EventPacketTypeSetAddress must be sent first. Dropping this packet.";
 

@@ -72,6 +72,9 @@ class CelluloRelayClient : public QQuickItem {
     /** @brief Whether to try to reconnect when the connection drops or in the beginning, default is true */
     Q_PROPERTY(bool autoConnect READ getAutoConnect WRITE setAutoConnect NOTIFY autoConnectChanged)
 
+    /** @brief List of local adapters present at the server */
+    Q_PROPERTY(QVariantList localAdapters READ getLocalAdapters NOTIFY localAdaptersChanged)
+
     /** @brief List of virtual robots currently under control of this client, read-only */
     Q_PROPERTY(QVariantList robots READ getRobots NOTIFY robotsChanged)
 
@@ -150,6 +153,13 @@ public:
      */
     QVariantList getRobots() const;
 
+    /**
+     * @brief Gets the list of local adapters at the server
+     *
+     * @return List of local adapters at the server
+     */
+    QVariantList getLocalAdapters() const;
+
     /** @endcond */
 
 public slots:
@@ -207,6 +217,11 @@ signals:
      * @brief Emitted when the robot list changes
      */
     void robotsChanged();
+
+    /**
+     * @brief Emitted when the list of local adapters at the server changes
+     */
+    void localAdaptersChanged();
 
     /** @endcond */
 
@@ -272,6 +287,8 @@ private:
 
     int currentRobot;                                     ///< Current robot index to relay messages to, set by a CmdPacketTypeSetAddress
     QList<CelluloBluetooth*> robots;                      ///< List of robots to relay to/from
+
+    QList<QString> localAdapters;                         ///< List of local adapters present at the server
 
     QString lastMacAddr;                                  ///< MAC address of the last CmdPacketTypeSetAddress packet sent to the server
 

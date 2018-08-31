@@ -242,6 +242,7 @@
         EventPacketTypeDebug,                    /** Debug message */ \
         EventPacketTypeSetAddress,               /** Specify address of all following packets (only used by relay clients/servers) */ \
         EventPacketTypeAnnounceConnectionStatus, /** Announce connection status of the robot (only used by relay servers) */ \
+        EventPacketTypeAnnounceLocalAdapter,     /** Announce addition/removal of local adapter (only used by relay servers) */ \
         EventPacketTypeNumElements \
 }
 
@@ -265,7 +266,8 @@
         "C", /** EventPacketTypeFrameLine */ \
         "E", /** EventPacketTypeDebug */ \
         "@", /** EventPacketTypeSetAddress */ \
-        "!"  /** EventPacketTypeAnnounceConnectionStatus */ \
+        "!", /** EventPacketTypeAnnounceConnectionStatus */ \
+        ">"  /** EventPacketTypeAnnounceLocalAdapter */ \
 }
 
 /**
@@ -288,7 +290,8 @@
         2 + IMG_WIDTH_SHARED, /** EventPacketTypeFrameLine: uint16 currentLineIndex, IMG_WIDTH*uint8 grayscalePixel */ \
         8,                    /** EventPacketTypeDebug */ \
         6*1,                  /** EventPacketTypeSetAddress: uint8 firstOctet, uint8 secondOctet, uint8 thirdOctet, uint8 fourthOctet, uint8 fifthOctet, uint8 sixthOctet */ \
-        1 + 6*1               /** EventPacketTypeAnnounceConnectionStatus: uint8 status, uint8 localAdapterAddrOctet1, uint8 localAdapterAddrOctet2, uint8 localAdapterAddrOctet3, uint8 localAdapterAddrOctet4, uint8 localAdapterAddrOctet5, uint8 localAdapterAddrOctet6 */ \
+        1 + 6*1,              /** EventPacketTypeAnnounceConnectionStatus: uint8 status, uint8 localAdapterAddrOctet1, uint8 localAdapterAddrOctet2, uint8 localAdapterAddrOctet3, uint8 localAdapterAddrOctet4, uint8 localAdapterAddrOctet5, uint8 localAdapterAddrOctet6 */ \
+        1 + 6*1               /** EventPacketTypeAnnounceLocalAdapter: uint8 statusBool, uint8 localAdapterAddrOctet1, uint8 localAdapterAddrOctet2, uint8 localAdapterAddrOctet3, uint8 localAdapterAddrOctet4, uint8 localAdapterAddrOctet5, uint8 localAdapterAddrOctet6 */ \
 }
 
 #endif // CELLULOBLUETOOTHSHAREDDEFS_H

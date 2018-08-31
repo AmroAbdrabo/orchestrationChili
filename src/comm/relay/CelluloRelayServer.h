@@ -31,12 +31,13 @@
 #include <QTcpSocket>
 #include <QLocalServer>
 #include <QLocalSocket>
+#include <QTimer>
 
 #include "../CelluloBluetoothPacket.h"
 #include "../CelluloBluetooth.h"
 #include "../CelluloCommUtil.h"
 
-namespace Cellulo{
+namespace Cellulo {
 
 class CelluloBluetooth;
 
@@ -57,7 +58,7 @@ class CelluloBluetooth;
 class CelluloRelayServer : public QQuickItem {
     /* *INDENT-OFF* */
     Q_OBJECT
-    /* *INDENT-ON* */
+        /* *INDENT-ON* */
 
     /** @brief Host address, i.e name of the domain socket (default is "cellulo_relay") or the IP address of the TCP socket (default is "localhost") */
     Q_PROPERTY(QString address READ getAddress WRITE setAddress NOTIFY addressChanged)
@@ -219,6 +220,11 @@ private slots:
      */
     void incomingClientData();
 
+    /**
+     * @brief Checks the set of local apdaters and announces additions/removals to the client
+     */
+    void checkLocalAdapters();
+
 protected:
 
     QString address;    ///< Host address, e.g "127.0.0.1" for TCP
@@ -238,19 +244,31 @@ private:
      */
     void sendToClient(QString macAddr, CelluloBluetoothPacket const& packet);
 
-    CelluloCommUtil::RelayProtocol protocol; ///< Underlying transfer protocol
+    /**
+     * @brief Announces given local adapter to the connected client
+     *
+     * @param added Whether added or removed
+     * @param address Local adapter address
+     */
+    void announceLocalAdapter(bool added, QString const& address);
 
-    quint16 port;                            ///< Port to listen to
-    QLocalServer* localServer;               ///< Unix domain server that listens to clients
-    QTcpServer* tcpServer;                   ///< TCP server that listens to clients
+    CelluloCommUtil::RelayProtocol protocol;                ///< Underlying transfer protocol
 
-    QIODevice* clientSocket;                 ///< Socket to client that handles communication
-    CelluloBluetoothPacket clientPacket;     ///< Client's incoming packet
+    quint16 port;                                           ///< Port to listen to
+    QLocalServer* localServer;                              ///< Unix domain server that listens to clients
+    QTcpServer* tcpServer;                                  ///< TCP server that listens to clients
 
-    int currentRobot;                        ///< Current robot index to relay messages to, set by a CmdPacketTypeSetAddress
-    QList<CelluloBluetooth*> robots;         ///< List of robots to relay to/from
+    QIODevice* clientSocket;                                ///< Socket to client that handles communication
+    CelluloBluetoothPacket clientPacket;                    ///< Client's incoming packet
 
-    QString lastMacAddr;                     ///< MAC address of the last EventPacketTypeSetAddress packet sent to the server
+    int currentRobot;                                       ///< Current robot index to relay messages to, set by a CmdPacketTypeSetAddress
+    QList<CelluloBluetooth*> robots;                        ///< List of robots to relay to/from
+
+    QString lastMacAddr;                                    ///< MAC address of the last EventPacketTypeSetAddress packet sent to the server
+
+    static constexpr int LOCAL_ADAPTER_CHECK_PERIOD = 3000; ///< Period to check addition/removal of local adapters in milliseconds
+    QTimer localAdapterCheckTimer;                          ///< Timer to check local adapters periodically
+    QList<QString> localAdapters;                           ///< List of local Bluetooth adapters
 
 };
 
