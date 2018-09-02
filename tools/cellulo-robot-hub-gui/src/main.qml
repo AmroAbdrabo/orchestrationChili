@@ -23,54 +23,6 @@ ApplicationWindow {
     width: mobile ? Screen.width : 0.7*Screen.width
     height: mobile ? Screen.desktopAvailableHeight : 0.7*Screen.height
 
-    property var localAdapterMacAddrs: BluetoothLocalDeviceStatic.allDevices()
-
-    RepeaterList{
-        id: localAdapters
-
-        model: localAdapterMacAddrs.length
-
-        BluetoothLocalDevice{
-            address: localAdapterMacAddrs[index]
-
-            function hasRobot(robotMacAddr){
-                for(var i=0;i<connectedDevices.length;i++)
-                    if(connectedDevices[i].toLowerCase() === robotMacAddr.toLowerCase())
-                        return true;
-                return false;
-            }
-        }
-    }
-
-    function containedInOtherAdapter(localAddr, robot){
-        for(var l=0;l<localAdapters.items.length;l++){
-            if(robot.localAdapterMacAddr === ""){
-                if(l > 0)
-                    return true;
-            }
-            else if(localAdapters.items[l].address.toLowerCase() !== robot.localAdapterMacAddr && localAdapters.items[l].hasRobot(robot.macAddr))
-                return true;
-        }
-        return false;
-    }
-
-    Component.onCompleted: {
-        if(Qt.platform.os === "linux"){
-            if(CelluloCommUtil.testRobotPoolDaemon()){
-                if(CelluloCommUtil.startRobotPoolDaemon())
-                    toast.show("Robot pool daemon started, connecting...");
-                else
-                    toast.show("Robot pool daemon already running, connecting...");
-                client.connectToServer();
-            }
-            else{
-                var err = "/usr/local/bin/cellulorobotpoold not found!!!";
-                toast.show(err);
-                console.log(err);
-            }
-        }
-    }
-
     function createRobot(macAddr){
         var newRobot = Qt.createQmlObject("import Cellulo 1.0; CelluloBluetooth{}", window);
         newRobot.autoConnect = false;
@@ -78,8 +30,10 @@ ApplicationWindow {
         return newRobot;
     }
 
-    CelluloLocalRelayClient{
+    CelluloRobotHubClient{
         id: client
+
+        serverAddress: "192.168.2.1"
 
         onConnected: toast.show("Connected to Server.")
         onDisconnected: toast.show("Disconnected from Server.")
@@ -110,43 +64,18 @@ ApplicationWindow {
                 spacing: 5
 
                 GroupBox{
-                    title: "Server controls" + (android ? " (use Cellulo Robot Pool Service app to start and stop)" : "")
+                    title: "Server status"
 
-                    Row{
+                    Column{
                         spacing: 5
 
-                        Button{
-                            text: "Start Server"
-                            anchors.verticalCenter: parent.verticalCenter
-                            onClicked: {
-                                if(CelluloCommUtil.startRobotPoolDaemon())
-                                    toast.show("Started robot pool daemon.");
-                                else
-                                    toast.show("Cannot start robot pool daemon, possibly already running.");
-                            }
-                            enabled: (osx || android) ? false : true
-                        }
-                        Button{
-                            text: "Stop Server"
-                            anchors.verticalCenter: parent.verticalCenter
-                            onClicked: {
-                                if(CelluloCommUtil.stopRobotPoolDaemon())
-                                    toast.show("Stopped robot pool daemon.");
-                                else
-                                    toast.show("Cannot stop robot pool daemon, possibly not running.");
-                            }
-                            enabled: (osx || android) ? false : true
-                        }
-                        Button{
-                            text: "Clean Socket"
-                            anchors.verticalCenter: parent.verticalCenter
-                            onClicked: toast.show(client.cleanSocket() ? "Cleaned socket successfully." : "Could not clean socket.")
-                            enabled: android ? false : true
-                        }
                         Text{
                             text: client.connected ? "Connected to Server." : "Connecting to Server... " + (Qt.platform.os === "osx" ? "\n(must launch \"Cellulo Robot Pool Daemon\" manually on macOS)" : "")
                             color: client.connected ? "green" : "red"
-                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        Text{
+                            text: "Local adapters on server: " + client.localAdapters
                         }
                     }
                 }
@@ -208,12 +137,12 @@ ApplicationWindow {
                                     property string localAdapterMacAddr: robot.localAdapterMacAddr
 
                                     addresses: [robot.macAddr]
+                                    localAdapterAddresses: client.localAdapters
                                     connectionStatus: robot.connectionStatus
 
                                     onConnectionStatusChanged: {
                                         if(connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected)
                                             robot.setVisualEffect(CelluloBluetoothEnums.VisualEffectAlertAll,"#800080",3);
-                                        wrongText.update();
                                     }
 
                                     onLocalAdapterMacAddrChanged: selectLocalAdapterAddress(localAdapterMacAddr.toUpperCase())
@@ -225,18 +154,6 @@ ApplicationWindow {
                                     }
 
                                     onDisconnectRequested: robot.disconnectFromServer()
-                                }
-
-                                Text{
-                                    id: wrongText
-                                    text: "Wrong adapter!"
-                                    visible: containedInOtherAdapter(selector.localAdapterMacAddr, selector.robot)
-                                    color: "red"
-                                    anchors.verticalCenter: parent.verticalCenter
-
-                                    function update(){
-                                        visible = containedInOtherAdapter(selector.localAdapterMacAddr, selector.robot);
-                                    }
                                 }
                             }
                         }
