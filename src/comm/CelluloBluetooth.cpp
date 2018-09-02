@@ -27,6 +27,8 @@
 #include "CelluloCommUtil.h"
 
 #include <QBluetoothDeviceInfo>
+#include <QBluetoothHostInfo>
+#include <QBluetoothLocalDevice>
 #include <time.h>
 
 #ifdef BT_MULTIADAPTER_SUPPORT
@@ -34,6 +36,8 @@
     #include <sys/socket.h>
     #include <bluetooth/bluetooth.h>
     #include <bluetooth/rfcomm.h>
+    #include <bluetooth/hci.h>
+    #include <bluetooth/hci_lib.h>
 #endif
 
 namespace Cellulo{
@@ -143,6 +147,16 @@ void CelluloBluetooth::setLocalAdapterMacAddr(QString localAdapterMacAddr){
     }
 }
 
+bool CelluloBluetooth::connectedOverWrongLocalAdapter(){
+    if(localAdapterMacAddr != "")
+        for(QBluetoothHostInfo const& host : QBluetoothLocalDevice::allDevices())
+            if(host.address().toString().toUpper() != localAdapterMacAddr.toUpper())
+                for(QBluetoothAddress const& connectedDevice : QBluetoothLocalDevice(host.address()).connectedDevices())
+                    if(connectedDevice.toString().toUpper() == macAddr.toUpper())
+                        return true;
+    return false;
+}
+
 void CelluloBluetooth::startTimeoutTimer(int time, int pm){
     btConnectTimeoutTimer.setInterval(time - pm + 2*(qrand() % pm));
     btConnectTimeoutTimer.start();
@@ -201,6 +215,15 @@ void CelluloBluetooth::openSocket(){
 
         //Announce connection status to relay server if it's there
         announceConnectionStatusToRelayServer();
+
+
+
+
+
+
+
+
+        qDebug() << "Connecting - Connected over wrong adapter? " << connectedOverWrongLocalAdapter();
     }
 }
 
@@ -318,6 +341,17 @@ void CelluloBluetooth::socketConnected(){
 
     //Update residual states that normally update by events
     queryBatteryState();
+
+
+
+
+
+
+
+
+
+
+    qDebug() << "Connected - Connected over wrong adapter? " << connectedOverWrongLocalAdapter();
 }
 
 void CelluloBluetooth::socketDisconnected(){

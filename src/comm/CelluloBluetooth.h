@@ -731,6 +731,13 @@ private:
     void resetProperties();
 
     /**
+     * @brief Checks whether the robot is connected over an adapter other than the specified local adapter
+     *
+     * @return Whether connection is established over the wrong local adpater
+     */
+    bool connectedOverWrongLocalAdapter();
+
+    /**
      * @brief Starts the connection timeout timer, sets the timer to (time +- pm) milliseconds
      *
      * @param time Mean time to wait in milliseconds
