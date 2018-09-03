@@ -120,6 +120,7 @@ public:
     static const int BT_CONNECT_TIMEOUT_MILLIS_PM = 5000;     ///< Variation in reconnect timeout
     static const int BT_BIND_FAIL_RECONNECT_MILLIS = 5000;    ///< After local adapter binding fail, will try to reconnect after this much time
     static const int BT_BIND_FAIL_RECONNECT_MILLIS_PM = 2500; ///< Variation in local adapter binding fail reconnect timeout
+    static const int BT_WRONG_ADAPTER_CHECK_MILLIS = 1000;    ///< Period at which to check whether the socket is connected over the wrong local adapter
     static constexpr float FRAMERATE_SMOOTH_FACTOR = 0.99f;   ///< Smoothing factor for framerate, closer to 1.0 means less update
 
     static QByteArray frameBuffer;                            ///< Container for the received camera frame data
@@ -264,6 +265,11 @@ private slots:
      * @brief Disconnects first and then connects again if not connected yet
      */
     void refreshConnection();
+
+    /**
+     * @brief If socket is detected to be on the wrong local adapter, rebinds and reconnects
+     */
+    void checkWrongAdapter();
 
 public slots:
 
@@ -699,6 +705,7 @@ private:
 
     QString localAdapterMacAddr;                              ///< MAC address of the local adapter to use when connecting to the robot, only works on Linux
     bool autoConnect;                                         ///< Whether the socket will try to reconnect every time it drops, will connect when mac address is set
+    QTimer wrongAdapterCheckTimer;                            ///< Timer to check whether robot is connected over wrong adapter
 
     CelluloBluetoothPacket sendPacket;                        ///< Outgoing packet
     CelluloBluetoothPacket recvPacket;                        ///< Incoming packet

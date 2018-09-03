@@ -56,6 +56,10 @@ CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) : CelluloZoneClient(paren
     qsrand(time(0));
     connect(&btConnectTimeoutTimer, SIGNAL(timeout()), this, SLOT(refreshConnection()));
 
+    wrongAdapterCheckTimer.setSingleShot(true);
+    wrongAdapterCheckTimer.setInterval(BT_WRONG_ADAPTER_CHECK_MILLIS);
+    connect(&wrongAdapterCheckTimer, SIGNAL(timeout()), this, SLOT(checkWrongAdapter()));
+
     relayClient = NULL;
     relayServer = NULL;
     poseRemapper = NULL;
@@ -149,108 +153,114 @@ void CelluloBluetooth::setLocalAdapterMacAddr(QString localAdapterMacAddr){
 }
 
 bool CelluloBluetooth::connectedOverWrongLocalAdapter(){
-    
-    /*
-     * Get all local adapters, adapted from hci_for_each_dev()
-     */
+    #ifdef BT_MULTIADAPTER_SUPPORT
+        if(localAdapterMacAddr == "")
+            return false;
 
-    struct hci_dev_list_req* hciDevListReq;
-    struct hci_dev_req* hciDevReq;
+        /*
+         * Get all local adapters, adapted from hci_for_each_dev()
+         */
 
-    //Open BTPROTO_HCI socket
-    int btprotoHciSocket = ::socket(AF_BLUETOOTH, SOCK_RAW | SOCK_CLOEXEC, BTPROTO_HCI);
-    if(btprotoHciSocket < 0){
-        qCritical() << "CelluloBluetooth::connectedOverWrongLocalAdapter(): BTPROTO_HCI socket cannot be opened.";
-        return false;
-    }
+        struct hci_dev_list_req* hciDevListReq;
+        struct hci_dev_req* hciDevReq;
 
-    //Allocate all devices request input/output struct
-    hciDevListReq = (struct hci_dev_list_req*)malloc(HCI_MAX_DEV*sizeof(*hciDevReq) + sizeof(*hciDevListReq));
-    if(!hciDevListReq){
-        qCritical() << "CelluloBluetooth::connectedOverWrongLocalAdapter(): hci_dev_list_req* cannot be allocated, error: " << strerror(errno);
-        close(btprotoHciSocket);
-        return false;
-    }
+        //Open BTPROTO_HCI socket
+        int btprotoHciSocket = ::socket(AF_BLUETOOTH, SOCK_RAW | SOCK_CLOEXEC, BTPROTO_HCI);
+        if(btprotoHciSocket < 0){
+            qCritical() << "CelluloBluetooth::connectedOverWrongLocalAdapter(): BTPROTO_HCI socket cannot be opened.";
+            return false;
+        }
 
-    //Request parameters and result "iterator" struct
-    memset(hciDevListReq, 0, HCI_MAX_DEV*sizeof(*hciDevReq) + sizeof(*hciDevListReq));
-    hciDevListReq->dev_num = HCI_MAX_DEV;
-    hciDevReq = hciDevListReq->dev_req;
+        //Allocate all devices request input/output struct
+        hciDevListReq = (struct hci_dev_list_req*)malloc(HCI_MAX_DEV*sizeof(*hciDevReq) + sizeof(*hciDevListReq));
+        if(!hciDevListReq){
+            qCritical() << "CelluloBluetooth::connectedOverWrongLocalAdapter(): hci_dev_list_req* cannot be allocated, error: " << strerror(errno);
+            close(btprotoHciSocket);
+            return false;
+        }
 
-    //Make the actual request
-    if(ioctl(btprotoHciSocket, HCIGETDEVLIST, (void*)hciDevListReq) < 0){
-        qCritical() << "CelluloBluetooth::connectedOverWrongLocalAdapter(): HCIGETDEVLIST request failed, error: " << strerror(errno);
-        free(hciDevListReq);
-        close(btprotoHciSocket);
-        return false;
-    }
+        //Request parameters and result "iterator" struct
+        memset(hciDevListReq, 0, HCI_MAX_DEV*sizeof(*hciDevReq) + sizeof(*hciDevListReq));
+        hciDevListReq->dev_num = HCI_MAX_DEV;
+        hciDevReq = hciDevListReq->dev_req;
 
-    char localaddrbuf[18], addrbuf[18];
-    struct hci_conn_list_req* hciConnListReq;
-    struct hci_conn_info* hciConnInfo;
+        //Make the actual request
+        if(ioctl(btprotoHciSocket, HCIGETDEVLIST, (void*)hciDevListReq) < 0){
+            qCritical() << "CelluloBluetooth::connectedOverWrongLocalAdapter(): HCIGETDEVLIST request failed, error: " << strerror(errno);
+            free(hciDevListReq);
+            close(btprotoHciSocket);
+            return false;
+        }
 
-    //Allocate all connections request input(output struct
-    hciConnListReq = (struct hci_conn_list_req*)malloc(20*sizeof(*hciConnInfo) + sizeof(*hciConnListReq));
-    if(!hciConnListReq){
-        qCritical() << "CelluloBluetooth::connectedOverWrongLocalAdapter(): hci_conn_list_req* cannot be allocated, error: " << strerror(errno);
-        free(hciDevListReq);
-        close(btprotoHciSocket);
-        return false;
-    }
+        char localaddrbuf[18], addrbuf[18];
+        struct hci_conn_list_req* hciConnListReq;
+        struct hci_conn_info* hciConnInfo;
 
-    //Traverse all open adapters
-    for(int i = 0; i < hciDevListReq->dev_num; i++, hciDevReq++){
-        if(hci_test_bit(HCI_UP, &hciDevReq->dev_opt)){
+        //Allocate all connections request input(output struct
+        hciConnListReq = (struct hci_conn_list_req*)malloc(20*sizeof(*hciConnInfo) + sizeof(*hciConnListReq));
+        if(!hciConnListReq){
+            qCritical() << "CelluloBluetooth::connectedOverWrongLocalAdapter(): hci_conn_list_req* cannot be allocated, error: " << strerror(errno);
+            free(hciDevListReq);
+            close(btprotoHciSocket);
+            return false;
+        }
 
-            //Get device info to check the MAC address
-            struct hci_dev_info hciDevInfo;
-            hciDevInfo.dev_id = hciDevReq->dev_id;
-            if(ioctl(btprotoHciSocket, HCIGETDEVINFO, (void*)&hciDevInfo)){
-                qCritical() << "CelluloBluetooth::connectedOverWrongLocalAdapter(): HCIGETDEVINFO request failed on device id: " << hciDevReq->dev_id << ", error: " << strerror(errno);
-                continue;
-            }
+        //Traverse all open adapters
+        for(int i = 0; i < hciDevListReq->dev_num; i++, hciDevReq++){
+            if(hci_test_bit(HCI_UP, &hciDevReq->dev_opt)){
 
-            //Check all local adapters with different address than the desired one
-            ba2str(&hciDevInfo.bdaddr, localaddrbuf);
-            if(QString(localaddrbuf).toUpper() != localAdapterMacAddr.toUpper()){
-
-                /*
-                 * Get all connections on this local adapter, adapted from conn_list()
-                 */
-
-                //Request parameters and result "iterator" struct
-                hciConnListReq->dev_id = hciDevReq->dev_id;
-                hciConnListReq->conn_num = 20;
-                hciConnInfo = hciConnListReq->conn_info;
-
-                //Make the actual request
-                if(ioctl(btprotoHciSocket, HCIGETCONNLIST, (void*)hciConnListReq)){
-                    qCritical() << "CelluloBluetooth::connectedOverWrongLocalAdapter(): HCIGETCONNLIST request failed, error: " << strerror(errno);
+                //Get device info to check the MAC address
+                struct hci_dev_info hciDevInfo;
+                hciDevInfo.dev_id = hciDevReq->dev_id;
+                if(ioctl(btprotoHciSocket, HCIGETDEVINFO, (void*)&hciDevInfo)){
+                    qCritical() << "CelluloBluetooth::connectedOverWrongLocalAdapter(): HCIGETDEVINFO request failed on device id: " << hciDevReq->dev_id << ", error: " << strerror(errno);
                     continue;
                 }
 
-                //Check all connections (shows all including trying to connect and connected)
-                for(int j = 0; j < hciConnListReq->conn_num; j++, hciConnInfo++) {
+                //Check all local adapters with different address than the desired one
+                ba2str(&hciDevInfo.bdaddr, localaddrbuf);
+                if(QString(localaddrbuf).toUpper() != localAdapterMacAddr.toUpper()){
 
-                    //Check if this robot is on this local adapter
-            		ba2str(&hciConnInfo->bdaddr, addrbuf);
-                    if(QString(addrbuf).toUpper() == macAddr.toUpper()){
-                        free(hciConnListReq);
-                        free(hciDevListReq);
-                        close(btprotoHciSocket);
+                    /*
+                     * Get all connections on this local adapter, adapted from conn_list()
+                     */
 
-                        qDebug() << "CelluloBluetooth::connectedOverWrongLocalAdapter(): Robot " << addrbuf << " is on wrong local adapter " << localaddrbuf << "!";
-                        return true;
+                    //Request parameters and result "iterator" struct
+                    hciConnListReq->dev_id = hciDevReq->dev_id;
+                    hciConnListReq->conn_num = 20;
+                    hciConnInfo = hciConnListReq->conn_info;
+
+                    //Make the actual request
+                    if(ioctl(btprotoHciSocket, HCIGETCONNLIST, (void*)hciConnListReq)){
+                        qCritical() << "CelluloBluetooth::connectedOverWrongLocalAdapter(): HCIGETCONNLIST request failed, error: " << strerror(errno);
+                        continue;
                     }
-            	}
+
+                    //Check all connections (shows all including trying to connect and connected)
+                    for(int j = 0; j < hciConnListReq->conn_num; j++, hciConnInfo++) {
+
+                        //Check if this robot is on this local adapter
+                		ba2str(&hciConnInfo->bdaddr, addrbuf);
+                        if(QString(addrbuf).toUpper() == macAddr.toUpper()){
+                            free(hciConnListReq);
+                            free(hciDevListReq);
+                            close(btprotoHciSocket);
+
+                            qDebug() << "CelluloBluetooth::connectedOverWrongLocalAdapter(): Robot " << addrbuf << " is on wrong local adapter " << localaddrbuf << "!";
+                            return true;
+                        }
+                	}
+                }
             }
         }
-    }
 
-    free(hciConnListReq);
-    free(hciDevListReq);
-    close(btprotoHciSocket);
-    return false;
+        free(hciConnListReq);
+        free(hciDevListReq);
+        close(btprotoHciSocket);
+        return false;
+    #else
+        return false;
+    #endif
 }
 
 void CelluloBluetooth::startTimeoutTimer(int time, int pm){
@@ -289,11 +299,18 @@ void CelluloBluetooth::refreshConnection(){
     }
 }
 
+void CelluloBluetooth::checkWrongAdapter(){
+    if(connectionStatus != CelluloBluetoothEnums::ConnectionStatusConnected)
+        if(connectedOverWrongLocalAdapter()){
+            disconnectFromServer();
+            connectToServer();
+        }
+}
+
 void CelluloBluetooth::openSocket(){
     if(socket != NULL){
         qDebug() << "CelluloBluetooth::openSocket(): To " << macAddr <<
-        (localAdapterMacAddr != "" ? " over local adapter " + localAdapterMacAddr : "") <<
-        "...";
+            (localAdapterMacAddr != "" ? " over local adapter " + localAdapterMacAddr : "") << "...";
 
         socket->connectToService(
             QBluetoothAddress(macAddr),
@@ -312,14 +329,8 @@ void CelluloBluetooth::openSocket(){
         //Announce connection status to relay server if it's there
         announceConnectionStatusToRelayServer();
 
-
-
-
-
-
-
-
-        qDebug() << "Connecting - Connected over wrong adapter? " << connectedOverWrongLocalAdapter();
+        //if(localAdapterMacAddr != "" && relayClient == NULL)
+            //wrongAdapterCheckTimer.start();
     }
 }
 
@@ -421,11 +432,20 @@ void CelluloBluetooth::disconnectFromServer(){
         socket->deleteLater();
         socket = NULL;
         btConnectTimeoutTimer.stop();
+        wrongAdapterCheckTimer.stop();
         resetProperties();
     }
 }
 
 void CelluloBluetooth::socketConnected(){
+    if(localAdapterMacAddr != "" && relayClient == NULL){
+        wrongAdapterCheckTimer.stop();
+        if(connectedOverWrongLocalAdapter()){
+            wrongAdapterCheckTimer.start();
+            return;
+        }
+    }
+
     qDebug() << "CelluloBluetooth::socketConnected(): " << macAddr;
     if(connectionStatus != CelluloBluetoothEnums::ConnectionStatusConnected){
         connectionStatus = CelluloBluetoothEnums::ConnectionStatusConnected;
@@ -437,17 +457,6 @@ void CelluloBluetooth::socketConnected(){
 
     //Update residual states that normally update by events
     queryBatteryState();
-
-
-
-
-
-
-
-
-
-
-    qDebug() << "Connected - Connected over wrong adapter? " << connectedOverWrongLocalAdapter();
 }
 
 void CelluloBluetooth::socketDisconnected(){
