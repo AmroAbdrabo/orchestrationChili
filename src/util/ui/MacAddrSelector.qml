@@ -27,6 +27,9 @@ Row{
     /** type:string Currently selected address. */
     readonly property string selectedAddress: selectionBox.currentText
 
+    /** type:list<string> List of local adapter MAC addresses, set by the user */
+    property var localAdapterAddresses: []
+
     /** type:string Currently selected local adapter address (only available in Linux). */
     readonly property string selectedLocalAdapterAddress: localAdapterSelectionBox.currentText
 
@@ -44,6 +47,7 @@ Row{
                 selectionBox.currentIndex = i;
                 return;
             }
+        selectionBox.currentIndex = -1;
     }
 
     /**
@@ -57,6 +61,7 @@ Row{
                 localAdapterSelectionBox.currentIndex = i;
                 return;
             }
+        localAdapterSelectionBox.currentIndex = -1;
     }
 
     /** @brief Emitted when the connect button is pressed */
@@ -64,6 +69,9 @@ Row{
 
     /** @brief Emitted when the disconnect button is pressed */
     signal disconnectRequested()
+
+    /** @brief User must call selectAddress() and selectLocalAdapterAddress() again when this signal is emitted */
+    signal selectedAddrRefreshRequested()
 
     /*
      * Private
@@ -74,15 +82,6 @@ Row{
     spacing: 5
 
     property bool linux: Qt.platform.os === "linux"
-    property var localAdapterAddresses: {
-        var arr = [""];
-        if(linux){
-            var devices = BluetoothLocalDeviceStatic.allDevices();
-            for(var i=0;i<devices.length;i++)
-                arr.push(devices[i]);
-        }
-        return arr;
-    }
 
     function em(x){ return Math.round(x*TextSingleton.font.pixelSize); }
 
@@ -95,15 +94,20 @@ Row{
         width: em(12)
         model: addresses
 
+        onModelChanged: selectedAddrRefreshRequested()
+
         onAccepted: {
-            if (currentIndex == -1) {
-                var tempModel = [];
-                for(var i=0;i<model.length;i++)
-                    tempModel.push(model[i]);
-                tempModel.push(editText);
-                model = tempModel;
-                currentIndex = count - 1;
+            var tempModel = [];
+            var exists = false;
+            for(var i=0;i<model.length;i++){
+                tempModel.push(model[i]);
+                if(model[i] == editText)
+                    exists = true;
             }
+            if(!exists)
+                tempModel.push(editText);
+            model = tempModel;
+            selectAddress(editText);
         }
     }
 
@@ -125,16 +129,9 @@ Row{
         width: em(12)
         model: localAdapterAddresses
 
-        onAccepted: {
-            if (currentIndex == -1) {
-                var tempModel = [];
-                for(var i=0;i<model.length;i++)
-                    tempModel.push(model[i]);
-                tempModel.push(editText);
-                model = tempModel;
-                currentIndex = count - 1;
-            }
-        }
+        onModelChanged: selectedAddrRefreshRequested()
+
+        onAccepted: selectLocalAdapterAddress(editText)
     }
 
     Button{
