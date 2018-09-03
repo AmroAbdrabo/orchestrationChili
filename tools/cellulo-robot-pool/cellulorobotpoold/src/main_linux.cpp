@@ -84,7 +84,8 @@ void exitApp(int signal){
 int run(int argc, char** argv){
     signal(SIGTERM, exitApp);
 
-    qInstallMessageHandler(syslogOutput);
+    if(!(argc > 1 && strcmp(argv[1], "--nodaemon") == 0))
+        qInstallMessageHandler(syslogOutput);
     QLoggingCategory::setFilterRules(QStringLiteral("qt.bluetooth* = true"));
 
     qInfo() << "Starting...";
@@ -96,30 +97,39 @@ int run(int argc, char** argv){
 }
 
 int main(int argc, char** argv){
+    if(argc > 1 && (strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "-h") == 0)){
+        qInfo() << "Cellulo Robot Pool Daemon - Usage:";
+        qInfo() << "    --help|-h:  Display this message";
+        qInfo() << "    --nodaemon: Run in the foreground terminal instead of a daemon";
+    }
+    else if(argc > 1 && strcmp(argv[1], "--nodaemon") == 0)
+        return run(argc, argv);
+    else{
 
-    //Fork off and die
-    pid_t pid = fork();
-    if(pid < 0)
-        exit(EXIT_FAILURE);
-    if(pid > 0)
-        exit(EXIT_SUCCESS);
+        //Fork off and die
+        pid_t pid = fork();
+        if(pid < 0)
+            exit(EXIT_FAILURE);
+        if(pid > 0)
+            exit(EXIT_SUCCESS);
 
-    //pid == 0 in the child, i.e the daemon
+        //pid == 0 in the child, i.e the daemon
 
-    openlog("cellulorobotpoold", LOG_CONS | LOG_NDELAY | LOG_PID, LOG_USER);
+        openlog("cellulorobotpoold", LOG_CONS | LOG_NDELAY | LOG_PID, LOG_USER);
 
-    //Files created have 777 permissions
-    umask(0);
+        //Files created have 777 permissions
+        umask(0);
 
-    pid_t sid = setsid();
-    if(sid < 0)
-        exit(EXIT_FAILURE);
-    if((chdir("/")) < 0)
-        exit(EXIT_FAILURE);
+        pid_t sid = setsid();
+        if(sid < 0)
+            exit(EXIT_FAILURE);
+        if((chdir("/")) < 0)
+            exit(EXIT_FAILURE);
 
-    close(STDIN_FILENO);
-    close(STDOUT_FILENO);
-    close(STDERR_FILENO);
+        close(STDIN_FILENO);
+        close(STDOUT_FILENO);
+        close(STDERR_FILENO);
 
-    return run(argc, argv);
+        return run(argc, argv);
+    }
 }
