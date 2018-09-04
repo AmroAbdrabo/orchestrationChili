@@ -33,18 +33,6 @@
 
 #ifdef BT_MULTIADAPTER_SUPPORT
     #include "CelluloBluezUtil.h"
-
-
-
-
-
-    #include <unistd.h>
-    #include <sys/socket.h>
-    #include <sys/ioctl.h>
-    #include <bluetooth/bluetooth.h>
-    #include <bluetooth/rfcomm.h>
-    #include <bluetooth/hci.h>
-    #include <bluetooth/hci_lib.h>
 #endif
 
 namespace Cellulo{
@@ -189,12 +177,15 @@ void CelluloBluetooth::setRelayServer(CelluloRelayServer* relayServer){
 void CelluloBluetooth::refreshConnection(){
     if(connectionStatus != CelluloBluetoothEnums::ConnectionStatusConnected){
         qDebug() << "CelluloBluetooth::refreshConnection(): Connection attempt timed out, will retry";
-        /*
-        if(CelluloBluezUtil::connectedOverWrongLocalAdapter(macAddr, localAdapterMacAddr, wrongAdapter)){
-            //TODO: DISCONNECT
-        }
-        */
         disconnectFromServer();
+
+        #if defined(BT_MULTIADAPTER_SUPPORT)
+            int wrongAdapterDevID = -1;
+            if(CelluloBluezUtil::connectedOverWrongLocalAdapter(macAddr, localAdapterMacAddr, wrongAdapterDevID))
+                if(!CelluloBluezUtil::disconnectFromLocalAdapter(macAddr, wrongAdapterDevID))
+                    qWarning() << "CelluloBluetooth::checkWrongAdapter(): Attempt to disconnect " << macAddr << " from device ID " << wrongAdapterDevID << " failed. The connection may be no longer present.";
+        #endif
+
         connectToServer();
     }
 }
@@ -202,10 +193,11 @@ void CelluloBluetooth::refreshConnection(){
 void CelluloBluetooth::checkWrongAdapter(){
     #if defined(BT_MULTIADAPTER_SUPPORT)
         if(connectionStatus != CelluloBluetoothEnums::ConnectionStatusConnected){
-            QString wrongAdapter;
-            if(CelluloBluezUtil::connectedOverWrongLocalAdapter(macAddr, localAdapterMacAddr, wrongAdapter)){
-                //TODO: DISCONNECT
+            int wrongAdapterDevID = -1;
+            if(CelluloBluezUtil::connectedOverWrongLocalAdapter(macAddr, localAdapterMacAddr, wrongAdapterDevID)){
                 disconnectFromServer();
+                if(!CelluloBluezUtil::disconnectFromLocalAdapter(macAddr, wrongAdapterDevID))
+                    qWarning() << "CelluloBluetooth::checkWrongAdapter(): Attempt to disconnect " << macAddr << " from device ID " << wrongAdapterDevID << " failed. The connection may be no longer present.";
                 connectToServer();
             }
         }
@@ -319,8 +311,8 @@ void CelluloBluetooth::disconnectFromServer(){
 void CelluloBluetooth::socketConnected(){
     if(localAdapterMacAddr != "" && relayClient == NULL){
         wrongAdapterCheckTimer.stop();
-        QString wrongAdapter;
-        if(CelluloBluezUtil::connectedOverWrongLocalAdapter(macAddr, localAdapterMacAddr, wrongAdapter)){
+        int dummy;
+        if(CelluloBluezUtil::connectedOverWrongLocalAdapter(macAddr, localAdapterMacAddr, dummy)){
             wrongAdapterCheckTimer.start(); //TODO: RANDOMIZE
             return;
         }

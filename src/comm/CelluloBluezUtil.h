@@ -53,10 +53,19 @@ public:
      *
      * @param  macAddr                    MAC address of the device of interest
      * @param  correctLocalAdapterMacAddr MAC address of the local adapter the device is supposed to be connected over
-     * @param  wrongLocalAdapterMacAddr   [Output] MAC address of the wrong local adapter in case one is found
+     * @param  wrongLocalAdapterDevID     [Output] Low level device ID of the wrong local adapter in case one is found
      * @return                            Whether connected over a wrong adapter
      */
-    static bool connectedOverWrongLocalAdapter(QString const& macAddr, QString const& correctLocalAdapterMacAddr, QString& wrongLocalAdapterMacAddr);
+    static bool connectedOverWrongLocalAdapter(QString const& macAddr, QString const& correctLocalAdapterMacAddr, int& wrongLocalAdapterDevID);
+
+    /**
+     * @brief Attempts to disconnect given device from the given local adapter, only if the connection is established over that adapter
+     *
+     * @param  macAddr           MAC address of the device of interest
+     * @param  localAdapterDevID Low level device ID of the local adapter
+     * @return                   Whether disconnection was successful
+     */
+    static bool disconnectFromLocalAdapter(QString const& macAddr, int localAdapterDevID);
 
 };
 

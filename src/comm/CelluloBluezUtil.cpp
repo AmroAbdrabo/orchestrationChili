@@ -66,7 +66,7 @@ bool CelluloBluezUtil::bindToLocalAdapter(QBluetoothSocket* socket, QString cons
     return true;
 }
 
-bool CelluloBluezUtil::connectedOverWrongLocalAdapter(QString const& macAddr, QString const& correctLocalAdapterMacAddr, QString& wrongLocalAdapterMacAddr){
+bool CelluloBluezUtil::connectedOverWrongLocalAdapter(QString const& macAddr, QString const& correctLocalAdapterMacAddr, int& wrongLocalAdapterDevID){
     if(correctLocalAdapterMacAddr == "")
         return false;
 
@@ -109,7 +109,7 @@ bool CelluloBluezUtil::connectedOverWrongLocalAdapter(QString const& macAddr, QS
     struct hci_conn_list_req* hciConnListReq;
     struct hci_conn_info* hciConnInfo;
 
-    //Allocate all connections request input(output struct
+    //Allocate all connections request input/output struct
     hciConnListReq = (struct hci_conn_list_req*)malloc(20*sizeof(*hciConnInfo) + sizeof(*hciConnListReq));
     if(!hciConnListReq){
         qCritical() << "CelluloBluezUtil::connectedOverWrongLocalAdapter(): hci_conn_list_req* cannot be allocated, error: " << strerror(errno);
@@ -155,11 +155,11 @@ bool CelluloBluezUtil::connectedOverWrongLocalAdapter(QString const& macAddr, QS
                     //Check if this robot is on this local adapter
                     ba2str(&hciConnInfo->bdaddr, addrbuf);
                     if(QString(addrbuf).toUpper() == macAddr.toUpper()){
+                        wrongLocalAdapterDevID = hciDevReq->dev_id;
+
                         free(hciConnListReq);
                         free(hciDevListReq);
                         close(btprotoHciSocket);
-
-                        wrongLocalAdapterMacAddr = QString(localaddrbuf).toUpper();
 
                         qInfo() << "CelluloBluezUtil::connectedOverWrongLocalAdapter(): Robot " << addrbuf << " is on wrong local adapter " << localaddrbuf << "!";
                         return true;
@@ -173,6 +173,58 @@ bool CelluloBluezUtil::connectedOverWrongLocalAdapter(QString const& macAddr, QS
     free(hciDevListReq);
     close(btprotoHciSocket);
     return false;
+}
+
+bool CelluloBluezUtil::disconnectFromLocalAdapter(QString const& macAddr, int localAdapterDevID){
+
+    /*
+     * Disconnect a device from a specific local adapter, adapted from hcitool::cmd_dc()
+     */
+
+    if(localAdapterDevID < 0){
+        qCritical() << "CelluloBluezUtil::disconnectFromLocalAdapter(): Invalid localAdapterDevID: " << localAdapterDevID;
+        return false;
+    }
+
+    //Open low level HCI device
+	int devHandle = hci_open_dev(localAdapterDevID);
+	if(devHandle < 0){
+		qCritical() << "CelluloBluezUtil::disconnectFromLocalAdapter(): HCI device open failed, error: " << strerror(errno);
+		return false;
+	}
+
+    //Allocate connection info request input/output struct
+    struct hci_conn_info_req* hciConnInfoReq;
+	hciConnInfoReq = (struct hci_conn_info_req*)malloc(sizeof(*hciConnInfoReq) + sizeof(struct hci_conn_info));
+	if(!hciConnInfoReq){
+		qCritical() << "CelluloBluezUtil::disconnectFromLocalAdapter(): hci_conn_info_req* cannot be allocated, error: " << strerror(errno);
+        hci_close_dev(devHandle);
+		return false;
+	}
+
+    //Make the actual connection info request to get the connection handle
+    bdaddr_t bdaddr;
+    str2ba(macAddr.toStdString().c_str(), &bdaddr);
+	bacpy(&hciConnInfoReq->bdaddr, &bdaddr);
+	hciConnInfoReq->type = ACL_LINK;
+	if(ioctl(devHandle, HCIGETCONNINFO, (unsigned long)hciConnInfoReq) < 0){
+		qCritical() << "CelluloBluezUtil::disconnectFromLocalAdapter(): HCIGETCONNINFO request failed, error: " << strerror(errno);
+        free(hciConnInfoReq);
+        hci_close_dev(devHandle);
+		return false;
+	}
+
+    //Disconnect the connection
+	if(hci_disconnect(devHandle, htobs(hciConnInfoReq->conn_info->handle), HCI_OE_USER_ENDED_CONNECTION, 5000) < 0){
+        qCritical() << "CelluloBluezUtil::disconnectFromLocalAdapter(): hci_disconnect() failed, error: " << strerror(errno);
+        free(hciConnInfoReq);
+    	hci_close_dev(devHandle);
+        return false;
+    }
+
+    free(hciConnInfoReq);
+	hci_close_dev(devHandle);
+    return true;
 }
 
 }
