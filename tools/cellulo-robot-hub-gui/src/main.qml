@@ -5,6 +5,7 @@ import QtQuick.Controls 1.2
 import QtQuick.Controls.Private 1.0
 import QtQuick.Controls.Styles 1.3
 
+import QMLCache 1.0
 import QMLBluetoothExtras 1.0
 import QMLExtraDataStructures 1.0
 import Cellulo 1.0
@@ -16,6 +17,8 @@ ApplicationWindow {
     property bool mobile: android
     property bool android: Qt.platform.os === "android"
     property bool osx: Qt.platform.os === "osx"
+
+    function em(x){ return Math.round(x*TextSingleton.font.pixelSize); }
 
     minimumWidth: width
     minimumHeight: height
@@ -34,6 +37,7 @@ ApplicationWindow {
         id: client
 
         serverAddress: "192.168.2.1"
+        port: 2556
 
         autoConnect: true
 
@@ -78,6 +82,128 @@ ApplicationWindow {
 
                         Text{
                             text: "Local adapters on server: " + client.localAdapters
+                        }
+
+                        Row{
+                            spacing: 5
+
+                            Text{
+                                text: "Address:"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
+                            ComboBox{
+                                id: addressBox
+
+                                anchors.verticalCenter: parent.verticalCenter
+
+                                editable: true
+                                width: em(12)
+
+                                onAccepted: {
+                                    var tempModel = [];
+                                    var exists = false;
+                                    var newElement = editText;
+                                    for(var i=0;i<model.length;i++){
+                                        tempModel.push(model[i]);
+                                        if(model[i] == newElement)
+                                            exists = true;
+                                    }
+                                    if(!exists)
+                                        tempModel.push(newElement);
+                                    model = tempModel;
+                                    selectAddress(newElement);
+                                }
+
+                                onModelChanged: {
+                                    if(Array.isArray(model))
+                                        QMLCache.write("serverAddresses", model.join(","))
+                                }
+
+                                Component.onCompleted: {
+                                    var cachedAddrs = QMLCache.read("serverAddresses").split(",");
+                                    if(cachedAddrs.length == 1 && cachedAddrs[0] == "") //Weird behavior on split...
+                                        cachedAddrs = [];
+                                    if(!Array.isArray(cachedAddrs) || !cachedAddrs.length)
+                                        model = ["192.168.2.1", "192.168.4.1"];
+                                    else
+                                        model = cachedAddrs;
+                                }
+
+                                function selectAddress(address){
+                                    for(var i=0;i<model.length;i++)
+                                        if(model[i] === address){
+                                            currentIndex = i;
+                                            return;
+                                        }
+                                    currentIndex = -1;
+                                }
+                            }
+
+                            Text{
+                                text: "Port:"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
+                            ComboBox{
+                                id: portBox
+
+                                anchors.verticalCenter: parent.verticalCenter
+
+                                editable: true
+                                width: em(12)
+
+                                inputMethodHints: Qt.ImhDigitsOnly
+
+                                onAccepted: {
+                                    var tempModel = [];
+                                    var exists = false;
+                                    var newElement = editText;
+                                    for(var i=0;i<model.length;i++){
+                                        tempModel.push(model[i]);
+                                        if(model[i] == newElement)
+                                            exists = true;
+                                    }
+                                    if(!exists)
+                                        tempModel.push(newElement);
+                                    model = tempModel;
+                                    selectPort(newElement);
+                                }
+
+                                onModelChanged: {
+                                    if(Array.isArray(model))
+                                        QMLCache.write("serverPorts", model.join(","))
+                                }
+
+                                Component.onCompleted: {
+                                    var cachedPorts = QMLCache.read("serverPorts").split(",");
+                                    if(cachedPorts.length == 1 && cachedPorts[0] == "") //Weird behavior on split...
+                                        cachedPorts = [];
+                                    if(!Array.isArray(cachedPorts) || !cachedPorts.length)
+                                        model = ["2556"];
+                                    else
+                                        model = cachedPorts;
+                                }
+
+                                function selectPort(port){
+                                    for(var i=0;i<model.length;i++)
+                                        if(model[i] === port){
+                                            currentIndex = i;
+                                            return;
+                                        }
+                                    currentIndex = -1;
+                                }
+                            }
+
+                            Button{
+                                text: "Connect"
+                                anchors.verticalCenter: parent.verticalCenter
+                                onClicked: {
+                                    client.serverAddress = addressBox.currentText;
+                                    client.port = parseInt(portBox.currentText);
+                                    client.connectToServer();
+                                }
+                            }
                         }
                     }
                 }
