@@ -40,7 +40,7 @@ ApplicationWindow {
         }
 
         Text{
-            text: client.connected ? "Service running, you can now close this app." : "Trying to connect to service (may not be running)..."
+            text: client.connected ? "Service running, you should now close/kill this app." : "Trying to connect to service (may not be running)..."
             color: client.connected ? "green" : "black"
         }
     }
