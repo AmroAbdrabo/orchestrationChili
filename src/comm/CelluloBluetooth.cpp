@@ -309,14 +309,16 @@ void CelluloBluetooth::disconnectFromServer(){
 }
 
 void CelluloBluetooth::socketConnected(){
-    if(localAdapterMacAddr != "" && relayClient == NULL){
-        wrongAdapterCheckTimer.stop();
-        int dummy;
-        if(CelluloBluezUtil::connectedOverWrongLocalAdapter(macAddr, localAdapterMacAddr, dummy)){
-            wrongAdapterCheckTimer.start(); //TODO: RANDOMIZE
-            return;
+    #if defined(BT_MULTIADAPTER_SUPPORT)
+        if(localAdapterMacAddr != "" && relayClient == NULL){
+            wrongAdapterCheckTimer.stop();
+            int dummy;
+            if(CelluloBluezUtil::connectedOverWrongLocalAdapter(macAddr, localAdapterMacAddr, dummy)){
+                wrongAdapterCheckTimer.start(); //TODO: RANDOMIZE
+                return;
+            }
         }
-    }
+    #endif
 
     qDebug() << "CelluloBluetooth::socketConnected(): " << macAddr;
     if(connectionStatus != CelluloBluetoothEnums::ConnectionStatusConnected){
