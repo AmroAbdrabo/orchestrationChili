@@ -48,6 +48,16 @@ public:
      */
     static bool bindToLocalAdapter(QBluetoothSocket* socket, QString const& localAdapterMacAddr);
 
+    /**
+     * @brief Checks whether the given device is connected over another local adapter than the desired one
+     *
+     * @param  macAddr                    MAC address of the device of interest
+     * @param  correctLocalAdapterMacAddr MAC address of the local adapter the device is supposed to be connected over
+     * @param  wrongLocalAdapterMacAddr   [Output] MAC address of the wrong local adapter in case one is found
+     * @return                            Whether connected over a wrong adapter
+     */
+    static bool connectedOverWrongLocalAdapter(QString const& macAddr, QString const& correctLocalAdapterMacAddr, QString& wrongLocalAdapterMacAddr);
+
 };
 
 /** @endcond */
