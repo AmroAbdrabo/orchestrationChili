@@ -35,6 +35,8 @@ ApplicationWindow {
 
         serverAddress: "192.168.2.1"
 
+        autoConnect: true
+
         onConnected: toast.show("Connected to Server.")
         onDisconnected: toast.show("Disconnected from Server.")
 
@@ -64,7 +66,7 @@ ApplicationWindow {
                 spacing: 5
 
                 GroupBox{
-                    title: "Server status"
+                    title: "Server status & control"
 
                     Column{
                         spacing: 5
@@ -146,6 +148,10 @@ ApplicationWindow {
                                     }
 
                                     onLocalAdapterMacAddrChanged: selectLocalAdapterAddress(localAdapterMacAddr.toUpperCase())
+                                    onSelectedAddrRefreshRequested: {
+                                        selectLocalAdapterAddress(localAdapterMacAddr.toUpperCase());
+                                        selectAddress(robot.macAddr.toUpperCase());
+                                    }
 
                                     onConnectRequested: {
                                         robot.localAdapterMacAddr = selectedLocalAdapterAddress;
@@ -165,43 +171,7 @@ ApplicationWindow {
                                 text: "Equally distribute local adapters"
                                 onClicked:{
                                     for(var i=0;i<client.robots.length;i++)
-                                        client.robots[i].localAdapterMacAddr = localAdapterMacAddrs[i % localAdapterMacAddrs.length];
-                                }
-                                enabled: (osx || android) ? false : true
-                            }
-
-                            Button{
-                                text: "Connect to all, 3s delay between connects"
-
-                                property int currentIndex: 0
-
-                                function autoconnectTo(){
-                                    if(currentIndex < client.robots.length){
-                                        var robot = client.robots[currentIndex];
-                                        var macAddrSelector = robotListMacAddrSelectors.items[currentIndex].selectorAtRow;
-                                        robot.localAdapterMacAddr = macAddrSelector.selectedLocalAdapterAddress;
-                                        robot.macAddr = macAddrSelector.selectedAddress;
-                                        robot.connectToServer();
-                                        currentIndex++;
-                                    }
-                                }
-
-                                Timer{
-                                    id: autoconnectTimer
-                                    interval: 3000
-                                    running: false
-                                    repeat: true
-                                    onTriggered: {
-                                        parent.autoconnectTo();
-                                        if(parent.currentIndex >= client.robots.length)
-                                            stop();
-                                    }
-                                }
-
-                                onClicked:{
-                                    currentIndex = 0;
-                                    autoconnectTo();
-                                    autoconnectTimer.start();
+                                        client.robots[i].localAdapterMacAddr = client.localAdapters[i % client.localAdapters.length];
                                 }
                             }
                         }
@@ -230,6 +200,18 @@ ApplicationWindow {
                             onClicked:{
                                 for(var i=0;i<client.robots.length;i++)
                                     client.robots[i].shutdown();
+                            }
+                        }
+                        Button{
+                            text: "Connect to all"
+                            anchors.verticalCenter: parent.verticalCenter
+
+                            onClicked:{
+                                for(var i=0;i<client.robots.length;i++){
+                                    client.robots[i].localAdapterMacAddr = robotListMacAddrSelectors.items[i].selectorAtRow.selectedLocalAdapterAddress;
+                                    client.robots[i].macAddr = robotListMacAddrSelectors.items[i].selectorAtRow.selectedAddress;
+                                    client.robots[i].connectToServer();
+                                }
                             }
                         }
                         Button{

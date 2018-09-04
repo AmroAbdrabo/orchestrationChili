@@ -247,7 +247,6 @@ ApplicationWindow {
 
                             onClicked:{
                                 for(var i=0;i<client.robots.length;i++){
-                                    client.robots[i].connectToServer();
                                     client.robots[i].localAdapterMacAddr = robotListMacAddrSelectors.items[i].selectorAtRow.selectedLocalAdapterAddress;
                                     client.robots[i].macAddr = robotListMacAddrSelectors.items[i].selectorAtRow.selectedAddress;
                                     client.robots[i].connectToServer();
