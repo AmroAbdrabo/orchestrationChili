@@ -17,4 +17,6 @@ QMAKE_RPATHDIR += $$[QT_INSTALL_QML]/Cellulo/
 target.path = /usr/local/bin/
 service.files = scripts/cellulorobothubd.service
 service.path = /lib/systemd/system/
-INSTALLS += target service
+servicestartup.depends = service
+servicestartup.extra = systemctl daemon-reload; systemctl enable cellulorobothubd.service
+INSTALLS += target service servicestartup
