@@ -4,24 +4,24 @@ cellulo-robot-pool
 A suite of tools that provide a server that stays alive and connected to the Cellulo robots:
 
   - `cellulorobotpoold`: Daemon that encapsulates a `CelluloLocalRelayServer` where the Bluetooth sockets to Cellulo robots stay connected.
-    - *Linux* - Launch as daemon (`start-stop-daemon [--start|--stop] --exec /usr/local/bin/cellulorobotpoold`) or manage from `cellulo-robot-pool-gui`. All messages coming from the daemon are dumped via `syslog`. This is found in `/var/log/syslog` under Ubuntu.
+    - *Linux* - Launch as daemon (`sudo start-stop-daemon [--start|--stop] --exec /usr/local/bin/cellulorobotpoold`) or manage from `cellulo-robot-pool-gui`. All messages coming from the daemon are dumped via `syslog`. This is found in `/var/log/syslog` under Ubuntu.
     - *macOS* - Must be launched manually as an app (named `Cellulo Robot Pool Daemon`) and must be left running. All messages coming from the daemon are dumped via `syslog`. This is found in `/var/log/system.log` under macOS.
-    - *Android* - Must be launched manually as an app (named `Cellulo Robot Pool Service`) that can start the daemon as a service. Then, the app can be closed. All messages coming from the daemon are dumped via logcat. This app is available on the Play Store for download.
+    - *Android* - Must be launched manually as an app (named `Cellulo Robot Pool Service`) that can start the daemon as a service. Then, the app must be closed. All messages coming from the daemon are dumped via logcat. This app is available on the Play Store for download.
   - `cellulo-robot-pool-gui`: controls `cellulorobotpoold` to add or remove robots as well as connect to or disconnect from them.
-    - *Linux* - Launch from the terminal. Can start and stop `cellulorobotpoold` as well.
-    - *macOS* - Launch as an app (called `Cellulo Robot Pool GUI`). Cannot start and stop `cellulorobotpoold`, it must be launched manually as an app and must be left running.
-    - *Android* - Launch as an app (called `Cellulo Robot Pool GUI`). Cannot start and stop `cellulorobotpoold` which must be launched manually as an app, see above. This app is available on the Play Store for download.
+    - *Linux* - Launch from the terminal **with root privileges**. Can start and stop `cellulorobotpoold` as well.
+    - *macOS* - Launch as an app (called `Cellulo Robot Pool GUI`). Cannot start and stop `Cellulo Robot Pool Daemon`, it must be launched manually as an app and must be left running.
+    - *Android* - Launch as an app (called `Cellulo Robot Pool GUI`). Cannot start and stop `Cellulo Robot Pool Service` which must be launched manually as an app, see above. This app is available on the Play Store for download.
 
 While `cellulorobotpoold` is alive, a `CelluloRobotPoolClient` in a Cellulo application can connect to the server and
 communicate with its already connected robots.
 
-Tested with Qt 5.10.1 on:
+Tested with Qt 5.11.0 on:
 
-  - Ubuntu 17.10
-  - macOS 10.13.3 with Xcode 9.3
-  - Android 7.1.2 with Ubuntu 17.10 host with Android API 23, Android SDK Tools 25.2.5 and Android NDK r10e (both apps also available on the Play Store)
+  - Ubuntu 18.04
+  - macOS 10.13.3 with Xcode 9.4.1
+  - Android 7.1.2 with Ubuntu 18.04 host with Android API 23, Android SDK Tools 25.2.5 and Android NDK r10e (both apps also available on the Play Store)
 
-Does not work on Windows due to WinRT sandboxing preventing multiple apps from communicating with each other. This prevents any sort of daemon from being built within the WinRT framework.
+**Does not work on Windows** due to WinRT sandboxing preventing multiple apps from communicating with each other. This prevents any sort of daemon from being built within the WinRT framework. For Windows, see [cellulo-robot-hub-gui](../cellulo-robot-hub-gui/).
 
 Linux & macOS build
 -------------------
@@ -52,12 +52,16 @@ Get both apps from the Play Store or:
 Linux usage
 -----------
 
-Run `cellulo-robot-pool-gui` to launch the pool control panel. At startup, `cellulorobotpoold` will be started
+Run `sudo cellulo-robot-pool-gui` to launch the pool control panel. At startup, `cellulorobotpoold` will be started
 automatically, which can be manually stopped or started as well from the "Server controls" panel. "Scan for robots"
 panel can be used to scan and add available robots to the pool. Once added, they can be connected to using the "Robots
 on server" panel. Once all desired robots are added and connected to, `cellulo-robot-pool-gui` can be closed. Then,
 these robots in the pool can be used in an application through `CelluloRobotPoolClient`, see
 [samples/cellulo-swarm-demo/](../../samples/cellulo-swarm-demo/) for an example.
+
+**Important note:** It is advised to run `cellulorobotpoold` with root privileges (`sudo cellulo-robot-pool-gui` will
+ensure that) for much faster connection to many robots over multiple adapters. It can also be run with user privileges
+but the connections will possibly be established slower.
 
 macOS usage
 -----------
@@ -69,7 +73,8 @@ connected to using the "Robots on server" panel. Once all desired robots are add
 `CelluloRobotPoolClient`, see [samples/cellulo-swarm-demo/](../../samples/cellulo-swarm-demo/) for an example.
 
 **Important note**: Multiple adapters are not supported on macOS, only the internal one is available. This will limit
-the number of connectable robots certainly to 7 and practically to around 5.
+the number of connectable robots certainly to 7 and practically to around 5. If you'd like to connect to more robots on
+macOS, see [cellulo-robot-hub-gui](../cellulo-robot-hub-gui/).
 
 Android usage
 -------------
@@ -80,4 +85,5 @@ connected to using the "Robots on server" panel. Once all desired robots are add
 `CelluloRobotPoolClient`, see [samples/cellulo-swarm-demo/](../../samples/cellulo-swarm-demo/) for an example.
 
 **Important note**: Multiple adapters are not supported on Android, only the internal one is available. This will limit
-the number of connectable robots certainly to 7 and practically to around 5.
+the number of connectable robots certainly to 7 and practically to around 5. If you'd like to connect to more robots on
+Android, see [cellulo-robot-hub-gui](../cellulo-robot-hub-gui/).
