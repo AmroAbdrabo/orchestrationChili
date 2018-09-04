@@ -217,6 +217,8 @@ bool CelluloBluezUtil::disconnectFromLocalAdapter(QString const& macAddr, int lo
     //Disconnect the connection
 	if(hci_disconnect(devHandle, htobs(hciConnInfoReq->conn_info->handle), HCI_OE_USER_ENDED_CONNECTION, 5000) < 0){
         qCritical() << "CelluloBluezUtil::disconnectFromLocalAdapter(): hci_disconnect() failed, error: " << strerror(errno);
+        if(errno == EPERM)
+            qCritical() << "CelluloBluezUtil::disconnectFromLocalAdapter(): Need to run with root privileges.";
         free(hciConnInfoReq);
     	hci_close_dev(devHandle);
         return false;
