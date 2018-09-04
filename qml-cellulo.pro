@@ -8,6 +8,10 @@ linux:!android {
     packagesExist(bluez){
         PKGCONFIG += bluez
         DEFINES += BT_MULTIADAPTER_SUPPORT
+        HEADERS += \
+            src/comm/CelluloBluezUtil.h
+        SOURCES += \
+            src/comm/CelluloBluezUtil.cpp
         message("BlueZ found, enabling Bluetooth multiadapter support.")
     }
     else{

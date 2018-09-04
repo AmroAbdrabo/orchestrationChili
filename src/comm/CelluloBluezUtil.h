@@ -25,7 +25,7 @@
 #ifndef CELLULOBLUEZUTIL_H
 #define CELLULOBLUEZUTIL_H
 
-
+#include<QBluetoothSocket>
 
 namespace Cellulo{
 
@@ -39,7 +39,14 @@ class CelluloBluezUtil{
 
 public:
 
-
+    /**
+     * @brief Binds a QBluetoothSocket to a local adapter, meaning that the connection to the socket will be requested over this adapter upon connection
+     *
+     * @param  socket              Yet unopened socket
+     * @param  localAdapterMacAddr Local adapter's MAC address
+     * @return                     Whether successful (WARNING: Returns success on many cases of failure)
+     */
+    static bool bindToLocalAdapter(QBluetoothSocket* socket, QString const& localAdapterMacAddr);
 
 };
 
