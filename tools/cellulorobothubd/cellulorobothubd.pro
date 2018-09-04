@@ -15,4 +15,6 @@ LIBS += -L$$[QT_INSTALL_QML]/Cellulo/ -lcelluloplugin
 QMAKE_RPATHDIR += $$[QT_INSTALL_QML]/Cellulo/
 
 target.path = /usr/local/bin/
-INSTALLS += target
+service.files = scripts/cellulorobothubd.service
+service.path = /lib/systemd/system/
+INSTALLS += target service

@@ -1,0 +1,11 @@
+[Unit]
+Description=Cellulo Robot Hub Daemon
+After=network.target
+
+[Service]
+Type=forking
+ExecStart=/usr/local/bin/cellulorobothubd
+PIDFile=/run/cellulorobothubd.pid
+
+[Install]
+WantedBy=multi-user.target
