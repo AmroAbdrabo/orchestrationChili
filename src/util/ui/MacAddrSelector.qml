@@ -21,6 +21,9 @@ Row{
      * Public
      */
 
+    /** type:bool Whether local adapter selection is enabled */
+    property bool enableLocalAdapters: true
+
     /** type:list<string> List of possible MAC addresses, set by the user */
     property var addresses: []
 
@@ -81,8 +84,6 @@ Row{
 
     spacing: 5
 
-    property bool linux: Qt.platform.os === "linux"
-
     function em(x){ return Math.round(x*TextSingleton.font.pixelSize); }
 
     ComboBox{
@@ -114,7 +115,7 @@ Row{
     Text{
         anchors.verticalCenter: parent.verticalCenter
         text: "through"
-        visible: linux
+        visible: enableLocalAdapters
     }
 
     ComboBox{
@@ -122,8 +123,8 @@ Row{
 
         anchors.verticalCenter: parent.verticalCenter
 
-        visible: linux
-        enabled: linux
+        visible: enableLocalAdapters
+        enabled: enableLocalAdapters
 
         editable: true
         width: em(12)

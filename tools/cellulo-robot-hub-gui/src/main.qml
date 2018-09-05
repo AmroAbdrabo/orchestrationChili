@@ -76,7 +76,7 @@ ApplicationWindow {
                         spacing: 5
 
                         Text{
-                            text: client.connected ? "Connected to Server." : "Connecting to Server... " + (Qt.platform.os === "osx" ? "\n(must launch \"Cellulo Robot Pool Daemon\" manually on macOS)" : "")
+                            text: client.connected ? "Connected to Server." : "Connecting to Server... "
                             color: client.connected ? "green" : "red"
                         }
 

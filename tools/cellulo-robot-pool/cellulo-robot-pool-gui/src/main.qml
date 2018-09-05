@@ -173,8 +173,11 @@ ApplicationWindow {
 
                                 MacAddrSelector{
                                     id: selector
+
                                     property var robot: client.robots[index]
                                     property string localAdapterMacAddr: robot.localAdapterMacAddr
+
+                                    enableLocalAdapters: !android && !osx
 
                                     addresses: [robot.macAddr.toUpperCase()]
                                     localAdapterAddresses: client.localAdapters
