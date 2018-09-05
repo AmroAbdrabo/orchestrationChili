@@ -217,6 +217,8 @@ void CelluloRelayServer::addClient(){
             case CelluloCommUtil::RelayProtocol::Tcp:
                 clientSocket = tcpServer->nextPendingConnection();
                 qDebug() << "CelluloRelayServer::addClient(): Client from " << ((QTcpSocket*)clientSocket)->peerAddress() << " connected.";
+                ((QTcpSocket*)clientSocket)->setSocketOption(QAbstractSocket::KeepAliveOption, 1);
+                ((QTcpSocket*)clientSocket)->setSocketOption(QAbstractSocket::LowDelayOption, 1);
                 connect((QTcpSocket*)clientSocket, static_cast<void (QTcpSocket::*)(QTcpSocket::SocketError)>(&QTcpSocket::error),
                         [=](QTcpSocket::SocketError error){ qDebug() << "CelluloRelayServer clientSocket error: " << error; });
                 connect((QTcpSocket*)clientSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(tcpSocketStateChanged(QAbstractSocket::SocketState)));

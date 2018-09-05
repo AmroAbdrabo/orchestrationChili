@@ -46,6 +46,8 @@ CelluloRelayClient::CelluloRelayClient(CelluloCommUtil::RelayProtocol protocol, 
             serverAddress = "localhost";
             port = CelluloCommUtil::DEFAULT_RELAY_PORT;
             serverSocket = new QTcpSocket(this);
+            ((QTcpSocket*)serverSocket)->setSocketOption(QAbstractSocket::KeepAliveOption, 1);
+            ((QTcpSocket*)serverSocket)->setSocketOption(QAbstractSocket::LowDelayOption, 1);
             connect((QTcpSocket*)serverSocket, static_cast<void (QTcpSocket::*)(QTcpSocket::SocketError)>(&QTcpSocket::error),
                     [=](QTcpSocket::SocketError error){ qDebug() << "CelluloRelayClient serverSocket error: " << error; });
             break;
