@@ -25,6 +25,7 @@
 #include "CelluloRelayServer.h"
 
 #include <QBluetoothLocalDevice>
+#include <QAbstractSocket>
 
 namespace Cellulo{
 
@@ -34,11 +35,11 @@ CelluloRelayServer::CelluloRelayServer(CelluloCommUtil::RelayProtocol protocol, 
     lastMacAddr = "";
     currentRobot = -1;
 
-    clientSocket = NULL;
+    clientSocket = nullptr;
 
     this->protocol = protocol;
-    localServer = NULL;
-    tcpServer = NULL;
+    localServer = nullptr;
+    tcpServer = nullptr;
     switch(protocol){
         case CelluloCommUtil::RelayProtocol::Local:
             address = "cellulo_relay";
@@ -210,6 +211,7 @@ void CelluloRelayServer::addClient(){
                 qDebug() << "CelluloRelayServer::addClient(): Local client connected.";
                 connect((QLocalSocket*)clientSocket, static_cast<void (QLocalSocket::*)(QLocalSocket::LocalSocketError)>(&QLocalSocket::error),
                         [=](QLocalSocket::LocalSocketError error){ qDebug() << "CelluloRelayServer clientSocket error: " << error; });
+                connect((QLocalSocket*)clientSocket, SIGNAL(stateChanged(QLocalSocket::LocalSocketState)), this, SLOT(localSocketStateChanged(QLocalSocket::LocalSocketState)));
                 break;
 
             case CelluloCommUtil::RelayProtocol::Tcp:
@@ -217,9 +219,9 @@ void CelluloRelayServer::addClient(){
                 qDebug() << "CelluloRelayServer::addClient(): Client from " << ((QTcpSocket*)clientSocket)->peerAddress() << " connected.";
                 connect((QTcpSocket*)clientSocket, static_cast<void (QTcpSocket::*)(QTcpSocket::SocketError)>(&QTcpSocket::error),
                         [=](QTcpSocket::SocketError error){ qDebug() << "CelluloRelayServer clientSocket error: " << error; });
+                connect((QTcpSocket*)clientSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(tcpSocketStateChanged(QAbstractSocket::SocketState)));
                 break;
         }
-
 
         connect(clientSocket, SIGNAL(readyRead()), this, SLOT(incomingClientData()));
         connect(clientSocket, SIGNAL(disconnected()), this, SLOT(deleteClient()));
@@ -271,6 +273,15 @@ void CelluloRelayServer::addClient(){
 
 void CelluloRelayServer::deleteClient(){
     if(clientSocket != NULL){
+        switch(protocol){
+            case CelluloCommUtil::RelayProtocol::Local:
+                disconnect((QLocalSocket*)clientSocket, SIGNAL(stateChanged(QLocalSocket::LocalSocketState)), this, SLOT(localSocketStateChanged(QLocalSocket::LocalSocketState)));
+                break;
+
+            case CelluloCommUtil::RelayProtocol::Tcp:
+                disconnect((QTcpSocket*)clientSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(tcpSocketStateChanged(QAbstractSocket::SocketState)));
+                break;
+        }
         disconnect(clientSocket, SIGNAL(readyRead()), this, SLOT(incomingClientData()));
         disconnect(clientSocket, SIGNAL(disconnected()), this, SLOT(deleteClient()));
 
@@ -287,8 +298,25 @@ void CelluloRelayServer::deleteClient(){
     }
 }
 
+void CelluloRelayServer::localSocketStateChanged(QLocalSocket::LocalSocketState state){
+    qDebug() << "CelluloRelayServer::localSocketStateChanged(): " + state;
+}
+
+void CelluloRelayServer::tcpSocketStateChanged(QAbstractSocket::SocketState state){
+    qDebug() << "CelluloRelayServer::tcpSocketStateChanged(): " + state;
+}
+
 void CelluloRelayServer::disconnectClient(){
     if(clientSocket != NULL){
+        switch(protocol){
+            case CelluloCommUtil::RelayProtocol::Local:
+                disconnect((QLocalSocket*)clientSocket, SIGNAL(stateChanged(QLocalSocket::LocalSocketState)), this, SLOT(localSocketStateChanged(QLocalSocket::LocalSocketState)));
+                break;
+
+            case CelluloCommUtil::RelayProtocol::Tcp:
+                disconnect((QTcpSocket*)clientSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(tcpSocketStateChanged(QAbstractSocket::SocketState)));
+                break;
+        }
         disconnect(clientSocket, SIGNAL(readyRead()), this, SLOT(incomingClientData()));
         disconnect(clientSocket, SIGNAL(disconnected()), this, SLOT(deleteClient()));
 

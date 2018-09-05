@@ -216,6 +216,20 @@ private slots:
     void deleteClient();
 
     /**
+     * @brief Handles the local socket state change
+     *
+     * @param state New state
+     */
+    void localSocketStateChanged(QLocalSocket::LocalSocketState state);
+
+    /**
+     * @brief Handles the TCP socket state change
+     *
+     * @param state New state
+     */
+    void tcpSocketStateChanged(QAbstractSocket::SocketState state);
+
+    /**
      * @brief Load client message into a packet to be processed
      */
     void incomingClientData();
