@@ -299,11 +299,11 @@ void CelluloRelayServer::deleteClient(){
 }
 
 void CelluloRelayServer::localSocketStateChanged(QLocalSocket::LocalSocketState state){
-    qDebug() << "CelluloRelayServer::localSocketStateChanged(): " + state;
+    qDebug() << "CelluloRelayServer::localSocketStateChanged(): " + QString(state);
 }
 
 void CelluloRelayServer::tcpSocketStateChanged(QAbstractSocket::SocketState state){
-    qDebug() << "CelluloRelayServer::tcpSocketStateChanged(): " + state;
+    qDebug() << "CelluloRelayServer::tcpSocketStateChanged(): " + QString(state);
 }
 
 void CelluloRelayServer::disconnectClient(){
