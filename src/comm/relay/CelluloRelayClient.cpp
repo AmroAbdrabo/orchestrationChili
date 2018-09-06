@@ -33,36 +33,30 @@ CelluloRelayClient::CelluloRelayClient(CelluloCommUtil::RelayProtocol protocol, 
 {
     lastMacAddr = "";
     currentRobot = -1;
+    serverSocket = nullptr;
 
     this->protocol = protocol;
     switch(protocol){
         case CelluloCommUtil::RelayProtocol::Local:
             serverAddress = "cellulo_relay";
             port = -1;
-            serverSocket = new QLocalSocket(this);
-            connect((QLocalSocket*)serverSocket, static_cast<void (QLocalSocket::*)(QLocalSocket::LocalSocketError)>(&QLocalSocket::error),
-                    [=](QLocalSocket::LocalSocketError error){ qDebug() << "CelluloRelayClient serverSocket error: " << error; });
             break;
 
         case CelluloCommUtil::RelayProtocol::Tcp:
             serverAddress = "localhost";
             port = CelluloCommUtil::DEFAULT_RELAY_PORT;
-            serverSocket = new QTcpSocket(this);
-            ((QTcpSocket*)serverSocket)->setSocketOption(QAbstractSocket::LowDelayOption, 1);
-            connect((QTcpSocket*)serverSocket, static_cast<void (QTcpSocket::*)(QTcpSocket::SocketError)>(&QTcpSocket::error),
-                    [=](QTcpSocket::SocketError error){ qDebug() << "CelluloRelayClient serverSocket error: " << error; });
             break;
     }
 
-    connect(serverSocket, SIGNAL(connected()), this, SIGNAL(connected()));
-    connect(serverSocket, SIGNAL(disconnected()), this, SIGNAL(disconnected()));
-    connect(serverSocket, SIGNAL(readyRead()), this, SLOT(incomingServerData()));
-    connect(this, SIGNAL(connected()), this, SIGNAL(connectedChanged()));
-    connect(this, SIGNAL(disconnected()), this, SIGNAL(connectedChanged()));
+    connect(this, SIGNAL(connected()),      this, SIGNAL(connectedChanged()));
+    connect(this, SIGNAL(disconnected()),   this, SIGNAL(connectedChanged()));
+    connect(this, SIGNAL(connected()),      this, SLOT(handleConnected()));
+    connect(this, SIGNAL(disconnected()),   this, SLOT(handleDisconnected()));
 
     autoConnect = true;
-    connect(&reconnectTimer, SIGNAL(timeout()), this, SLOT(decideReconnect()));
-    reconnectTimer.start(SERVER_RECONNECT_TIME_MILLIS);
+    connect(&reconnectTimer, SIGNAL(timeout()), this, SLOT(refreshConnection()));
+    reconnectTimer.setSingleShot(false);
+    reconnectTimer.setInterval(SERVER_RECONNECT_TIME_MILLIS);
 
     connect(&heartbeatTimeoutTimer, SIGNAL(timeout()), this, SLOT(heartbeatTimedOut()));
     heartbeatTimeoutTimer.setInterval(CelluloCommUtil::RELAY_HEARTBEAT_TIMEOUT);
@@ -75,48 +69,76 @@ CelluloRelayClient::CelluloRelayClient(CelluloCommUtil::RelayProtocol protocol, 
     heartbeatTimer.setInterval(CelluloCommUtil::RELAY_HEARTBEAT_INTERVAL);
     connect(this, SIGNAL(connected()),    &heartbeatTimer, SLOT(start()));
     connect(this, SIGNAL(disconnected()), &heartbeatTimer, SLOT(stop()));
+
+    if(autoConnect)
+        connectToServer();
 }
 
 CelluloRelayClient::~CelluloRelayClient(){
-    serverSocket->close();
-    delete serverSocket;
+    if(serverSocket){
+        serverSocket->close();
+        delete serverSocket;
+    }
+}
+
+Cellulo::CelluloCommUtil::RelayConnectionStatus CelluloRelayClient::getConnectionStatus() const {
+    if(serverSocket){
+        switch(protocol){
+            case CelluloCommUtil::RelayProtocol::Local:{
+                switch(((QLocalSocket*)serverSocket)->state()){
+                    case QLocalSocket::UnconnectedState:
+                        return CelluloCommUtil::RelayConnectionStatusDisconnected;
+                    case QLocalSocket::ConnectingState:
+                        return CelluloCommUtil::RelayConnectionStatusConnecting;
+                    case QLocalSocket::ConnectedState:
+                    case QLocalSocket::ClosingState:
+                        return CelluloCommUtil::RelayConnectionStatusConnected;
+                    default:
+                        return CelluloCommUtil::RelayConnectionStatusDisconnected;
+                }
+            }
+            case CelluloCommUtil::RelayProtocol::Tcp:{
+                switch(((QTcpSocket*)serverSocket)->state()){
+                    case QAbstractSocket::UnconnectedState:
+                    case QAbstractSocket::BoundState:
+                        return CelluloCommUtil::RelayConnectionStatusDisconnected;
+                    case QAbstractSocket::HostLookupState:
+                    case QAbstractSocket::ConnectingState:
+                        return CelluloCommUtil::RelayConnectionStatusConnecting;
+                    case QAbstractSocket::ConnectedState:
+                    case QAbstractSocket::ClosingState:
+                        return CelluloCommUtil::RelayConnectionStatusConnected;
+                    default:
+                        return CelluloCommUtil::RelayConnectionStatusDisconnected;
+                }
+            }
+        }
+    }
+
+    return CelluloCommUtil::RelayConnectionStatusDisconnected;
 }
 
 void CelluloRelayClient::setAutoConnect(bool autoConnect){
     if(this->autoConnect != autoConnect){
         this->autoConnect = autoConnect;
+        emit autoConnectChanged();
 
         if(autoConnect)
-            reconnectTimer.start(SERVER_RECONNECT_TIME_MILLIS);
-        else
-            reconnectTimer.stop();
-
-        emit autoConnectChanged();
+            if(getConnectionStatus() == CelluloCommUtil::RelayConnectionStatusDisconnected)
+                connectToServer();
     }
 }
 
-void CelluloRelayClient::decideReconnect(){
-    if(autoConnect){
-        switch(protocol){
-            case CelluloCommUtil::RelayProtocol::Local:
-                if(((QLocalSocket*)serverSocket)->state() == QLocalSocket::UnconnectedState){
-                    reconnectTimer.stop();
-                    connectToServer();
-                }
-                break;
-
-            case CelluloCommUtil::RelayProtocol::Tcp:
-                if(((QTcpSocket*)serverSocket)->state() == QTcpSocket::UnconnectedState){
-                    reconnectTimer.stop();
-                    connectToServer();
-                }
-                break;
-        }
+void CelluloRelayClient::refreshConnection(){
+    if(getConnectionStatus() != CelluloCommUtil::RelayConnectionStatusConnected){
+        qDebug() << "CelluloRelayClient::refreshConnection(): Connection attempt timed out, will retry";
+        disconnectFromServer();
+        connectToServer();
     }
 }
 
 void CelluloRelayClient::sendHeartbeat(){
-    if(isConnected()){
+    if(getConnectionStatus() == CelluloCommUtil::RelayConnectionStatusConnected){
         CelluloBluetoothPacket heartbeatPacket;
         heartbeatPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeHeartbeat);
         serverSocket->write(heartbeatPacket.getCmdSendData());
@@ -125,32 +147,12 @@ void CelluloRelayClient::sendHeartbeat(){
 
 void CelluloRelayClient::setServerAddress(QString serverAddress){
     if(serverAddress != this->serverAddress){
-        bool notUnconnected = false;
-        switch(protocol){
-            case CelluloCommUtil::RelayProtocol::Local:
-                notUnconnected = ((QLocalSocket*)serverSocket)->state() != QLocalSocket::UnconnectedState;
-                break;
-
-            case CelluloCommUtil::RelayProtocol::Tcp:
-                notUnconnected = ((QTcpSocket*)serverSocket)->state() != QTcpSocket::UnconnectedState;
-                break;
-        }
-
-        if(notUnconnected){
+        this->serverAddress = serverAddress;
+        if(getConnectionStatus() != CelluloCommUtil::RelayConnectionStatusDisconnected){
             disconnectFromServer();
-            this->serverAddress = serverAddress;
-            emit serverAddressChanged();
-            if(autoConnect)
-                reconnectTimer.start(SERVER_RECONNECT_TIME_MILLIS);
-            else{
-                reconnectTimer.stop();
-                connectToServer();
-            }
+            connectToServer();
         }
-        else{
-            this->serverAddress = serverAddress;
-            emit serverAddressChanged();
-        }
+        emit serverAddressChanged();
     }
 }
 
@@ -170,65 +172,105 @@ void CelluloRelayClient::setPort(int port){
     }
 
     if(port != this->port){
-        if(((QTcpSocket*)serverSocket)->state() != QTcpSocket::UnconnectedState){
+        this->port = port;
+        if(getConnectionStatus() != CelluloCommUtil::RelayConnectionStatusDisconnected){
             disconnectFromServer();
-            this->port = port;
-            emit portChanged();
-            if(autoConnect)
-                reconnectTimer.start(SERVER_RECONNECT_TIME_MILLIS);
-            else{
-                reconnectTimer.stop();
-                connectToServer();
-            }
+            connectToServer();
         }
-        else{
-            this->port = port;
-            emit portChanged();
-        }
+        emit portChanged();
     }
-}
-
-bool CelluloRelayClient::isConnected(){
-    switch(protocol){
-        case CelluloCommUtil::RelayProtocol::Local:
-            return ((QLocalSocket*)serverSocket)->state() == QLocalSocket::ConnectedState;
-
-        case CelluloCommUtil::RelayProtocol::Tcp:
-            return ((QTcpSocket*)serverSocket)->state() == QTcpSocket::ConnectedState;
-    }
-    return false;
 }
 
 void CelluloRelayClient::connectToServer(){
-    lastMacAddr = "";
-    localAdapters.clear();
-    emit localAdaptersChanged();
+    if(getConnectionStatus() == CelluloCommUtil::RelayConnectionStatusDisconnected){
+        qInfo() << "CelluloRelayClient::connectToServer(): Connecting to server...";
 
-    switch(protocol){
-        case CelluloCommUtil::RelayProtocol::Local:
-            ((QLocalSocket*)serverSocket)->connectToServer(serverAddress);
-            break;
+        lastMacAddr = "";
+        localAdapters.clear();
+        emit localAdaptersChanged();
 
-        case CelluloCommUtil::RelayProtocol::Tcp:
-            ((QTcpSocket*)serverSocket)->connectToHost(serverAddress, port);
-            break;
+        //Should not happen
+        if(serverSocket)
+            serverSocket->deleteLater();
+
+        switch(protocol){
+            case CelluloCommUtil::RelayProtocol::Local:
+                serverSocket = new QLocalSocket(this);
+                connect((QLocalSocket*)serverSocket, static_cast<void (QLocalSocket::*)(QLocalSocket::LocalSocketError)>(&QLocalSocket::error),
+                        [=](QLocalSocket::LocalSocketError error){ qDebug() << "CelluloRelayClient serverSocket error: " << error; });
+                break;
+
+            case CelluloCommUtil::RelayProtocol::Tcp:
+                serverSocket = new QTcpSocket(this);
+                ((QTcpSocket*)serverSocket)->setSocketOption(QAbstractSocket::LowDelayOption, 1);
+                connect((QTcpSocket*)serverSocket, static_cast<void (QTcpSocket::*)(QTcpSocket::SocketError)>(&QTcpSocket::error),
+                        [=](QTcpSocket::SocketError error){ qDebug() << "CelluloRelayClient serverSocket error: " << error; });
+                break;
+        }
+
+        connect(serverSocket, SIGNAL(connected()),      this, SIGNAL(connected()));
+        connect(serverSocket, SIGNAL(disconnected()),   this, SIGNAL(disconnected()));
+        connect(serverSocket, SIGNAL(readyRead()),      this, SLOT(incomingServerData()));
+
+        switch(protocol){
+            case CelluloCommUtil::RelayProtocol::Local:
+                ((QLocalSocket*)serverSocket)->connectToServer(serverAddress);
+                break;
+
+            case CelluloCommUtil::RelayProtocol::Tcp:
+                ((QTcpSocket*)serverSocket)->connectToHost(serverAddress, port);
+                break;
+        }
+
+        emit connectionStatusChanged();
+
+        reconnectTimer.start();
     }
 }
 
 void CelluloRelayClient::disconnectFromServer(){
-    switch(protocol){
-        case CelluloCommUtil::RelayProtocol::Local:
-            ((QLocalSocket*)serverSocket)->disconnectFromServer();
-            break;
+    if(serverSocket){
+        qInfo() << "CelluloRelayClient::disconnectFromServer(): Disconnecting from server...";
 
-        case CelluloCommUtil::RelayProtocol::Tcp:
-            ((QTcpSocket*)serverSocket)->disconnectFromHost();
-            break;
+        if(getConnectionStatus() != CelluloCommUtil::RelayConnectionStatusDisconnected){
+            switch(protocol){
+                case CelluloCommUtil::RelayProtocol::Local:
+                    ((QLocalSocket*)serverSocket)->disconnectFromServer();
+                    break;
+
+                case CelluloCommUtil::RelayProtocol::Tcp:
+                    ((QTcpSocket*)serverSocket)->disconnectFromHost();
+                    break;
+            }
+        }
+
+        disconnect(serverSocket, SIGNAL(readyRead()),      this, SLOT(incomingServerData()));
+        disconnect(serverSocket, SIGNAL(connected()),      this, SIGNAL(connected()));
+        disconnect(serverSocket, SIGNAL(disconnected()),   this, SIGNAL(disconnected()));
+
+        serverSocket->deleteLater();
+        serverSocket = nullptr;
+
+        emit connectionStatusChanged();
+
+        reconnectTimer.stop();
+
+        lastMacAddr = "";
+        localAdapters.clear();
+        emit localAdaptersChanged();
     }
 
-    lastMacAddr = "";
-    localAdapters.clear();
-    emit localAdaptersChanged();
+    if(autoConnect)
+        connectToServer();
+}
+
+void CelluloRelayClient::handleConnected(){
+    reconnectTimer.stop();
+    emit connectionStatusChanged();
+}
+
+void CelluloRelayClient::handleDisconnected(){
+    disconnectFromServer();
 }
 
 void CelluloRelayClient::heartbeatTimedOut(){

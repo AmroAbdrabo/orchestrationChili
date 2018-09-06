@@ -60,8 +60,8 @@ class CelluloRelayClient : public QQuickItem {
     Q_OBJECT
     /* *INDENT-ON* */
 
-    /** @brief Whether currently connected to the server, read-only */
-    Q_PROPERTY(bool connected READ isConnected NOTIFY connectedChanged)
+    /** @brief Connection status to the server, read-only */
+    Q_PROPERTY(Cellulo::CelluloCommUtil::RelayConnectionStatus connectionStatus READ getConnectionStatus NOTIFY connectionStatusChanged)
 
     /** @brief Address to connect to, i.e name of the domain socket (default is "cellulo_relay") or the IP address of the TCP socket (default is "localhost") */
     Q_PROPERTY(QString serverAddress READ getServerAddress WRITE setServerAddress NOTIFY serverAddressChanged)
@@ -98,11 +98,11 @@ public:
     virtual ~CelluloRelayClient();
 
     /**
-     * @brief Gets whether the client is connected to the server
+     * @brief Gets the status of connection to the server
      *
-     * @return Whether the client is connected to the server
+     * @return Connection status
      */
-    bool isConnected();
+    Cellulo::CelluloCommUtil::RelayConnectionStatus getConnectionStatus() const;
 
     /**
      * @brief Gets whether the socket tries to reconnect when it drops
@@ -196,7 +196,7 @@ signals:
     /**
      * @brief Emitted when connected/disconnected to/from server
      */
-    void connectedChanged();
+    void connectionStatusChanged();
 
     /**
      * @brief Auto connect strategy changed
@@ -250,9 +250,19 @@ private slots:
     void incomingServerData();
 
     /**
-     * @brief Reconnect if autoConnect is on
+     * @brief Connection is not happening, reconnect
      */
-    void decideReconnect();
+    void refreshConnection();
+
+    /**
+     * @brief Adjusts internal state on connection established
+     */
+    void handleConnected();
+
+    /**
+     * @brief Adjusts internal state on connection unmade
+     */
+    void handleDisconnected();
 
     /**
      * @brief Sends a heartbeat to the server if connected
