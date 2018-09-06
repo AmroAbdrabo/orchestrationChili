@@ -294,7 +294,7 @@ void CelluloRelayClient::processServerPacket(){
     CelluloBluetoothPacket::EventPacketType packetType = serverPacket.getEventPacketType();
 
     //Heartbeat
-    if(packetType == CelluloBluetoothPacket::EventPacketTypeAnnounceLocalAdapter){
+    if(packetType == CelluloBluetoothPacket::EventPacketTypeHeartbeat){
         heartbeatTimeoutTimer.start();
         qDebug() << "HEARTBEAT RECEIVED";
     }
