@@ -67,8 +67,8 @@ CelluloRelayClient::CelluloRelayClient(CelluloCommUtil::RelayProtocol protocol, 
     connect(&heartbeatTimer, SIGNAL(timeout()), this, SLOT(sendHeartbeat()));
     heartbeatTimer.setSingleShot(false);
     heartbeatTimer.setInterval(CelluloCommUtil::RELAY_HEARTBEAT_INTERVAL);
-    connect(this, SIGNAL(connected()),    &heartbeatTimer, SIGNAL(start()));
-    connect(this, SIGNAL(disconnected()), &heartbeatTimer, SIGNAL(stop()));
+    connect(this, SIGNAL(connected()),    &heartbeatTimer, SLOT(start()));
+    connect(this, SIGNAL(disconnected()), &heartbeatTimer, SLOT(stop()));
 }
 
 CelluloRelayClient::~CelluloRelayClient(){

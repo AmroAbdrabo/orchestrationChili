@@ -344,7 +344,7 @@ void CelluloRelayServer::disconnectClient(){
     }
 }
 
-void CellluloRelayServer::heartbeatTimedOut(){
+void CelluloRelayServer::heartbeatTimedOut(){
     qInfo() << "CellluloRelayServer::heartbeatTimedOut(): Heartbeat lost, disconnecting client.";
     disconnectClient();
 }
@@ -364,7 +364,7 @@ void CelluloRelayServer::processClientPacket(){
 
     //Heartbeat
     if(packetType == CelluloBluetoothPacket::CmdPacketTypeHeartbeat){
-        heartbeatTimer.start();
+        heartbeatTimeoutTimer.start();
         qDebug() << "HEARTBEAT RECEIVED";
     }
 
