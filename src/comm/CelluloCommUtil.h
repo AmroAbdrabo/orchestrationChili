@@ -30,6 +30,8 @@
 #include <QList>
 #include <QDebug>
 
+#include "../CelluloEnumDecl.h"
+
 namespace Cellulo{
 
 /**
@@ -82,6 +84,18 @@ public:
     /** @endcond */
 
     /**
+     * @brief Relay connection status
+     */
+    enum RelayConnectionStatus {
+        RelayConnectionStatusDisconnected = 0, ///< Idle and not connected
+        RelayConnectionStatusConnecting = 1,   ///< Actively trying to connect
+        RelayConnectionStatusConnected = 2,    ///< Connected
+        RelayConnectionStatusNumElements
+    };
+    Q_ENUM(RelayConnectionStatus)
+    CELLULO_ENUM_DECL(RelayConnectionStatus)
+
+    /**
      * @brief Tests whether cellulorobotpoold is installed
      *
      * @return Whether cellulorobotpoold is installed
@@ -107,5 +121,7 @@ public:
 /** @} */
 
 }
+
+Q_DECLARE_METATYPE(Cellulo::CelluloCommUtil::RelayConnectionStatus)
 
 #endif // CELLULOCOMMUTIL_H
