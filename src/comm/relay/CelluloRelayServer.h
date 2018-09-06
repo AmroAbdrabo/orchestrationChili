@@ -216,6 +216,11 @@ private slots:
     void deleteClient();
 
     /**
+     * @brief Disconnects the client since the heartbeat was lost
+     */
+    void heartbeatTimedOut();
+
+    /**
      * @brief Handles the local socket state change
      *
      * @param state New state
@@ -274,6 +279,8 @@ private:
 
     QIODevice* clientSocket;                                ///< Socket to client that handles communication
     CelluloBluetoothPacket clientPacket;                    ///< Client's incoming packet
+
+    QTimer heartbeatTimeoutTimer;                           ///< Timer to check the presence of the client
 
     int currentRobot;                                       ///< Current robot index to relay messages to, set by a CmdPacketTypeSetAddress
     QList<CelluloBluetooth*> robots;                        ///< List of robots to relay to/from

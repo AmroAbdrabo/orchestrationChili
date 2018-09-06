@@ -27,6 +27,8 @@
 #include <QBluetoothLocalDevice>
 #include <QAbstractSocket>
 
+#include "../CelluloCommUtil.h"
+
 namespace Cellulo{
 
 CelluloRelayServer::CelluloRelayServer(CelluloCommUtil::RelayProtocol protocol, QQuickItem* parent) :
@@ -58,6 +60,10 @@ CelluloRelayServer::CelluloRelayServer(CelluloCommUtil::RelayProtocol protocol, 
 
     connect(&localAdapterCheckTimer, SIGNAL(timeout()), this, SLOT(checkLocalAdapters()));
     localAdapterCheckTimer.start(LOCAL_ADAPTER_CHECK_PERIOD);
+
+    connect(&heartbeatTimeoutTimer, SIGNAL(timeout()), this, SLOT(heartbeatTimedOut()));
+    heartbeatTimeoutTimer.setInterval(CelluloCommUtil::RELAY_HEARTBEAT_TIMEOUT);
+    heartbeatTimeoutTimer.setSingleShot(false);
 }
 
 CelluloRelayServer::~CelluloRelayServer(){
@@ -227,6 +233,8 @@ void CelluloRelayServer::addClient(){
         connect(clientSocket, SIGNAL(readyRead()), this, SLOT(incomingClientData()));
         connect(clientSocket, SIGNAL(disconnected()), this, SLOT(deleteClient()));
 
+        heartbeatTimeoutTimer.start();
+
         setListening(false);
 
         lastMacAddr = "";
@@ -286,6 +294,8 @@ void CelluloRelayServer::deleteClient(){
         disconnect(clientSocket, SIGNAL(readyRead()), this, SLOT(incomingClientData()));
         disconnect(clientSocket, SIGNAL(disconnected()), this, SLOT(deleteClient()));
 
+        heartbeatTimeoutTimer.stop();
+
         lastMacAddr = "";
 
         clientSocket->deleteLater();
@@ -321,6 +331,8 @@ void CelluloRelayServer::disconnectClient(){
         disconnect(clientSocket, SIGNAL(readyRead()), this, SLOT(incomingClientData()));
         disconnect(clientSocket, SIGNAL(disconnected()), this, SLOT(deleteClient()));
 
+        heartbeatTimeoutTimer.stop();
+
         lastMacAddr = "";
 
         connect(clientSocket, SIGNAL(disconnected()), clientSocket, SLOT(deleteLater()));
@@ -330,6 +342,11 @@ void CelluloRelayServer::disconnectClient(){
 
         setListening(true);
     }
+}
+
+void CellluloRelayServer::heartbeatTimedOut(){
+    qInfo() << "CellluloRelayServer::heartbeatTimedOut(): Heartbeat lost, disconnecting client.";
+    disconnectClient();
 }
 
 void CelluloRelayServer::incomingClientData(){
@@ -345,8 +362,14 @@ void CelluloRelayServer::incomingClientData(){
 void CelluloRelayServer::processClientPacket(){
     CelluloBluetoothPacket::CmdPacketType packetType = clientPacket.getCmdPacketType();
 
+    //Heartbeat
+    if(packetType == CelluloBluetoothPacket::CmdPacketTypeHeartbeat){
+        heartbeatTimer.start();
+        qDebug() << "HEARTBEAT RECEIVED";
+    }
+
     //Set target robot command
-    if(packetType == CelluloBluetoothPacket::CmdPacketTypeSetAddress){
+    else if(packetType == CelluloBluetoothPacket::CmdPacketTypeSetAddress){
         quint8 firstOctet = clientPacket.unloadUInt8();
         quint8 secondOctet = clientPacket.unloadUInt8();
         quint8 thirdOctet = clientPacket.unloadUInt8();
