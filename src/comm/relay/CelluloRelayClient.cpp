@@ -265,11 +265,13 @@ void CelluloRelayClient::disconnectFromServer(){
 }
 
 void CelluloRelayClient::handleConnected(){
+    qInfo() << "CelluloRelayClient::handleConnected(): Connected to server.";
     reconnectTimer.stop();
     emit connectionStatusChanged();
 }
 
 void CelluloRelayClient::handleDisconnected(){
+    qInfo() << "CelluloRelayClient::handleConnected(): Disconnected from server.";
     disconnectFromServer();
 }
 

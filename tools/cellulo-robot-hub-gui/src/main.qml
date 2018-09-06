@@ -36,7 +36,7 @@ ApplicationWindow {
     CelluloRobotHubClient{
         id: client
 
-        serverAddress: "192.168.2.1"
+        serverAddress: "localhost"
         port: 2556
 
         autoConnect: true
@@ -76,8 +76,20 @@ ApplicationWindow {
                         spacing: 5
 
                         Text{
-                            text: client.connected ? "Connected to Server." : "Connecting to Server... "
-                            color: client.connected ? "green" : "red"
+                            text: {
+                                switch(client.connectionStatus){
+                                case CelluloCommUtil.RelayConnectionStatusDisconnected: return "Disconnected";
+                                case CelluloCommUtil.RelayConnectionStatusConnecting: return "Connecting to server...";
+                                case CelluloCommUtil.RelayConnectionStatusConnected: return "Connected to server";
+                                }
+                            }
+                            color: {
+                                switch(client.connectionStatus){
+                                case CelluloCommUtil.RelayConnectionStatusDisconnected: return "red";
+                                case CelluloCommUtil.RelayConnectionStatusConnecting: return "yellow";
+                                case CelluloCommUtil.RelayConnectionStatusConnected: return "green";
+                                }
+                            }
                         }
 
                         Text{

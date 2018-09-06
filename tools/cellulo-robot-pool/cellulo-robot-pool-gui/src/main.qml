@@ -113,8 +113,39 @@ ApplicationWindow {
                             enabled: android ? false : true
                         }
                         Text{
-                            text: client.connected ? "Connected to Server." : "Connecting to Server... " + (Qt.platform.os === "osx" ? "\n(must launch \"Cellulo Robot Pool Daemon\" manually on macOS)" : "")
-                            color: client.connected ? "green" : "red"
+                            text: {
+                                var string;
+                                var needInfo = false;
+                                switch(client.connectionStatus){
+                                case CelluloCommUtil.RelayConnectionStatusDisconnected:
+                                    string = "Disconnected";
+                                    needInfo = true;
+                                    break;
+                                case CelluloCommUtil.RelayConnectionStatusConnecting:
+                                    string = "Connecting to server...";
+                                    needInfo = true;
+                                    break;
+                                case CelluloCommUtil.RelayConnectionStatusConnected:
+                                    string = "Connected to server";
+                                    break;
+                                }
+
+                                if(needInfo){
+                                    if(osx)
+                                        string += "\n(must launch \"Cellulo Robot Pool Daemon\" manually on macOS)";
+                                    else if(android)
+                                        string += "\n(must launch \"Cellulo Robot Pool Service\" manually on Android)";
+                                }
+                                
+                                return string;
+                            }
+                            color: {
+                                switch(client.connectionStatus){
+                                case CelluloCommUtil.RelayConnectionStatusDisconnected: return "red";
+                                case CelluloCommUtil.RelayConnectionStatusConnecting: return "yellow";
+                                case CelluloCommUtil.RelayConnectionStatusConnected: return "green";
+                                }
+                            }
                             anchors.verticalCenter: parent.verticalCenter
                         }
                     }
