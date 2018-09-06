@@ -26,13 +26,6 @@ ApplicationWindow {
     width: mobile ? Screen.width : 0.7*Screen.width
     height: mobile ? Screen.desktopAvailableHeight : 0.7*Screen.height
 
-    function createRobot(macAddr){
-        var newRobot = Qt.createQmlObject("import Cellulo 1.0; CelluloBluetooth{}", window);
-        newRobot.autoConnect = false;
-        newRobot.macAddr = macAddr;
-        return newRobot;
-    }
-
     CelluloRobotHubClient{
         id: client
 
@@ -44,11 +37,6 @@ ApplicationWindow {
         onConnected: toast.show("Connected to Server.")
         onDisconnected: toast.show("Disconnected from Server.")
 
-        onUnknownRobotAtServer: {
-            var robot = createRobot(macAddr);
-            addRobot(robot, true);
-        }
-
         function hasRobot(macAddr){
             for(var i=0;i<robots.length;i++)
                 if(robots[i].macAddr.toUpperCase() === macAddr.toUpperCase())
@@ -56,7 +44,6 @@ ApplicationWindow {
             return false;
         }
     }
-
 
     ScrollView {
         anchors.fill: parent
@@ -255,10 +242,7 @@ ApplicationWindow {
 
                             text: "+"
                             anchors.verticalCenter: parent.verticalCenter
-                            onClicked: {
-                                var robot = createRobot(prefix.text + suffix.text);
-                                client.addRobot(robot);
-                            }
+                            onClicked: client.createAddSelectRobot(prefix.text + suffix.text)
                         }
                     }
                 }
@@ -284,9 +268,9 @@ ApplicationWindow {
                                 MacAddrSelector{
                                     id: selector
                                     property var robot: client.robots[index]
-                                    property string localAdapterMacAddr: robot.localAdapterMacAddr
+                                    property string localAdapterMacAddr: robot.localAdapterMacAddr.toUpperCase()
 
-                                    addresses: [robot.macAddr]
+                                    addresses: [robot.macAddr.toUpperCase()]
                                     localAdapterAddresses: client.localAdapters
                                     connectionStatus: robot.connectionStatus
 
@@ -428,7 +412,7 @@ ApplicationWindow {
 
                                 enabled: !client.hasRobot(currentMacAddr)
 
-                                onClicked: client.addRobot(createRobot(currentMacAddr))
+                                onClicked: client.createAddSelectRobot(currentMacAddr)
                             }
                         }
                     }
@@ -439,7 +423,7 @@ ApplicationWindow {
                         onClicked: {
                             for(var i=0;i<scanner.foundRobots.length;i++)
                                 if(!client.hasRobot(scanner.foundRobots[i]))
-                                    client.addRobot(createRobot(scanner.foundRobots[i]));
+                                    client.createAddSelectRobot(scanner.foundRobots[i]);
                         }
                     }
                 }

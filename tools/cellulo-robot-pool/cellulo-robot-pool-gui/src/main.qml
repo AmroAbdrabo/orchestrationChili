@@ -40,23 +40,11 @@ ApplicationWindow {
         }
     }
 
-    function createRobot(macAddr){
-        var newRobot = Qt.createQmlObject("import Cellulo 1.0; CelluloBluetooth{}", window);
-        newRobot.autoConnect = false;
-        newRobot.macAddr = macAddr;
-        return newRobot;
-    }
-
-    CelluloLocalRelayClient{
+    CelluloRobotPoolClient{
         id: client
 
         onConnected: toast.show("Connected to Server.")
         onDisconnected: toast.show("Disconnected from Server.")
-
-        onUnknownRobotAtServer: {
-            var robot = createRobot(macAddr);
-            addRobot(robot, true);
-        }
 
         function hasRobot(macAddr){
             for(var i=0;i<robots.length;i++)
@@ -176,10 +164,7 @@ ApplicationWindow {
 
                             text: "+"
                             anchors.verticalCenter: parent.verticalCenter
-                            onClicked: {
-                                var robot = createRobot(prefix.text + suffix.text);
-                                client.addRobot(robot);
-                            }
+                            onClicked: client.createAddSelectRobot(prefix.text + suffix.text)
                         }
                     }
                 }
@@ -353,7 +338,7 @@ ApplicationWindow {
 
                                 enabled: !client.hasRobot(currentMacAddr)
 
-                                onClicked: client.addRobot(createRobot(currentMacAddr))
+                                onClicked: client.createAddSelectRobot(currentMacAddr)
                             }
                         }
                     }
@@ -364,7 +349,7 @@ ApplicationWindow {
                         onClicked: {
                             for(var i=0;i<scanner.foundRobots.length;i++)
                                 if(!client.hasRobot(scanner.foundRobots[i]))
-                                    client.addRobot(createRobot(scanner.foundRobots[i]));
+                                    client.createAddSelectRobot(scanner.foundRobots[i]);
                         }
                     }
                 }

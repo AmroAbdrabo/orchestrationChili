@@ -128,7 +128,7 @@ signals:
      */
     void newRobotFound(CelluloBluetooth* robot);
 
-private slots:
+public slots:
 
     /**
      * @brief Creates, adds and selects a given robot
