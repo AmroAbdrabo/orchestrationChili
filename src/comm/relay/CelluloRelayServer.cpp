@@ -378,10 +378,8 @@ void CelluloRelayServer::processClientPacket(){
     CelluloBluetoothPacket::CmdPacketType packetType = clientPacket.getCmdPacketType();
 
     //Heartbeat
-    if(packetType == CelluloBluetoothPacket::CmdPacketTypeHeartbeat){
+    if(packetType == CelluloBluetoothPacket::CmdPacketTypeHeartbeat)
         heartbeatTimeoutTimer.start();
-        qDebug() << "HEARTBEAT RECEIVED";
-    }
 
     //Set target robot command
     else if(packetType == CelluloBluetoothPacket::CmdPacketTypeSetAddress){
