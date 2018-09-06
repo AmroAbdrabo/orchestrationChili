@@ -138,6 +138,7 @@
         CmdPacketTypeShutdown,                       /** Request shutdown */ \
         CmdPacketTypeSetAddress,                     /** Set address of all following packets (only used by relay clients/servers) */ \
         CmdPacketTypeSetConnectionStatus,            /** Set connection status of the robot on the server (only used by relay clients) */ \
+        CmdPacketTypeHeartbeat,                      /** Periodic indication of presence (only used by relay clients) */ \
         CmdPacketTypeNumElements, \
 }
 
@@ -178,7 +179,8 @@
         "R",  /** CmdPacketTypeReset */ \
         "S",  /** CmdPacketTypeShutdown */ \
         "@",  /** CmdPacketTypeSetAddress */ \
-        "!"   /** CmdPacketTypeSetConnectionStatus */ \
+        "!",  /** CmdPacketTypeSetConnectionStatus */ \
+        "&"   /** CmdPacketTypeHeartbeat */ \
 }
 
 /*
@@ -218,7 +220,8 @@
         0,                 /** CmdPacketTypeReset */ \
         0,                 /** CmdPacketTypeShutdown */ \
         6*1,               /** CmdPacketTypeSetAddress: uint8 firstOctet, uint8 secondOctet, uint8 thirdOctet, uint8 fourthOctet, uint8 fifthOctet, uint8 sixthOctet */ \
-        1 + 6*1            /** CmdPacketTypeSetConnectionStatus: uint8 status, uint8 localAdapterAddrOctet1, uint8 localAdapterAddrOctet2, uint8 localAdapterAddrOctet3, uint8 localAdapterAddrOctet4, uint8 localAdapterAddrOctet5, uint8 localAdapterAddrOctet6 */ \
+        1 + 6*1,           /** CmdPacketTypeSetConnectionStatus: uint8 status, uint8 localAdapterAddrOctet1, uint8 localAdapterAddrOctet2, uint8 localAdapterAddrOctet3, uint8 localAdapterAddrOctet4, uint8 localAdapterAddrOctet5, uint8 localAdapterAddrOctet6 */ \
+        0,                 /** CmdPacketTypeHeartbeat */ \
 }
 
 /**

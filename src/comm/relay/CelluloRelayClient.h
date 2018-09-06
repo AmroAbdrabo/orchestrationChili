@@ -254,6 +254,11 @@ private slots:
      */
     void decideReconnect();
 
+    /**
+     * @brief Sends a heartbeat to the server if connected
+     */
+    void sendHeartbeat();
+
 protected:
 
     QString serverAddress;  ///< Server's address, e.g "127.0.0.1"
@@ -279,6 +284,8 @@ private:
 
     bool autoConnect;                                     ///< Whether to try to reconnect to the relay server if connection is lost
     QTimer reconnectTimer;                                ///< Timeout timer to reconnect if connection fails
+
+    QTimer heartbeatTimer;                                ///< Timer to periodically announce the presence of the client
 
     quint16 port;                                         ///< Port to connect to on the server
 

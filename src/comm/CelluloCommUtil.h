@@ -83,6 +83,9 @@ public:
 
     /** @endcond */
 
+    static constexpr int RELAY_HEARTBEAT_INTERVAL = 1500;   ///< RelayClients will send a heartbeat message with this interval (milliseconds)
+    static constexpr int RELAY_HEARTBEAT_TIMEOUT = 6000;    ///< RelayServer will drop a connection if this many milliseconds pass without a heartbeat
+
     /**
      * @brief Relay connection status
      */

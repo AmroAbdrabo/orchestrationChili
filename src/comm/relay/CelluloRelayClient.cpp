@@ -24,6 +24,8 @@
 
 #include "CelluloRelayClient.h"
 
+#include "../CelluloCommUtil.h"
+
 namespace Cellulo{
 
 CelluloRelayClient::CelluloRelayClient(CelluloCommUtil::RelayProtocol protocol, QQuickItem* parent) :
@@ -61,6 +63,12 @@ CelluloRelayClient::CelluloRelayClient(CelluloCommUtil::RelayProtocol protocol, 
     autoConnect = true;
     connect(&reconnectTimer, SIGNAL(timeout()), this, SLOT(decideReconnect()));
     reconnectTimer.start(SERVER_RECONNECT_TIME_MILLIS);
+
+    connect(&heartbeatTimer, SIGNAL(timeout()), this, SLOT(sendHeartbeat()));
+    heartbeatTimer.setSingleShot(false);
+    heartbeatTimer.setInterval(CelluloCommUtil::RELAY_HEARTBEAT_INTERVAL);
+    connect(this, SIGNAL(connected()),    &heartbeatTimer, SIGNAL(start()));
+    connect(this, SIGNAL(disconnected()), &heartbeatTimer, SIGNAL(stop()));
 }
 
 CelluloRelayClient::~CelluloRelayClient(){
@@ -98,6 +106,14 @@ void CelluloRelayClient::decideReconnect(){
                 }
                 break;
         }
+    }
+}
+
+void CelluloRelayClient::sendHeartbeat(){
+    if(isConnected()){
+        CelluloBluetoothPacket heartbeatPacket;
+        heartbeatPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeHeartbeat);
+        serverSocket->write(heartbeatPacket.getCmdSendData());
     }
 }
 
