@@ -36,10 +36,10 @@ ApplicationWindow {
     CelluloRobotHubClient{
         id: client
 
-        serverAddress: "localhost"
-        port: 2556
+        serverAddress: addressBox.currentText
+        port: parseInt(portBox.currentText)
 
-        autoConnect: true
+        autoConnect: autoConnectCheckBox.checked
 
         onConnected: toast.show("Connected to Server.")
         onDisconnected: toast.show("Disconnected from Server.")
@@ -207,14 +207,24 @@ ApplicationWindow {
                                 }
                             }
 
+                            CheckBox{
+                                id: autoConnectCheckBox
+                                text: "Autoconnect?"
+                                checked: true
+                            }
+
                             Button{
+                                enabled: !autoConnectCheckBox.checked
                                 text: "Connect"
                                 anchors.verticalCenter: parent.verticalCenter
-                                onClicked: {
-                                    client.serverAddress = addressBox.currentText;
-                                    client.port = parseInt(portBox.currentText);
-                                    client.connectToServer();
-                                }
+                                onClicked: client.connectToServer()
+                            }
+
+                            Button{
+                                enabled: !autoConnectCheckBox.checked
+                                text: "Disconnect"
+                                anchors.verticalCenter: parent.verticalCenter
+                                onClicked: client.disconnectFromServer()
                             }
                         }
                     }
