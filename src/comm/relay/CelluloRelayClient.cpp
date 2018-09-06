@@ -183,8 +183,6 @@ void CelluloRelayClient::setPort(int port){
 
 void CelluloRelayClient::connectToServer(){
     if(getConnectionStatus() == CelluloCommUtil::RelayConnectionStatusDisconnected){
-        qInfo() << "CelluloRelayClient::connectToServer(): Connecting to server...";
-
         lastMacAddr = "";
         localAdapters.clear();
         emit localAdaptersChanged();
@@ -214,10 +212,12 @@ void CelluloRelayClient::connectToServer(){
 
         switch(protocol){
             case CelluloCommUtil::RelayProtocol::Local:
+                qInfo() << "CelluloRelayClient::connectToServer(): Connecting to server at " << serverAddress << "...";
                 ((QLocalSocket*)serverSocket)->connectToServer(serverAddress);
                 break;
 
             case CelluloCommUtil::RelayProtocol::Tcp:
+                qInfo() << "CelluloRelayClient::connectToServer(): Connecting to server at " << serverAddress << " via port " << port << "...";
                 ((QTcpSocket*)serverSocket)->connectToHost(serverAddress, port);
                 break;
         }
