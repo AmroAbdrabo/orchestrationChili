@@ -259,6 +259,11 @@ private slots:
      */
     void sendHeartbeat();
 
+    /**
+     * @brief Disconnects the server since the heartbeat was lost
+     */
+    void heartbeatTimedOut();
+
 protected:
 
     QString serverAddress;  ///< Server's address, e.g "127.0.0.1"
@@ -286,6 +291,7 @@ private:
     QTimer reconnectTimer;                                ///< Timeout timer to reconnect if connection fails
 
     QTimer heartbeatTimer;                                ///< Timer to periodically announce the presence of the client
+    QTimer heartbeatTimeoutTimer;                         ///< Timer to check the presence of the server
 
     quint16 port;                                         ///< Port to connect to on the server
 

@@ -64,6 +64,12 @@ CelluloRelayClient::CelluloRelayClient(CelluloCommUtil::RelayProtocol protocol, 
     connect(&reconnectTimer, SIGNAL(timeout()), this, SLOT(decideReconnect()));
     reconnectTimer.start(SERVER_RECONNECT_TIME_MILLIS);
 
+    connect(&heartbeatTimeoutTimer, SIGNAL(timeout()), this, SLOT(heartbeatTimedOut()));
+    heartbeatTimeoutTimer.setInterval(CelluloCommUtil::RELAY_HEARTBEAT_TIMEOUT);
+    heartbeatTimeoutTimer.setSingleShot(false);
+    connect(this, SIGNAL(connected()),    &heartbeatTimeoutTimer, SLOT(start()));
+    connect(this, SIGNAL(disconnected()), &heartbeatTimeoutTimer, SLOT(stop()));
+
     connect(&heartbeatTimer, SIGNAL(timeout()), this, SLOT(sendHeartbeat()));
     heartbeatTimer.setSingleShot(false);
     heartbeatTimer.setInterval(CelluloCommUtil::RELAY_HEARTBEAT_INTERVAL);
@@ -225,6 +231,11 @@ void CelluloRelayClient::disconnectFromServer(){
     emit localAdaptersChanged();
 }
 
+void CelluloRelayClient::heartbeatTimedOut(){
+    qInfo() << "CellluloRelayClient::heartbeatTimedOut(): Heartbeat lost, disconnecting client.";
+    disconnectFromServer();
+}
+
 void CelluloRelayClient::addRobot(CelluloBluetooth* robot, bool select){
     if(!robots.contains(robot)){
         robots.append(robot);
@@ -282,8 +293,14 @@ void CelluloRelayClient::incomingServerData(){
 void CelluloRelayClient::processServerPacket(){
     CelluloBluetoothPacket::EventPacketType packetType = serverPacket.getEventPacketType();
 
-    //Local adapter announcement
+    //Heartbeat
     if(packetType == CelluloBluetoothPacket::EventPacketTypeAnnounceLocalAdapter){
+        heartbeatTimeoutTimer.start();
+        qDebug() << "HEARTBEAT RECEIVED";
+    }
+
+    //Local adapter announcement
+    else if(packetType == CelluloBluetoothPacket::EventPacketTypeAnnounceLocalAdapter){
         bool added = (bool)serverPacket.unloadUInt8();
         quint8 firstOctet = serverPacket.unloadUInt8();
         quint8 secondOctet = serverPacket.unloadUInt8();
