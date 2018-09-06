@@ -61,6 +61,10 @@ CelluloRelayServer::CelluloRelayServer(CelluloCommUtil::RelayProtocol protocol, 
     connect(&localAdapterCheckTimer, SIGNAL(timeout()), this, SLOT(checkLocalAdapters()));
     localAdapterCheckTimer.start(LOCAL_ADAPTER_CHECK_PERIOD);
 
+    connect(&heartbeatTimer, SIGNAL(timeout()), this, SLOT(sendHeartbeat()));
+    heartbeatTimer.setSingleShot(false);
+    heartbeatTimer.setInterval(CelluloCommUtil::RELAY_HEARTBEAT_INTERVAL);
+
     connect(&heartbeatTimeoutTimer, SIGNAL(timeout()), this, SLOT(heartbeatTimedOut()));
     heartbeatTimeoutTimer.setInterval(CelluloCommUtil::RELAY_HEARTBEAT_TIMEOUT);
     heartbeatTimeoutTimer.setSingleShot(false);
@@ -233,6 +237,7 @@ void CelluloRelayServer::addClient(){
         connect(clientSocket, SIGNAL(readyRead()), this, SLOT(incomingClientData()));
         connect(clientSocket, SIGNAL(disconnected()), this, SLOT(deleteClient()));
 
+        heartbeatTimer.start();
         heartbeatTimeoutTimer.start();
 
         setListening(false);
@@ -294,6 +299,7 @@ void CelluloRelayServer::deleteClient(){
         disconnect(clientSocket, SIGNAL(readyRead()), this, SLOT(incomingClientData()));
         disconnect(clientSocket, SIGNAL(disconnected()), this, SLOT(deleteClient()));
 
+        heartbeatTimer.stop();
         heartbeatTimeoutTimer.stop();
 
         lastMacAddr = "";
@@ -331,6 +337,7 @@ void CelluloRelayServer::disconnectClient(){
         disconnect(clientSocket, SIGNAL(readyRead()), this, SLOT(incomingClientData()));
         disconnect(clientSocket, SIGNAL(disconnected()), this, SLOT(deleteClient()));
 
+        heartbeatTimer.stop();
         heartbeatTimeoutTimer.stop();
 
         lastMacAddr = "";
@@ -341,6 +348,14 @@ void CelluloRelayServer::disconnectClient(){
         emit clientDisconnected();
 
         setListening(true);
+    }
+}
+
+void CelluloRelayServer::sendHeartbeat(){
+    if(clientSocket != nullptr){
+        CelluloBluetoothPacket heartbeatPacket;
+        heartbeatPacket.setEventPacketType(CelluloBluetoothPacket::EventPacketTypeHeartbeat);
+        clientSocket->write(heartbeatPacket.getEventSendData());
     }
 }
 

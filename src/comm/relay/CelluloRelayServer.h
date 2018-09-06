@@ -221,6 +221,11 @@ private slots:
     void heartbeatTimedOut();
 
     /**
+     * @brief Sends a heartbeat to the server if connected
+     */
+    void sendHeartbeat();
+
+    /**
      * @brief Handles the local socket state change
      *
      * @param state New state
@@ -280,6 +285,7 @@ private:
     QIODevice* clientSocket;                                ///< Socket to client that handles communication
     CelluloBluetoothPacket clientPacket;                    ///< Client's incoming packet
 
+    QTimer heartbeatTimer;                                  ///< Timer to periodically announce the presence of the server
     QTimer heartbeatTimeoutTimer;                           ///< Timer to check the presence of the client
 
     int currentRobot;                                       ///< Current robot index to relay messages to, set by a CmdPacketTypeSetAddress

@@ -138,7 +138,7 @@
         CmdPacketTypeShutdown,                       /** Request shutdown */ \
         CmdPacketTypeSetAddress,                     /** Set address of all following packets (only used by relay clients/servers) */ \
         CmdPacketTypeSetConnectionStatus,            /** Set connection status of the robot on the server (only used by relay clients) */ \
-        CmdPacketTypeHeartbeat,                      /** Periodic indication of presence (only used by relay clients) */ \
+        CmdPacketTypeHeartbeat,                      /** Periodic indication of presence (only used by relay clients/servers) */ \
         CmdPacketTypeNumElements, \
 }
 
@@ -246,6 +246,7 @@
         EventPacketTypeSetAddress,               /** Specify address of all following packets (only used by relay clients/servers) */ \
         EventPacketTypeAnnounceConnectionStatus, /** Announce connection status of the robot (only used by relay servers) */ \
         EventPacketTypeAnnounceLocalAdapter,     /** Announce addition/removal of local adapter (only used by relay servers) */ \
+        EventPacketTypeHeartbeat,                /** Periodic indication of presence (only used by relay clients/servers) */ \
         EventPacketTypeNumElements \
 }
 
@@ -270,7 +271,8 @@
         "E", /** EventPacketTypeDebug */ \
         "@", /** EventPacketTypeSetAddress */ \
         "!", /** EventPacketTypeAnnounceConnectionStatus */ \
-        ">"  /** EventPacketTypeAnnounceLocalAdapter */ \
+        ">", /** EventPacketTypeAnnounceLocalAdapter */ \
+        "&"  /** EventPacketTypeHeartbeat */ \
 }
 
 /**
@@ -294,7 +296,8 @@
         8,                    /** EventPacketTypeDebug */ \
         6*1,                  /** EventPacketTypeSetAddress: uint8 firstOctet, uint8 secondOctet, uint8 thirdOctet, uint8 fourthOctet, uint8 fifthOctet, uint8 sixthOctet */ \
         1 + 6*1,              /** EventPacketTypeAnnounceConnectionStatus: uint8 status, uint8 localAdapterAddrOctet1, uint8 localAdapterAddrOctet2, uint8 localAdapterAddrOctet3, uint8 localAdapterAddrOctet4, uint8 localAdapterAddrOctet5, uint8 localAdapterAddrOctet6 */ \
-        1 + 6*1               /** EventPacketTypeAnnounceLocalAdapter: uint8 statusBool, uint8 localAdapterAddrOctet1, uint8 localAdapterAddrOctet2, uint8 localAdapterAddrOctet3, uint8 localAdapterAddrOctet4, uint8 localAdapterAddrOctet5, uint8 localAdapterAddrOctet6 */ \
+        1 + 6*1,              /** EventPacketTypeAnnounceLocalAdapter: uint8 statusBool, uint8 localAdapterAddrOctet1, uint8 localAdapterAddrOctet2, uint8 localAdapterAddrOctet3, uint8 localAdapterAddrOctet4, uint8 localAdapterAddrOctet5, uint8 localAdapterAddrOctet6 */ \
+        0                     /** EventPacketTypeHeartbeat */ \
 }
 
 #endif // CELLULOBLUETOOTHSHAREDDEFS_H
