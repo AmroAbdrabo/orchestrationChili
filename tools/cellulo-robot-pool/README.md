@@ -57,7 +57,7 @@ automatically, which can be manually stopped or started as well from the "Server
 panel can be used to scan and add available robots to the pool. Once added, they can be connected to using the "Robots
 on server" panel. Once all desired robots are added and connected to, `cellulo-robot-pool-gui` can be closed. Then,
 these robots in the pool can be used in an application through `CelluloRobotPoolClient`, see
-[samples/cellulo-swarm-demo/](../../samples/cellulo-swarm-demo/) for an example.
+[samples/cellulo-robot-pool-hub-demo/](../../samples/cellulo-robot-pool-hub-demo/) for an example.
 
 **Important note:** It is advised to run `cellulorobotpoold` with root privileges (`sudo cellulo-robot-pool-gui` will
 ensure that) for much faster connection to many robots over multiple adapters. It can also be run with user privileges
@@ -70,7 +70,7 @@ First, launch the `Cellulo Robot Pool Daemon` app. Do not close it. Then launch 
 control panel. "Scan for robots" panel can be used to scan and add available robots to the pool. Once added, they can be
 connected to using the "Robots on server" panel. Once all desired robots are added and connected to,
 `Cellulo Robot Pool GUI` can be closed. Then, these robots in the pool can be used in an application through
-`CelluloRobotPoolClient`, see [samples/cellulo-swarm-demo/](../../samples/cellulo-swarm-demo/) for an example.
+`CelluloRobotPoolClient`, see [samples/cellulo-robot-pool-hub-demo/](../../samples/cellulo-robot-pool-hub-demo/) for an example.
 
 **Important note**: Multiple adapters are not supported on macOS, only the internal one is available. This will limit
 the number of connectable robots certainly to 7 and practically to around 5. If you'd like to connect to more robots on
@@ -82,7 +82,7 @@ Android usage
 First, launch the `Cellulo Robot Pool Service` app. Click `Start service`. When connected (might take few seconds), exit the app. Then, launch the `Cellulo Robot Pool GUI` app (it might also take a few seconds to connect to the service). "Scan for robots" panel can be used to scan and add available robots to the pool. Once added, they can be
 connected to using the "Robots on server" panel. Once all desired robots are added and connected to,
 `Cellulo Robot Pool GUI` can be closed. Then, these robots in the pool can be used in an application through
-`CelluloRobotPoolClient`, see [samples/cellulo-swarm-demo/](../../samples/cellulo-swarm-demo/) for an example.
+`CelluloRobotPoolClient`, see [samples/cellulo-robot-pool-hub-demo/](../../samples/cellulo-robot-pool-hub-demo/) for an example.
 
 **Important note**: Multiple adapters are not supported on Android, only the internal one is available. This will limit
 the number of connectable robots certainly to 7 and practically to around 5. If you'd like to connect to more robots on
