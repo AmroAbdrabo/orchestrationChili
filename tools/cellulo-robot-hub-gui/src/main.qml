@@ -17,6 +17,7 @@ ApplicationWindow {
     property bool mobile: android
     property bool android: Qt.platform.os === "android"
     property bool osx: Qt.platform.os === "osx"
+    property bool winrt: Qt.platform.os === "winrt"
 
     function em(x){ return Math.round(x*TextSingleton.font.pixelSize); }
 
@@ -369,6 +370,11 @@ ApplicationWindow {
 
                 Column{
                     id: scanList
+
+                    Text{
+                        visible: winrt
+                        text: "Robots must first be paired from\nOS Bluetooth settings to appear in scan!"
+                    }
 
                     CheckBox{
                         id: continuousCheckBox

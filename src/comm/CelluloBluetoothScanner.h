@@ -37,6 +37,8 @@ namespace Cellulo{
 
 /**
  * @brief Object that scans for Cellulo robots
+ *
+ * **Warning:** On WinRT, the robots must be first paired from the OS Bluetooth scanner in order to appear in the scan.
  */
 class CelluloBluetoothScanner : public QQuickItem {
     /* *INDENT-OFF* */

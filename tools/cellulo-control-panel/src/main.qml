@@ -16,6 +16,7 @@ ApplicationWindow {
     function em(x){ return Math.round(x*TextSingleton.font.pixelSize); }
 
     property bool mobile: Qt.platform.os === "android"
+    property bool winrt: Qt.platform.os === "winrt"
     property real gWidth: mobile ? Screen.width : 800
     width: gWidth
     height: mobile ? Screen.desktopAvailableHeight : 0.7*Screen.height
@@ -68,6 +69,11 @@ ApplicationWindow {
                                 macAddrSelector.addresses = [];
                                 QMLCache.write("addresses","");
                             }
+                        }
+
+                        Text{
+                            visible: winrt
+                            text: "Robots must first be paired from OS Bluetooth settings to appear in scan!"
                         }
                     }
                 }

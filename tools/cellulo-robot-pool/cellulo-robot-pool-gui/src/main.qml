@@ -124,7 +124,7 @@ ApplicationWindow {
                                     else if(android)
                                         string += "\n(must launch \"Cellulo Robot Pool Service\" manually on Android)";
                                 }
-                                
+
                                 return string;
                             }
                             color: {
