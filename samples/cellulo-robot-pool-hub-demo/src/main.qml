@@ -25,12 +25,40 @@ ApplicationWindow {
     property int nearestSquareEdge: Math.ceil(Math.sqrt(currentNumRobots))
     property bool goChecked: go.checked
 
+    property var client: poolButton.checked ? poolClient : hubClient
+
     CelluloRobotPoolClient{
-        id: client
+        id: poolClient
+
         robotComponent: Qt.createComponent("LatticeRobot.qml")
         onNewRobotFound: {
             robot.index = robots.length - 1;
             robot.root = window;
+        }
+
+        autoConnect: poolButton.checked
+        onAutoConnectChanged: {
+            if(!autoConnect)
+                disconnectFromServer();
+        }
+    }
+
+    CelluloRobotHubClient{
+        id: hubClient
+
+        serverAddress: hubAddress.text
+        port: parseInt(hubPort.text)
+
+        robotComponent: Qt.createComponent("LatticeRobot.qml")
+        onNewRobotFound: {
+            robot.index = robots.length - 1;
+            robot.root = window;
+        }
+
+        autoConnect: hubButton.checked
+        onAutoConnectChanged: {
+            if(!autoConnect)
+                disconnectFromServer();
         }
     }
 
@@ -87,13 +115,71 @@ ApplicationWindow {
     //Visible items
 
     GroupBox {
-        id: addressBox
-        title: "Robots"
+        id: serverBox
+        title: "Controls"
 
         Column{
+            Row{
+                spacing: 5
+
+                ExclusiveGroup{ id: serverGroup }
+                RadioButton{
+                    id: poolButton
+                    text: "Pool (Local)"
+                    checked: true
+                    exclusiveGroup: serverGroup
+                }
+                RadioButton{
+                    id: hubButton
+                    text: "Hub (Remote, e.g at RPi)"
+                    exclusiveGroup: serverGroup
+                }
+            }
+
+            GroupBox {
+                title: "Hub Address"
+                enabled: hubButton.checked
+
+                Row{
+                    spacing: 5
+
+                    Text{
+                        text: "Address:"
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+
+                    TextField{
+                        id: hubAddress
+                        text: "192.168.2.1"
+                    }
+
+                    Text{
+                        text: "Port:"
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+
+                    TextField{
+                        id: hubPort
+                        text: "2556"
+                    }
+                }
+            }
+
             Text{
-                text: client.connected ? "Connected to Server." : "Connecting to Server..."
-                color: client.connected ? "green" : "red"
+                text: {
+                    switch(client.connectionStatus){
+                    case CelluloCommUtil.RelayConnectionStatusDisconnected: return "Disconnected.";
+                    case CelluloCommUtil.RelayConnectionStatusConnecting: return "Connecting to Server...";
+                    case CelluloCommUtil.RelayConnectionStatusConnected: return "Connected to Server.";
+                    }
+                }
+                color: {
+                    switch(client.connectionStatus){
+                    case CelluloCommUtil.RelayConnectionStatusDisconnected: return "red";
+                    case CelluloCommUtil.RelayConnectionStatusConnecting: return "yellow";
+                    case CelluloCommUtil.RelayConnectionStatusConnected: return "green";
+                    }
+                }
             }
 
             CheckBox{
@@ -107,7 +193,7 @@ ApplicationWindow {
     GroupBox{
         id: playgroundBox
         title: "Playground"
-        anchors.top: addressBox.bottom
+        anchors.top: serverBox.bottom
 
         Item{
             width: page.width + page.physicalRobotWidth*page.scaleCoeff

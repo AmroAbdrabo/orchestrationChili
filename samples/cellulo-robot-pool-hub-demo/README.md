@@ -1,16 +1,18 @@
-cellulo-swarm-demo
-==================
+cellulo-robot-pool-hub-demo
+===========================
 
-Demonstrates swarm formations with the Cellulo robots. Also demonstrates the use of `cellulo-robot-pool` to easily
-connect to many robots that can be used in any activity without disconnecting.
+Demonstrates swarm formations with the Cellulo robots. Also demonstrates the use of `cellulo-robot-pool` and
+`cellulo-robot-hub` to easily connect to many robots that can be used in any activity without disconnecting.
 
-Tested with Qt 5.10.1 on:
+Tested with Qt 5.11.0 on:
 
-- Ubuntu 17.10
+- Ubuntu 18.04
 - macOS 10.13.3 with Xcode 9.3
-- Android 7.1.2 with Ubuntu 17.10 host with Android API 23, Android SDK Tools 25.2.5 and Android NDK r10e
+- Android 7.1.2 with Ubuntu 18.04 host with Android API 23, Android SDK Tools 25.2.5 and Android NDK r10e
 
-As the swarm functionality requires `cellulorobotpoold`, this sample will not work on Windows since WinRT sandboxing prevents multiple apps from communicating with each other.
+**Note:** As the swarm functionality requires `cellulorobotpoold`, this sample will not work on Windows since WinRT
+sandboxing prevents multiple apps from communicating with each other. On Windows, use the Raspberry PI with
+`cellulorobothubd` installed. See [tools/cellulorobothubd](../../tools/cellulorobothubd/) for more information.
 
 Build
 -----
