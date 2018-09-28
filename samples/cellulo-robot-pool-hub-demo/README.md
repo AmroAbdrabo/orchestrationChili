@@ -41,9 +41,9 @@ Run [Pool functionality]
 1. Click `Scan` to scan the robots around (done locally on the main machine). **Note for WinRT:** For robots to appear in the scan, they must first be scanned and paired from the OS Bluetooth scanner.
 1. Click `+` next to the discovered robots to add them to the pool or click `Add all above` to add all found robots
 1. [Only available on *Linux*] If more than 5 robots are desired, click `Equally distribute local adapters` or select local adapters manually (second drop-down box on each list item)
-1. Click `Connect` on each robot one by one
+1. Click `Connect to all`
 1. Once all robots are connected, close the Robot Pool GUI.
-1. Load `cellulo-swarm-demo` into Qt Creator, configure for Desktop and click `Run`
+1. Load `cellulo-robot-pool-hub-demo` into Qt Creator, configure for the desired platform and click `Run`
 1. Check `Go`
 1. Robots should come into a lattice formation, but you probably need to put the robots in their correct place manually at first since there is no pathfinding algorithm present
 1. Touch any button of a robot to interact with it:
@@ -58,13 +58,15 @@ Run [Hub functionality]
 [https://c4science.ch/w/chili-epfl/cellulo/cellulo-software/cellulo-installation-rpi/](https://c4science.ch/w/chili-epfl/cellulo/cellulo-software/cellulo-installation-rpi/)
 for more information on obtaining one.
 1. Plug in external Bluetooth dongles on this remote machine, at least one dongle for each 5 robots must be present; so for 15 robots, at least 2 external dongles are needed (in addition to the internal adapter).
-1. Connect to this machine through a TCP channel such as WiFi or ethernet. Enter this machine's IP and the port that `cellulorobothubd` is listening on (2556 by default) to the corresponding boxes.
-1. Click `Scan` to scan the robots around
+1. Connect to this machine through a TCP channel such as WiFi or ethernet.
+1. Launch the Robot Hub GUI and enter this machine's IP and the port that `cellulorobothubd` is listening on (2556 by default) to the corresponding boxes. Connection should be pretty much immediately established.
+1. Click `Scan` to scan the robots around (done locally on the main machine). **Note for WinRT:** For robots to appear in the scan, they must first be scanned and paired from the OS Bluetooth scanner.
 1. Click `+` next to the discovered robots to add them to the pool or click `Add all above` to add all found robots
-1. [Only available on *Linux*] If more than 5 robots are desired, click `Equally distribute local adapters` or select local adapters manually (second drop-down box on each list item)
-1. Click `Connect` on each robot one by one
-1. Once all robots are connected, close the Robot Pool GUI.
-1. Load `cellulo-swarm-demo` into Qt Creator, configure for Desktop and click `Run`
+1. If more than 5 robots are desired, click `Equally distribute local adapters` or select local adapters manually (second drop-down box on each list item)
+1. Click `Connect to all`
+1. Once all robots are connected, close the Robot Hub GUI.
+1. Load `cellulo-robot-pool-hub-demo` into Qt Creator, configure for the desired platform and click `Run`
+1. Select "Hub" and enter the same IP and port as you did in the Hub GUI
 1. Check `Go`
 1. Robots should come into a lattice formation, but you probably need to put the robots in their correct place manually at first since there is no pathfinding algorithm present
 1. Touch any button of a robot to interact with it:
