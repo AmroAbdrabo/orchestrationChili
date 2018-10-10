@@ -19,6 +19,11 @@ ApplicationWindow {
         autoConnect: true
     }
 
+    Component.onCompleted: {
+        CelluloCommUtil.startRobotPoolDaemon();
+        client.connectToServer();
+    }
+
     Column{
         spacing: 5
         anchors.margins: 10
@@ -40,8 +45,23 @@ ApplicationWindow {
         }
 
         Text{
-            text: client.connected ? "Service running, you should now close/kill this app." : "Trying to connect to service (may not be running)..."
-            color: client.connected ? "green" : "black"
+            text: {
+                var string;
+                var needInfo = false;
+                switch(client.connectionStatus){
+                case CelluloCommUtil.RelayConnectionStatusDisconnected: return "Disconnected (must click \"Start service\" manually).";
+                case CelluloCommUtil.RelayConnectionStatusConnecting: return "Connecting to server (must click \"Start service\" manually)...";
+                case CelluloCommUtil.RelayConnectionStatusConnected: return "Connected to server. You must now kill this app and launch the pool GUI or the desired app.";
+                }
+            }
+
+            color: {
+                switch(client.connectionStatus){
+                case CelluloCommUtil.RelayConnectionStatusDisconnected: return "red";
+                case CelluloCommUtil.RelayConnectionStatusConnecting: return "yellow";
+                case CelluloCommUtil.RelayConnectionStatusConnected: return "green";
+                }
+            }
         }
     }
 }
