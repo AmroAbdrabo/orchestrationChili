@@ -1168,9 +1168,9 @@ Inheritance diagram for Cellulo::PolyBezier:</div>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#a46d66927a61b7534b5d7537f96ca7214">clear</a> ()</td></tr>
 <tr class="memdesc:a46d66927a61b7534b5d7537f96ca7214"><td class="mdescLeft">&#160;</td><td class="mdescRight">Discards all existing segments, obtaining an empty curve. <br /></td></tr>
 <tr class="separator:a46d66927a61b7534b5d7537f96ca7214"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8f95e24d9cf76cc8568660b2801b8d69"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#a8f95e24d9cf76cc8568660b2801b8d69">isEmpty</a> ()</td></tr>
-<tr class="memdesc:a8f95e24d9cf76cc8568660b2801b8d69"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets whether the curve is empty.  <a href="#a8f95e24d9cf76cc8568660b2801b8d69">More...</a><br /></td></tr>
-<tr class="separator:a8f95e24d9cf76cc8568660b2801b8d69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae94ff39984a7fdb275d6ddc03f0721dc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#ae94ff39984a7fdb275d6ddc03f0721dc">isEmpty</a> () const</td></tr>
+<tr class="memdesc:ae94ff39984a7fdb275d6ddc03f0721dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets whether the curve is empty.  <a href="#ae94ff39984a7fdb275d6ddc03f0721dc">More...</a><br /></td></tr>
+<tr class="separator:ae94ff39984a7fdb275d6ddc03f0721dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf896a4098d1a7528908c76babd81911"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#adf896a4098d1a7528908c76babd81911">start</a> (QVector2D const &amp;firstPoint, QVector2D const &amp;secondPoint, qreal smoothness=0.4)</td></tr>
 <tr class="memdesc:adf896a4098d1a7528908c76babd81911"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts the curve with a linear segment, autogenerating the in-between 2 control points.  <a href="#adf896a4098d1a7528908c76babd81911">More...</a><br /></td></tr>
 <tr class="separator:adf896a4098d1a7528908c76babd81911"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1576,8 +1576,8 @@ QVariantList&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 
 </div>
 </div>
-<a id="a8f95e24d9cf76cc8568660b2801b8d69"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8f95e24d9cf76cc8568660b2801b8d69">&#9670;&nbsp;</a></span>isEmpty</h2>
+<a id="ae94ff39984a7fdb275d6ddc03f0721dc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae94ff39984a7fdb275d6ddc03f0721dc">&#9670;&nbsp;</a></span>isEmpty</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1589,7 +1589,7 @@ QVariantList&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
           <td class="memname">bool Cellulo::PolyBezier::isEmpty </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
   </td>
@@ -2218,6 +2218,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="grou
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#aa22b77041e3d02c3dbc2489b0a1af4a5">disconnectRequested</a> ()</td></tr>
 <tr class="memdesc:aa22b77041e3d02c3dbc2489b0a1af4a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Emitted when the disconnect button is pressed. <br /></td></tr>
 <tr class="separator:aa22b77041e3d02c3dbc2489b0a1af4a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aafc6606b4c831c38e1313465829cb9ad"><td class="memItemLeft" align="right" valign="top"><a id="aafc6606b4c831c38e1313465829cb9ad"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#aafc6606b4c831c38e1313465829cb9ad">selectedAddrRefreshRequested</a> ()</td></tr>
+<tr class="memdesc:aafc6606b4c831c38e1313465829cb9ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">User must call <a class="el" href="group__util.html#a8e1907b760f6a4e94abdba5dd9cc5a97" title="Selects the given address if it exists in the list of addresses. ">selectAddress()</a> and <a class="el" href="group__util.html#a1b6856a770ee61ddf08125cca72be228" title="Selects the given local adapter address if it exists in the list of addresses. ">selectLocalAdapterAddress()</a> again when this signal is emitted. <br /></td></tr>
+<tr class="separator:aafc6606b4c831c38e1313465829cb9ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><h3>Public Member Functions</h3></td></tr>
 <tr class="memitem:a8e1907b760f6a4e94abdba5dd9cc5a97"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#a8e1907b760f6a4e94abdba5dd9cc5a97">selectAddress</a> (string address)</td></tr>
 <tr class="memdesc:a8e1907b760f6a4e94abdba5dd9cc5a97"><td class="mdescLeft">&#160;</td><td class="mdescRight">Selects the given address if it exists in the list of addresses.  <a href="#a8e1907b760f6a4e94abdba5dd9cc5a97">More...</a><br /></td></tr>
@@ -2226,10 +2230,14 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="grou
 <tr class="memdesc:a1b6856a770ee61ddf08125cca72be228"><td class="mdescLeft">&#160;</td><td class="mdescRight">Selects the given local adapter address if it exists in the list of addresses.  <a href="#a1b6856a770ee61ddf08125cca72be228">More...</a><br /></td></tr>
 <tr class="separator:a1b6856a770ee61ddf08125cca72be228"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><h3>Properties</h3></td></tr>
+<tr class="memitem:abbbdf6996a2f0b6ef0e9e12dbd8b9df0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#abbbdf6996a2f0b6ef0e9e12dbd8b9df0">enableLocalAdapters</a></td></tr>
+<tr class="separator:abbbdf6996a2f0b6ef0e9e12dbd8b9df0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6a95e584a6ddfdaa91e6a89a76c79146"><td class="memItemLeft" align="right" valign="top">list&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#a6a95e584a6ddfdaa91e6a89a76c79146">addresses</a></td></tr>
 <tr class="separator:a6a95e584a6ddfdaa91e6a89a76c79146"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7c34aa5cc712e4f1563ab2dc9f980a92"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#a7c34aa5cc712e4f1563ab2dc9f980a92">selectedAddress</a></td></tr>
 <tr class="separator:a7c34aa5cc712e4f1563ab2dc9f980a92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab6d8fb8aa6a09d389b94e06750218dfb"><td class="memItemLeft" align="right" valign="top">list&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#ab6d8fb8aa6a09d389b94e06750218dfb">localAdapterAddresses</a></td></tr>
+<tr class="separator:ab6d8fb8aa6a09d389b94e06750218dfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a48231dcf6a4bd1a7af8d80391c1005e6"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#a48231dcf6a4bd1a7af8d80391c1005e6">selectedLocalAdapterAddress</a></td></tr>
 <tr class="separator:a48231dcf6a4bd1a7af8d80391c1005e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a093d56caa0a8e16770a4682bdd6c9a7f"><td class="memItemLeft" align="right" valign="top">enum&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#a093d56caa0a8e16770a4682bdd6c9a7f">connectionStatus</a></td></tr>
@@ -2316,6 +2324,36 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="grou
       </table>
 </div><div class="memdoc">
 <p>Current connection status to display, set by the user, one of <a class="el" href="group__comm.html#a9bdbb91140cd33c3daa779af49c7ed97" title="Bluetooth connection status. ">CelluloBluetoothEnums.ConnectionStatus</a> </p>
+
+</div>
+</div>
+<a id="abbbdf6996a2f0b6ef0e9e12dbd8b9df0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abbbdf6996a2f0b6ef0e9e12dbd8b9df0">&#9670;&nbsp;</a></span>enableLocalAdapters</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Cellulo::MacAddrSelector::enableLocalAdapters</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Whether local adapter selection is enabled </p>
+
+</div>
+</div>
+<a id="ab6d8fb8aa6a09d389b94e06750218dfb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab6d8fb8aa6a09d389b94e06750218dfb">&#9670;&nbsp;</a></span>localAdapterAddresses</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">list&lt;string&gt; Cellulo::MacAddrSelector::localAdapterAddresses</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>List of local adapter MAC addresses, set by the user </p>
 
 </div>
 </div>

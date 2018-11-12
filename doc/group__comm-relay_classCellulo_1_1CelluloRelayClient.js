@@ -9,7 +9,8 @@ var group__comm_relay_classCellulo_1_1CelluloRelayClient =
     [ "unknownRobotAtServer", "group__comm-relay.html#a8744b4de8ab1164e8b4e1659f56281ff", null ],
     [ "CelluloBluetooth", "group__comm-relay.html#a8d217bc443f8dfe6076e04c3f3205b88", null ],
     [ "autoConnect", "group__comm-relay.html#af73aba8c0461c2559bb5ac59f5a131b2", null ],
-    [ "connected", "group__comm-relay.html#a8425b7761ae0c840c8e34dc741c162f0", null ],
+    [ "connectionStatus", "group__comm-relay.html#a43edd764ed75d14c5122e2db1d7e513d", null ],
+    [ "localAdapters", "group__comm-relay.html#a69ce4d7ddb4d47aa8a0710260ace8240", null ],
     [ "port", "group__comm-relay.html#a6bf83800ed227b6c5e2e33f1de5d0702", null ],
     [ "robots", "group__comm-relay.html#ae88af0add6b8a6ecfa0e04ee5d34a53c", null ],
     [ "serverAddress", "group__comm-relay.html#a61a164f2a1ff8077854253ccade0ebfa", null ]

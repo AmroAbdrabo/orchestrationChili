@@ -12,6 +12,7 @@ var NAVTREE =
       [ "Class Members", "functions.html", [
         [ "All", "functions.html", "functions_dup" ],
         [ "Functions", "functions_func.html", null ],
+        [ "Variables", "functions_vars.html", null ],
         [ "Enumerations", "functions_enum.html", null ],
         [ "Enumerator", "functions_eval.html", null ],
         [ "Properties", "functions_prop.html", null ]
@@ -26,8 +27,8 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "AxialHexCoords_8cpp.html",
-"group__comm.html#a4e127b89e9ac560b558262916d3230f5",
-"group__util.html#aa4aaeebaa7f611cb7a8f05c3f3477d16"
+"group__comm.html#a29af380c02321d800dd3325fda88faa6",
+"group__util.html#a4c0226775e3f0a42b29282e704f4132b"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

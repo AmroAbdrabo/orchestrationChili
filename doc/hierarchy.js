@@ -23,7 +23,9 @@ var hierarchy =
         [ "Cellulo::CelluloLocalRelayClient", "group__comm-relay.html#classCellulo_1_1CelluloLocalRelayClient", [
           [ "Cellulo::CelluloRobotPoolClient", "group__comm-relay.html#classCellulo_1_1CelluloRobotPoolClient", null ]
         ] ],
-        [ "Cellulo::CelluloTcpRelayClient", "group__comm-relay.html#classCellulo_1_1CelluloTcpRelayClient", null ]
+        [ "Cellulo::CelluloTcpRelayClient", "group__comm-relay.html#classCellulo_1_1CelluloTcpRelayClient", [
+          [ "Cellulo::CelluloRobotHubClient", "group__comm-relay.html#classCellulo_1_1CelluloRobotHubClient", null ]
+        ] ]
       ] ],
       [ "Cellulo::CelluloRelayServer", "group__comm-relay.html#classCellulo_1_1CelluloRelayServer", [
         [ "Cellulo::CelluloLocalRelayServer", "group__comm-relay.html#classCellulo_1_1CelluloLocalRelayServer", null ],

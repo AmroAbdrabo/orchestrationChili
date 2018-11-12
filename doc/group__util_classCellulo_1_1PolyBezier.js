@@ -11,7 +11,7 @@ var group__util_classCellulo_1_1PolyBezier =
     [ "getPoint", "group__util.html#a2279d5b716dd709543bb8dd5734de7d6", null ],
     [ "getTangent", "group__util.html#a5dec2611520b79575bc96f300490e908", null ],
     [ "getTByArcLengthRatio", "group__util.html#af5193961aec0774681e9bd3db0aee20e", null ],
-    [ "isEmpty", "group__util.html#a8f95e24d9cf76cc8568660b2801b8d69", null ],
+    [ "isEmpty", "group__util.html#ae94ff39984a7fdb275d6ddc03f0721dc", null ],
     [ "isInBoundingBox", "group__util.html#af1990fd5595a7534d6f8701596aa84a9", null ],
     [ "isInside", "group__util.html#ae83157224183be6da2750cf44615f28e", null ],
     [ "loadFromFile", "group__util.html#a03a1f7fa25c9d853c91ee1ca24e09ca0", null ],

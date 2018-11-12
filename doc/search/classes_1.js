@@ -11,6 +11,7 @@ var searchData=
   ['cellulorelayclient',['CelluloRelayClient',['../group__comm-relay.html#classCellulo_1_1CelluloRelayClient',1,'Cellulo']]],
   ['cellulorelayserver',['CelluloRelayServer',['../group__comm-relay.html#classCellulo_1_1CelluloRelayServer',1,'Cellulo']]],
   ['cellulorobot',['CelluloRobot',['../group__robot.html#classCellulo_1_1CelluloRobot',1,'Cellulo']]],
+  ['cellulorobothubclient',['CelluloRobotHubClient',['../group__comm-relay.html#classCellulo_1_1CelluloRobotHubClient',1,'Cellulo']]],
   ['cellulorobotpoolclient',['CelluloRobotPoolClient',['../group__comm-relay.html#classCellulo_1_1CelluloRobotPoolClient',1,'Cellulo']]],
   ['cellulosvgutil',['CelluloSVGUtil',['../group__util.html#classCellulo_1_1CelluloSVGUtil',1,'Cellulo']]],
   ['cellulosystemutil',['CelluloSystemUtil',['../group__util.html#classCellulo_1_1CelluloSystemUtil',1,'Cellulo']]],

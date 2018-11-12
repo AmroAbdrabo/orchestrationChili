@@ -2,6 +2,7 @@ var searchData=
 [
   ['savezones',['saveZones',['../group__zone.html#a8d1de072d692173999dde8748aef5850',1,'Cellulo::CelluloZoneJsonHandler']]],
   ['selectaddress',['selectAddress',['../group__util.html#a8e1907b760f6a4e94abdba5dd9cc5a97',1,'Cellulo::MacAddrSelector']]],
+  ['selectedaddrrefreshrequested',['selectedAddrRefreshRequested',['../group__util.html#aafc6606b4c831c38e1313465829cb9ad',1,'Cellulo::MacAddrSelector']]],
   ['selectlanguage',['selectLanguage',['../group__util.html#a1b48dd2accb7e5eb82c7b36548a23a44',1,'Cellulo::TranslationTool']]],
   ['selectlocaladapteraddress',['selectLocalAdapterAddress',['../group__util.html#a1b6856a770ee61ddf08125cca72be228',1,'Cellulo::MacAddrSelector']]],
   ['sendpathtorobot',['sendPathToRobot',['../group__zone.html#af57a2d036a66f03b1fa202a4fb8f8651',1,'Cellulo::CelluloZonePolyBezier']]],

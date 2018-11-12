@@ -4,6 +4,7 @@ var searchData=
   ['scanning',['scanning',['../group__comm.html#af415501e8197aff4cb8705b5743451f4',1,'Cellulo::CelluloBluetoothScanner']]],
   ['selectaddress',['selectAddress',['../group__util.html#a8e1907b760f6a4e94abdba5dd9cc5a97',1,'Cellulo::MacAddrSelector']]],
   ['selectedaddress',['selectedAddress',['../group__util.html#a7c34aa5cc712e4f1563ab2dc9f980a92',1,'Cellulo::MacAddrSelector']]],
+  ['selectedaddrrefreshrequested',['selectedAddrRefreshRequested',['../group__util.html#aafc6606b4c831c38e1313465829cb9ad',1,'Cellulo::MacAddrSelector']]],
   ['selectedlocaladapteraddress',['selectedLocalAdapterAddress',['../group__util.html#a48231dcf6a4bd1a7af8d80391c1005e6',1,'Cellulo::MacAddrSelector']]],
   ['selectlanguage',['selectLanguage',['../group__util.html#a1b48dd2accb7e5eb82c7b36548a23a44',1,'Cellulo::TranslationTool']]],
   ['selectlocaladapteraddress',['selectLocalAdapterAddress',['../group__util.html#a1b6856a770ee61ddf08125cca72be228',1,'Cellulo::MacAddrSelector']]],

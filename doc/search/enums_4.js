@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['visualeffect',['VisualEffect',['../group__comm.html#a810aca61e84c1e31fb751335cd776361',1,'Cellulo::CelluloBluetoothEnums']]]
+  ['relayconnectionstatus',['RelayConnectionStatus',['../group__comm.html#a474149398b3487ffb93842e33ce5c8a0',1,'Cellulo::CelluloCommUtil']]]
 ];

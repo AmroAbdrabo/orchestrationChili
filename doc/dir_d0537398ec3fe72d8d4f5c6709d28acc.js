@@ -13,6 +13,8 @@ var dir_d0537398ec3fe72d8d4f5c6709d28acc =
     [ "CelluloBluetoothPacket.h", "CelluloBluetoothPacket_8h.html", null ],
     [ "CelluloBluetoothScanner.cpp", "CelluloBluetoothScanner_8cpp.html", null ],
     [ "CelluloBluetoothScanner.h", "CelluloBluetoothScanner_8h.html", null ],
+    [ "CelluloBluezUtil.cpp", "CelluloBluezUtil_8cpp.html", null ],
+    [ "CelluloBluezUtil.h", "CelluloBluezUtil_8h.html", null ],
     [ "CelluloCommUtil.cpp", "CelluloCommUtil_8cpp.html", null ],
     [ "CelluloCommUtil.h", "CelluloCommUtil_8h.html", null ]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['zonetype',['ZoneType',['../group__zone.html#acb24a099726e8d59124afd691c86f9cf',1,'Cellulo::CelluloZoneTypes']]]
+  ['visualeffect',['VisualEffect',['../group__comm.html#a810aca61e84c1e31fb751335cd776361',1,'Cellulo::CelluloBluetoothEnums']]]
 ];

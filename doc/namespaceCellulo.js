@@ -12,6 +12,7 @@ var namespaceCellulo =
     [ "CelluloRelayClient", "group__comm-relay.html#classCellulo_1_1CelluloRelayClient", "group__comm-relay_classCellulo_1_1CelluloRelayClient" ],
     [ "CelluloRelayServer", "group__comm-relay.html#classCellulo_1_1CelluloRelayServer", "group__comm-relay_classCellulo_1_1CelluloRelayServer" ],
     [ "CelluloRobot", "group__robot.html#classCellulo_1_1CelluloRobot", "group__robot_classCellulo_1_1CelluloRobot" ],
+    [ "CelluloRobotHubClient", "group__comm-relay.html#classCellulo_1_1CelluloRobotHubClient", "group__comm-relay_classCellulo_1_1CelluloRobotHubClient" ],
     [ "CelluloRobotPoolClient", "group__comm-relay.html#classCellulo_1_1CelluloRobotPoolClient", "group__comm-relay_classCellulo_1_1CelluloRobotPoolClient" ],
     [ "CelluloSVGUtil", "group__util.html#classCellulo_1_1CelluloSVGUtil", "group__util_classCellulo_1_1CelluloSVGUtil" ],
     [ "CelluloSystemUtil", "group__util.html#classCellulo_1_1CelluloSystemUtil", "group__util_classCellulo_1_1CelluloSystemUtil" ],

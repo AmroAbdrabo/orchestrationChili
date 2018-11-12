@@ -16,7 +16,8 @@ var group__comm_relay =
       [ "unknownRobotAtServer", "group__comm-relay.html#a8744b4de8ab1164e8b4e1659f56281ff", null ],
       [ "CelluloBluetooth", "group__comm-relay.html#a8d217bc443f8dfe6076e04c3f3205b88", null ],
       [ "autoConnect", "group__comm-relay.html#af73aba8c0461c2559bb5ac59f5a131b2", null ],
-      [ "connected", "group__comm-relay.html#a8425b7761ae0c840c8e34dc741c162f0", null ],
+      [ "connectionStatus", "group__comm-relay.html#a43edd764ed75d14c5122e2db1d7e513d", null ],
+      [ "localAdapters", "group__comm-relay.html#a69ce4d7ddb4d47aa8a0710260ace8240", null ],
       [ "port", "group__comm-relay.html#a6bf83800ed227b6c5e2e33f1de5d0702", null ],
       [ "robots", "group__comm-relay.html#ae88af0add6b8a6ecfa0e04ee5d34a53c", null ],
       [ "serverAddress", "group__comm-relay.html#a61a164f2a1ff8077854253ccade0ebfa", null ]
@@ -35,7 +36,14 @@ var group__comm_relay =
       [ "listen", "group__comm-relay.html#a501f390e6c5c9c88e92c8dee8550e14f", null ],
       [ "port", "group__comm-relay.html#aa6697416fd80d8f80bb3c9c6eba60535", null ]
     ] ],
+    [ "CelluloRobotHubClient", "group__comm-relay.html#classCellulo_1_1CelluloRobotHubClient", [
+      [ "createAddSelectRobot", "group__comm-relay.html#aa6cd69dfba135c348aeb80ee9d95646c", null ],
+      [ "newRobotFound", "group__comm-relay.html#a0327684afa458f47af4694e1d89907f8", null ],
+      [ "createRobot", "group__comm-relay.html#a5b59272afe0e8306e479505d88219f6f", null ],
+      [ "robotComponent", "group__comm-relay.html#aa5a84275622159032d77502482e411e5", null ]
+    ] ],
     [ "CelluloRobotPoolClient", "group__comm-relay.html#classCellulo_1_1CelluloRobotPoolClient", [
+      [ "createAddSelectRobot", "group__comm-relay.html#a9e630e469bcbf5b14684d4b5ff8a6233", null ],
       [ "newRobotFound", "group__comm-relay.html#a2b9f1b7984cabc7dd940740c366e27c4", null ],
       [ "createRobot", "group__comm-relay.html#a54e7e3a28f5ca7902b2834f836e1b6f2", null ],
       [ "robotComponent", "group__comm-relay.html#acbdc166089a34e85bc424b27891840c4", null ]

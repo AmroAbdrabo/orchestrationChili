@@ -22,6 +22,7 @@ var searchData=
   ['connecttoserver',['connectToServer',['../group__comm.html#a0872bdaa7029f7e95b224a60469492bf',1,'Cellulo::CelluloBluetooth::connectToServer()'],['../group__comm-relay.html#a53b79491108537bf602cadfe75fc026f',1,'Cellulo::CelluloRelayClient::connectToServer()']]],
   ['convert',['convert',['../group__tile.html#aff98a9afbc5f224f4b863f356e2830a8',1,'Cellulo::CoordSpaceConverter']]],
   ['cornerlist',['cornerList',['../group__tile.html#aa505eee72c74fa1ea919542ad0eda657',1,'Cellulo::AxialHexCoords']]],
+  ['createaddselectrobot',['createAddSelectRobot',['../group__comm-relay.html#aa6cd69dfba135c348aeb80ee9d95646c',1,'Cellulo::CelluloRobotHubClient::createAddSelectRobot()'],['../group__comm-relay.html#a9e630e469bcbf5b14684d4b5ff8a6233',1,'Cellulo::CelluloRobotPoolClient::createAddSelectRobot()']]],
   ['createpainteditem',['createPaintedItem',['../group__zone.html#a305df5424bddb23ddb7f0935561b3206',1,'Cellulo::CelluloZone']]],
   ['crossproduct',['crossProduct',['../group__util.html#a6afa31120e3c2963cc74c6a8ff5f7c23',1,'Cellulo::CelluloMathUtil']]]
 ];
