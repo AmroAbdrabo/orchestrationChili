@@ -9,6 +9,7 @@ import QMLCache 1.0
 import QMLBluetoothExtras 1.0
 import QMLExtraDataStructures 1.0
 import Cellulo 1.0
+import QtCharts 2.2
 
 ApplicationWindow {
     id: window
@@ -184,8 +185,95 @@ ApplicationWindow {
                         model: client.robots.length
 
                         Row{
+                            spacing: 5
 
+                            CircularBuffer{
+                                id: periods
+                                size: 100
 
+                                property real sum: 0
+                                property real mean: elements.length > 0 ? sum/elements.length : 0
+
+                                onElementAdded: sum += element
+                                onElementRemoved: sum -= element
+                            }
+
+                            Connections{
+                                target: client.robots[i]
+
+                                onPoseChanged: {
+
+                                }
+
+                                onKidnappedChanged: {
+
+                                }
+                            }
+
+                            Text{
+                                text: client.robots[index].macAddr
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
+                            ChartView{
+                                id: periodChart
+
+                                anchors.verticalCenter: parent.verticalCenter
+
+                                property var startT: 0
+
+                                function clear(){
+                                    startT = 0;
+                                    removeAllSeries();
+                                    createSeries(ChartView.SeriesTypeLine, "", axisXAng, axisYAng);
+                                    createSeries(ChartView.SeriesTypeLine, "", axisXAng, axisYAng);
+                                }
+
+                                function add(t, angle){
+                                    while(angle < robot.testAngles[index] - 180)
+                                        angle += 360;
+                                    while(angle > robot.testAngles[index] + 180)
+                                        angle -= 360;
+
+                                    var ideal = series(0);
+                                    if(startT == 0){
+                                        startT = t;
+                                        axisXAng.min = startT;
+                                        axisXAng.max = startT + 1;
+
+                                        ideal.append(startT, robot.testAngles[index]);
+                                        ideal.append(startT + 1, robot.testAngles[index]);
+                                    }
+                                    else{
+                                        axisXAng.max = t;
+                                        ideal.remove(1);
+                                        ideal.append(t, robot.testAngles[index]);
+                                    }
+
+                                    var measured = series(1);
+                                    measured.append(t, angle);
+                                }
+
+                                backgroundRoundness: 0
+                                legend.visible: false
+                                backgroundColor: "transparent"
+                                margins.left: 0; margins.right: 0; margins.top: 0; margins.bottom: 0
+                                width: resultsBox.width/2 - 30/2 - testAngleText.width/2
+                                height: width/2
+                                antialiasing: true
+
+                                ValueAxis {
+                                    id: axisYAng
+                                    min: robot.testAngles[index] - 45
+                                    max: robot.testAngles[index] + 45
+                                }
+
+                                ValueAxis {
+                                    id: axisXAng
+                                    min: 0
+                                    max: 1
+                                }
+                            }
                         }
                     }
                 }
