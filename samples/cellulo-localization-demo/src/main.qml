@@ -86,7 +86,7 @@ ApplicationWindow {
         anchors.margins: robotHalf
 
         property real scaleCoeff: Math.min((Screen.width*0.8)/210, (Screen.height*0.8 - addressBox.height)/297)
-        property real robotHalf: 60*scaleCoeff/2
+        property real robotHalf: 75*scaleCoeff/2
 
         width: 210*scaleCoeff
         height: 297*scaleCoeff
@@ -100,8 +100,7 @@ ApplicationWindow {
             rotation: robotComm.theta
             x: robotComm.x*parent.scaleCoeff - width/2
             y: robotComm.y*parent.scaleCoeff - height/2
-            sourceSize.width: 55*parent.scaleCoeff
-            sourceSize.height: 60*parent.scaleCoeff
+            sourceSize.width: 2*parent.robotHalf
         }
     }
 
