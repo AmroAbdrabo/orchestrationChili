@@ -192,14 +192,34 @@ ApplicationWindow {
                                 size: 100
 
                                 property real sum: 0
-                                property real mean: elements.length > 0 ? sum/elements.length : 0
+                                property real mean: 0
+                                property real variance: 0
+                                property real stdev: 0
 
-                                onElementAdded: sum += element
-                                onElementRemoved: sum -= element
+                                onElementAdded: {
+                                    var oldsum = sum;
+                                    sum += element;
+                                    var oldmean = mean;
+                                    var N_plus_1 = elements.length;
+                                    mean = sum/N_plus_1;
+                                    var oldvariance = variance;
+                                    variance = N_plus_1 > 1 ? (element*element + (N_plus_1 - 1)*oldmean*oldmean - N_plus_1*mean*mean + (N_plus_1 - 2)*oldvariance)/(N_plus_1 - 1) : 0;
+                                    stdev = Math.sqrt(variance);
+                                }
+                                onElementRemoved: {
+                                    var oldsum = sum;
+                                    sum -= element;
+                                    var oldmean = mean;
+                                    var N_minus_1 = elements.length;
+                                    mean = N_minus_1 > 0 ? sum/N_minus_1 : 0;
+                                    var oldvariance = variance;
+                                    variance = N_minus_1 > 1 ? (-element*element + (N_minus_1 + 1)*oldmean*oldmean - N_minus_1*mean*mean + N_minus_1*oldvariance)/(N_minus_1 - 1) : 0;
+                                    stdev = Math.sqrt(variance);
+                                }
                             }
 
                             Connections{
-                                target: client.robots[i]
+                                target: client.robots[index]
 
                                 onPoseChanged: {
 
@@ -214,7 +234,7 @@ ApplicationWindow {
                                 text: client.robots[index].macAddr
                                 anchors.verticalCenter: parent.verticalCenter
                             }
-
+/*
                             ChartView{
                                 id: periodChart
 
@@ -274,6 +294,7 @@ ApplicationWindow {
                                     max: 1
                                 }
                             }
+                            */
                         }
                     }
                 }
