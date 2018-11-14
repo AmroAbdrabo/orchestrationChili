@@ -22,15 +22,15 @@ ApplicationWindow {
 
     function em(x){ return Math.round(x*TextSingleton.font.pixelSize); }
 
-    minimumWidth: width
-    minimumHeight: height
-
-    width: mobile ? Screen.width : 0.7*Screen.width
-    height: mobile ? Screen.desktopAvailableHeight : 0.7*Screen.height
+    Component.onCompleted: {
+        width = mobile ? Screen.width : 0.8*Screen.width;
+        height = mobile ? Screen.desktopAvailableHeight : 0.8*Screen.height;
+    }
 
     property var client: poolButton.checked ? poolClient : hubClient
 
     property real expectedPeriod: 100
+    readonly property real maxPeriod: 5000
 
     CelluloRobotPoolClient{
         id: poolClient
@@ -63,6 +63,7 @@ ApplicationWindow {
         Column{
 
             Row{
+                id: firstRow
 
                 GroupBox{
                     title: "Server"
@@ -169,8 +170,16 @@ ApplicationWindow {
                         Row{
                             spacing: 5
 
+                            CheckBox{
+                                id: go
+                                checked: false
+                                text: "Go!"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
                             Button{
                                 text: "Reset All"
+                                anchors.verticalCenter: parent.verticalCenter
                                 onClicked: {
                                     for(var i=0;i<client.robots.length;i++)
                                         client.robots[i].reset();
@@ -183,7 +192,13 @@ ApplicationWindow {
             }
 
             GroupBox{
-                title: "Robots"
+                id: qualityGroupBox
+                title: "Overall Quality"
+
+            }
+
+            GroupBox{
+                title: "Individual Robots"
 
                 Column{
 
@@ -191,7 +206,7 @@ ApplicationWindow {
                         model: client.robots.length
 
                         Row{
-                            spacing: 5
+                            spacing: 20
 
                             CircularBuffer{
                                 id: periods
@@ -201,6 +216,8 @@ ApplicationWindow {
                                 property real mean: 0
                                 property real variance: 0
                                 property real stdev: 0
+                                property real min: maxPeriod
+                                property real max: 0
 
                                 onElementAdded: {
                                     var oldsum = sum;
@@ -212,7 +229,10 @@ ApplicationWindow {
                                     variance = N_plus_1 > 1 ? (element*element + (N_plus_1 - 1)*oldmean*oldmean - N_plus_1*mean*mean + (N_plus_1 - 2)*oldvariance)/(N_plus_1 - 1) : 0;
                                     stdev = Math.sqrt(variance);
 
-
+                                    if(element > max)
+                                        max = element;
+                                    if(element < min)
+                                        min = element;
                                 }
                                 onElementRemoved: {
                                     var oldsum = sum;
@@ -223,6 +243,25 @@ ApplicationWindow {
                                     var oldvariance = variance;
                                     variance = N_minus_1 > 1 ? (-element*element + (N_minus_1 + 1)*oldmean*oldmean - N_minus_1*mean*mean + N_minus_1*oldvariance)/(N_minus_1 - 1) : 0;
                                     stdev = Math.sqrt(variance);
+
+                                    if(element == min)
+                                        findMin();
+                                    if(element == max)
+                                        findMax();
+                                }
+
+                                function findMin(){
+                                    min = maxPeriod;
+                                    for(var i=0;i<elements.length;i++)
+                                        if(elements[i] < min)
+                                            min = elements[i];
+                                }
+
+                                function findMax(){
+                                    max = 0;
+                                    for(var i=0;i<elements.length;i++)
+                                        if(elements[i] > max)
+                                            max = elements[i];
                                 }
                             }
 
@@ -233,19 +272,33 @@ ApplicationWindow {
                                 readonly property real maxPeriod: 2000
 
                                 onPoseChanged: {
-                                    var timestamp = Date.now();
-                                    var period = timestamp - lastTimestamp;
-                                    if(period < maxPeriod){
-                                        periods.add(period);
-                                        periodChart.add(timestamp, period);
+                                    if(go.checked){
+                                        client.robots[index].setGoalVelocity(0,0,1.0);
+
+                                        var timestamp = Date.now();
+                                        var period = timestamp - lastTimestamp;
+                                        if(period < maxPeriod){
+                                            periods.add(period - expectedPeriod);
+                                            periodChart.add(timestamp, period - expectedPeriod);
+                                        }
+                                        lastTimestamp = timestamp;
                                     }
-                                    lastTimestamp = timestamp;
+                                    else
+                                        client.robots[index].setGoalVelocity(0,0,0);
                                 }
 
                                 onKidnappedChanged: lastTimestamp = 0
+
+                                onConnectionStatusChanged: {
+                                    if(client.robots[index].connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected)
+                                        client.robots[index].setPoseBcastPeriod(expectedPeriod);
+                                }
+
+                                onBootCompleted: client.robots[index].setPoseBcastPeriod(expectedPeriod);
                             }
 
                             Text{
+                                id: macAddrText
                                 text: client.robots[index].macAddr
                                 anchors.verticalCenter: parent.verticalCenter
                             }
@@ -259,48 +312,50 @@ ApplicationWindow {
 
                                 function clear(){
                                     removeAllSeries();
-
                                     var dataSeries = createSeries(ChartView.SeriesTypeLine, "", axisX, axisY);
-
-                                    //var expectedSeries = createSeries(ChartView.SeriesTypeLine, "", axisX, axisY);
-                                    //expectedSeries.append(0, expectedPeriod);
-                                    //expectedSeries.append(periods.size - 1, expectedPeriod);
                                 }
 
                                 function add(t, period){
-                                    console.info("adding " + t + " " + period)
                                     var dataSeries = series(0);
                                     dataSeries.append(t, period);
                                     if(dataSeries.count > periods.size)
                                         dataSeries.remove(0);
+
                                     axisX.min = new Date(dataSeries.at(0).x);
                                     axisX.max = new Date(t);
 
-                                    //var expectedSeries = series(1);
-                                    //expectedSeries.append(t, angle);
+                                    axisY.min = periods.min;
+                                    axisY.max = periods.max;
+                                    axisY.applyNiceNumbers();
                                 }
 
                                 backgroundRoundness: 0
                                 legend.visible: false
                                 backgroundColor: "transparent"
                                 margins.left: 0; margins.right: 0; margins.top: 0; margins.bottom: 0
-                                width: 600
-                                height: width/2
+                                width: window.width - macAddrText.width - individualResultText.width - 2*parent.spacing - 20
+                                height: Math.max(window.height - firstRow.height - qualityGroupBox.height - 20, 150)
                                 antialiasing: true
 
                                 ValueAxis {
                                     id: axisY
                                     min: 0
                                     max: 2*expectedPeriod
+                                    titleText: "ΔP (ms)"
                                 }
 
                                 DateTimeAxis {
                                     id: axisX
-                                    tickCount: 10
                                     format: "mm:ss"
+                                    titleText: "Timestamp"
                                 }
                             }
 
+                            Text{
+                                id: individualResultText
+                                text: "ΔP = " + periods.mean.toPrecision(2) + "±" + periods.stdev.toPrecision(2) + " ms = " + (100.0*periods.mean/expectedPeriod).toPrecision(2) + "±" + (100.0*periods.stdev/expectedPeriod).toPrecision(2) + " %P"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
                         }
                     }
                 }
