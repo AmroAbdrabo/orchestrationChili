@@ -1,6 +1,6 @@
 TEMPLATE = app
 
-QT += qml quick bluetooth
+QT += qml quick bluetooth widgets
 
 SOURCES += src/main.cpp
 

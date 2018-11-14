@@ -30,6 +30,8 @@ ApplicationWindow {
 
     property var client: poolButton.checked ? poolClient : hubClient
 
+    property real expectedPeriod: 100
+
     CelluloRobotPoolClient{
         id: poolClient
 
@@ -148,6 +150,7 @@ ApplicationWindow {
                             }
 
                             TextField{
+                                id: periodTextField
                                 text: "100"
                                 anchors.verticalCenter: parent.verticalCenter
                             }
@@ -155,10 +158,10 @@ ApplicationWindow {
                             Button{
                                 text: "Set"
                                 anchors.verticalCenter: parent.verticalCenter
-
                                 onClicked: {
+                                    expectedPeriod = parseInt(periodTextField.text);
                                     for(var i=0;i<client.robots.length;i++)
-                                        client.robots[i].setPoseBcastPeriod();
+                                        client.robots[i].setPoseBcastPeriod(expectedPeriod);
                                 }
                             }
                         }
@@ -168,7 +171,10 @@ ApplicationWindow {
 
                             Button{
                                 text: "Reset All"
-
+                                onClicked: {
+                                    for(var i=0;i<client.robots.length;i++)
+                                        client.robots[i].reset();
+                                }
                             }
                         }
                     }
@@ -205,6 +211,8 @@ ApplicationWindow {
                                     var oldvariance = variance;
                                     variance = N_plus_1 > 1 ? (element*element + (N_plus_1 - 1)*oldmean*oldmean - N_plus_1*mean*mean + (N_plus_1 - 2)*oldvariance)/(N_plus_1 - 1) : 0;
                                     stdev = Math.sqrt(variance);
+
+
                                 }
                                 onElementRemoved: {
                                     var oldsum = sum;
@@ -221,80 +229,78 @@ ApplicationWindow {
                             Connections{
                                 target: client.robots[index]
 
+                                property real lastTimestamp: 0
+                                readonly property real maxPeriod: 2000
+
                                 onPoseChanged: {
-
+                                    var timestamp = Date.now();
+                                    var period = timestamp - lastTimestamp;
+                                    if(period < maxPeriod){
+                                        periods.add(period);
+                                        periodChart.add(timestamp, period);
+                                    }
+                                    lastTimestamp = timestamp;
                                 }
 
-                                onKidnappedChanged: {
-
-                                }
+                                onKidnappedChanged: lastTimestamp = 0
                             }
 
                             Text{
                                 text: client.robots[index].macAddr
                                 anchors.verticalCenter: parent.verticalCenter
                             }
-/*
+
                             ChartView{
                                 id: periodChart
 
                                 anchors.verticalCenter: parent.verticalCenter
 
-                                property var startT: 0
+                                Component.onCompleted: clear()
 
                                 function clear(){
-                                    startT = 0;
                                     removeAllSeries();
-                                    createSeries(ChartView.SeriesTypeLine, "", axisXAng, axisYAng);
-                                    createSeries(ChartView.SeriesTypeLine, "", axisXAng, axisYAng);
+
+                                    var dataSeries = createSeries(ChartView.SeriesTypeLine, "", axisX, axisY);
+
+                                    //var expectedSeries = createSeries(ChartView.SeriesTypeLine, "", axisX, axisY);
+                                    //expectedSeries.append(0, expectedPeriod);
+                                    //expectedSeries.append(periods.size - 1, expectedPeriod);
                                 }
 
-                                function add(t, angle){
-                                    while(angle < robot.testAngles[index] - 180)
-                                        angle += 360;
-                                    while(angle > robot.testAngles[index] + 180)
-                                        angle -= 360;
+                                function add(t, period){
+                                    console.info("adding " + t + " " + period)
+                                    var dataSeries = series(0);
+                                    dataSeries.append(t, period);
+                                    if(dataSeries.count > periods.size)
+                                        dataSeries.remove(0);
+                                    axisX.min = new Date(dataSeries.at(0).x);
+                                    axisX.max = new Date(t);
 
-                                    var ideal = series(0);
-                                    if(startT == 0){
-                                        startT = t;
-                                        axisXAng.min = startT;
-                                        axisXAng.max = startT + 1;
-
-                                        ideal.append(startT, robot.testAngles[index]);
-                                        ideal.append(startT + 1, robot.testAngles[index]);
-                                    }
-                                    else{
-                                        axisXAng.max = t;
-                                        ideal.remove(1);
-                                        ideal.append(t, robot.testAngles[index]);
-                                    }
-
-                                    var measured = series(1);
-                                    measured.append(t, angle);
+                                    //var expectedSeries = series(1);
+                                    //expectedSeries.append(t, angle);
                                 }
 
                                 backgroundRoundness: 0
                                 legend.visible: false
                                 backgroundColor: "transparent"
                                 margins.left: 0; margins.right: 0; margins.top: 0; margins.bottom: 0
-                                width: resultsBox.width/2 - 30/2 - testAngleText.width/2
+                                width: 600
                                 height: width/2
                                 antialiasing: true
 
                                 ValueAxis {
-                                    id: axisYAng
-                                    min: robot.testAngles[index] - 45
-                                    max: robot.testAngles[index] + 45
+                                    id: axisY
+                                    min: 0
+                                    max: 2*expectedPeriod
                                 }
 
-                                ValueAxis {
-                                    id: axisXAng
-                                    min: 0
-                                    max: 1
+                                DateTimeAxis {
+                                    id: axisX
+                                    tickCount: 10
+                                    format: "mm:ss"
                                 }
                             }
-                            */
+
                         }
                     }
                 }
