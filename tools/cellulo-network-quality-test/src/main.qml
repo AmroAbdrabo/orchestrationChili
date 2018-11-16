@@ -30,11 +30,13 @@ ApplicationWindow {
     property var client: poolButton.checked ? poolClient : hubClient
 
     property real expectedPeriod: 100
-    readonly property real maxPeriod: 10*expectedPeriod
-    readonly property real rejectPeriod: 10000
+    readonly property real angularVelAbs: 2.0
+    readonly property real angularVelTransitionThreshold: 0.5
 
     CelluloRobotPoolClient{
         id: poolClient
+
+        robotComponent: Qt.createComponent("MeasurementRobot.qml")
 
         autoConnect: poolButton.checked
         onAutoConnectChanged: {
@@ -45,6 +47,8 @@ ApplicationWindow {
 
     CelluloRobotHubClient{
         id: hubClient
+
+        robotComponent: Qt.createComponent("MeasurementRobot.qml")
 
         serverAddress: hubAddress.text
         port: parseInt(hubPort.text)
@@ -218,14 +222,6 @@ ApplicationWindow {
                 id: qualityGroupBox
                 title: "Overall Quality"
 
-                property int outliers: 0
-                property int drops: 0
-                property int numSamples: 0
-
-                property int newOutliers: 0
-                property int newDrops: 0
-                property int newNumSamples: 0
-
                 Row{
                     spacing: 10
 
@@ -234,16 +230,16 @@ ApplicationWindow {
 
                         anchors.verticalCenter: parent.verticalCenter
 
-                        Text{
+                        /*Text{
                             text: "Total outliers (P outside 3 σ) = " + qualityGroupBox.outliers + " = " + (100.0*qualityGroupBox.outliers/qualityGroupBox.numSamples).toPrecision(3) + " %"
                         }
 
                         Text{
                             text: "Total drops (P more than > " + maxPeriod + " ms) = " + qualityGroupBox.drops + " = " + (100.0*qualityGroupBox.drops/qualityGroupBox.numSamples).toPrecision(3) + " %"
-                        }
+                        }*/
                     }
 
-                    ChartView{
+                   /* ChartView{
                         id: qualityChart
 
                         property int size: 50
@@ -296,15 +292,15 @@ ApplicationWindow {
                             format: "mm:ss"
                             titleText: "Timestamp"
                         }
-                    }
+                    }*/
                 }
 
-                StatCircularBuffer{
+                /*StatCircularBuffer{
                     id: overallPeriods
                     size: client.robots.length*Math.max(30*expectedPeriod, 1000)/expectedPeriod
-                }
+                }*/
 
-                Timer{
+                /*Timer{
                     interval: Math.max(30*expectedPeriod, 1000)
                     repeat: true
                     running: go.checked
@@ -318,11 +314,11 @@ ApplicationWindow {
 
                         qualityChart.add(Date.now(), 100.0*qualityGroupBox.outliers/qualityGroupBox.numSamples, 100.0*qualityGroupBox.drops/qualityGroupBox.numSamples);
                     }
-                }
+                }*/
             }
 
             GroupBox{
-                title: "Individual Robot Quality"
+                title: "Individual Connection Quality"
 
                 Column{
 
@@ -332,25 +328,32 @@ ApplicationWindow {
                         Row{
                             id: calculators
 
+                            state: "ClockwiseBegin"
+                            states: [
+                                State{ name: "ClockwiseBegin" },
+                                State{ name: "ClockwiseWait" },
+                                State{ name: "CounterClockwiseBegin" },
+                                State{ name: "CounterClockwiseWait" }
+                            ]
+
                             spacing: 20
 
                             StatCircularBuffer{
-                                id: periods
-                                size: 50
+                                id: delays
+                                size: 20
                             }
 
-                            property real lastTimestamp: 0
-
+                            property int resetInitPositionIn: 1
                             property vector2d initPosition: Qt.vector2d(0,0)
+                            property real beginTimestamp: 0
 
                             Connections{
                                 target: go
                                 onCheckedChanged: {
-                                    if(!go.checked)
-                                        calculators.lastTimestamp = 0;
-
-                                    if(go.checked)
-                                        initPosition = Qt.vector2d(client.robots[index].x, client.robots[index].y);
+                                    if(go.checked){
+                                        calculators.resetInitPositionIn = 1;
+                                        state = "ClockwiseBegin";
+                                    }
                                 }
                             }
 
@@ -360,42 +363,39 @@ ApplicationWindow {
                                 onPoseChanged: {
                                     if(go.checked){
                                         if(velocityTraffic.checked){
-                                            var linearVel = initPosition.minus(Qt.vector2d(client.robots[index].x, client.robots[index].y)).times(1.5);
-                                            var linearVelLen = linearVel.length();
-                                            if(linearVelLen > 50)
-                                                linearVel = linearVel.times(50/linearVelLen);
-                                            client.robots[index].setGoalVelocity(linearVel.x, linearVel.y, 1.0);
+                                            if(calculators.resetInitPositionIn >= 2){
+                                                client.robots[index].setGoalVelocity(0,0,0);
+                                                calculators.resetInitPositionIn--;
+                                            }
+                                            else if(calculators.resetInitPositionIn == 1){
+                                                client.robots[index].setGoalVelocity(0,0,0);
+                                                calculators.initPosition = Qt.vector2d(client.robots[index].x, client.robots[index].y);
+                                                calculators.resetInitPositionIn--;
+                                            }
+                                            else{
+                                                var linearVel = calculators.initPosition.minus(Qt.vector2d(client.robots[index].x, client.robots[index].y)).times(1.5);
+                                                var linearVelLen = linearVel.length();
+                                                if(linearVelLen > 50)
+                                                    linearVel = linearVel.times(50/linearVelLen);
+
+                                                switch(calculators.state){
+                                                case "ClockwiseBegin":
+                                                    calculators.beginTimestamp = Date.now();
+                                                    calculators.state = "ClockwiseWait";
+                                                case "ClockwiseWait":
+                                                    client.robots[index].setGoalVelocity(linearVel.x, linearVel.y, angularVelAbs);
+                                                    break;
+                                                case "CounterClockwiseBegin":
+                                                    calculators.beginTimestamp = Date.now();
+                                                    calculators.state = "CounterClockwiseWait";
+                                                case "CounterClockwiseWait":
+                                                    client.robots[index].setGoalVelocity(linearVel.x, linearVel.y, -angularVelAbs);
+                                                    break;
+                                                }
+                                            }
                                         }
                                         if(colorTraffic.checked)
                                             client.robots[index].setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, Qt.hsva(Math.random(), 1.0, 0.5, 1.0), 0.0);
-
-                                        var timestamp = Date.now();
-                                        var period = timestamp - calculators.lastTimestamp;
-
-                                        if(period < rejectPeriod){
-                                            var sample = period - expectedPeriod;
-                                            periods.add(sample);
-                                            overallPeriods.add(sample);
-                                            //periodChart.add(timestamp, sample);
-
-                                            if(period < maxPeriod){
-                                                if(Math.abs(sample) > 3*periods.stdev){
-                                                    qualityGroupBox.newOutliers++;
-                                                    individualResults.newOutliers++;
-                                                }
-                                            }
-                                            else{
-                                                if(!client.robots[index].kidnapped){
-                                                    qualityGroupBox.newDrops++;
-                                                    individualResults.newDrops++;
-                                                }
-                                            }
-
-                                            qualityGroupBox.newNumSamples++;
-                                            individualResults.newNumSamples++;
-                                        }
-
-                                        calculators.lastTimestamp = timestamp;
                                     }
                                     else{
                                         client.robots[index].setGoalVelocity(0,0,0);
@@ -403,7 +403,38 @@ ApplicationWindow {
                                     }
                                 }
 
-                                onKidnappedChanged: lastTimestamp = 0
+                                onWChanged: {
+                                    var t, delay;
+                                    switch(calculators.state){
+                                    case "ClockwiseWait":
+                                        if(client.robots[index].w > angularVelTransitionThreshold*angularVelAbs){
+                                            t = Date.now();
+                                            delay = t - calculators.beginTimestamp;
+                                            delays.add(delay);
+                                            delayChart.add(t, delay);
+                                            calculators.state = "CounterClockwiseBegin";
+                                        }
+                                        break;
+                                    case "CounterClockwiseWait":
+                                        if(client.robots[index].w < -angularVelTransitionThreshold*angularVelAbs){
+                                            t = Date.now();
+                                            delay = t - calculators.beginTimestamp;
+                                            delays.add(delay);
+                                            delayChart.add(t, delay);
+                                            calculators.state = "ClockwiseBegin";
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                    }
+                                }
+
+                                onKidnappedChanged: {
+                                    if(!client.robots[index].kidnapped){
+                                        calculators.resetInitPositionIn = 10;
+                                        calculators.state = "ClockwiseBegin";
+                                    }
+                                }
 
                                 onConnectionStatusChanged: {
                                     if(client.robots[index].connectionStatus === CelluloBluetoothEnums.ConnectionStatusConnected)
@@ -420,7 +451,7 @@ ApplicationWindow {
                             }
 
                             ChartView{
-                                id: periodChart
+                                id: delayChart
 
                                 anchors.verticalCenter: parent.verticalCenter
 
@@ -428,21 +459,21 @@ ApplicationWindow {
 
                                 function clear(){
                                     removeAllSeries();
-                                    var dataSeries = createSeries(ChartView.SeriesTypeLine, "", axisXPeriodChart, axisYPeriodChart);
+                                    var dataSeries = createSeries(ChartView.SeriesTypeLine, "", axisXDelayChart, axisYDelayChart);
                                 }
 
-                                function add(t, period){
+                                function add(t, delay){
                                     var dataSeries = series(0);
-                                    dataSeries.append(t, period);
-                                    if(dataSeries.count > periods.size)
+                                    dataSeries.append(t, delay);
+                                    if(dataSeries.count > delays.size)
                                         dataSeries.remove(0);
 
-                                    axisXPeriodChart.min = new Date(dataSeries.at(0).x);
-                                    axisXPeriodChart.max = new Date(t);
+                                    axisXDelayChart.min = new Date(dataSeries.at(0).x);
+                                    axisXDelayChart.max = new Date(t);
 
-                                    axisYPeriodChart.min = periods.min;
-                                    axisYPeriodChart.max = periods.max;
-                                    axisYPeriodChart.applyNiceNumbers();
+                                    axisYDelayChart.min = delays.min;
+                                    axisYDelayChart.max = delays.max;
+                                    axisYDelayChart.applyNiceNumbers();
                                 }
 
                                 backgroundRoundness: 0
@@ -454,14 +485,14 @@ ApplicationWindow {
                                 antialiasing: true
 
                                 ValueAxis {
-                                    id: axisYPeriodChart
+                                    id: axisYDelayChart
                                     min: 0
-                                    max: 2*expectedPeriod
-                                    titleText: "ΔP (ms)"
+                                    max: 1000
+                                    titleText: "Delay (ms)"
                                 }
 
                                 DateTimeAxis {
-                                    id: axisXPeriodChart
+                                    id: axisXDelayChart
                                     format: "mm:ss"
                                     titleText: "Timestamp"
                                 }
@@ -472,38 +503,8 @@ ApplicationWindow {
 
                                 anchors.verticalCenter: parent.verticalCenter
 
-                                property int outliers: 0
-                                property int drops: 0
-                                property int numSamples: 0
-
-                                property int newOutliers: 0
-                                property int newDrops: 0
-                                property int newNumSamples: 0
-
                                 Text{
-                                    text: "ΔP = " + periods.mean.toPrecision(2) + "±" + periods.stdev.toPrecision(2) + " ms = " + (100.0*periods.mean/expectedPeriod).toPrecision(2) + "±" + (100.0*periods.stdev/expectedPeriod).toPrecision(2) + " %P"
-                                }
-
-                                Text{
-                                    text: "Outliers (P outside 3 σ) = " + individualResults.outliers + " = " + (100.0*individualResults.outliers/individualResults.numSamples).toPrecision(3) + " %"
-                                }
-
-                                Text{
-                                    text: "Drops (P more than > " + maxPeriod + " ms) = " + individualResults.drops + " = " + (100.0*individualResults.drops/individualResults.numSamples).toPrecision(3) + " %"
-                                }
-
-                                Timer{
-                                    interval: Math.max(30*expectedPeriod, 1000)
-                                    repeat: true
-                                    running: go.checked
-                                    onTriggered: {
-                                        individualResults.outliers = individualResults.newOutliers;
-                                        individualResults.drops = individualResults.newDrops;
-                                        individualResults.numSamples = individualResults.newNumSamples;
-                                        individualResults.newOutliers = 0;
-                                        individualResults.newDrops = 0;
-                                        individualResults.newNumSamples = 0;
-                                    }
+                                    text: "Delay = " + delays.mean.toPrecision(5) + "±" + delays.stdev.toPrecision(5) + " ms = " + (100.0*delays.mean/expectedPeriod).toPrecision(5) + "±" + (100.0*delays.stdev/expectedPeriod).toPrecision(5) + " %Period"
                                 }
                             }
                         }
