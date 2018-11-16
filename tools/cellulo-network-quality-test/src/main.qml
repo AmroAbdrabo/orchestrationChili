@@ -30,7 +30,7 @@ ApplicationWindow {
     property var client: poolButton.checked ? poolClient : hubClient
 
     property real expectedPeriod: 100
-    readonly property real maxPeriod: 1000
+    readonly property real maxPeriod: 10*expectedPeriod
 
     CelluloRobotPoolClient{
         id: poolClient
@@ -220,11 +220,6 @@ ApplicationWindow {
                 property int newDrops: 0
                 property int newNumSamples: 0
 
-                property real sumMeans: 0
-                property int numNeans: 0
-
-                //property real
-
                 Column{
                     Text{ text: "Outliers (P outside one σ) = " + qualityGroupBox.outliers + " = " + (100.0*qualityGroupBox.outliers/qualityGroupBox.numSamples).toPrecision(3) + " %"}
                     Text{ text: "Drops (P more than > " + maxPeriod + " ms) = " + qualityGroupBox.drops + " = " + (100.0*qualityGroupBox.drops/qualityGroupBox.numSamples).toPrecision(3) + " %" }
@@ -246,7 +241,7 @@ ApplicationWindow {
             }
 
             GroupBox{
-                title: "Individual Robots"
+                title: "Individual Robot Quality"
 
                 Column{
 
@@ -258,28 +253,13 @@ ApplicationWindow {
 
                             StatCircularBuffer{
                                 id: periods
-                                size: 100
-
-                                property int addedCount: 0
-                                onSizeChanged: addedCount = 0
-                                function oneFullLoop(){
-
-                                }
-
-                                onElementAdded: {
-                                    addedCount++;
-                                    if(addedCount >= size){
-                                        oneFullLoop();
-                                        addedCount = 0;
-                                    }
-                                }
+                                size: 50
                             }
 
                             Connections{
                                 target: client.robots[index]
 
                                 property real lastTimestamp: 0
-                                readonly property real maxPeriod: 2000
 
                                 onPoseChanged: {
                                     if(go.checked){
@@ -338,7 +318,7 @@ ApplicationWindow {
 
                                 function clear(){
                                     removeAllSeries();
-                                    var dataSeries = createSeries(ChartView.SeriesTypeLine, "", axisX, axisY);
+                                    var dataSeries = createSeries(ChartView.SeriesTypeLine, "", axisXPeriodChart, axisYPeriodChart);
                                 }
 
                                 function add(t, period){
@@ -347,12 +327,12 @@ ApplicationWindow {
                                     if(dataSeries.count > periods.size)
                                         dataSeries.remove(0);
 
-                                    axisX.min = new Date(dataSeries.at(0).x);
-                                    axisX.max = new Date(t);
+                                    axisXPeriodChart.min = new Date(dataSeries.at(0).x);
+                                    axisXPeriodChart.max = new Date(t);
 
-                                    axisY.min = periods.min;
-                                    axisY.max = periods.max;
-                                    axisY.applyNiceNumbers();
+                                    axisYPeriodChart.min = periods.min;
+                                    axisYPeriodChart.max = periods.max;
+                                    axisYPeriodChart.applyNiceNumbers();
                                 }
 
                                 backgroundRoundness: 0
@@ -364,14 +344,14 @@ ApplicationWindow {
                                 antialiasing: true
 
                                 ValueAxis {
-                                    id: axisY
+                                    id: axisYPeriodChart
                                     min: 0
                                     max: 2*expectedPeriod
                                     titleText: "ΔP (ms)"
                                 }
 
                                 DateTimeAxis {
-                                    id: axisX
+                                    id: axisXPeriodChart
                                     format: "mm:ss"
                                     titleText: "Timestamp"
                                 }
