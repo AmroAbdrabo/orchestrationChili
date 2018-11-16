@@ -31,6 +31,7 @@ ApplicationWindow {
 
     property real expectedPeriod: 100
     readonly property real maxPeriod: 10*expectedPeriod
+    readonly property real rejectPeriod: 10000
 
     CelluloRobotPoolClient{
         id: poolClient
@@ -160,7 +161,12 @@ ApplicationWindow {
                                 text: "Set"
                                 anchors.verticalCenter: parent.verticalCenter
                                 onClicked: {
-                                    expectedPeriod = parseInt(periodTextField.text);
+                                    var p = parseInt(periodTextField.text);
+                                    if(p < 10){
+                                        p = 10;
+                                        periodTextField.text = 10;
+                                    }
+                                    expectedPeriod = p;
                                     for(var i=0;i<client.robots.length;i++)
                                         client.robots[i].setPoseBcastPeriod(expectedPeriod);
                                 }
@@ -220,15 +226,88 @@ ApplicationWindow {
                 property int newDrops: 0
                 property int newNumSamples: 0
 
-                Column{
-                    Text{ text: "Outliers (P outside one σ) = " + qualityGroupBox.outliers + " = " + (100.0*qualityGroupBox.outliers/qualityGroupBox.numSamples).toPrecision(3) + " %"}
-                    Text{ text: "Drops (P more than > " + maxPeriod + " ms) = " + qualityGroupBox.drops + " = " + (100.0*qualityGroupBox.drops/qualityGroupBox.numSamples).toPrecision(3) + " %" }
+                Row{
+                    spacing: 10
+
+                    Column{
+                        id: overallQualityTexts
+
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        Text{
+                            text: "Total outliers (P outside 3 σ) = " + qualityGroupBox.outliers + " = " + (100.0*qualityGroupBox.outliers/qualityGroupBox.numSamples).toPrecision(3) + " %"
+                        }
+
+                        Text{
+                            text: "Total drops (P more than > " + maxPeriod + " ms) = " + qualityGroupBox.drops + " = " + (100.0*qualityGroupBox.drops/qualityGroupBox.numSamples).toPrecision(3) + " %"
+                        }
+                    }
+
+                    ChartView{
+                        id: qualityChart
+
+                        property int size: 50
+
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        Component.onCompleted: clear()
+
+                        function clear(){
+                            removeAllSeries();
+                            var outlierSeries = createSeries(ChartView.SeriesTypeLine, "Outlier Rate", axisXQualityChart, axisYQualityChart);
+                            var dropSeries = createSeries(ChartView.SeriesTypeLine, "Drop Rate", axisXQualityChart, axisYQualityChart);
+                        }
+
+                        function add(t, outliers, drops){
+                            var outlierSeries = series(0);
+                            outlierSeries.append(t, outliers);
+                            if(outlierSeries.count > qualityChart.size)
+                                outlierSeries.remove(0);
+
+                            var dropSeries = series(1);
+                            dropSeries.append(t, drops);
+                            if(dropSeries.count > qualityChart.size)
+                                dropSeries.remove(0);
+
+                            axisXQualityChart.min = new Date(outlierSeries.at(0).x);
+                            axisXQualityChart.max = new Date(t);
+
+                            axisYQualityChart.min = 0;
+                            axisYQualityChart.max = 100;
+                            axisYQualityChart.applyNiceNumbers();
+                        }
+
+                        backgroundRoundness: 0
+                        backgroundColor: "transparent"
+                        margins.left: 0; margins.right: 0; margins.top: 0; margins.bottom: 0
+                        width: window.width - overallQualityTexts.width - 2*parent.spacing - 20
+                        height: 300
+                        antialiasing: true
+
+                        ValueAxis {
+                            id: axisYQualityChart
+                            min: 0
+                            max: 100
+                            titleText: "%"
+                        }
+
+                        DateTimeAxis {
+                            id: axisXQualityChart
+                            format: "mm:ss"
+                            titleText: "Timestamp"
+                        }
+                    }
+                }
+
+                StatCircularBuffer{
+                    id: overallPeriods
+                    size: client.robots.length*Math.max(30*expectedPeriod, 1000)/expectedPeriod
                 }
 
                 Timer{
                     interval: Math.max(30*expectedPeriod, 1000)
                     repeat: true
-                    running: true
+                    running: go.checked
                     onTriggered: {
                         qualityGroupBox.outliers = qualityGroupBox.newOutliers;
                         qualityGroupBox.drops = qualityGroupBox.newDrops;
@@ -236,6 +315,8 @@ ApplicationWindow {
                         qualityGroupBox.newOutliers = 0;
                         qualityGroupBox.newDrops = 0;
                         qualityGroupBox.newNumSamples = 0;
+
+                        qualityChart.add(Date.now(), 100.0*qualityGroupBox.outliers/qualityGroupBox.numSamples, 100.0*qualityGroupBox.drops/qualityGroupBox.numSamples);
                     }
                 }
             }
@@ -249,6 +330,8 @@ ApplicationWindow {
                         model: client.robots.length
 
                         Row{
+                            id: calculators
+
                             spacing: 20
 
                             StatCircularBuffer{
@@ -256,36 +339,63 @@ ApplicationWindow {
                                 size: 50
                             }
 
+                            property real lastTimestamp: 0
+
+                            property vector2d initPosition: Qt.vector2d(0,0)
+
+                            Connections{
+                                target: go
+                                onCheckedChanged: {
+                                    if(!go.checked)
+                                        calculators.lastTimestamp = 0;
+
+                                    if(go.checked)
+                                        initPosition = Qt.vector2d(client.robots[index].x, client.robots[index].y);
+                                }
+                            }
+
                             Connections{
                                 target: client.robots[index]
 
-                                property real lastTimestamp: 0
-
                                 onPoseChanged: {
                                     if(go.checked){
-                                        if(velocityTraffic.checked)
-                                            client.robots[index].setGoalVelocity(0,0,1.0);
+                                        if(velocityTraffic.checked){
+                                            var linearVel = initPosition.minus(Qt.vector2d(client.robots[index].x, client.robots[index].y)).times(1.5);
+                                            var linearVelLen = linearVel.length();
+                                            if(linearVelLen > 50)
+                                                linearVel = linearVel.times(50/linearVelLen);
+                                            client.robots[index].setGoalVelocity(linearVel.x, linearVel.y, 1.0);
+                                        }
                                         if(colorTraffic.checked)
                                             client.robots[index].setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, Qt.hsva(Math.random(), 1.0, 0.5, 1.0), 0.0);
 
                                         var timestamp = Date.now();
-                                        var period = timestamp - lastTimestamp;
-                                        if(period < maxPeriod){
+                                        var period = timestamp - calculators.lastTimestamp;
+
+                                        if(period < rejectPeriod){
                                             var sample = period - expectedPeriod;
                                             periods.add(sample);
-                                            periodChart.add(timestamp, sample);
+                                            overallPeriods.add(sample);
+                                            //periodChart.add(timestamp, sample);
 
-                                            if(Math.abs(sample) > periods.stdev)
-                                                qualityGroupBox.newOutliers++;
+                                            if(period < maxPeriod){
+                                                if(Math.abs(sample) > 3*periods.stdev){
+                                                    qualityGroupBox.newOutliers++;
+                                                    individualResults.newOutliers++;
+                                                }
+                                            }
+                                            else{
+                                                if(!client.robots[index].kidnapped){
+                                                    qualityGroupBox.newDrops++;
+                                                    individualResults.newDrops++;
+                                                }
+                                            }
+
+                                            qualityGroupBox.newNumSamples++;
+                                            individualResults.newNumSamples++;
                                         }
-                                        else{
-                                            if(!client.robots[index].kidnapped)
-                                                qualityGroupBox.newDrops++;
-                                        }
 
-                                        qualityGroupBox.newNumSamples++;
-
-                                        lastTimestamp = timestamp;
+                                        calculators.lastTimestamp = timestamp;
                                     }
                                     else{
                                         client.robots[index].setGoalVelocity(0,0,0);
@@ -339,7 +449,7 @@ ApplicationWindow {
                                 legend.visible: false
                                 backgroundColor: "transparent"
                                 margins.left: 0; margins.right: 0; margins.top: 0; margins.bottom: 0
-                                width: window.width - macAddrText.width - individualResultText.width - 2*parent.spacing - 20
+                                width: window.width - macAddrText.width - individualResults.width - 2*parent.spacing - 20
                                 height: Math.max((window.height - firstRow.height - qualityGroupBox.height - 20)/client.robots.length, 150)
                                 antialiasing: true
 
@@ -357,10 +467,44 @@ ApplicationWindow {
                                 }
                             }
 
-                            Text{
-                                id: individualResultText
-                                text: "ΔP = " + periods.mean.toPrecision(2) + "±" + periods.stdev.toPrecision(2) + " ms = " + (100.0*periods.mean/expectedPeriod).toPrecision(2) + "±" + (100.0*periods.stdev/expectedPeriod).toPrecision(2) + " %P"
+                            Column{
+                                id: individualResults
+
                                 anchors.verticalCenter: parent.verticalCenter
+
+                                property int outliers: 0
+                                property int drops: 0
+                                property int numSamples: 0
+
+                                property int newOutliers: 0
+                                property int newDrops: 0
+                                property int newNumSamples: 0
+
+                                Text{
+                                    text: "ΔP = " + periods.mean.toPrecision(2) + "±" + periods.stdev.toPrecision(2) + " ms = " + (100.0*periods.mean/expectedPeriod).toPrecision(2) + "±" + (100.0*periods.stdev/expectedPeriod).toPrecision(2) + " %P"
+                                }
+
+                                Text{
+                                    text: "Outliers (P outside 3 σ) = " + individualResults.outliers + " = " + (100.0*individualResults.outliers/individualResults.numSamples).toPrecision(3) + " %"
+                                }
+
+                                Text{
+                                    text: "Drops (P more than > " + maxPeriod + " ms) = " + individualResults.drops + " = " + (100.0*individualResults.drops/individualResults.numSamples).toPrecision(3) + " %"
+                                }
+
+                                Timer{
+                                    interval: Math.max(30*expectedPeriod, 1000)
+                                    repeat: true
+                                    running: go.checked
+                                    onTriggered: {
+                                        individualResults.outliers = individualResults.newOutliers;
+                                        individualResults.drops = individualResults.newDrops;
+                                        individualResults.numSamples = individualResults.newNumSamples;
+                                        individualResults.newOutliers = 0;
+                                        individualResults.newDrops = 0;
+                                        individualResults.newNumSamples = 0;
+                                    }
+                                }
                             }
                         }
                     }
