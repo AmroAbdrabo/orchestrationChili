@@ -178,12 +178,6 @@ ApplicationWindow {
                         }
 
                         CheckBox{
-                            id: velocityTraffic
-                            checked: true
-                            text: "Send velocity at every loop"
-                        }
-
-                        CheckBox{
                             id: colorTraffic
                             checked: true
                             text: "Send color at every loop"
@@ -239,7 +233,7 @@ ApplicationWindow {
                         }*/
                     }
 
-                   /* ChartView{
+                    /* ChartView{
                         id: qualityChart
 
                         property int size: 50
@@ -362,36 +356,34 @@ ApplicationWindow {
 
                                 onPoseChanged: {
                                     if(go.checked){
-                                        if(velocityTraffic.checked){
-                                            if(calculators.resetInitPositionIn >= 2){
-                                                client.robots[index].setGoalVelocity(0,0,0);
-                                                calculators.resetInitPositionIn--;
-                                            }
-                                            else if(calculators.resetInitPositionIn == 1){
-                                                client.robots[index].setGoalVelocity(0,0,0);
-                                                calculators.initPosition = Qt.vector2d(client.robots[index].x, client.robots[index].y);
-                                                calculators.resetInitPositionIn--;
-                                            }
-                                            else{
-                                                var linearVel = calculators.initPosition.minus(Qt.vector2d(client.robots[index].x, client.robots[index].y)).times(1.5);
-                                                var linearVelLen = linearVel.length();
-                                                if(linearVelLen > 50)
-                                                    linearVel = linearVel.times(50/linearVelLen);
+                                        if(calculators.resetInitPositionIn >= 2){
+                                            client.robots[index].setGoalVelocity(0,0,0);
+                                            calculators.resetInitPositionIn--;
+                                        }
+                                        else if(calculators.resetInitPositionIn == 1){
+                                            client.robots[index].setGoalVelocity(0,0,0);
+                                            calculators.initPosition = Qt.vector2d(client.robots[index].x, client.robots[index].y);
+                                            calculators.resetInitPositionIn--;
+                                        }
+                                        else{
+                                            var linearVel = calculators.initPosition.minus(Qt.vector2d(client.robots[index].x, client.robots[index].y)).times(1.5);
+                                            var linearVelLen = linearVel.length();
+                                            if(linearVelLen > 50)
+                                                linearVel = linearVel.times(50/linearVelLen);
 
-                                                switch(calculators.state){
-                                                case "ClockwiseBegin":
-                                                    calculators.beginTimestamp = Date.now();
-                                                    calculators.state = "ClockwiseWait";
-                                                case "ClockwiseWait":
-                                                    client.robots[index].setGoalVelocity(linearVel.x, linearVel.y, angularVelAbs);
-                                                    break;
-                                                case "CounterClockwiseBegin":
-                                                    calculators.beginTimestamp = Date.now();
-                                                    calculators.state = "CounterClockwiseWait";
-                                                case "CounterClockwiseWait":
-                                                    client.robots[index].setGoalVelocity(linearVel.x, linearVel.y, -angularVelAbs);
-                                                    break;
-                                                }
+                                            switch(calculators.state){
+                                            case "ClockwiseBegin":
+                                                calculators.beginTimestamp = Date.now();
+                                                calculators.state = "ClockwiseWait";
+                                            case "ClockwiseWait":
+                                                client.robots[index].setGoalVelocity(linearVel.x, linearVel.y, angularVelAbs);
+                                                break;
+                                            case "CounterClockwiseBegin":
+                                                calculators.beginTimestamp = Date.now();
+                                                calculators.state = "CounterClockwiseWait";
+                                            case "CounterClockwiseWait":
+                                                client.robots[index].setGoalVelocity(linearVel.x, linearVel.y, -angularVelAbs);
+                                                break;
                                             }
                                         }
                                         if(colorTraffic.checked)
