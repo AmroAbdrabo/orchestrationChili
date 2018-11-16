@@ -30,7 +30,7 @@ ApplicationWindow {
     property var client: poolButton.checked ? poolClient : hubClient
 
     property real expectedPeriod: 100
-    readonly property real maxPeriod: 5000
+    readonly property real maxPeriod: 1000
 
     CelluloRobotPoolClient{
         id: poolClient
@@ -66,7 +66,7 @@ ApplicationWindow {
                 id: firstRow
 
                 GroupBox{
-                    title: "Server"
+                    title: "Server Controls"
 
                     Column{
                         Row{
@@ -135,7 +135,7 @@ ApplicationWindow {
                 }
 
                 GroupBox{
-                    title: "Controls"
+                    title: "Communication Controls"
 
                     enabled: client.connectionStatus === CelluloCommUtil.RelayConnectionStatusConnected
 
@@ -167,6 +167,18 @@ ApplicationWindow {
                             }
                         }
 
+                        CheckBox{
+                            id: velocityTraffic
+                            checked: true
+                            text: "Send velocity at every loop"
+                        }
+
+                        CheckBox{
+                            id: colorTraffic
+                            checked: true
+                            text: "Send color at every loop"
+                        }
+
                         Row{
                             spacing: 5
 
@@ -175,6 +187,11 @@ ApplicationWindow {
                                 checked: false
                                 text: "Go!"
                                 anchors.verticalCenter: parent.verticalCenter
+                                onCheckedChanged: {
+                                    if(checked)
+                                        for(var i=0;i<client.robots.length;i++)
+                                            client.robots[i].setGoalVelocity(0,0,1.0);
+                                }
                             }
 
                             Button{
@@ -195,6 +212,37 @@ ApplicationWindow {
                 id: qualityGroupBox
                 title: "Overall Quality"
 
+                property int outliers: 0
+                property int drops: 0
+                property int numSamples: 0
+
+                property int newOutliers: 0
+                property int newDrops: 0
+                property int newNumSamples: 0
+
+                property real sumMeans: 0
+                property int numNeans: 0
+
+                //property real
+
+                Column{
+                    Text{ text: "Outliers (P outside one σ) = " + qualityGroupBox.outliers + " = " + (100.0*qualityGroupBox.outliers/qualityGroupBox.numSamples).toPrecision(3) + " %"}
+                    Text{ text: "Drops (P more than > " + maxPeriod + " ms) = " + qualityGroupBox.drops + " = " + (100.0*qualityGroupBox.drops/qualityGroupBox.numSamples).toPrecision(3) + " %" }
+                }
+
+                Timer{
+                    interval: Math.max(30*expectedPeriod, 1000)
+                    repeat: true
+                    running: true
+                    onTriggered: {
+                        qualityGroupBox.outliers = qualityGroupBox.newOutliers;
+                        qualityGroupBox.drops = qualityGroupBox.newDrops;
+                        qualityGroupBox.numSamples = qualityGroupBox.newNumSamples;
+                        qualityGroupBox.newOutliers = 0;
+                        qualityGroupBox.newDrops = 0;
+                        qualityGroupBox.newNumSamples = 0;
+                    }
+                }
             }
 
             GroupBox{
@@ -208,60 +256,22 @@ ApplicationWindow {
                         Row{
                             spacing: 20
 
-                            CircularBuffer{
+                            StatCircularBuffer{
                                 id: periods
                                 size: 100
 
-                                property real sum: 0
-                                property real mean: 0
-                                property real variance: 0
-                                property real stdev: 0
-                                property real min: maxPeriod
-                                property real max: 0
+                                property int addedCount: 0
+                                onSizeChanged: addedCount = 0
+                                function oneFullLoop(){
+
+                                }
 
                                 onElementAdded: {
-                                    var oldsum = sum;
-                                    sum += element;
-                                    var oldmean = mean;
-                                    var N_plus_1 = elements.length;
-                                    mean = sum/N_plus_1;
-                                    var oldvariance = variance;
-                                    variance = N_plus_1 > 1 ? (element*element + (N_plus_1 - 1)*oldmean*oldmean - N_plus_1*mean*mean + (N_plus_1 - 2)*oldvariance)/(N_plus_1 - 1) : 0;
-                                    stdev = Math.sqrt(variance);
-
-                                    if(element > max)
-                                        max = element;
-                                    if(element < min)
-                                        min = element;
-                                }
-                                onElementRemoved: {
-                                    var oldsum = sum;
-                                    sum -= element;
-                                    var oldmean = mean;
-                                    var N_minus_1 = elements.length;
-                                    mean = N_minus_1 > 0 ? sum/N_minus_1 : 0;
-                                    var oldvariance = variance;
-                                    variance = N_minus_1 > 1 ? (-element*element + (N_minus_1 + 1)*oldmean*oldmean - N_minus_1*mean*mean + N_minus_1*oldvariance)/(N_minus_1 - 1) : 0;
-                                    stdev = Math.sqrt(variance);
-
-                                    if(element == min)
-                                        findMin();
-                                    if(element == max)
-                                        findMax();
-                                }
-
-                                function findMin(){
-                                    min = maxPeriod;
-                                    for(var i=0;i<elements.length;i++)
-                                        if(elements[i] < min)
-                                            min = elements[i];
-                                }
-
-                                function findMax(){
-                                    max = 0;
-                                    for(var i=0;i<elements.length;i++)
-                                        if(elements[i] > max)
-                                            max = elements[i];
+                                    addedCount++;
+                                    if(addedCount >= size){
+                                        oneFullLoop();
+                                        addedCount = 0;
+                                    }
                                 }
                             }
 
@@ -273,18 +283,34 @@ ApplicationWindow {
 
                                 onPoseChanged: {
                                     if(go.checked){
-                                        client.robots[index].setGoalVelocity(0,0,1.0);
+                                        if(velocityTraffic.checked)
+                                            client.robots[index].setGoalVelocity(0,0,1.0);
+                                        if(colorTraffic.checked)
+                                            client.robots[index].setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, Qt.hsva(Math.random(), 1.0, 0.5, 1.0), 0.0);
 
                                         var timestamp = Date.now();
                                         var period = timestamp - lastTimestamp;
                                         if(period < maxPeriod){
-                                            periods.add(period - expectedPeriod);
-                                            periodChart.add(timestamp, period - expectedPeriod);
+                                            var sample = period - expectedPeriod;
+                                            periods.add(sample);
+                                            periodChart.add(timestamp, sample);
+
+                                            if(Math.abs(sample) > periods.stdev)
+                                                qualityGroupBox.newOutliers++;
                                         }
+                                        else{
+                                            if(!client.robots[index].kidnapped)
+                                                qualityGroupBox.newDrops++;
+                                        }
+
+                                        qualityGroupBox.newNumSamples++;
+
                                         lastTimestamp = timestamp;
                                     }
-                                    else
+                                    else{
                                         client.robots[index].setGoalVelocity(0,0,0);
+                                        client.robots[index].setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "#808080", 0.0);
+                                    }
                                 }
 
                                 onKidnappedChanged: lastTimestamp = 0
@@ -294,7 +320,7 @@ ApplicationWindow {
                                         client.robots[index].setPoseBcastPeriod(expectedPeriod);
                                 }
 
-                                onBootCompleted: client.robots[index].setPoseBcastPeriod(expectedPeriod);
+                                onBootCompleted: client.robots[index].setPoseBcastPeriod(expectedPeriod)
                             }
 
                             Text{
@@ -334,7 +360,7 @@ ApplicationWindow {
                                 backgroundColor: "transparent"
                                 margins.left: 0; margins.right: 0; margins.top: 0; margins.bottom: 0
                                 width: window.width - macAddrText.width - individualResultText.width - 2*parent.spacing - 20
-                                height: Math.max(window.height - firstRow.height - qualityGroupBox.height - 20, 150)
+                                height: Math.max((window.height - firstRow.height - qualityGroupBox.height - 20)/client.robots.length, 150)
                                 antialiasing: true
 
                                 ValueAxis {
