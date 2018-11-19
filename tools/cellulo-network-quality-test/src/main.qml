@@ -179,7 +179,7 @@ ApplicationWindow {
 
                         CheckBox{
                             id: colorTraffic
-                            checked: true
+                            checked: false
                             text: "Send color at every loop"
                         }
 
@@ -410,7 +410,7 @@ ApplicationWindow {
                                             delay = t - calculators.beginTimestamp;
                                             delays.add(delay);
                                             overallDelays.add(delay);
-                                            delayChart.add(t, delay);
+                                            //delayChart.add(t, delay);
                                             calculators.state = "CounterClockwiseBegin";
                                         }
                                         break;
@@ -420,7 +420,7 @@ ApplicationWindow {
                                             delay = t - calculators.beginTimestamp;
                                             delays.add(delay);
                                             overallDelays.add(delay);
-                                            delayChart.add(t, delay);
+                                            //delayChart.add(t, delay);
                                             calculators.state = "ClockwiseBegin";
                                         }
                                         break;
@@ -453,12 +453,8 @@ ApplicationWindow {
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
-                            ChartView{
+                            /*ChartView{
                                 id: delayChart
-
-                                enabled: false
-
-                                visible: false
 
                                 anchors.verticalCenter: parent.verticalCenter
 
@@ -503,18 +499,16 @@ ApplicationWindow {
                                     format: "mm:ss"
                                     titleText: "Timestamp"
                                 }
+                            }*/
+
+                            Text{
+                                text: "Delay = " + delays.mean.toPrecision(5) + "±" + delays.stdev.toPrecision(5) + " ms = " + (100.0*delays.mean/expectedPeriod).toPrecision(5) + "±" + (100.0*delays.stdev/expectedPeriod).toPrecision(5) + " %Period"
                             }
 
-                            Column{
-                                id: individualResults
-
-                                anchors.verticalCenter: parent.verticalCenter
-
-                                Text{
-                                    visible: false
-                                    enabled: false
-                                    text: "Delay = " + delays.mean.toPrecision(5) + "±" + delays.stdev.toPrecision(5) + " ms = " + (100.0*delays.mean/expectedPeriod).toPrecision(5) + "±" + (100.0*delays.stdev/expectedPeriod).toPrecision(5) + " %Period"
-                                }
+                            Text{
+                                text: "Kidnapped!"
+                                color: "red"
+                                visible: client.robots[index].kidnapped
                             }
                         }
                     }
