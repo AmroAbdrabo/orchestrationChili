@@ -1,23 +1,17 @@
-cellulo-robot-hub-gui
-=====================
+cellulo-network-quality-test
+============================
 
-A tool that provides full control over a remote `cellulorobothubd` (see [cellulorobothubd](../cellulorobothubd/)) over
-TCP:
-
-    - *Linux* - Launch `cellulo-robot-hub-gui` from the terminal.
-    - *macOS* - Launch as an app (called `Cellulo Robot Hub GUI`).
-    - *Android* - Launch as an app (called `Cellulo Robot Hub GUI`). This app is available on the Play Store for download.
-    - *Windows* - Launch as an app (called `Cellulo Robot Hub GUI`).
-
-While the remote `cellulorobothubd` is alive, a `CelluloRobotHubClient` in a Cellulo application can connect to it and
-communicate with its already connected robots.
+A tool that quantifies network connection quality over a robot pool or a robot hub, in a typical control scenario with a
+given control loop frequency where all robots are simultaneously controlled in real time. The point is to test
+connection quality to a large number of robots and find out which control frequency (i.e period) leads to an acceptable
+control.
 
 Tested with Qt 5.11.0 on:
 
   - Ubuntu 18.04
-  - macOS 10.13.3 with Xcode 9.4.1
-  - Android 7.1.2 with Ubuntu 18.04 host with Android API 23, Android SDK Tools 25.2.5 and Android NDK r10e (both apps also available on the Play Store)
-  - Windows 10 (UWP x64 (MSVC 2017)) with Visual Studio 2017 Community (with `Universal Windows Platform development` and `C++ Universal Windows Platform tools`)
+  - ~~macOS 10.13.3 with Xcode 9.4.1~~
+  - Android 7.1.2 with Ubuntu 18.04 host with Android API 23, Android SDK Tools 25.2.5 and Android NDK r10e (app also available on the Play Store)
+  - ~~Windows 10 (UWP x64 (MSVC 2017)) with Visual Studio 2017 Community (with `Universal Windows Platform development` and `C++ Universal Windows Platform tools`)~~
 
 Linux & macOS build
 -------------------
@@ -61,53 +55,19 @@ Windows build
 
 This will install the app to `C:\Program Files (x86)\Cellulo Robot Hub GUI\`. Alternatively, the app can also be loaded into Qt Creator, built and run from there.
 
-Linux usage
------------
+Usage
+-----
 
-Start a remote `cellulorobothubd` and connect to it via a TCP channel (see [cellulorobothubd](../cellulorobothubd/)).
-Run `cellulo-robot-hub-gui` to launch the hub, set the IP address and port accordingly and wait for connection to the
-server. "Scan for robots" panel can be used to scan and add available robots to the pool (done locally, the machine
-running the hub must have Bluetooth functionality). Once added, they can be connected to using the "Robots on server"
-panel. Once all desired robots are added and connected to, `cellulo-robot-hub-gui` should be closed. Then, these robots
-in the hub can be used in an application through `CelluloRobotHubClient`, see
-[samples/cellulo-robot-pool-hub-demo/](../../samples/cellulo-robot-pool-hub-demo/) for an example.
+Either start a remote `cellulorobothubd` (see [cellulorobothubd](../cellulorobothubd/)) or a `cellulorobotpoold` (see
+[cellulorobotpoold](../cellulo-robot-pool/cellulorobotpoold/)). Connect to it via a `Cellulo Robot Hub GUI` (see
+[cellulo-robot-hub-gui](../cellulo-robot-hub-gui/)) or `Cellulo Robot Pool GUI` (see
+[cellulo-robot-pool-gui](../cellulo-robot-pool-gui/)), add and connect to the desired number of robots, close the GUI.
 
-macOS usage
------------
-
-Start a remote `cellulorobothubd` and connect to it via a TCP channel (see [cellulorobothubd](../cellulorobothubd/)).
-Launch the `Cellulo Robot Hub GUI` app, set the IP address and port accordingly and wait for connection to the server.
-"Scan for robots" panel can be used to scan and add available robots to the pool (done locally, the machine
-running the hub must have Bluetooth functionality). Once added, they can be connected to using the "Robots on server"
-panel. Once all desired robots are added and connected to, `cellulo-robot-hub-gui` should be closed. Then, these robots
-in the hub can be used in an application through `CelluloRobotHubClient`, see
-[samples/cellulo-robot-pool-hub-demo/](../../samples/cellulo-robot-pool-hub-demo/) for an example.
-
-Android usage
--------------
-
-Start a remote `cellulorobothubd` and connect to it via a TCP channel (see [cellulorobothubd](../cellulorobothubd/)).
-
-**Note on ethernet connection:** Starting with Android 6 (Marshmallow), USB ethernet adapters are enumerated and can be
-used to obtain an IP. A converter cable can be used to plug into the USB-C/micro-USB port on the device. However, the
-OS does not even ask for an IP over an ethernet connection which does not provide internet if there is another
-connection that provides internet, such as GSM or WiFi. Since the device that provides `cellulorobothubd` will likely
-not provide internet, these connections that do provide internet must be closed.
-
-Launch the `Cellulo Robot Hub GUI` app, set the IP address and port accordingly and wait for connection to the server.
-"Scan for robots" panel can be used to scan and add available robots to the pool (done locally, the machine
-running the hub must have Bluetooth functionality). Once added, they can be connected to using the "Robots on server"
-panel. Once all desired robots are added and connected to, `cellulo-robot-hub-gui` should be closed. Then, these robots
-in the hub can be used in an application through `CelluloRobotHubClient`, see
-[samples/cellulo-robot-pool-hub-demo/](../../samples/cellulo-robot-pool-hub-demo/) for an example.
-
-Windows usage
--------------
-
-Start a remote `cellulorobothubd` and connect to it via a TCP channel (see [cellulorobothubd](../cellulorobothubd/)).
-Launch the `Cellulo Robot Hub GUI` app, set the IP address and port accordingly and wait for connection to the server.
-"Scan for robots" panel can be used to scan and add available robots to the pool (done locally, the machine
-running the hub must have Bluetooth functionality). Once added, they can be connected to using the "Robots on server"
-panel. Once all desired robots are added and connected to, `cellulo-robot-hub-gui` should be closed. Then, these robots
-in the hub can be used in an application through `CelluloRobotHubClient`, see
-[samples/cellulo-robot-pool-hub-demo/](../../samples/cellulo-robot-pool-hub-demo/) for an example.
+Launch `Cellulo Network Quality Test` (`cellulo-network-quality-test` in the terminal in Linux) and pick the pool or the
+hub connection. Place all robots somewhere on a dotted sheet and make sure they can rotate freely. Set the desired
+control period (for 20 robots, a robust value seems to be ~170 ms, fewer robots should allow for faster control), check
+whether color control should be enabled (simulates the scenario where the pose and the color are both controlled in real
+time) and check `Go!`. All robots should rotate back and forth, in place. Observe the control quality visually, i.e
+whether there are any clear drops in communication leading to some robots diverging in position. When `Go!` is checked
+and unchecked, the motion should start and stop near immediately on all robots. The actual overall delay values can be
+observed with the provided chart and measurements.
