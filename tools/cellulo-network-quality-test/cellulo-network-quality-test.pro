@@ -74,3 +74,12 @@ winrt {
     WINRT_MANIFEST.logo_44x44 = assets/winrt-logo-44-44.png
     WINRT_MANIFEST.logo_620x300 = assets/winrt-logo-620-300.png
 }
+
+DISTFILES += \
+    ../../../firmware/src/qml-plugin/tools/cellulo-network-quality-test/android/AndroidManifest.xml \
+    ../../../firmware/src/qml-plugin/tools/cellulo-network-quality-test/android/gradle/wrapper/gradle-wrapper.jar \
+    ../../../firmware/src/qml-plugin/tools/cellulo-network-quality-test/android/gradlew \
+    ../../../firmware/src/qml-plugin/tools/cellulo-network-quality-test/android/res/values/libs.xml \
+    ../../../firmware/src/qml-plugin/tools/cellulo-network-quality-test/android/build.gradle \
+    ../../../firmware/src/qml-plugin/tools/cellulo-network-quality-test/android/gradle/wrapper/gradle-wrapper.properties \
+    ../../../firmware/src/qml-plugin/tools/cellulo-network-quality-test/android/gradlew.bat

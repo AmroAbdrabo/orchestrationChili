@@ -214,7 +214,7 @@ ApplicationWindow {
 
             GroupBox{
                 id: qualityGroupBox
-                title: "Overall Quality"
+                title: "Overall Connection Quality"
 
                 Row{
                     spacing: 10
@@ -224,19 +224,23 @@ ApplicationWindow {
 
                         anchors.verticalCenter: parent.verticalCenter
 
-                        /*Text{
-                            text: "Total outliers (P outside 3 σ) = " + qualityGroupBox.outliers + " = " + (100.0*qualityGroupBox.outliers/qualityGroupBox.numSamples).toPrecision(3) + " %"
+                        property real meanDelay: 0
+                        property real stdevDelay: 0
+                        property real worstDelay: 0
+
+                        Text{
+                            text: "Mean delay = " + overallQualityTexts.meanDelay.toPrecision(5) + "±" + overallQualityTexts.stdevDelay.toPrecision(5) + " ms = " + (100.0*overallQualityTexts.meanDelay/expectedPeriod).toPrecision(5) + "±" + (100.0*overallQualityTexts.stdevDelay/expectedPeriod).toPrecision(5) + " %Period"
                         }
 
                         Text{
-                            text: "Total drops (P more than > " + maxPeriod + " ms) = " + qualityGroupBox.drops + " = " + (100.0*qualityGroupBox.drops/qualityGroupBox.numSamples).toPrecision(3) + " %"
-                        }*/
+                            text: "Worst delay = " + overallQualityTexts.worstDelay.toPrecision(5) + " ms = " + (100.0*overallQualityTexts.worstDelay/expectedPeriod).toPrecision(5) + " %Period"
+                        }
                     }
 
-                    /* ChartView{
+                    ChartView{
                         id: qualityChart
 
-                        property int size: 50
+                        property int size: 20
 
                         anchors.verticalCenter: parent.verticalCenter
 
@@ -244,27 +248,33 @@ ApplicationWindow {
 
                         function clear(){
                             removeAllSeries();
-                            var outlierSeries = createSeries(ChartView.SeriesTypeLine, "Outlier Rate", axisXQualityChart, axisYQualityChart);
-                            var dropSeries = createSeries(ChartView.SeriesTypeLine, "Drop Rate", axisXQualityChart, axisYQualityChart);
+                            createSeries(ChartView.SeriesTypeLine, "Mean delay", axisXQualityChart, axisYQualityChart);
+                            createSeries(ChartView.SeriesTypeLine, "Worst delay", axisXQualityChart, axisYQualityChart);
                         }
 
-                        function add(t, outliers, drops){
-                            var outlierSeries = series(0);
-                            outlierSeries.append(t, outliers);
-                            if(outlierSeries.count > qualityChart.size)
-                                outlierSeries.remove(0);
+                        StatCircularBuffer{
+                            id: displayedDelays
+                            size: 2*qualityChart.size
+                        }
 
-                            var dropSeries = series(1);
-                            dropSeries.append(t, drops);
-                            if(dropSeries.count > qualityChart.size)
-                                dropSeries.remove(0);
+                        function add(t, mean, worst){
+                            var meanSeries = series(0);
+                            meanSeries.append(t, mean);
+                            if(meanSeries.count > qualityChart.size)
+                                meanSeries.remove(0);
 
-                            axisXQualityChart.min = new Date(outlierSeries.at(0).x);
+                            var worstSeries = series(1);
+                            worstSeries.append(t, worst);
+                            if(worstSeries.count > qualityChart.size)
+                                worstSeries.remove(0);
+
+                            axisXQualityChart.min = new Date(meanSeries.at(0).x);
                             axisXQualityChart.max = new Date(t);
 
-                            axisYQualityChart.min = 0;
-                            axisYQualityChart.max = 100;
-                            axisYQualityChart.applyNiceNumbers();
+                            displayedDelays.add(worst);
+                            displayedDelays.add(mean);
+                            axisYQualityChart.min = 0.9*displayedDelays.min;
+                            axisYQualityChart.max = 1.1*displayedDelays.max;
                         }
 
                         backgroundRoundness: 0
@@ -277,8 +287,8 @@ ApplicationWindow {
                         ValueAxis {
                             id: axisYQualityChart
                             min: 0
-                            max: 100
-                            titleText: "%"
+                            max: 500
+                            titleText: "ms"
                         }
 
                         DateTimeAxis {
@@ -286,29 +296,25 @@ ApplicationWindow {
                             format: "mm:ss"
                             titleText: "Timestamp"
                         }
-                    }*/
+                    }
                 }
 
-                /*StatCircularBuffer{
-                    id: overallPeriods
-                    size: client.robots.length*Math.max(30*expectedPeriod, 1000)/expectedPeriod
-                }*/
+                StatCircularBuffer{
+                    id: overallDelays
+                    size: 2*client.robots.length*1000/expectedPeriod
+                }
 
-                /*Timer{
-                    interval: Math.max(30*expectedPeriod, 1000)
+                Timer{
+                    interval: 1000
                     repeat: true
                     running: go.checked
                     onTriggered: {
-                        qualityGroupBox.outliers = qualityGroupBox.newOutliers;
-                        qualityGroupBox.drops = qualityGroupBox.newDrops;
-                        qualityGroupBox.numSamples = qualityGroupBox.newNumSamples;
-                        qualityGroupBox.newOutliers = 0;
-                        qualityGroupBox.newDrops = 0;
-                        qualityGroupBox.newNumSamples = 0;
-
-                        qualityChart.add(Date.now(), 100.0*qualityGroupBox.outliers/qualityGroupBox.numSamples, 100.0*qualityGroupBox.drops/qualityGroupBox.numSamples);
+                        overallQualityTexts.meanDelay = overallDelays.mean;
+                        overallQualityTexts.stdevDelay = overallDelays.stdev;
+                        overallQualityTexts.worstDelay = overallDelays.max;
+                        qualityChart.add(Date.now(), overallDelays.mean, overallDelays.max);
                     }
-                }*/
+                }
             }
 
             GroupBox{
@@ -403,6 +409,7 @@ ApplicationWindow {
                                             t = Date.now();
                                             delay = t - calculators.beginTimestamp;
                                             delays.add(delay);
+                                            overallDelays.add(delay);
                                             delayChart.add(t, delay);
                                             calculators.state = "CounterClockwiseBegin";
                                         }
@@ -412,6 +419,7 @@ ApplicationWindow {
                                             t = Date.now();
                                             delay = t - calculators.beginTimestamp;
                                             delays.add(delay);
+                                            overallDelays.add(delay);
                                             delayChart.add(t, delay);
                                             calculators.state = "ClockwiseBegin";
                                         }
@@ -433,7 +441,10 @@ ApplicationWindow {
                                         client.robots[index].setPoseBcastPeriod(expectedPeriod);
                                 }
 
-                                onBootCompleted: client.robots[index].setPoseBcastPeriod(expectedPeriod)
+                                onBootCompleted: {
+                                    calculators.state = "ClockwiseBegin";
+                                    client.robots[index].setPoseBcastPeriod(expectedPeriod);
+                                }
                             }
 
                             Text{
@@ -444,6 +455,10 @@ ApplicationWindow {
 
                             ChartView{
                                 id: delayChart
+
+                                enabled: false
+
+                                visible: false
 
                                 anchors.verticalCenter: parent.verticalCenter
 
@@ -496,6 +511,8 @@ ApplicationWindow {
                                 anchors.verticalCenter: parent.verticalCenter
 
                                 Text{
+                                    visible: false
+                                    enabled: false
                                     text: "Delay = " + delays.mean.toPrecision(5) + "±" + delays.stdev.toPrecision(5) + " ms = " + (100.0*delays.mean/expectedPeriod).toPrecision(5) + "±" + (100.0*delays.stdev/expectedPeriod).toPrecision(5) + " %Period"
                                 }
                             }
