@@ -9,7 +9,7 @@ control.
 Tested with Qt 5.11.0 on:
 
   - Ubuntu 18.04
-  - ~~macOS 10.13.3 with Xcode 9.4.1~~
+  - macOS 10.13.3 with Xcode 9.4.1
   - Android 7.1.2 with Ubuntu 18.04 host with Android API 23, Android SDK Tools 25.2.5 and Android NDK r10e (app also available on the Play Store)
   - ~~Windows 10 (UWP x64 (MSVC 2017)) with Visual Studio 2017 Community (with `Universal Windows Platform development` and `C++ Universal Windows Platform tools`)~~
 
@@ -49,11 +49,11 @@ Windows build
 	> qt-install-root\qt-version\target-platform\bin\qmake ..
     > nmake
 	> nmake install
-    > qt-install-root\qt-version\target-platform\bin\windeployqt --qmldir .. "C:/Program Files (x86)/Cellulo Robot Hub GUI/cellulo-robot-hub-gui.exe"
-    > qt-install-root\qt-version\target-platform\bin\winrtrunner --profile appx --install "C:/Program Files (x86)/Cellulo Robot Hub GUI/cellulo-robot-hub-gui.exe"
+    > qt-install-root\qt-version\target-platform\bin\windeployqt --qmldir .. "C:/Program Files (x86)/Cellulo Network Quality Test/cellulo-network-quality-test.exe"
+    > qt-install-root\qt-version\target-platform\bin\winrtrunner --profile appx --install "C:/Program Files (x86)/Cellulo Network Quality Test/cellulo-network-quality-test.exe"
     ```
 
-This will install the app to `C:\Program Files (x86)\Cellulo Robot Hub GUI\`. Alternatively, the app can also be loaded into Qt Creator, built and run from there.
+This will install the app to `C:\Program Files (x86)\Cellulo Network Quality Test\`. Alternatively, the app can also be loaded into Qt Creator, built and run from there.
 
 Usage
 -----
