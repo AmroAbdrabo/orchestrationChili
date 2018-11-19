@@ -11,7 +11,7 @@ Tested with Qt 5.11.0 on:
   - Ubuntu 18.04
   - macOS 10.13.3 with Xcode 9.4.1
   - Android 7.1.2 with Ubuntu 18.04 host with Android API 23, Android SDK Tools 25.2.5 and Android NDK r10e (app also available on the Play Store)
-  - ~~Windows 10 (UWP x64 (MSVC 2017)) with Visual Studio 2017 Community (with `Universal Windows Platform development` and `C++ Universal Windows Platform tools`)~~
+  - Windows 10 (UWP x64 (MSVC 2017)) with Visual Studio 2017 Community (with `Universal Windows Platform development` and `C++ Universal Windows Platform tools`)
 
 Linux & macOS build
 -------------------
