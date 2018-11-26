@@ -5,10 +5,10 @@ Demonstrates some of the haptic capabilities of the Cellulo robot in rendering s
 
 Tested with Qt 5.10.1 on:
 
-- Ubuntu 17.10
+- Ubuntu 18.04
 - macOS 10.13.3 with Xcode 9.3
 - Windows 10 (UWP x64 (MSVC 2017)) with Visual Studio 2017 Community (with `Universal Windows Platform development` and `C++ Universal Windows Platform tools`)
-- Android 7.1.2 with Ubuntu 17.10 host with Android API 23, Android SDK Tools 25.2.5 and Android NDK r10e
+- Android 8.1.0 with Ubuntu 18.04 host with Android API 26, Android SDK Tools 25.2.5 and Android NDK r15c
 
 Build
 -----
@@ -19,7 +19,8 @@ Build
 Run
 ---
 
-1. Print [assets/map-dotted.pdf](assets/map-dotted.pdf)
+1. Print [assets/map-step-1.pdf](assets/map-step-1.pdf)
+1. Print [assets/map-step-2.pdf](assets/map-step-2.pdf) on top of the sheet that is just printed; make sure that the orientation is correct
 1. Click `Run` inside Qt Creator
 1. Connect to a robot
 1. Feel the various areas that give appropriate haptic feedback; transitions from one area to the next should be smooth
