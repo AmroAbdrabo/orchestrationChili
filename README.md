@@ -7,7 +7,7 @@ This is a qml module for communicating with Cellulo robots over Bluetooth. It wa
   - On Ubuntu 17.10
   - On macOS 10.13.3 with Xcode 9.3
   - On Windows 10 (UWP x64 (MSVC 2017)) with Visual Studio 2017 Community (with `Universal Windows Platform development` and `C++ Universal Windows Platform tools`)
-  - On Android 7.1.2 with Ubuntu 17.10 host with Android API 23, Android SDK Tools 25.2.5 and Android NDK r10e
+  - On Android 7.1.2 with Ubuntu 17.10 host with Android API 23, Android SDK Tools 26.1.1 and Android NDK r15c
 
 Below are the USB Bluetooth dongles that were confirmed to work with the Cellulo robots under Ubuntu 17.10 with BlueZ 5.46:
 

@@ -63,6 +63,8 @@ ApplicationWindow {
                 root.setupHaptics();
         }
 
+        onBootCompleted: root.setupHaptics()
+
         Component.onCompleted: zoneEngine.addNewClient(robotComm)
 
         onZoneValueChanged:{
@@ -75,6 +77,8 @@ ApplicationWindow {
     function setupHaptics(){
         robotComm.setGestureEnabled(false);
         robotComm.setCasualBackdriveAssistEnabled(false);
+        robotComm.setExposureTime(900);
+        robotComm.setPoseBcastPeriod(0);
     }
 
     function updateHaptics(){
