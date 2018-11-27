@@ -19,7 +19,7 @@ Tested with Qt 5.11.0 on:
 
   - Ubuntu 18.04
   - macOS 10.13.3 with Xcode 9.4.1
-  - Android 7.1.2 with Ubuntu 18.04 host with Android API 23, Android SDK Tools 25.2.5 and Android NDK r10e (both apps also available on the Play Store)
+  - Android 8.1.0 with Ubuntu 18.04 host with Android API 26, Android SDK Tools 25.2.5 and Android NDK r15c (both apps also available on the Play Store)
 
 **Does not work on Windows** due to WinRT sandboxing preventing multiple apps from communicating with each other. This prevents any sort of daemon from being built within the WinRT framework. For Windows, see [cellulo-robot-hub-gui](../cellulo-robot-hub-gui/).
 
@@ -45,6 +45,7 @@ Get both apps from the Play Store or:
 
 1. Build and install [qml-cellulo](../../).
 1. Load `cellulorobotpoold` individually into Qt Creator, connect your device over USB, click `Run`.
+  - **Note:** `build.gradle` must contain `dependencies { compile 'com.android.support:support-v4:26.1.0' }` and `allprojects { repositories { maven { url "https://maven.google.com" }}}` which is not included by default by QtCreator.
 1. Load `cellulo-robot-pool-gui` individually into Qt Creator, connect your device over USB, click `Run`.
 
 **Important note:** Does not work with Qt below 5.10.1 as it contains a crucial fix for Android services to work.

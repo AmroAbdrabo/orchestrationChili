@@ -74,5 +74,3 @@ android{
     INSTALLS += target android_java_sources
     export(INSTALLS)
 }
-
-
