@@ -47,9 +47,7 @@ CelluloRelayClient::CelluloRelayClient(CelluloCommUtil::RelayProtocol protocol, 
             port = CelluloCommUtil::DEFAULT_RELAY_PORT;
             break;
     }
-
-    connect(this, SIGNAL(connected()),      this, SIGNAL(connectedChanged()));
-    connect(this, SIGNAL(disconnected()),   this, SIGNAL(connectedChanged()));
+    
     connect(this, SIGNAL(connected()),      this, SLOT(handleConnected()));
     connect(this, SIGNAL(disconnected()),   this, SLOT(handleDisconnected()));
 
