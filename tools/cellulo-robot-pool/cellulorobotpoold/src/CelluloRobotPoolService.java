@@ -2,10 +2,9 @@ package ch.epfl.chili.cellulo.cellulorobotpoold;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.IBinder;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.NotificationChannel;
+import android.app.*;
 import android.support.v4.app.NotificationCompat;
 import org.qtproject.qt5.android.bindings.QtService;
 
@@ -22,15 +21,21 @@ public class CelluloRobotPoolService extends QtService {
     }
 
     @Override
-    public void onCreate() {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "cellulorobotpoold");
+    public void onCreate(){
+        NotificationCompat.Builder builder;
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            builder = new NotificationCompat.Builder(this, "cellulorobotpoold");
+        else
+            builder = new NotificationCompat.Builder(this);
         builder.setSmallIcon(R.drawable.icon);
         builder.setContentTitle("Cellulo Robot Pool Service");
         builder.setContentText("Cellulo robot pool service running...");
         Notification notification = builder.build();
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationChannel channel = new NotificationChannel("cellulorobotpoold", "Cellulo Robot Pool Service", NotificationManager.IMPORTANCE_DEFAULT);
-        notificationManager.createNotificationChannel(channel);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            NotificationChannel channel = new NotificationChannel("cellulorobotpoold", "Cellulo Robot Pool Service", NotificationManager.IMPORTANCE_DEFAULT);
+            notificationManager.createNotificationChannel(channel);
+        }
         notificationManager.notify(NOTIFICATION_ID, notification);
         startForeground(NOTIFICATION_ID, notification);
 
