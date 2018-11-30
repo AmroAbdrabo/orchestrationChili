@@ -5,38 +5,27 @@ import Qt3D.Input 2.0
 import Qt3D.Extras 2.0
 
 Entity{
-    property var client: null
+    id: root3d
 
-    Repeater{
-        model: client.robots.length
+    property var client
+    property int numRobots: client ? client.robots.length : 0
 
-        Item{
-            Connections{
-                target: client.robots[index]
+    property Component sphereComponent: Qt.createComponent("RobotSphere.qml")
 
-                onKeyTouched: console.log("key touched " + index)
-            }
+    onNumRobotsChanged: {
+        var i;
+        for(i=0;i<spheres.length;i++)
+            spheres[i].destroy();
+        spheres = [];
+
+        for(i=0;i<numRobots;i++){
+            var robotSphere = sphereComponent.createObject(root3d);
+            robotSphere.robot = client.robots[i];
+            spheres.push(robotSphere);
         }
     }
 
-    Entity {
-        components: [
-            PhongMaterial{
-                ambient: "white"
-                diffuse: "white"
-            },
-
-            //@disable-check M300
-            Transform{
-                matrix: {
-                    var m = Qt.matrix4x4();
-                    m.translate(Qt.vector3d(420.5, 420.5, 0));
-                    return m;
-                }
-            },
-            SphereMesh{ radius: 40 }
-        ]
-    }
+    property var spheres: []
 
     Entity{
         components: [
@@ -44,7 +33,7 @@ Entity{
             Transform{ translation: Qt.vector3d(420.5, 420.5, -500) },
             PointLight{
                 color: "white"
-                intensity: 3
+                intensity: 2
                 constantAttenuation: 1.0
                 linearAttenuation: 0.0
                 quadraticAttenuation: 0.0

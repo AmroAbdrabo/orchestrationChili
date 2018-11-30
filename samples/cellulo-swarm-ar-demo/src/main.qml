@@ -16,6 +16,8 @@ Window{
     CelluloRobotPoolClient{
         id: poolClient
 
+        robotComponent: Qt.createComponent("Robot.qml")
+
         autoConnect: poolButton.checked
         onAutoConnectChanged: {
             if(!autoConnect)
@@ -25,6 +27,8 @@ Window{
 
     CelluloRobotHubClient{
         id: hubClient
+
+        robotComponent: Qt.createComponent("Robot.qml")
 
         serverAddress: hubAddress.text
         port: parseInt(hubPort.text)
