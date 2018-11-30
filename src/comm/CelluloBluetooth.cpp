@@ -35,6 +35,10 @@
     #include "CelluloBluezUtil.h"
 #endif
 
+#if defined(Q_OS_ANDROID)
+    #include <sys/system_properties.h>
+#endif
+
 namespace Cellulo{
 
 QByteArray CelluloBluetooth::frameBuffer;
@@ -53,6 +57,18 @@ CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) : CelluloZoneClient(paren
     wrongAdapterCheckTimer.setSingleShot(true);
     wrongAdapterCheckTimer.setInterval(BT_WRONG_ADAPTER_CHECK_MILLIS);
     connect(&wrongAdapterCheckTimer, SIGNAL(timeout()), this, SLOT(checkWrongAdapter()));
+
+    #if defined(Q_OS_ANDROID)
+        char buf[PROP_VALUE_MAX];
+        __system_property_get("ro.build.version.sdk", buf);
+        if(QString(buf).toInt() >= 26)
+            btKeepAliveTimer.setInterval(BT_KEEP_ALIVE_MILLIS_ANDROID_26);
+        else
+            btKeepAliveTimer.setInterval(BT_KEEP_ALIVE_MILLIS_DEFAULT);
+    #else
+        btKeepAliveTimer.setInterval(BT_KEEP_ALIVE_MILLIS_DEFAULT);
+    #endif
+    connect(&btKeepAliveTimer, SIGNAL(timeout()), this, SLOT(ping()));
 
     relayClient = NULL;
     relayServer = NULL;
@@ -287,6 +303,7 @@ void CelluloBluetooth::disconnectFromServer(){
     //Real robot
     else if(socket != NULL){
         qDebug() << "CelluloBluetooth::disconnectFromServer(): " << macAddr << "...";
+        btKeepAliveTimer.stop();
         disconnect(socket, SIGNAL(readyRead()), this, SLOT(socketDataArrived()));
         disconnect(socket, SIGNAL(connected()), this, SLOT(socketConnected()));
         disconnect(socket, SIGNAL(disconnected()), this, SLOT(socketDisconnected()));
@@ -314,7 +331,7 @@ void CelluloBluetooth::socketConnected(){
             wrongAdapterCheckTimer.stop();
             int dummy;
             if(CelluloBluezUtil::connectedOverWrongLocalAdapter(macAddr, localAdapterMacAddr, dummy)){
-                wrongAdapterCheckTimer.start(); //TODO: RANDOMIZE
+                wrongAdapterCheckTimer.start();     //TODO: RANDOMIZE
                 return;
             }
         }
@@ -331,6 +348,10 @@ void CelluloBluetooth::socketConnected(){
 
     //Update residual states that normally update by events
     queryBatteryState();
+
+    //Real robot, must keep alive
+    if(relayClient == NULL)
+        btKeepAliveTimer.start();
 }
 
 void CelluloBluetooth::socketDisconnected(){
@@ -345,6 +366,7 @@ void CelluloBluetooth::socketDisconnected(){
 
     //Real robot
     if(relayClient == NULL){
+        btKeepAliveTimer.stop();
 
         //Reconnect if autoConnect
         if(autoConnect)
@@ -511,7 +533,7 @@ void CelluloBluetooth::processResponse(CelluloBluetoothPacket& externalPacket){
                 break;
 
             case CelluloBluetoothPacket::EventPacketTypeAcknowledged:
-                qDebug() << "CelluloBluetooth::processResponse(): Robot acknowledged";
+                emit acknowledged();
                 break;
 
             case CelluloBluetoothPacket::EventPacketTypeFrameLine: {
@@ -572,8 +594,13 @@ void CelluloBluetooth::sendCommand(){
 void CelluloBluetooth::sendCommand(CelluloBluetoothPacket const& externalPacket){
     if(relayClient != NULL)
         relayClient->sendToServer(macAddr, externalPacket);
-    else if(socket != NULL)
+    else if(socket != NULL){
         socket->write(externalPacket.getCmdSendData());
+
+        //Restart keep alive timeout
+        if(btKeepAliveTimer.isActive())
+            btKeepAliveTimer.start();
+    }
 }
 
 /*

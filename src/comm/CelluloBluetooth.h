@@ -118,6 +118,8 @@ public:
 
     static const int BT_CONNECT_TIMEOUT_MILLIS = 30000;       ///< Will try to reconnect after this much time
     static const int BT_CONNECT_TIMEOUT_MILLIS_PM = 5000;     ///< Variation in reconnect timeout
+    static const int BT_KEEP_ALIVE_MILLIS_DEFAULT = 4000;     ///< Bluetooth socket will send a packet at least this frequently
+    static const int BT_KEEP_ALIVE_MILLIS_ANDROID_26 = 500;   ///< Bluetooth socket will send a packet at least this frequently on Android >= 26
     static const int BT_BIND_FAIL_RECONNECT_MILLIS = 5000;    ///< After local adapter binding fail, will try to reconnect after this much time
     static const int BT_BIND_FAIL_RECONNECT_MILLIS_PM = 2500; ///< Variation in local adapter binding fail reconnect timeout
     static const int BT_WRONG_ADAPTER_CHECK_MILLIS = 1000;    ///< Period at which to check whether the socket is connected over the wrong local adapter
@@ -630,6 +632,11 @@ signals:
      */
     void lowBattery();
 
+    /**
+     * @brief Emitted when the robot acknowledges the ping
+     */
+    void acknowledged();
+
     /** @cond DO_NOT_DOCUMENT */
 
     /**
@@ -710,6 +717,7 @@ private:
     CelluloBluetoothPacket sendPacket;                        ///< Outgoing packet
     CelluloBluetoothPacket recvPacket;                        ///< Incoming packet
 
+    QTimer btKeepAliveTimer;                                  ///< Timeout timer to keep socket alive by sending a ping
     QTimer btConnectTimeoutTimer;                             ///< Timeout timer to reconnect if connection fails
     QBluetoothSocket* socket;                                 ///< Bluetooth socket connected to the server
     QString macAddr;                                          ///< Bluetooth MAC address of the server
