@@ -9,7 +9,7 @@ Entity{
 
     property var client
 
-    NodeInstantiator{
+    NodeInstantiator{ //Repeater for Entity's
         model: client.robots.length
 
         Entity{
@@ -48,8 +48,6 @@ Entity{
                 Transform{ translation: Qt.vector3d(sphereRoot.x, sphereRoot.y, sphereRoot.z) },
                 SphereMesh{ radius: 40 }
             ]
-
-            Component.onCompleted: console.log("*******************************************SPHERE COMPLETE " + index)
         }
     }
 
