@@ -129,4 +129,12 @@ Window{
             show_markers: false
         }
     }
+
+    Text{
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        textFormat: Text.RichText
+        text: "<a href=\"https://chili-epfl.github.io/privacy-policies/cellulo-swarm-ar-demo-privacy-policy.html\">Privacy policy</a>"
+        onLinkActivated: Qt.openUrlExternally(link)
+    }
 }
