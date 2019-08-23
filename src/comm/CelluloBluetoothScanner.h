@@ -93,7 +93,7 @@ signals:
      *
      * @param macAddr Mac address of the newly discovered robot
      */
-    void robotDiscovered(QString const& macAddr);
+    void robotDiscovered(QString const& macAddr,QString const& robotNb);
 
     /**
      * @brief Emitted when scanning finishes
@@ -150,6 +150,7 @@ private:
     bool continuous;                        ///< Whether to continuously scan
     QBluetoothDeviceDiscoveryAgent scanner; ///< Bluetooth device scanner
     QStringList foundRobots;                ///< List of robot MAC addresses that are found
+    QMap<QString, QString> address_map;
 
 };
 
