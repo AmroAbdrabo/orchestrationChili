@@ -26,6 +26,15 @@
 
 #include "CelluloCommUtil.h"
 
+#include <qbluetoothdeviceinfo.h>
+#include <qbluetoothaddress.h>
+#include <qbluetoothlocaldevice.h>
+#include <QtBluetooth/QBluetoothServiceInfo>
+#include <QtBluetooth/QBluetoothUuid>
+#include <QtBluetooth/QBluetoothDeviceDiscoveryAgent>
+#include <QtBluetooth/QBluetoothServiceDiscoveryAgent>
+
+
 #include <QBluetoothDeviceInfo>
 #include <QBluetoothHostInfo>
 #include <QBluetoothLocalDevice>
@@ -224,15 +233,19 @@ void CelluloBluetooth::openSocket(){
     if(socket != NULL){
         qDebug() << "CelluloBluetooth::openSocket(): To " << macAddr <<
             (localAdapterMacAddr != "" ? " over local adapter " + localAdapterMacAddr : "") << "...";
-
+        #ifdef ANDROID
         socket->connectToService(
             QBluetoothAddress(macAddr),
-            #ifdef ANDROID
-            QBluetoothUuid(QBluetoothUuid::SerialPort)
-            #else
-            1         //TODO: Temporary fix until https://bugreports.qt.io/browse/QTBUG-53041 is fixed
-            #endif
-            );
+            QBluetoothUuid(QBluetoothUuid::SerialPort));
+        #else
+            QBluetoothServiceInfo serviceInfo;
+            serviceInfo.setServiceUuid(QBluetoothUuid(QBluetoothUuid::SerialPort));
+            QString deviceName="Cellulo-"+macAddr.right(5).replace(":","");
+            //qDebug()<<deviceName<<macAddr;
+            serviceInfo.setDevice(QBluetoothDeviceInfo(QBluetoothAddress(macAddr),deviceName,31));
+            socket->connectToService(serviceInfo);
+        #endif
+
         startTimeoutTimer(BT_CONNECT_TIMEOUT_MILLIS, BT_CONNECT_TIMEOUT_MILLIS_PM);
         if(connectionStatus != CelluloBluetoothEnums::ConnectionStatusConnecting){
             connectionStatus = CelluloBluetoothEnums::ConnectionStatusConnecting;
