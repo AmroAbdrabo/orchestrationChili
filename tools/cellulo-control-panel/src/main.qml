@@ -40,10 +40,17 @@ ApplicationWindow {
 
                     MacAddrSelector{
                         id: macAddrSelector
+                        //(NOTE:) macAddrSelector.addresses is the list that is displayed in the gui. macAddrSelector.ids are the true mac Addresses to be able to connect
+                        // Keeping this notation, to be compatible with older version without cellulo numbers.
+
                         addresses: QMLCache.read("addresses").split(",")
+                        ids: QMLCache.read("ids").split(",")
                         onConnectRequested: {
+                            /*robotComm.localAdapterMacAddr = selectedLocalAdapterAddress;
+                            robotComm.macAddr = selectedAddress;*/
                             robotComm.localAdapterMacAddr = selectedLocalAdapterAddress;
-                            robotComm.macAddr = selectedAddress;
+                            robotComm.macAddr = ids[addresses.indexOf(selectedAddress)]
+
                         }
                         onDisconnectRequested: robotComm.disconnectFromServer()
                         connectionStatus: robotComm.connectionStatus
@@ -625,7 +632,9 @@ ApplicationWindow {
 
     CelluloBluetoothScanner{
         id: scanner
-        onRobotDiscovered: {
+        property var adList: []
+        property var nbList: []
+        /*onRobotDiscovered: {
             var newAddresses = macAddrSelector.addresses;
             if(newAddresses.indexOf(macAddr) < 0){
                 toast.show(macAddr + " discovered.");
@@ -634,7 +643,50 @@ ApplicationWindow {
             }
             macAddrSelector.addresses = newAddresses;
             QMLCache.write("addresses", macAddrSelector.addresses.join(','));
+        }*/
+
+        onRobotDiscovered: {
+            var newAddresses = scanner.adList;
+            var newNumbers=scanner.nbList;
+
+            if(newAddresses.indexOf(macAddr) < 0){
+                console.log(macAddr + " discovered.");
+                newAddresses.push(macAddr)
+                try{
+                    newNumbers.push(robotNb);
+                }
+
+                catch(error){
+                    console.log("Old version of CelluloBluetooth")
+                    newNumbers.push(macAddr);
+                }
+            }
+            //sorting with respect to the nbList
+            var mapped = newNumbers.map(function(el, i) {
+              return { index: i, value: el.toLowerCase() };
+            })
+
+            mapped.sort(function(a, b) {
+                  return a.value - b.value
+            });
+
+            // container for the resulting order
+            scanner.adList = mapped.map(function(el){
+              return newAddresses[el.index];
+            });
+            scanner.nbList = mapped.map(function(el){
+              return newNumbers[el.index];
+            });
+            //(NOTE:) macAddrSelector.addresses is the list that is displayed in the gui. macAddrSelector.ids are the true mac Addresses to be able to connect
+            // Keeping this notation, to be compatible with older version without cellulo numbers.
+            macAddrSelector.addresses=newNumbers
+            macAddrSelector.ids=newAddresses
+
+            QMLCache.write("addresses", newNumbers.join(','));
+            QMLCache.write("ids", newAddresses.join(','));
         }
+
+
     }
 
     BluetoothLocalDevice{ Component.onCompleted: powerOn() } //Doesn't work on Linux

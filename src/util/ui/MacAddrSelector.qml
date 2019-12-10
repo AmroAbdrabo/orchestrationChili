@@ -27,6 +27,9 @@ Row{
     /** type:list<string> List of possible MAC addresses, set by the user */
     property var addresses: []
 
+    /** type:list<string> List of possible ids mapped to MAC addresses, set by the user */
+    property var ids: []
+
     /** type:string Currently selected address. */
     readonly property string selectedAddress: selectionBox.currentText
 
