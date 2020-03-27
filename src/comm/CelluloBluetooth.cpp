@@ -101,6 +101,11 @@ void CelluloBluetooth::updatePosition(){
         x=x+timeStep*commandedvxyw.x()/1000;
         y=y+timeStep*commandedvxyw.y()/1000;
         theta=theta+timeStep*(commandedvxyw.z()*180/M_PI)/1000;
+        if(theta>360)
+            theta-=360;
+        else if (theta<0) {
+            theta+=360;
+        }
         emit poseChanged(x,y,theta);
     }
     else
