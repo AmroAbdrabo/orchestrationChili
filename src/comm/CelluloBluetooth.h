@@ -41,6 +41,15 @@
 #include "../zones/CelluloZonePolyBezier.h"
 #include "../tile/PoseRemapper.h"
 
+#include <qbluetoothdeviceinfo.h>
+#include <qbluetoothaddress.h>
+#include <qbluetoothlocaldevice.h>
+#include <QtBluetooth/QBluetoothServiceInfo>
+#include <QtBluetooth/QBluetoothUuid>
+#include <QtBluetooth/QBluetoothDeviceDiscoveryAgent>
+#include <QtBluetooth/QBluetoothServiceDiscoveryAgent>
+#include <math.h>
+
 namespace Cellulo{
 
 class CelluloRelayClient;
@@ -107,6 +116,9 @@ class CelluloBluetooth : public CelluloZoneClient {
 
     Q_PROPERTY(float cameraImageProgress READ getCameraImageProgress NOTIFY cameraImageProgressChanged)
 
+    Q_PROPERTY(bool simulatedCellulo WRITE setSimulatedCellulo READ getSimulatedCellulo NOTIFY simulatedCelluloChanged)
+
+    Q_PROPERTY(QVector3D initPose WRITE setInitSimulatedPose READ getInitSimulatedPose NOTIFY initSimulatedPoseChanged)
     /** @endcond */
 
     friend class CelluloRelayServer;
@@ -245,6 +257,9 @@ public:
     float getCameraImageProgress(){ return cameraImageProgress; }
 
     /** @endcond */
+    bool getSimulatedCellulo(){return simulatedCellulo;}
+    QVector3D getInitSimulatedPose(){return initPose;};
+
 
 private slots:
 
@@ -591,6 +606,12 @@ public slots:
      */
     void shutdown();
 
+    /**
+      *@brief Slot: update positions with respect to the velocity commanded.
+      */
+    void updatePosition();
+    void setSimulatedCellulo(bool simulated);
+    void setInitSimulatedPose(QVector3D initpos);
 signals:
 
     /** @cond DO_NOT_DOCUMENT */
@@ -708,6 +729,10 @@ signals:
      */
     void trackingGoalReached();
 
+    void simulatedCelluloChanged();
+    void initSimulatedPoseChanged();
+
+
 private:
 
     QString localAdapterMacAddr;                              ///< MAC address of the local adapter to use when connecting to the robot, only works on Linux
@@ -720,6 +745,7 @@ private:
     QTimer btKeepAliveTimer;                                  ///< Timeout timer to keep socket alive by sending a ping
     QTimer btConnectTimeoutTimer;                             ///< Timeout timer to reconnect if connection fails
     QBluetoothSocket* socket;                                 ///< Bluetooth socket connected to the server
+    QBluetoothServiceInfo serviceInfo;                       ///< Bluetooth service info
     QString macAddr;                                          ///< Bluetooth MAC address of the server
     CelluloBluetoothEnums::ConnectionStatus connectionStatus; ///< Bluetooth connection status
 
@@ -740,6 +766,12 @@ private:
 
     CelluloBluetoothEnums::Gesture gesture;                   ///< Current gesture
 
+
+    QTimer *timer;                                            ///<set timer for the simulated robot
+    bool simulatedCellulo;
+    float timeStep;
+    QVector3D commandedvxyw;
+    QVector3D initPose;
     /**
      * @brief Resets properties of the robot to default
      */

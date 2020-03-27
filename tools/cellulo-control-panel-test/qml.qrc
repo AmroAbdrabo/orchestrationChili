@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>src/main.qml</file>
+        <file>assets/blue.svg</file>
+        <file>assets/redgrid.svg</file>
+        <file>assets/redgrid.json</file>
+        <file>assets/redgrid_.json</file>
+    </qresource>
+</RCC>

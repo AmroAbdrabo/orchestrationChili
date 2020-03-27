@@ -23,10 +23,7 @@
  */
 
 #include "CelluloBluetooth.h"
-
 #include "CelluloCommUtil.h"
-
-
 
 #include <QBluetoothDeviceInfo>
 #include <QBluetoothHostInfo>
@@ -91,6 +88,23 @@ CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) : CelluloZoneClient(paren
     framerate = 0.0;
     kidnapped = true;
     gesture = CelluloBluetoothEnums::GestureNone;
+
+    simulatedCellulo=false;
+    timer=new QTimer(this);
+    timeStep=20;//in ms
+    commandedvxyw=QVector3D(0,0,0);
+
+}
+
+void CelluloBluetooth::updatePosition(){
+    if(simulatedCellulo){
+        x=x+timeStep*commandedvxyw.x()/1000;
+        y=y+timeStep*commandedvxyw.y()/1000;
+        theta=theta+timeStep*(commandedvxyw.z()*180/M_PI)/1000;
+        emit poseChanged(x,y,theta);
+    }
+    else
+        timer->stop();
 }
 
 CelluloBluetooth::~CelluloBluetooth(){
@@ -119,6 +133,11 @@ void CelluloBluetooth::resetProperties(){
         emit touchReleased(i);
     gesture = CelluloBluetoothEnums::GestureNone;
     emit gestureChanged();
+
+    if(simulatedCellulo)
+    {
+        commandedvxyw=QVector3D(0,0,0);
+    }
 }
 
 QVariantList CelluloBluetooth::getFrame() const {
@@ -131,6 +150,8 @@ QVariantList CelluloBluetooth::getFrame() const {
 }
 
 void CelluloBluetooth::setMacAddr(QString macAddr){
+    if(simulatedCellulo)
+        return;
     disconnectFromServer();
     if(this->macAddr != macAddr){
         this->macAddr = macAddr;
@@ -139,8 +160,34 @@ void CelluloBluetooth::setMacAddr(QString macAddr){
     if(!macAddr.isEmpty() && autoConnect)
         connectToServer();
 }
+void CelluloBluetooth::setInitSimulatedPose(QVector3D initpos){
+
+    initPose=QVector3D(initpos);
+    x=initPose.x();
+    y=initPose.y();
+    theta=initPose.z();
+    emit poseChanged_inherited();
+}
+void CelluloBluetooth::setSimulatedCellulo(bool simulated){
+    simulatedCellulo=simulated;
+    //Simulator addition:
+    if(simulatedCellulo){
+        x=initPose.x();
+        y=initPose.y();
+        theta=initPose.z();
+        timer=new QTimer(this);
+        connect(timer, SIGNAL(timeout()), this, SLOT(updatePosition()));
+        timer->start(timeStep);
+    }
+    else
+        timer->stop();
+    qDebug()<<"simulatedCellulo is "<<simulatedCellulo<<simulated;
+    emit simulatedCelluloChanged();
+}
 
 void CelluloBluetooth::setLocalAdapterMacAddr(QString localAdapterMacAddr){
+    if(simulatedCellulo)
+        return;
     if(relayClient == NULL){
     #if !defined(BT_MULTIADAPTER_SUPPORT)
         Q_UNUSED(localAdapterMacAddr);
@@ -165,11 +212,15 @@ void CelluloBluetooth::setLocalAdapterMacAddr(QString localAdapterMacAddr){
 }
 
 void CelluloBluetooth::startTimeoutTimer(int time, int pm){
+    if(simulatedCellulo)
+        return;
     btConnectTimeoutTimer.setInterval(time - pm + 2*(qrand() % pm));
     btConnectTimeoutTimer.start();
 }
 
 void CelluloBluetooth::setAutoConnect(bool autoConnect){
+    if(simulatedCellulo)
+        return;
     if(this->autoConnect != autoConnect){
         this->autoConnect = autoConnect;
         emit autoConnectChanged();
@@ -177,6 +228,8 @@ void CelluloBluetooth::setAutoConnect(bool autoConnect){
 }
 
 void CelluloBluetooth::setRelayClient(CelluloRelayClient* relayClient){
+    if(simulatedCellulo)
+        return;
     if(relayServer == NULL){
         disconnectFromServer();
         this->relayClient = relayClient;
@@ -186,6 +239,8 @@ void CelluloBluetooth::setRelayClient(CelluloRelayClient* relayClient){
 }
 
 void CelluloBluetooth::setRelayServer(CelluloRelayServer* relayServer){
+    if(simulatedCellulo)
+        return;
     if(relayClient == NULL)
         this->relayServer = relayServer;
     else
@@ -193,6 +248,8 @@ void CelluloBluetooth::setRelayServer(CelluloRelayServer* relayServer){
 }
 
 void CelluloBluetooth::refreshConnection(){
+    if(simulatedCellulo)
+        return;
     if(connectionStatus != CelluloBluetoothEnums::ConnectionStatusConnected){
         qDebug() << "CelluloBluetooth::refreshConnection(): Connection attempt timed out, will retry";
         disconnectFromServer();
@@ -209,6 +266,8 @@ void CelluloBluetooth::refreshConnection(){
 }
 
 void CelluloBluetooth::checkWrongAdapter(){
+    if(simulatedCellulo)
+        return;
     #if defined(BT_MULTIADAPTER_SUPPORT)
         if(connectionStatus != CelluloBluetoothEnums::ConnectionStatusConnected){
             int wrongAdapterDevID = -1;
@@ -223,15 +282,17 @@ void CelluloBluetooth::checkWrongAdapter(){
 }
 
 void CelluloBluetooth::openSocket(){
+    if(simulatedCellulo)
+        return;
     if(socket != NULL){
         qDebug() << "CelluloBluetooth::openSocket(): To " << macAddr <<
             (localAdapterMacAddr != "" ? " over local adapter " + localAdapterMacAddr : "") << "...";
         socket->connectToService(
             QBluetoothAddress(macAddr),
             #ifdef ANDROID
-            QBluetoothUuid(QBluetoothUuid::SerialPort));
+            QBluetoothUuid(QBluetoothUuid::SerialPort)
             #else
-            1               //TODO: Temporary fix until https://bugreports.qt.io/browse/QTBUG-53041 is fixed
+            QBluetoothUuid(QBluetoothUuid::SerialPort)//1               //TODO: Temporary fix until https://bugreports.qt.io/browse/QTBUG-53041 is fixed
             #endif
             );
 
@@ -251,6 +312,8 @@ void CelluloBluetooth::openSocket(){
 }
 
 void CelluloBluetooth::connectToServer(){
+    if(simulatedCellulo)
+        return;
 
     //Virtual robot (representing a real robot over a relay connection)
     if(relayClient != NULL){
@@ -272,7 +335,7 @@ void CelluloBluetooth::connectToServer(){
     //Real robot
     else if(socket == NULL){
         socket = new QBluetoothSocket(QBluetoothServiceInfo::RfcommProtocol);
-
+        qDebug()<<"socket is null";
         #if defined(BT_MULTIADAPTER_SUPPORT)
         if(!localAdapterMacAddr.isEmpty())
             if(!CelluloBluezUtil::bindToLocalAdapter(socket, localAdapterMacAddr))
@@ -290,6 +353,8 @@ void CelluloBluetooth::connectToServer(){
 }
 
 void CelluloBluetooth::disconnectFromServer(){
+    if(simulatedCellulo)
+        return;
 
     //Virtual robot (representing a real robot over a relay connection)
     if(relayClient != NULL){
@@ -329,6 +394,8 @@ void CelluloBluetooth::disconnectFromServer(){
 }
 
 void CelluloBluetooth::socketConnected(){
+    if(simulatedCellulo)
+        return;
     #if defined(BT_MULTIADAPTER_SUPPORT)
         if(localAdapterMacAddr != "" && relayClient == NULL){
             wrongAdapterCheckTimer.stop();
@@ -358,6 +425,8 @@ void CelluloBluetooth::socketConnected(){
 }
 
 void CelluloBluetooth::socketDisconnected(){
+    if(simulatedCellulo)
+        return;
     qDebug() << "CelluloBluetooth::socketDisconnected(): " << macAddr;
     if(connectionStatus != CelluloBluetoothEnums::ConnectionStatusDisconnected){
         connectionStatus = CelluloBluetoothEnums::ConnectionStatusDisconnected;
@@ -384,6 +453,7 @@ void CelluloBluetooth::socketDisconnected(){
 }
 
 void CelluloBluetooth::socketDataArrived(){
+
     QByteArray message = socket->readAll();
 
     for(int i=0; i<message.length(); i++)
@@ -717,31 +787,38 @@ void CelluloBluetooth::setAllMotorOutputs(int m1output, int m2output, int m3outp
 }
 
 void CelluloBluetooth::setGoalVelocity(float vx, float vy, float w){
-    int vx_ = (int)(vx*GOAL_VEL_FACTOR_SHARED);
-    int vy_ = (int)(vy*GOAL_VEL_FACTOR_SHARED);
-    int w_ = (int)(w*GOAL_VEL_FACTOR_SHARED);
+    if(simulatedCellulo){
+        commandedvxyw=QVector3D(vx,vy,w);
+    }
+    else{
+        int vx_ = (int)(vx*GOAL_VEL_FACTOR_SHARED);
+        int vy_ = (int)(vy*GOAL_VEL_FACTOR_SHARED);
+        int w_ = (int)(w*GOAL_VEL_FACTOR_SHARED);
 
-    if(vx_ < -0x7FFF)
-        vx_ = -0x7FFF;
-    else if(vx_ > 0x7FFF)
-        vx_ = 0x7FFF;
+        if(vx_ < -0x7FFF)
+            vx_ = -0x7FFF;
+        else if(vx_ > 0x7FFF)
+            vx_ = 0x7FFF;
 
-    if(vy_ < -0x7FFF)
-        vy_ = -0x7FFF;
-    else if(vy_ > 0x7FFF)
-        vy_ = 0x7FFF;
+        if(vy_ < -0x7FFF)
+            vy_ = -0x7FFF;
+        else if(vy_ > 0x7FFF)
+            vy_ = 0x7FFF;
 
-    if(w_ < -0x7FFF)
-        w_ = -0x7FFF;
-    else if(w_ > 0x7FFF)
-        w_ = 0x7FFF;
+        if(w_ < -0x7FFF)
+            w_ = -0x7FFF;
+        else if(w_ > 0x7FFF)
+            w_ = 0x7FFF;
 
-    sendPacket.clear();
-    sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeSetGoalVelocity);
-    sendPacket.load((qint16)vx_);
-    sendPacket.load((qint16)vy_);
-    sendPacket.load((qint16)w_);
-    sendCommand();
+        sendPacket.clear();
+        sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeSetGoalVelocity);
+        sendPacket.load((qint16)vx_);
+        sendPacket.load((qint16)vy_);
+        sendPacket.load((qint16)w_);
+        sendCommand();
+
+    }
+
 }
 
 void CelluloBluetooth::setGoalPose(float x, float y, float theta, float v, float w){
@@ -967,6 +1044,10 @@ void CelluloBluetooth::setGoalYThetaCoordinate(float y, float theta, float v, fl
 }
 
 void CelluloBluetooth::clearTracking(){
+    if(simulatedCellulo)
+    {
+        commandedvxyw=QVector3D(0,0,0);
+    }
     sendPacket.clear();
     sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeClearTracking);
     sendCommand();
