@@ -1,4 +1,5 @@
-# Simulated Cellulo
+Simulated Cellulo
+==================
 On this branch, There is an extension of the cellulo-qml-plugin where I added an option to enable testing on a virtual cellulo instead of connecting to a real cellulo.
 > you should build and install once you clone the new plugin. 
 
@@ -8,27 +9,33 @@ $ qt-install-root/qt-version/target-platform/bin/qmake ..
 $ sudo make -j5 install
 ```
 
-### New Properties:
+New Properties:
+---------------
 
   - simulatedCellulo: boolean, true to enbale simulated robot, false to connect to real robot. 
   - initPose: Vector3D sets initial pose for the simulated robot, is zero for real robot
 
-### Implemented functions: 
+Implemented functions: 
+-----------------------
 - setGoalVelocity 
 - update Pose (x,y,theta)
 - therefore all functionalities of zoneEngine works. 
 - TODO: implement setGoalPose
 
-### NOT Implemented functions: 
+NOT Implemented functions: 
+---------------------------
+
 - everything related to touch sensors
 - everything related to visual effects
 - everything related to haptics
 
-### Sample App:
+Sample App:
+-----------
 A sample app can be found in tools/cellulo-control-panel-test: 
 [Video Demo](https://drive.google.com/file/d/1BJgI9DHwUodLcxog78unA2E0oDTqkI7s/view?usp=sharing)
 
-### Moving robot on click example in qml : 
+Moving robot on click example in qml : 
+--------------------------------------
 click on the robot to choose the robot, click and drag the robot to make it move, click on the robot to deactivate manual movement. 
 ```
 CelluloRobot{
