@@ -802,9 +802,8 @@ void CelluloBluetooth::setAllMotorOutputs(int m1output, int m2output, int m3outp
 
 void CelluloBluetooth::setGoalVelocity(float vx, float vy, float w){
     if(simulatedCellulo){
-        qDebug() << "setGoalVelocity";
        // commandedvxyw=QVector3D(vx,vy,w);
-        simulatedRobot->setGoalVelocity(vx, vy ,w);
+       simulatedRobot->setGoalVelocity(vx, vy ,w);
     }
     else{
         int vx_ = (int)(vx*GOAL_VEL_FACTOR_SHARED);
@@ -890,6 +889,7 @@ void CelluloBluetooth::setGoalPosition(float x, float y, float v){
         float vx = (x/normXY)*v;
         float vy = (y/normXY)*v;
         qDebug() << "setGoalPosition";
+        simulatedRobot->setGoalPosition(x, y, v);
         setGoalVelocity(vx, vy, 0);
 
     } else {

@@ -30,7 +30,7 @@ CelluloSimulatedRobot::CelluloSimulatedRobot(){
     wGlobalGoalTracker = 0; ///Global w dictacted by active tracker
 }
 
-void CelluloSimulatedRobot::setGoalPose(int x, int y, int theta, float v, float w)
+void CelluloSimulatedRobot::setGoalPose(float x, float y, float theta, float v, float w)
 {
     goalPoseX = x;
     goalPoseY = y;
@@ -40,7 +40,7 @@ void CelluloSimulatedRobot::setGoalPose(int x, int y, int theta, float v, float 
     relevantGoalsReached = false;
 }
 
-void CelluloSimulatedRobot::setGoalPosition(int x, int y, float v){
+void CelluloSimulatedRobot::setGoalPosition(float x, float y, float v){
     goalPoseX = x;
     goalPoseY = y;
     goalPoseMaxV = v;
@@ -48,7 +48,7 @@ void CelluloSimulatedRobot::setGoalPosition(int x, int y, float v){
     relevantGoalsReached = false;
 }
 
-void CelluloSimulatedRobot::setGoalXCoordinate(int x, float v){
+void CelluloSimulatedRobot::setGoalXCoordinate(float x, float v){
     goalPoseX = x;
     goalPoseMaxV = v;
     goalPoseMaxW = 0;
@@ -56,7 +56,7 @@ void CelluloSimulatedRobot::setGoalXCoordinate(int x, float v){
     //***************************** CLEAR D AND I
 }
 
-void CelluloSimulatedRobot::setGoalYCoordinate(int y, float v){
+void CelluloSimulatedRobot::setGoalYCoordinate(float y, float v){
     goalPoseY = y;
     goalPoseMaxV = v;
     goalPoseMaxW = 0;
@@ -64,7 +64,7 @@ void CelluloSimulatedRobot::setGoalYCoordinate(int y, float v){
     //***************************** CLEAR D AND I
 }
 
-void CelluloSimulatedRobot::setGoalOrientation(int theta, float w){
+void CelluloSimulatedRobot::setGoalOrientation(float theta, float w){
     goalPoseTheta = theta;
     goalPoseMaxV = 0;
     goalPoseMaxW = w;

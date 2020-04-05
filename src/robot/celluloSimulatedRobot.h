@@ -36,11 +36,11 @@ public:
 
     CelluloSimulatedRobot();
 
-    void setGoalPose(int x, int y, int theta, float v, float w);
-    void setGoalPosition(int x, int y, float v);
-    void setGoalYCoordinate(int y, float v);
-    void setGoalXCoordinate(int x, float v);
-    void setGoalOrientation(int theta, float w);
+    void setGoalPose(float x, float y, float theta, float v, float w);
+    void setGoalPosition(float x, float y, float v);
+    void setGoalYCoordinate(float y, float v);
+    void setGoalXCoordinate(float x, float v);
+    void setGoalOrientation(float theta, float w);
     void setGoalVelocity(float vx, float vy, float w);
     void clearTracking();
     void trackPosition();
