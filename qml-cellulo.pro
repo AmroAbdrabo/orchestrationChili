@@ -46,6 +46,7 @@ HEADERS += \
     src/comm/relay/CelluloRobotHubClient.h \
     src/comm/relay/CelluloTcpRelayServer.h \
     src/comm/relay/CelluloTcpRelayClient.h \
+    src/robot/celluloSimulatedRobot.h \
     src/zones/CelluloZoneClient.h \
     src/zones/CelluloZonePoint.h \
     src/zones/CelluloZoneLine.h \
@@ -100,6 +101,7 @@ SOURCES += \
     src/comm/relay/CelluloRobotHubClient.cpp \
     src/comm/relay/CelluloTcpRelayServer.cpp \
     src/comm/relay/CelluloTcpRelayClient.cpp \
+    src/robot/celluloSimulatedRobot.cpp \
     src/zones/CelluloZoneClient.cpp \
     src/zones/CelluloZonePoint.cpp \
     src/zones/CelluloZoneLine.cpp \

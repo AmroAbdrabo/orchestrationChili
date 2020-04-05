@@ -49,6 +49,7 @@
 #include <QtBluetooth/QBluetoothDeviceDiscoveryAgent>
 #include <QtBluetooth/QBluetoothServiceDiscoveryAgent>
 #include <math.h>
+#include "../robot/celluloSimulatedRobot.h"
 
 namespace Cellulo{
 
@@ -769,9 +770,10 @@ private:
 
     QTimer *timer;                                            ///<set timer for the simulated robot
     bool simulatedCellulo;
+    CelluloSimulatedRobot* simulatedRobot;
     float timeStep;
-    QVector3D commandedvxyw;
     QVector3D initPose;
+    QVector3D commandedvxyw;
     /**
      * @brief Resets properties of the robot to default
      */

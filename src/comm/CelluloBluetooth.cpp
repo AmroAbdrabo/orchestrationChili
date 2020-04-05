@@ -89,18 +89,25 @@ CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) : CelluloZoneClient(paren
     kidnapped = true;
     gesture = CelluloBluetoothEnums::GestureNone;
 
+    simulatedRobot = new CelluloSimulatedRobot();
     simulatedCellulo=false;
     timer=new QTimer(this);
     timeStep=20;//in ms
-    commandedvxyw=QVector3D(0,0,0);
-
 }
 
 void CelluloBluetooth::updatePosition(){
     if(simulatedCellulo){
-        x=x+timeStep*commandedvxyw.x()/1000;
+       /* x=x+timeStep*commandedvxyw.x()/1000;
         y=y+timeStep*commandedvxyw.y()/1000;
         theta=theta+timeStep*(commandedvxyw.z()*180/M_PI)/1000;
+        if(theta>360)
+            theta-=360;
+        else if (theta<0) {
+            theta+=360;
+        }*/
+        x = x + timeStep*simulatedRobot->vxGlobalGoalTracker/1000;
+        y = y + timeStep*simulatedRobot->vyGlobalGoalTracker/1000;
+        theta = theta + timeStep*(simulatedRobot->wGlobalGoalTracker)/1000;
         if(theta>360)
             theta-=360;
         else if (theta<0) {
@@ -141,7 +148,8 @@ void CelluloBluetooth::resetProperties(){
 
     if(simulatedCellulo)
     {
-        commandedvxyw=QVector3D(0,0,0);
+        delete simulatedRobot;
+        simulatedRobot = new CelluloSimulatedRobot();
     }
 }
 
@@ -167,19 +175,20 @@ void CelluloBluetooth::setMacAddr(QString macAddr){
 }
 void CelluloBluetooth::setInitSimulatedPose(QVector3D initpos){
 
-    initPose=QVector3D(initpos);
-    x=initPose.x();
-    y=initPose.y();
-    theta=initPose.z();
+
+    simulatedRobot->poseX = initpos.x();
+    simulatedRobot->poseY = initpos.y();
+    simulatedRobot->poseTheta = initpos.z();
+    initPose = initpos;
     emit poseChanged_inherited();
 }
 void CelluloBluetooth::setSimulatedCellulo(bool simulated){
     simulatedCellulo=simulated;
     //Simulator addition:
     if(simulatedCellulo){
-        x=initPose.x();
-        y=initPose.y();
-        theta=initPose.z();
+        x=simulatedRobot->poseX;
+        y=simulatedRobot->poseX;
+        theta=simulatedRobot->poseTheta;
         timer=new QTimer(this);
         connect(timer, SIGNAL(timeout()), this, SLOT(updatePosition()));
         timer->start(timeStep);
@@ -793,7 +802,9 @@ void CelluloBluetooth::setAllMotorOutputs(int m1output, int m2output, int m3outp
 
 void CelluloBluetooth::setGoalVelocity(float vx, float vy, float w){
     if(simulatedCellulo){
-        commandedvxyw=QVector3D(vx,vy,w);
+        qDebug() << "setGoalVelocity";
+       // commandedvxyw=QVector3D(vx,vy,w);
+        simulatedRobot->setGoalVelocity(vx, vy ,w);
     }
     else{
         int vx_ = (int)(vx*GOAL_VEL_FACTOR_SHARED);
@@ -872,34 +883,45 @@ void CelluloBluetooth::setGoalPose(float x, float y, float theta, float v, float
 }
 
 void CelluloBluetooth::setGoalPosition(float x, float y, float v){
-    x *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
-    y *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
-    v *= GOAL_VEL_FACTOR_SHARED;
+    if(simulatedCellulo) {
+        //Todo speed changes(acceleration/descelaration)
+        //normalize (vx, vy) then scale by v
+        float normXY = sqrt(x*x + y*y);
+        float vx = (x/normXY)*v;
+        float vy = (y/normXY)*v;
+        qDebug() << "setGoalPosition";
+        setGoalVelocity(vx, vy, 0);
 
-    quint32 xi, yi;
-    quint16 vi;
+    } else {
+        x *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
+        y *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
+        v *= GOAL_VEL_FACTOR_SHARED;
 
-    if(x > (float)0xFFFFFFFF)
-        xi = 0xFFFFFFFF;
-    else
-        xi = (quint32)x;
+        quint32 xi, yi;
+        quint16 vi;
 
-    if(y > (float)0xFFFFFFFF)
-        yi = 0xFFFFFFFF;
-    else
-        yi = (quint32)y;
+        if(x > (float)0xFFFFFFFF)
+            xi = 0xFFFFFFFF;
+        else
+            xi = (quint32)x;
 
-    if(v > (float)0xFFFF)
-        vi = 0xFFFF;
-    else
-        vi = (quint16)v;
+        if(y > (float)0xFFFFFFFF)
+            yi = 0xFFFFFFFF;
+        else
+            yi = (quint32)y;
 
-    sendPacket.clear();
-    sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeSetGoalPosition);
-    sendPacket.load((quint32)xi);
-    sendPacket.load((quint32)yi);
-    sendPacket.load((quint16)vi);
-    sendCommand();
+        if(v > (float)0xFFFF)
+            vi = 0xFFFF;
+        else
+            vi = (quint16)v;
+
+        sendPacket.clear();
+        sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeSetGoalPosition);
+        sendPacket.load((quint32)xi);
+        sendPacket.load((quint32)yi);
+        sendPacket.load((quint16)vi);
+        sendCommand();
+    }
 }
 
 void CelluloBluetooth::setGoalXCoordinate(float x, float v){
@@ -1051,7 +1073,8 @@ void CelluloBluetooth::setGoalYThetaCoordinate(float y, float theta, float v, fl
 void CelluloBluetooth::clearTracking(){
     if(simulatedCellulo)
     {
-        commandedvxyw=QVector3D(0,0,0);
+        simulatedRobot->clearTracking();
+       // commandedvxyw=QVector3D(0,0,0);
     }
     sendPacket.clear();
     sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeClearTracking);
