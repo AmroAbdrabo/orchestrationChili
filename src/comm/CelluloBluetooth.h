@@ -117,7 +117,7 @@ class CelluloBluetooth : public CelluloZoneClient {
 
     Q_PROPERTY(float cameraImageProgress READ getCameraImageProgress NOTIFY cameraImageProgressChanged)
 
-    Q_PROPERTY(bool simulatedCellulo WRITE setSimulatedCellulo READ getSimulatedCellulo NOTIFY simulatedCelluloChanged)
+    Q_PROPERTY(bool isSimulation WRITE setIsSimulation READ getIsSimulation NOTIFY isSimulationChanged)
 
     Q_PROPERTY(QVector3D initPose WRITE setInitSimulatedPose READ getInitSimulatedPose NOTIFY initSimulatedPoseChanged)
     /** @endcond */
@@ -258,7 +258,7 @@ public:
     float getCameraImageProgress(){ return cameraImageProgress; }
 
     /** @endcond */
-    bool getSimulatedCellulo(){return simulatedCellulo;}
+    bool getIsSimulation(){return isSimulation;}
     QVector3D getInitSimulatedPose(){return initPose;};
 
 
@@ -611,7 +611,7 @@ public slots:
       *@brief Slot: update positions with respect to the velocity commanded.
       */
     void updatePosition();
-    void setSimulatedCellulo(bool simulated);
+    void setIsSimulation(bool simulated);
     void setInitSimulatedPose(QVector3D initpos);
 signals:
 
@@ -730,7 +730,7 @@ signals:
      */
     void trackingGoalReached();
 
-    void simulatedCelluloChanged();
+    void isSimulationChanged();
     void initSimulatedPoseChanged();
 
 
@@ -769,7 +769,7 @@ private:
 
 
     QTimer *timer;                                            ///<set timer for the simulated robot
-    bool simulatedCellulo;
+    bool isSimulation;
     CelluloSimulatedRobot* simulatedRobot;
     float timeStep;
     QVector3D initPose;

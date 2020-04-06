@@ -5,16 +5,17 @@
 #define VXY_MAX_INCREMENT 20.0f                    ///< Maximum increment for Vx,Vy in pose/position tracking
 #define W_MAX_INCREMENT 0.5f                       ///< Maximum increment for w in pose tracking
 
+
 class CelluloSimulatedRobot {
 public:
+    //int poseX;
+    //int poseY;
     int goalPoseX;
     int goalPoseY;
     int goalPoseTheta;
     int goalPoseMaxV;
     int goalPoseMaxW;
 
-    int poseX;
-    int poseY;
     int poseTheta;
     int bcastPeriod;
 
@@ -43,8 +44,7 @@ public:
     void setGoalOrientation(float theta, float w);
     void setGoalVelocity(float vx, float vy, float w);
     void clearTracking();
-    void trackPosition();
-
+    void trackPosition(float curX, float curY);
 };
 
 #endif // CELLULOSIMULATEDLOGIC_H

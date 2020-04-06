@@ -55,7 +55,7 @@ ApplicationWindow {
                         }
                     }
                 }
-                simulatedCellulo: true
+                isSimulation: true
 
                 initPose: img.isSelected?Qt.vector3d(img.x+img.width/2,img.y+img.height/2,img.rotation):robotComm.init
 

@@ -1,5 +1,6 @@
 #include "celluloSimulatedRobot.h"
 #include <math.h>
+#include <QDebug>
 
 #define abs(X) ((X) >= 0 ? (X) : -(X))
 #define max(X,Y) ((X) > (Y) ? (X) : (Y))
@@ -12,8 +13,8 @@ CelluloSimulatedRobot::CelluloSimulatedRobot(){
     goalPoseMaxV = 0;
     goalPoseMaxW = 0;
 
-    poseX = 0;
-    poseY = 0;
+    //poseX = 0;
+    //poseY = 0;
     poseTheta = 0;
     bcastPeriod = 0;
 
@@ -91,11 +92,14 @@ void CelluloSimulatedRobot::clearTracking(){
     wGlobalGoalTracker = 0;
 }
 
-void CelluloSimulatedRobot::trackPosition(){
-
+void CelluloSimulatedRobot::trackPosition(float curX, float curY){
+    //TODO find a way to link x, y and poseX, poseY to avoid redundancy
+    //added because x, y and in bluetooth class..
+    float poseX = curX;
+    float poseY = curY;
     //Get difference of goal and actual x, y in grid coordinates
-    float xDiff = (goalPoseX - poseX)/100.0f;
-    float yDiff = (goalPoseY - poseY)/100.0f;
+    float xDiff = (goalPoseX - poseX)/*100.0f*/;
+    float yDiff = (goalPoseY - poseY)/*100.0f*/;
 
     xGoalReached = abs(xDiff) < marginXY;
     yGoalReached = abs(yDiff) < marginXY;
@@ -162,5 +166,7 @@ void CelluloSimulatedRobot::trackPosition(){
         vyGlobalGoalTracker = vyGlobalGoalTracker - VXY_MAX_INCREMENT;
     else
         vyGlobalGoalTracker = vyGlobalGoalNew;
+
+    qDebug() << "vxGLobalGoalNew" << vxGlobalGoalTracker;
 }
 
