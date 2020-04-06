@@ -95,11 +95,10 @@ CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) : CelluloZoneClient(paren
     timeStep=20;//in ms
 }
 
-void CelluloBluetooth::updatePosition(){
+void CelluloBluetooth::updatePose(){
     if(isSimulation){
-        //only use trackPosition if we want to go to a given goalPosition, else dont need to!!! maybe thats why he has soo many trackingModes
-        //in his enum!!!!!!!!! mmmh
-        simulatedRobot->trackPosition(x, y);
+        simulatedRobot->updatePose(x, y, theta);
+        //TODO could just set them to the poseX poseY ? and do the computation inside?? would look nicer needa think about a little more
         x = x + timeStep*simulatedRobot->vxGlobalGoalTracker/1000;
         y = y + timeStep*simulatedRobot->vyGlobalGoalTracker/1000;
         theta = theta + timeStep*(simulatedRobot->wGlobalGoalTracker)/1000;
@@ -180,7 +179,7 @@ void CelluloBluetooth::setIsSimulation(bool simulated){
         y=initPose.y();
         theta=initPose.z();
         timer=new QTimer(this);
-        connect(timer, SIGNAL(timeout()), this, SLOT(updatePosition()));
+        connect(timer, SIGNAL(timeout()), this, SLOT(updatePose()));
         timer->start(timeStep);
     }
     else
@@ -792,7 +791,6 @@ void CelluloBluetooth::setAllMotorOutputs(int m1output, int m2output, int m3outp
 
 void CelluloBluetooth::setGoalVelocity(float vx, float vy, float w){
     if(isSimulation){
-       // commandedvxyw=QVector3D(vx,vy,w);
        simulatedRobot->setGoalVelocity(vx, vy ,w);
     }
     else{
@@ -827,61 +825,57 @@ void CelluloBluetooth::setGoalVelocity(float vx, float vy, float w){
 }
 
 void CelluloBluetooth::setGoalPose(float x, float y, float theta, float v, float w){
-    x *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
-    y *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
-    theta *= GOAL_POSE_FACTOR_SHARED;
-    v *= GOAL_VEL_FACTOR_SHARED;
-    w *= GOAL_VEL_FACTOR_SHARED;
+    if(isSimulation) {
+        simulatedRobot->setGoalPose(x, y, theta, v, w);
+    } else {
+        x *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
+        y *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
+        theta *= GOAL_POSE_FACTOR_SHARED;
+        v *= GOAL_VEL_FACTOR_SHARED;
+        w *= GOAL_VEL_FACTOR_SHARED;
 
-    quint32 xi, yi;
-    quint16 thetai, vi, wi;
+        quint32 xi, yi;
+        quint16 thetai, vi, wi;
 
-    if(x > (float)0xFFFFFFFF)
-        xi = 0xFFFFFFFF;
-    else
-        xi = (quint32)x;
+        if(x > (float)0xFFFFFFFF)
+            xi = 0xFFFFFFFF;
+        else
+            xi = (quint32)x;
 
-    if(y > (float)0xFFFFFFFF)
-        yi = 0xFFFFFFFF;
-    else
-        yi = (quint32)y;
+        if(y > (float)0xFFFFFFFF)
+            yi = 0xFFFFFFFF;
+        else
+            yi = (quint32)y;
 
-    if(theta > (float)0xFFFF)
-        thetai = 0xFFFF;
-    else
-        thetai = (quint16)theta;
+        if(theta > (float)0xFFFF)
+            thetai = 0xFFFF;
+        else
+            thetai = (quint16)theta;
 
-    if(v > (float)0xFFFF)
-        vi = 0xFFFF;
-    else
-        vi = (quint16)v;
+        if(v > (float)0xFFFF)
+            vi = 0xFFFF;
+        else
+            vi = (quint16)v;
 
-    if(w > (float)0xFFFF)
-        wi = 0xFFFF;
-    else
-        wi = (quint16)w;
+        if(w > (float)0xFFFF)
+            wi = 0xFFFF;
+        else
+            wi = (quint16)w;
 
-    sendPacket.clear();
-    sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeSetGoalPose);
-    sendPacket.load((quint32)xi);
-    sendPacket.load((quint32)yi);
-    sendPacket.load((quint16)thetai);
-    sendPacket.load((quint16)vi);
-    sendPacket.load((quint16)wi);
-    sendCommand();
+        sendPacket.clear();
+        sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeSetGoalPose);
+        sendPacket.load((quint32)xi);
+        sendPacket.load((quint32)yi);
+        sendPacket.load((quint16)thetai);
+        sendPacket.load((quint16)vi);
+        sendPacket.load((quint16)wi);
+        sendCommand();
+    }
 }
 
 void CelluloBluetooth::setGoalPosition(float x, float y, float v){
     if(isSimulation) {
-        //Todo speed changes(acceleration/descelaration)
-        //normalize (vx, vy) then scale by v
-        /*float normXY = sqrt(x*x + y*y);
-        float vx = (x/normXY)*v;
-        float vy = (y/normXY)*v;*/
-        qDebug() << "setGoalPosition";
         simulatedRobot->setGoalPosition(x, y, v);
-        //setGoalVelocity(vx, vy, 0);
-
     } else {
         x *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
         y *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
@@ -915,160 +909,179 @@ void CelluloBluetooth::setGoalPosition(float x, float y, float v){
 }
 
 void CelluloBluetooth::setGoalXCoordinate(float x, float v){
-    x *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
-    v *= GOAL_VEL_FACTOR_SHARED;
+    if(isSimulation) {
+        simulatedRobot->setGoalXCoordinate(x, v);
+    } else {
+        x *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
+        v *= GOAL_VEL_FACTOR_SHARED;
 
-    quint32 xi;
-    quint16 vi;
+        quint32 xi;
+        quint16 vi;
 
-    if(x > (float)0xFFFFFFFF)
-        xi = 0xFFFFFFFF;
-    else
-        xi = (quint32)x;
+        if(x > (float)0xFFFFFFFF)
+            xi = 0xFFFFFFFF;
+        else
+            xi = (quint32)x;
 
-    if(v > (float)0xFFFF)
-        vi = 0xFFFF;
-    else
-        vi = (quint16)v;
+        if(v > (float)0xFFFF)
+            vi = 0xFFFF;
+        else
+            vi = (quint16)v;
 
-    sendPacket.clear();
-    sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeSetGoalXCoordinate);
-    sendPacket.load((quint32)xi);
-    sendPacket.load((quint16)vi);
-    sendCommand();
+        sendPacket.clear();
+        sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeSetGoalXCoordinate);
+        sendPacket.load((quint32)xi);
+        sendPacket.load((quint16)vi);
+        sendCommand();
+    }
 }
 
 void CelluloBluetooth::setGoalYCoordinate(float y, float v){
-    y *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
-    v *= GOAL_VEL_FACTOR_SHARED;
+    if(isSimulation) {
+        simulatedRobot->setGoalYCoordinate(y, v);
+    } else {
+        y *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
+        v *= GOAL_VEL_FACTOR_SHARED;
 
-    quint32 yi;
-    quint16 vi;
+        quint32 yi;
+        quint16 vi;
 
-    if(y > (float)0xFFFFFFFF)
-        yi = 0xFFFFFFFF;
-    else
-        yi = (quint32)y;
+        if(y > (float)0xFFFFFFFF)
+            yi = 0xFFFFFFFF;
+        else
+            yi = (quint32)y;
 
-    if(v > (float)0xFFFF)
-        vi = 0xFFFF;
-    else
-        vi = (quint16)v;
+        if(v > (float)0xFFFF)
+            vi = 0xFFFF;
+        else
+            vi = (quint16)v;
 
-    sendPacket.clear();
-    sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeSetGoalYCoordinate);
-    sendPacket.load((quint32)yi);
-    sendPacket.load((quint16)vi);
-    sendCommand();
+        sendPacket.clear();
+        sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeSetGoalYCoordinate);
+        sendPacket.load((quint32)yi);
+        sendPacket.load((quint16)vi);
+        sendCommand();
+    }
 }
 
 void CelluloBluetooth::setGoalOrientation(float theta, float w){
-    theta *= GOAL_POSE_FACTOR_SHARED;
-    w *= GOAL_VEL_FACTOR_SHARED;
-    quint16 thetai, wi;
+    if(isSimulation) {
+        simulatedRobot->setGoalOrientation(theta, w);
+    } else {
+        theta *= GOAL_POSE_FACTOR_SHARED;
+        w *= GOAL_VEL_FACTOR_SHARED;
+        quint16 thetai, wi;
 
-    if(theta > (float)0xFFFF)
-        thetai = 0xFFFF;
-    else
-        thetai = (quint16)theta;
+        if(theta > (float)0xFFFF)
+            thetai = 0xFFFF;
+        else
+            thetai = (quint16)theta;
 
-    if(w > (float)0xFFFF)
-        wi = 0xFFFF;
-    else
-        wi = (quint16)w;
+        if(w > (float)0xFFFF)
+            wi = 0xFFFF;
+        else
+            wi = (quint16)w;
 
-    sendPacket.clear();
-    sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeSetGoalOrientation);
-    sendPacket.load((quint16)thetai);
-    sendPacket.load((quint16)wi);
-    sendCommand();
+        sendPacket.clear();
+        sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeSetGoalOrientation);
+        sendPacket.load((quint16)thetai);
+        sendPacket.load((quint16)wi);
+        sendCommand();
+    }
 }
 
 void CelluloBluetooth::setGoalXThetaCoordinate(float x, float theta, float v, float w){
-    x *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
-    theta *= GOAL_POSE_FACTOR_SHARED;
-    v *= GOAL_VEL_FACTOR_SHARED;
-    w *= GOAL_VEL_FACTOR_SHARED;
+    if(isSimulation) {
+        simulatedRobot->setGoalXThetaCoordinate(x, theta, v ,w);
+    } else {
+        x *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
+        theta *= GOAL_POSE_FACTOR_SHARED;
+        v *= GOAL_VEL_FACTOR_SHARED;
+        w *= GOAL_VEL_FACTOR_SHARED;
 
-    quint32 xi;
-    quint16 thetai, vi, wi;
+        quint32 xi;
+        quint16 thetai, vi, wi;
 
-    if(x > (float)0xFFFFFFFF)
-        xi = 0xFFFFFFFF;
-    else
-        xi = (quint32)x;
+        if(x > (float)0xFFFFFFFF)
+            xi = 0xFFFFFFFF;
+        else
+            xi = (quint32)x;
 
-    if(theta > (float)0xFFFF)
-        thetai = 0xFFFF;
-    else
-        thetai = (quint16)theta;
+        if(theta > (float)0xFFFF)
+            thetai = 0xFFFF;
+        else
+            thetai = (quint16)theta;
 
-    if(v > (float)0xFFFF)
-        vi = 0xFFFF;
-    else
-        vi = (quint16)v;
+        if(v > (float)0xFFFF)
+            vi = 0xFFFF;
+        else
+            vi = (quint16)v;
 
-    if(w > (float)0xFFFF)
-        wi = 0xFFFF;
-    else
-        wi = (quint16)w;
+        if(w > (float)0xFFFF)
+            wi = 0xFFFF;
+        else
+            wi = (quint16)w;
 
-    sendPacket.clear();
-    sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeSetGoalXThetaCoordinate);
-    sendPacket.load((quint32)xi);
-    sendPacket.load((quint16)thetai);
-    sendPacket.load((quint16)vi);
-    sendPacket.load((quint16)wi);
-    sendCommand();
+        sendPacket.clear();
+        sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeSetGoalXThetaCoordinate);
+        sendPacket.load((quint32)xi);
+        sendPacket.load((quint16)thetai);
+        sendPacket.load((quint16)vi);
+        sendPacket.load((quint16)wi);
+        sendCommand();
+    }
 }
 
 void CelluloBluetooth::setGoalYThetaCoordinate(float y, float theta, float v, float w){
-    y *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
-    theta *= GOAL_POSE_FACTOR_SHARED;
-    v *= GOAL_VEL_FACTOR_SHARED;
-    w *= GOAL_VEL_FACTOR_SHARED;
+    if(isSimulation) {
+        simulatedRobot->setGoalYThetaCoordinate(y, theta, v ,w);
+    } else {
+        y *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
+        theta *= GOAL_POSE_FACTOR_SHARED;
+        v *= GOAL_VEL_FACTOR_SHARED;
+        w *= GOAL_VEL_FACTOR_SHARED;
 
-    quint32 yi;
-    quint16 thetai, vi, wi;
+        quint32 yi;
+        quint16 thetai, vi, wi;
 
-    if(y > (float)0xFFFFFFFF)
-        yi = 0xFFFFFFFF;
-    else
-        yi = (quint32)y;
+        if(y > (float)0xFFFFFFFF)
+            yi = 0xFFFFFFFF;
+        else
+            yi = (quint32)y;
 
-    if(theta > (float)0xFFFF)
-        thetai = 0xFFFF;
-    else
-        thetai = (quint16)theta;
+        if(theta > (float)0xFFFF)
+            thetai = 0xFFFF;
+        else
+            thetai = (quint16)theta;
 
-    if(v > (float)0xFFFF)
-        vi = 0xFFFF;
-    else
-        vi = (quint16)v;
+        if(v > (float)0xFFFF)
+            vi = 0xFFFF;
+        else
+            vi = (quint16)v;
 
-    if(w > (float)0xFFFF)
-        wi = 0xFFFF;
-    else
-        wi = (quint16)w;
+        if(w > (float)0xFFFF)
+            wi = 0xFFFF;
+        else
+            wi = (quint16)w;
 
-    sendPacket.clear();
-    sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeSetGoalYThetaCoordinate);
-    sendPacket.load((quint32)yi);
-    sendPacket.load((quint16)thetai);
-    sendPacket.load((quint16)vi);
-    sendPacket.load((quint16)wi);
-    sendCommand();
+        sendPacket.clear();
+        sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeSetGoalYThetaCoordinate);
+        sendPacket.load((quint32)yi);
+        sendPacket.load((quint16)thetai);
+        sendPacket.load((quint16)vi);
+        sendPacket.load((quint16)wi);
+        sendCommand();
+    }
 }
 
 void CelluloBluetooth::clearTracking(){
-    if(isSimulation)
-    {
+    if(isSimulation) {
         simulatedRobot->clearTracking();
-       // commandedvxyw=QVector3D(0,0,0);
+    } else {
+        sendPacket.clear();
+        sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeClearTracking);
+        sendCommand();
     }
-    sendPacket.clear();
-    sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeClearTracking);
-    sendCommand();
 }
 
 void CelluloBluetooth::simpleVibrate(float iX, float iY, float iTheta, unsigned int period, unsigned int duration){

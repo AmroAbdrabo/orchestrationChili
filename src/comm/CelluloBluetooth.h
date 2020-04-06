@@ -610,7 +610,7 @@ public slots:
     /**
       *@brief Slot: update positions with respect to the velocity commanded.
       */
-    void updatePosition();
+    void updatePose();
     void setIsSimulation(bool simulated);
     void setInitSimulatedPose(QVector3D initpos);
 signals:
