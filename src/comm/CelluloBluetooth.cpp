@@ -98,7 +98,6 @@ CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) : CelluloZoneClient(paren
 void CelluloBluetooth::updatePose(){
     if(isSimulation){
         simulatedRobot->updatePose(x, y, theta);
-        //TODO could just set them to the poseX poseY ? and do the computation inside?? would look nicer needa think about a little more
         x = x + timeStep*simulatedRobot->vxGlobalGoalTracker/1000;
         y = y + timeStep*simulatedRobot->vyGlobalGoalTracker/1000;
         theta = theta + timeStep*(simulatedRobot->wGlobalGoalTracker)/1000;
