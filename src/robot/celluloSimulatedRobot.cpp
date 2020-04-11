@@ -75,7 +75,26 @@ void CelluloSimulatedRobot::setGoalOrientation(float theta, float w){
     goalPoseMaxW = w;
     currentMotionTracker = MOTION_TRACKER_ORIENTATION;
     relevantGoalsReached = false;
-    //***************************** CLEAR D AND I
+}
+
+void CelluloSimulatedRobot::setGoalXThetaCoordinate(float x, float theta, float v, float w)
+{
+    goalPoseX = x;
+    goalPoseTheta = theta;
+    goalPoseMaxV = v;
+    goalPoseMaxW = w;
+    currentMotionTracker = MOTION_TRACKER_X_THETA_COORDINATE;
+    relevantGoalsReached = false;
+}
+
+void CelluloSimulatedRobot::setGoalYThetaCoordinate(float y, float theta, float v, float w)
+{
+    goalPoseY = y;
+    goalPoseTheta = theta;
+    goalPoseMaxV = v;
+    goalPoseMaxW = w;
+    currentMotionTracker = MOTION_TRACKER_Y_THETA_COORDINATE;
+    relevantGoalsReached = false;
 }
 
 void CelluloSimulatedRobot::setGoalVelocity(float vx, float vy, float w){
@@ -204,6 +223,7 @@ void CelluloSimulatedRobot::trackOrientation(bool goalless) {
 void CelluloSimulatedRobot::trackPosition(){
     //TODO find a way to link x, y and poseX, poseY to avoid redundancy
     //added because x, y and in bluetooth class..
+
     //Get difference of goal and actual x, y in grid coordinates
     float xDiff = (goalPoseX - poseX)/*100.0f*/;
     float yDiff = (goalPoseY - poseY)/*100.0f*/;
