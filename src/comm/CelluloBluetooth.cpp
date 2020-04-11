@@ -167,8 +167,12 @@ void CelluloBluetooth::setMacAddr(QString macAddr){
         connectToServer();
 }
 void CelluloBluetooth::setInitSimulatedPose(QVector3D initpos){
+    initPose=QVector3D(initpos);
     initPose = initpos;
-    emit poseChanged_inherited();
+    x=initPose.x();
+    y=initPose.y();
+    theta=initPose.z();
+    emit poseChanged(x,y,theta);
 }
 void CelluloBluetooth::setIsSimulation(bool simulated){
     isSimulation=simulated;
