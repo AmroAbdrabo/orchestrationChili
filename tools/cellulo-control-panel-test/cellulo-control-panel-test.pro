@@ -2,7 +2,8 @@ TEMPLATE = app
 
 QT += qml quick bluetooth
 
-SOURCES += src/main.cpp
+SOURCES += src/main.cpp \
+    src/paper.cpp
 
 RESOURCES += qml.qrc
 
@@ -68,3 +69,6 @@ winrt {
     WINRT_MANIFEST.logo_44x44 = assets/winrt-logo-44-44.png
     WINRT_MANIFEST.logo_620x300 = assets/winrt-logo-620-300.png
 }
+
+HEADERS += \
+    src/paper.h

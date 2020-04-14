@@ -47,12 +47,12 @@ Item {
                 Image{
                     id:img1
                     source: 'qrc:/assets/blue.svg'
-                    width: 75 * window2.width/500
-                    height: 75 * window2.height/500
+                    width: 75 * window2.width/paper.width;
+                    height: 75 * window2.height/paper.height;
 
                     property bool isSelected: false
-                    x: isSelected?img1.x:(robotComm1.x  * window2.width / 500) -img1.width/2
-                    y: isSelected?img1.y:(robotComm1.y * window2.height / 500)-img1.height/2
+                    x: isSelected?img1.x:(robotComm1.x * window2.width / paper.width) - img1.width/2
+                    y: isSelected?img1.y:(robotComm1.y * window2.height / paper.height) - img1.height/2
                     rotation: robotComm1.theta
 
                     MouseArea {
@@ -117,12 +117,12 @@ Item {
                 Image{
                     id:img2
                     source: 'qrc:/assets/blue.svg'
-                    width: 75 * window2.width / 500
-                    height: 75* window2.height / 500
+                    width: 75 * window2.width / paper.width
+                    height: 75* window2.height / paper.height
 
                     property bool isSelected: false
-                    x: isSelected?img2.x:(robotComm2.x* window2.width / 500)-img2.width/2
-                    y: isSelected?img2.y:(robotComm2.y * window2.height / 500) -img2.height/2
+                    x: isSelected?img2.x:(robotComm2.x* window2.width / paper.width)-img2.width/2
+                    y: isSelected?img2.y:(robotComm2.y * window2.height / paper.height) -img2.height/2
                     rotation: robotComm2.theta
 
                     MouseArea {
@@ -321,6 +321,17 @@ Item {
                                 text: "X=" + robotComm1.x.toFixed(2) + "mm Y=" + robotComm1.y.toFixed(2) + "mm Theta=" + robotComm1.theta.toFixed(1) + "deg"+ "Vx=" + robotComm1.vx.toFixed(0) + " mm/s Y=" + robotComm1.vy.toFixed(0)
                             }
                         }
+                        Row{
+                            spacing: 5
+
+                            Text{
+                                text: "Kidnapped?"
+                                color: robotComm2.kidnapped ? "red" : "green"
+                            }
+                            Text{
+                                text: "X=" + robotComm2.x.toFixed(2) + "mm Y=" + robotComm2.y.toFixed(2) + "mm Theta=" + robotComm2.theta.toFixed(1) + "deg"+ "Vx=" + robotComm2.vx.toFixed(0) + " mm/s Y=" + robotComm2.vy.toFixed(0)
+                            }
+                        }
                     }
                 }
 
@@ -342,6 +353,45 @@ Item {
                         Button {
                             text: "Query Battery State"
                             onClicked: robotComm1.queryBatteryState();
+                        }
+                    }
+                }
+
+                GroupBox {
+                    title: "Paper size"
+                    width: gWidth
+
+                    Row{
+                        spacing: 5
+
+                        Button{
+                            text: "Default"
+                            onClicked: {
+                                paper.height = 500
+                                paper.width = 500
+                            }
+
+                        }
+                        Button{
+                            text: "A4"
+                            onClicked: {
+                                paper.height = 210
+                                paper.width = 297
+                            }
+                        }
+                        Button {
+                            text: "A3"
+                            onClicked: {
+                                paper.height = 297
+                                paper.width = 420
+                            }
+                        }
+                        Button {
+                            text: "A2"
+                            onClicked: {
+                                paper.height = 420
+                                paper.width = 594
+                            }
                         }
                     }
                 }

@@ -2,6 +2,8 @@
 #include <QQmlApplicationEngine>
 #include <QtBluetooth>
 #include <QQuickWindow>
+#include <QQmlContext>
+#include "paper.h"
 
 int main(int argc, char *argv[])
 {
@@ -10,6 +12,10 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
+
+    Paper *paper = new Paper();
+
+    engine.rootContext()->setContextProperty("paper", paper);
 
     engine.load(QUrl(QStringLiteral("qrc:///src/main.qml")));
 
