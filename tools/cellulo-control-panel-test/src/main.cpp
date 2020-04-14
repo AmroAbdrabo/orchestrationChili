@@ -1,6 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QtBluetooth>
+#include <QQuickWindow>
 
 int main(int argc, char *argv[])
 {
@@ -11,6 +12,15 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
 
     engine.load(QUrl(QStringLiteral("qrc:///src/main.qml")));
+
+    QQuickWindow *wnd1 = engine.rootObjects()[0]->findChild<QQuickWindow *>("controls window");
+        if(wnd1)
+            wnd1->setTitle("Control panel");
+    QQuickWindow *wnd2 = engine.rootObjects()[0]->findChild<QQuickWindow *>("robot display window");
+        if(wnd2)
+            wnd2->setTitle("Display");
+    wnd1->show();
+    wnd2->show();
 
     return app.exec();
 }

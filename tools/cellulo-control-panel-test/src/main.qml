@@ -9,40 +9,50 @@ import Cellulo 1.0
 import QMLCache 1.0
 import QMLBluetoothExtras 1.0
 
-ApplicationWindow {
-    id: window
-    visible: true
 
-    function em(x){ return Math.round(x*TextSingleton.font.pixelSize); }
+Item {
 
-    property bool mobile: Qt.platform.os === "android"
-    property bool winrt: Qt.platform.os === "winrt"
-    property real gWidth: mobile ? Screen.width : 800
-    property bool activateManual: false
-    width: gWidth
-    height: mobile ? Screen.desktopAvailableHeight : 0.7*Screen.height
-    function radiansToDegrees(rad){return rad * 180/Math.PI;}
+     function em(x){ return Math.round(x*TextSingleton.font.pixelSize); }
+     function radiansToDegrees(rad){return rad * 180/Math.PI;}
+     property bool mobile: Qt.platform.os === "android"
+     property bool winrt: Qt.platform.os === "winrt"
+     property real gWidth: mobile ? Screen.width : 800
+     property bool activateManual: false
 
-    ToastManager{ id: toast }
+    //window for robot and grid
+    Window {
+        objectName: "robot display window"
+        id: window2
+        visible: true
 
-    ScrollView {
-        anchors.fill: parent
-        horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
-        verticalScrollBarPolicy: mobile ? Qt.ScrollBarAsNeeded : Qt.ScrollBarAlwaysOff
+
+        width: gWidth
+        height: mobile ? Screen.desktopAvailableHeight : 0.7*Screen.height
+        ToastManager{ id: toast }
+
 
         Column{
+           id: itemsCol
+           Image{
+                source: 'qrc:/assets/redgrid.svg'
+                x:0
+                y:0
+                sourceSize.width: window2.width;
+                sourceSize.height: window2.height;
+            }
+
             CelluloRobot{
                 id: robotComm1
                 property var init: Qt.vector3d(0,0,0)
                 Image{
                     id:img1
                     source: 'qrc:/assets/blue.svg'
-                    width: 75
-                    height: 75
+                    width: 75 * window2.width/500
+                    height: 75 * window2.height/500
 
                     property bool isSelected: false
-                    x: isSelected?img1.x:robotComm1.x-img1.width/2
-                    y: isSelected?img1.y:robotComm1.y-img1.height/2
+                    x: isSelected?img1.x:(robotComm1.x  * window2.width / 500) -img1.width/2
+                    y: isSelected?img1.y:(robotComm1.y * window2.height / 500)-img1.height/2
                     rotation: robotComm1.theta
 
                     MouseArea {
@@ -107,12 +117,12 @@ ApplicationWindow {
                 Image{
                     id:img2
                     source: 'qrc:/assets/blue.svg'
-                    width: 75
-                    height: 75
+                    width: 75 * window2.width / 500
+                    height: 75* window2.height / 500
 
                     property bool isSelected: false
-                    x: isSelected?img2.x:robotComm2.x-img2.width/2
-                    y: isSelected?img2.y:robotComm2.y-img2.height/2
+                    x: isSelected?img2.x:(robotComm2.x* window2.width / 500)-img2.width/2
+                    y: isSelected?img2.y:(robotComm2.y * window2.height / 500) -img2.height/2
                     rotation: robotComm2.theta
 
                     MouseArea {
@@ -171,420 +181,442 @@ ApplicationWindow {
 
 
             }
-            id: itemsCol
-                Image{
-                    source: 'qrc:/assets/redgrid.svg'
-                    x:0
-                    y:0
-                    sourceSize.width: 500
-                    sourceSize.height: 500
+        }
+    }
+
+    Window {
+        objectName: "controls window"
+        id: window1
+        visible: true
+
+        /*Button {
+                anchors.centerIn: parent
+                text: qsTr("Click me")
+
+                onClicked: {
+                    var component = Qt.createComponent("RobotDisplay.qml")
+                    var window2    = component.createObject(window)
+                    window2.show()
+                }
+            }*/
+
+        width: gWidth
+        height: mobile ? Screen.desktopAvailableHeight : 0.7*Screen.height
+
+
+        ScrollView {
+            anchors.fill: parent
+            horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
+            verticalScrollBarPolicy: mobile ? Qt.ScrollBarAsNeeded : Qt.ScrollBarAlwaysOff
+
+            Column{
+
+                GroupBox {
+                    title: "Robot Address"
+                    width: gWidth
+
+                    Column{
+                        spacing: 5
+
+                        MacAddrSelector{
+                            id: macAddrSelector
+                            //(NOTE:) macAddrSelector.addresses is the list that is displayed in the gui. macAddrSelector.ids are the true mac Addresses to be able to connect
+                            // Keeping this notation, to be compatible with older version without cellulo numbers.
+
+                            addresses: QMLCache.read("addresses").split(",")
+                            ids: QMLCache.read("ids").split(",")
+                            onConnectRequested: {
+                                /*robotComm.localAdapterMacAddr = selectedLocalAdapterAddress;
+                                robotComm.macAddr = selectedAddress;*/
+                                robotComm1.localAdapterMacAddr = selectedLocalAdapterAddress;
+                                robotComm1.macAddr = ids[addresses.indexOf(selectedAddress)]
+
+                            }
+                            onDisconnectRequested: robotComm1.disconnectFromServer()
+                            connectionStatus: robotComm1.connectionStatus
+                        }
+
+                        Row{
+                            spacing: 5
+
+                            BusyIndicator{
+                                running: scanner.scanning
+                                height: scanButton.height
+                            }
+
+                            Button{
+                                id: scanButton
+                                text: "Scan"
+                                onClicked: scanner.start()
+                            }
+
+                            Button{
+                                text: "Clear List"
+                                onClicked: {
+                                    macAddrSelector.addresses = [];
+                                    QMLCache.write("addresses","");
+                                }
+                            }
+
+                            Text{
+                                visible: winrt
+                                text: "Robots must first be paired from OS Bluetooth settings to appear in scan!"
+                            }
+                        }
+                    }
                 }
 
-            GroupBox {
-                title: "Robot Address"
-                width: gWidth
+                GroupBox {
+                    title: "Status"
+                    width: gWidth
 
-                Column{
-                    spacing: 5
+                    Column{
+                        spacing: 5
 
-                    MacAddrSelector{
-                        id: macAddrSelector
-                        //(NOTE:) macAddrSelector.addresses is the list that is displayed in the gui. macAddrSelector.ids are the true mac Addresses to be able to connect
-                        // Keeping this notation, to be compatible with older version without cellulo numbers.
+                        Row{
+                            spacing: 5
 
-                        addresses: QMLCache.read("addresses").split(",")
-                        ids: QMLCache.read("ids").split(",")
-                        onConnectRequested: {
-                            /*robotComm.localAdapterMacAddr = selectedLocalAdapterAddress;
-                            robotComm.macAddr = selectedAddress;*/
-                            robotComm1.localAdapterMacAddr = selectedLocalAdapterAddress;
-                            robotComm1.macAddr = ids[addresses.indexOf(selectedAddress)]
-
+                            Text{
+                                text: "Battery State: " + CelluloBluetoothEnums.BatteryStateString(robotComm1.batteryState)
+                            }
+                            Text{
+                                id: k0
+                                text: "K0"
+                                color: "black"
+                            }
+                            Text{
+                                id: k1
+                                text: "K1"
+                                color: "black"
+                            }
+                            Text{
+                                id: k2
+                                text: "K2"
+                                color: "black"
+                            }
+                            Text{
+                                id: k3
+                                text: "K3"
+                                color: "black"
+                            }
+                            Text{
+                                id: k4
+                                text: "K4"
+                                color: "black"
+                            }
+                            Text{
+                                id: k5
+                                text: "K5"
+                                color: "black"
+                            }
                         }
-                        onDisconnectRequested: robotComm1.disconnectFromServer()
-                        connectionStatus: robotComm1.connectionStatus
+                        Row{
+                            spacing: 5
+
+                            Text{
+                                text: "Kidnapped?"
+                                color: robotComm1.kidnapped ? "red" : "green"
+                            }
+                            Text{
+                                text: "X=" + robotComm1.x.toFixed(2) + "mm Y=" + robotComm1.y.toFixed(2) + "mm Theta=" + robotComm1.theta.toFixed(1) + "deg"+ "Vx=" + robotComm1.vx.toFixed(0) + " mm/s Y=" + robotComm1.vy.toFixed(0)
+                            }
+                        }
                     }
+                }
+
+                GroupBox {
+                    title: "Power"
+                    width: gWidth
 
                     Row{
                         spacing: 5
 
-                        BusyIndicator{
-                            running: scanner.scanning
-                            height: scanButton.height
-                        }
-
                         Button{
-                            id: scanButton
-                            text: "Scan"
-                            onClicked: scanner.start()
+                            text: "Reset"
+                            onClicked: robotComm1.reset();
                         }
-
                         Button{
-                            text: "Clear List"
-                            onClicked: {
-                                macAddrSelector.addresses = [];
-                                QMLCache.write("addresses","");
-                            }
+                            text: "Shutdown"
+                            onClicked: robotComm1.shutdown();
                         }
-
-                        Text{
-                            visible: winrt
-                            text: "Robots must first be paired from OS Bluetooth settings to appear in scan!"
+                        Button {
+                            text: "Query Battery State"
+                            onClicked: robotComm1.queryBatteryState();
                         }
                     }
                 }
-            }
-
-            GroupBox {
-                title: "Status"
-                width: gWidth
-
-                Column{
-                    spacing: 5
-
-                    Row{
-                        spacing: 5
-
-                        Text{
-                            text: "Battery State: " + CelluloBluetoothEnums.BatteryStateString(robotComm1.batteryState)
-                        }
-                        Text{
-                            id: k0
-                            text: "K0"
-                            color: "black"
-                        }
-                        Text{
-                            id: k1
-                            text: "K1"
-                            color: "black"
-                        }
-                        Text{
-                            id: k2
-                            text: "K2"
-                            color: "black"
-                        }
-                        Text{
-                            id: k3
-                            text: "K3"
-                            color: "black"
-                        }
-                        Text{
-                            id: k4
-                            text: "K4"
-                            color: "black"
-                        }
-                        Text{
-                            id: k5
-                            text: "K5"
-                            color: "black"
-                        }
-                    }
-                    Row{
-                        spacing: 5
-
-                        Text{
-                            text: "Kidnapped?"
-                            color: robotComm1.kidnapped ? "red" : "green"
-                        }
-                        Text{
-                            text: "X=" + robotComm1.x.toFixed(2) + "mm Y=" + robotComm1.y.toFixed(2) + "mm Theta=" + robotComm1.theta.toFixed(1) + "deg"+ "Vx=" + robotComm1.vx.toFixed(0) + " mm/s Y=" + robotComm1.vy.toFixed(0)
-                        }
-                    }
-                }
-            }
-
-            GroupBox {
-                title: "Power"
-                width: gWidth
-
-                Row{
-                    spacing: 5
-
-                    Button{
-                        text: "Reset"
-                        onClicked: robotComm1.reset();
-                    }
-                    Button{
-                        text: "Shutdown"
-                        onClicked: robotComm1.shutdown();
-                    }
-                    Button {
-                        text: "Query Battery State"
-                        onClicked: robotComm1.queryBatteryState();
-                    }
-                }
-            }
 
 
-            GroupBox {
-                title: "Locomotion"
-                width: gWidth
+                GroupBox {
+                    title: "Locomotion"
+                    width: gWidth
 
 
-                Column{
-                    anchors.fill: parent
+                    Column{
+                        anchors.fill: parent
 
-                    Row{
-                        spacing: 15
+                        Row{
+                            spacing: 15
 
-                        Column{
-                            Text{ text: "Goal coordinates:" }
+                            Column{
+                                Text{ text: "Goal coordinates:" }
 
-                            TextField{ id: goalPoseX; placeholderText: "x (mm)" }
-                            TextField{ id: goalPoseY; placeholderText: "y (mm)" }
-                            TextField{ id: goalPoseTheta; placeholderText: "theta (degrees)"; }
-                            TextField{ id: goalPoseMaxV; placeholderText: "v (mm/s)" }
-                            TextField{ id: goalPoseMaxW; placeholderText: "w (rad/s)" }
+                                TextField{ id: goalPoseX; placeholderText: "x (mm)" }
+                                TextField{ id: goalPoseY; placeholderText: "y (mm)" }
+                                TextField{ id: goalPoseTheta; placeholderText: "theta (degrees)"; }
+                                TextField{ id: goalPoseMaxV; placeholderText: "v (mm/s)" }
+                                TextField{ id: goalPoseMaxW; placeholderText: "w (rad/s)" }
+
+                                Button{
+                                    text: "Track complete pose"
+                                    onClicked: robotComm1.setGoalPose(
+                                                   parseFloat(goalPoseX.text),
+                                                   parseFloat(goalPoseY.text),
+                                                   radiansToDegrees(parseFloat(goalPoseTheta.text)),
+                                                   parseFloat(goalPoseMaxV.text),
+                                                   radiansToDegrees(parseFloat(goalPoseMaxW.text))
+                                                   )
+                                }
+                                Button{
+                                    text: "Track position"
+                                    onClicked: robotComm1.setGoalPosition(
+                                                   parseFloat(goalPoseX.text),
+                                                   parseFloat(goalPoseY.text),
+                                                   parseFloat(goalPoseMaxV.text)
+                                                   )
+                                }
+                                Button{
+                                    text: "Track orientation"
+                                    onClicked: robotComm1.setGoalOrientation(
+                                                   radiansToDegrees(parseFloat((goalPoseTheta.text))),
+                                                   radiansToDegrees(parseFloat(goalPoseMaxW.text))
+                                                   )
+                                }
+                                Button{
+                                    text: "Track X"
+                                    onClicked: robotComm1.setGoalXCoordinate(
+                                                   parseFloat(goalPoseX.text),
+                                                   parseFloat(goalPoseMaxV.text)
+                                                   )
+                                }
+                                Button{
+                                    text: "Track Y"
+                                    onClicked: robotComm1.setGoalYCoordinate(
+                                                   parseFloat(goalPoseY.text),
+                                                   parseFloat(goalPoseMaxV.text)
+                                                   )
+                                }
+                                Button{
+                                    text: "Track X and Theta"
+                                    onClicked: robotComm1.setGoalXThetaCoordinate(
+                                                   parseFloat(goalPoseX.text),
+                                                   radiansToDegrees(parseFloat(goalPoseTheta.text)),
+                                                   parseFloat(goalPoseMaxV.text),
+                                                   radiansToDegrees(parseFloat(goalPoseMaxW.text))
+                                                   )
+                                }
+                                Button{
+                                    text: "Track Y and Theta"
+                                    onClicked: robotComm1.setGoalYThetaCoordinate(
+                                                   parseFloat(goalPoseY.text),
+                                                   radiansToDegrees(parseFloat(goalPoseTheta.text)),
+                                                   parseFloat(goalPoseMaxV.text),
+                                                   radiansToDegrees(parseFloat(goalPoseMaxW.text))
+                                                   )
+                                }
+                            }
+
+                            Column{
+                                Label{ text: "Goal velocity:" }
+                                TextField{ id: goalVelX; placeholderText: "vx (mm/s)" }
+                                TextField{ id: goalVelY; placeholderText: "vy (mm/s)" }
+                                TextField{ id: goalW; placeholderText: "w (rad/s)" }
+
+                                Button{
+                                    text: "Set"
+                                    onClicked: robotComm1.setGoalVelocity(parseFloat(goalVelX.text), parseFloat(goalVelY.text), parseFloat(goalW.text))
+                                }
+                            }
 
                             Button{
-                                text: "Track complete pose"
-                                onClicked: robotComm1.setGoalPose(
-                                               parseFloat(goalPoseX.text),
-                                               parseFloat(goalPoseY.text),
-                                               radiansToDegrees(parseFloat(goalPoseTheta.text)),
-                                               parseFloat(goalPoseMaxV.text),
-                                               radiansToDegrees(parseFloat(goalPoseMaxW.text))
-                                               )
+                                text: "Clear tracking goals"
+                                onClicked: robotComm1.clearTracking()
                             }
-                            Button{
-                                text: "Track position"
-                                onClicked: robotComm1.setGoalPosition(
-                                               parseFloat(goalPoseX.text),
-                                               parseFloat(goalPoseY.text),
-                                               parseFloat(goalPoseMaxV.text)
-                                               )
-                            }
-                            Button{
-                                text: "Track orientation"
-                                onClicked: robotComm1.setGoalOrientation(
-                                               radiansToDegrees(parseFloat((goalPoseTheta.text))),
-                                               radiansToDegrees(parseFloat(goalPoseMaxW.text))
-                                               )
-                            }
-                            Button{
-                                text: "Track X"
-                                onClicked: robotComm1.setGoalXCoordinate(
-                                               parseFloat(goalPoseX.text),
-                                               parseFloat(goalPoseMaxV.text)
-                                               )
-                            }
-                            Button{
-                                text: "Track Y"
-                                onClicked: robotComm1.setGoalYCoordinate(
-                                               parseFloat(goalPoseY.text),
-                                               parseFloat(goalPoseMaxV.text)
-                                               )
-                            }
-                            Button{
-                                text: "Track X and Theta"
-                                onClicked: robotComm1.setGoalXThetaCoordinate(
-                                               parseFloat(goalPoseX.text),
-                                               radiansToDegrees(parseFloat(goalPoseTheta.text)),
-                                               parseFloat(goalPoseMaxV.text),
-                                               radiansToDegrees(parseFloat(goalPoseMaxW.text))
-                                               )
-                            }
-                            Button{
-                                text: "Track Y and Theta"
-                                onClicked: robotComm1.setGoalYThetaCoordinate(
-                                               parseFloat(goalPoseY.text),
-                                               radiansToDegrees(parseFloat(goalPoseTheta.text)),
-                                               parseFloat(goalPoseMaxV.text),
-                                               radiansToDegrees(parseFloat(goalPoseMaxW.text))
-                                               )
-                            }
-                        }
 
-                        Column{
-                            Label{ text: "Goal velocity:" }
-                            TextField{ id: goalVelX; placeholderText: "vx (mm/s)" }
-                            TextField{ id: goalVelY; placeholderText: "vy (mm/s)" }
-                            TextField{ id: goalW; placeholderText: "w (rad/s)" }
+                            Column{
+                                Text{ text: "Goal coordinates:" }
 
-                            Button{
-                                text: "Set"
-                                onClicked: robotComm1.setGoalVelocity(parseFloat(goalVelX.text), parseFloat(goalVelY.text), parseFloat(goalW.text))
-                            }
-                        }
+                                TextField{ id: goalPoseX2; placeholderText: "x (mm)" }
+                                TextField{ id: goalPoseY2; placeholderText: "y (mm)" }
+                                TextField{ id: goalPoseTheta2; placeholderText: "theta (degrees)"; }
+                                TextField{ id: goalPoseMaxV2; placeholderText: "v (mm/s)" }
+                                TextField{ id: goalPoseMaxW2; placeholderText: "w (rad/s)" }
 
-                        Button{
-                            text: "Clear tracking goals"
-                            onClicked: robotComm1.clearTracking()
-                        }
+                                Button{
+                                    text: "Track complete pose"
+                                    onClicked: robotComm2.setGoalPose(
+                                                   parseFloat(goalPoseX2.text),
+                                                   parseFloat(goalPoseY2.text),
+                                                   radiansToDegrees(parseFloat(goalPoseTheta2.text)),
+                                                   parseFloat(goalPoseMaxV2.text),
+                                                   radiansToDegrees(parseFloat(goalPoseMaxW2.text))
+                                                   )
+                                }
+                                Button{
+                                    text: "Track position"
+                                    onClicked: robotComm2.setGoalPosition(
+                                                   parseFloat(goalPoseX2.text),
+                                                   parseFloat(goalPoseY2.text),
+                                                   parseFloat(goalPoseMaxV2.text)
+                                                   )
+                                }
+                                Button{
+                                    text: "Track orientation"
+                                    onClicked: robotComm2.setGoalOrientation(
+                                                   radiansToDegrees(parseFloat(goalPoseTheta2.text)),
+                                                   radiansToDegrees(parseFloat(goalPoseMaxW2.text))
+                                                   )
+                                }
+                                Button{
+                                    text: "Track X"
+                                    onClicked: robotComm2.setGoalXCoordinate(
+                                                   parseFloat(goalPoseX2.text),
+                                                   parseFloat(goalPoseMaxV2.text)
+                                                   )
+                                }
+                                Button{
+                                    text: "Track Y"
+                                    onClicked: robotComm2.setGoalYCoordinate(
+                                                   parseFloat(goalPoseY2.text),
+                                                   parseFloat(goalPoseMaxV2.text)
+                                                   )
+                                }
+                                Button{
+                                    text: "Track X and Theta"
+                                    onClicked: robotComm2.setGoalXThetaCoordinate(
+                                                   parseFloat(goalPoseX2.text),
+                                                   radiansToDegrees(parseFloat(goalPoseTheta2.text)),
+                                                   parseFloat(goalPoseMaxV2.text),
+                                                   radiansToDegrees(parseFloat(goalPoseMaxW2.text))
+                                                   )
+                                }
+                                Button{
+                                    text: "Track Y and Theta"
+                                    onClicked: robotComm2.setGoalYThetaCoordinate(
+                                                   parseFloat(goalPose2.text),
+                                                   radiansToDegrees(parseFloat(goalPoseTheta2.text)),
+                                                   parseFloat(goalPoseMaxV2.text),
+                                                   radiansToDegrees(parseFloat(goalPoseMaxW2.text))
+                                                   )
+                                }
+                            }
+                            Column{
+                                Label{ text: "Goal velocity:" }
+                                TextField{ id: goalVelX2; placeholderText: "vx (mm/s)" }
+                                TextField{ id: goalVelY2; placeholderText: "vy (mm/s)" }
+                                TextField{ id: goalW2; placeholderText: "w (rad/s)" }
 
-                        Column{
-                            Text{ text: "Goal coordinates:" }
-
-                            TextField{ id: goalPoseX2; placeholderText: "x (mm)" }
-                            TextField{ id: goalPoseY2; placeholderText: "y (mm)" }
-                            TextField{ id: goalPoseTheta2; placeholderText: "theta (degrees)"; }
-                            TextField{ id: goalPoseMaxV2; placeholderText: "v (mm/s)" }
-                            TextField{ id: goalPoseMaxW2; placeholderText: "w (rad/s)" }
-
-                            Button{
-                                text: "Track complete pose"
-                                onClicked: robotComm2.setGoalPose(
-                                               parseFloat(goalPoseX2.text),
-                                               parseFloat(goalPoseY2.text),
-                                               radiansToDegrees(parseFloat(goalPoseTheta2.text)),
-                                               parseFloat(goalPoseMaxV2.text),
-                                               radiansToDegrees(parseFloat(goalPoseMaxW2.text))
-                                               )
+                                Button{
+                                    text: "Set"
+                                    onClicked: robotComm2.setGoalVelocity(parseFloat(goalVelX2.text), parseFloat(goalVelY2.text), parseFloat(goalW2.text))
+                                }
                             }
-                            Button{
-                                text: "Track position"
-                                onClicked: robotComm2.setGoalPosition(
-                                               parseFloat(goalPoseX2.text),
-                                               parseFloat(goalPoseY2.text),
-                                               parseFloat(goalPoseMaxV2.text)
-                                               )
-                            }
-                            Button{
-                                text: "Track orientation"
-                                onClicked: robotComm2.setGoalOrientation(
-                                               radiansToDegrees(parseFloat(goalPoseTheta2.text)),
-                                               radiansToDegrees(parseFloat(goalPoseMaxW2.text))
-                                               )
-                            }
-                            Button{
-                                text: "Track X"
-                                onClicked: robotComm2.setGoalXCoordinate(
-                                               parseFloat(goalPoseX2.text),
-                                               parseFloat(goalPoseMaxV2.text)
-                                               )
-                            }
-                            Button{
-                                text: "Track Y"
-                                onClicked: robotComm2.setGoalYCoordinate(
-                                               parseFloat(goalPoseY2.text),
-                                               parseFloat(goalPoseMaxV2.text)
-                                               )
-                            }
-                            Button{
-                                text: "Track X and Theta"
-                                onClicked: robotComm2.setGoalXThetaCoordinate(
-                                               parseFloat(goalPoseX2.text),
-                                               radiansToDegrees(parseFloat(goalPoseTheta2.text)),
-                                               parseFloat(goalPoseMaxV2.text),
-                                               radiansToDegrees(parseFloat(goalPoseMaxW2.text))
-                                               )
-                            }
-                            Button{
-                                text: "Track Y and Theta"
-                                onClicked: robotComm2.setGoalYThetaCoordinate(
-                                               parseFloat(goalPose2.text),
-                                               radiansToDegrees(parseFloat(goalPoseTheta2.text)),
-                                               parseFloat(goalPoseMaxV2.text),
-                                               radiansToDegrees(parseFloat(goalPoseMaxW2.text))
-                                               )
-                            }
-                        }
-                        Column{
-                            Label{ text: "Goal velocity:" }
-                            TextField{ id: goalVelX2; placeholderText: "vx (mm/s)" }
-                            TextField{ id: goalVelY2; placeholderText: "vy (mm/s)" }
-                            TextField{ id: goalW2; placeholderText: "w (rad/s)" }
 
                             Button{
-                                text: "Set"
-                                onClicked: robotComm2.setGoalVelocity(parseFloat(goalVelX2.text), parseFloat(goalVelY2.text), parseFloat(goalW2.text))
+                                text: "Clear tracking goals"
+                                onClicked: robotComm2.clearTracking()
                             }
-                        }
-
-                        Button{
-                            text: "Clear tracking goals"
-                            onClicked: robotComm2.clearTracking()
                         }
                     }
                 }
             }
         }
-    }
 
-    CelluloBluetoothScanner{
-        id: scanner
-        property var adList: []
-        property var nbList: []
-        /*onRobotDiscovered: {
-            var newAddresses = macAddrSelector.addresses;
-            if(newAddresses.indexOf(macAddr) < 0){
-                toast.show(macAddr + " discovered.");
-                newAddresses.push(macAddr);
-                newAddresses.sort();
-            }
-            macAddrSelector.addresses = newAddresses;
-            QMLCache.write("addresses", macAddrSelector.addresses.join(','));
-        }*/
-
-        onRobotDiscovered: {
-            var newAddresses = scanner.adList;
-            var newNumbers=scanner.nbList;
-
-            if(newAddresses.indexOf(macAddr) < 0){
-                console.log(macAddr + " discovered.");
-                newAddresses.push(macAddr)
-                try{
-                    newNumbers.push(robotNb);
+        CelluloBluetoothScanner{
+            id: scanner
+            property var adList: []
+            property var nbList: []
+            /*onRobotDiscovered: {
+                var newAddresses = macAddrSelector.addresses;
+                if(newAddresses.indexOf(macAddr) < 0){
+                    toast.show(macAddr + " discovered.");
+                    newAddresses.push(macAddr);
+                    newAddresses.sort();
                 }
+                macAddrSelector.addresses = newAddresses;
+                QMLCache.write("addresses", macAddrSelector.addresses.join(','));
+            }*/
 
-                catch(error){
-                    console.log("Old version of CelluloBluetooth")
-                    newNumbers.push(macAddr);
+            onRobotDiscovered: {
+                var newAddresses = scanner.adList;
+                var newNumbers=scanner.nbList;
+
+                if(newAddresses.indexOf(macAddr) < 0){
+                    console.log(macAddr + " discovered.");
+                    newAddresses.push(macAddr)
+                    try{
+                        newNumbers.push(robotNb);
+                    }
+
+                    catch(error){
+                        console.log("Old version of CelluloBluetooth")
+                        newNumbers.push(macAddr);
+                    }
                 }
+                //sorting with respect to the nbList
+                var mapped = newNumbers.map(function(el, i) {
+                  return { index: i, value: el.toLowerCase() };
+                })
+
+                mapped.sort(function(a, b) {
+                      return a.value - b.value
+                });
+
+                // container for the resulting order
+                scanner.adList = mapped.map(function(el){
+                  return newAddresses[el.index];
+                });
+                scanner.nbList = mapped.map(function(el){
+                  return newNumbers[el.index];
+                });
+                //(NOTE:) macAddrSelector.addresses is the list that is displayed in the gui. macAddrSelector.ids are the true mac Addresses to be able to connect
+                // Keeping this notation, to be compatible with older version without cellulo numbers.
+                macAddrSelector.addresses=newNumbers
+                macAddrSelector.ids=newAddresses
+
+                QMLCache.write("addresses", newNumbers.join(','));
+                QMLCache.write("ids", newAddresses.join(','));
             }
-            //sorting with respect to the nbList
-            var mapped = newNumbers.map(function(el, i) {
-              return { index: i, value: el.toLowerCase() };
-            })
 
-            mapped.sort(function(a, b) {
-                  return a.value - b.value
-            });
 
-            // container for the resulting order
-            scanner.adList = mapped.map(function(el){
-              return newAddresses[el.index];
-            });
-            scanner.nbList = mapped.map(function(el){
-              return newNumbers[el.index];
-            });
-            //(NOTE:) macAddrSelector.addresses is the list that is displayed in the gui. macAddrSelector.ids are the true mac Addresses to be able to connect
-            // Keeping this notation, to be compatible with older version without cellulo numbers.
-            macAddrSelector.addresses=newNumbers
-            macAddrSelector.ids=newAddresses
-
-            QMLCache.write("addresses", newNumbers.join(','));
-            QMLCache.write("ids", newAddresses.join(','));
         }
 
-
-    }
-
-    BluetoothLocalDevice{ Component.onCompleted: powerOn() } //Doesn't work on Linux
+        BluetoothLocalDevice{ Component.onCompleted: powerOn() } //Doesn't work on Linux
 
 
-    Button{
-        id: zonetest
-        text: "zone Test"
-        onClicked: {
-            zoneEngine.addNewClient(robotComm1)
-            var closestT = zoneBorder.calculate(robotComm1.x, robotComm1.y, 0);
-            var closestPoint = zoneBorder.getPoint(closestT);
-            console.log(closestPoint)
+        Button{
+            id: zonetest
+            text: "zone Test"
+            onClicked: {
+                zoneEngine.addNewClient(robotComm1)
+                var closestT = zoneBorder.calculate(robotComm1.x, robotComm1.y, 0);
+                var closestPoint = zoneBorder.getPoint(closestT);
+                console.log(closestPoint)
+            }
+
+
         }
 
+        CelluloZoneEngine{
+            id: zoneEngine
+            active: true
 
-    }
+            CelluloZonePolyBezierClosestT {
+                id: zoneBorder
+                name: "CelluloZone"
+                controlPoints: CelluloZoneJsonHandler.loadZonesQML(":/assets/redgrid_.json")[0].controlPoints
+            }
 
-    CelluloZoneEngine{
-        id: zoneEngine
-        active: true
-
-        CelluloZonePolyBezierClosestT {
-            id: zoneBorder
-            name: "CelluloZone"
-            controlPoints: CelluloZoneJsonHandler.loadZonesQML(":/assets/redgrid_.json")[0].controlPoints
         }
-
     }
 }
