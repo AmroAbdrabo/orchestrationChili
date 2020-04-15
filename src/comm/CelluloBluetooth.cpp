@@ -100,7 +100,8 @@ void CelluloBluetooth::updatePose(){
         simulatedRobot->updatePose(x, y, theta);
         x = x + timeStep*simulatedRobot->vxGlobalGoalTracker/1000;
         y = y + timeStep*simulatedRobot->vyGlobalGoalTracker/1000;
-        theta = theta + timeStep*(simulatedRobot->wGlobalGoalTracker)/1000;
+        theta = theta + timeStep*(simulatedRobot->wGlobalGoalTracker)*360/(M_PI*1000); //rotational velocity is radians/s
+        lastTimestamp+=timeStep;
         if(theta>360)
             theta-=360;
         else if (theta<0) {

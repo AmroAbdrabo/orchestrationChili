@@ -260,7 +260,7 @@ public:
     /** @endcond */
     bool getIsSimulation(){return isSimulation;}
     QVector3D getInitSimulatedPose(){return initPose;};
-
+    float getTimeStep(){return timeStep;}
 
 private slots:
 
