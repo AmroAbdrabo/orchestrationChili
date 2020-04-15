@@ -13,7 +13,6 @@ import QMLBluetoothExtras 1.0
 Item {
 
      function em(x){ return Math.round(x*TextSingleton.font.pixelSize); }
-     function radiansToDegrees(rad){return rad * 180/Math.PI;}
      property bool mobile: Qt.platform.os === "android"
      property bool winrt: Qt.platform.os === "winrt"
      property real gWidth: mobile ? Screen.width : 800
@@ -68,7 +67,9 @@ Item {
                 }
                 isSimulation: true
 
-                initPose: img1.isSelected?Qt.vector3d(img1.x+img1.width/2,img1.y+img1.height/2,img1.rotation):robotComm1.init
+                initPose: img1.isSelected?Qt.vector3d((img1.x+img1.width/2)* paper.width/window2.width,
+                                                       (img1.y+img1.height/2) * paper.height/window2.height,
+                                                        img1.rotation) : robotComm1.init
 
                 onTouchBegan:{
                     switch(key){
@@ -138,8 +139,9 @@ Item {
                 }
                 isSimulation: true
 
-                initPose: img2.isSelected?Qt.vector3d(img2.x+img2.width/2,img2.y+img2.height/2,img2.rotation):robotComm2.init
-
+                initPose: img2.isSelected?Qt.vector3d((img2.x+img2.width/2)* paper.width/window2.width,
+                                                       (img2.y+img2.height/2) * paper.height/window2.height,
+                                                        img2.rotation) : robotComm2.init
                 onTouchBegan:{
                     switch(key){
                     case 0: k0.color = "yellow"; break;
@@ -422,9 +424,9 @@ Item {
                                     onClicked: robotComm1.setGoalPose(
                                                    parseFloat(goalPoseX.text),
                                                    parseFloat(goalPoseY.text),
-                                                   radiansToDegrees(parseFloat(goalPoseTheta.text)),
+                                                   parseFloat(goalPoseTheta.text),
                                                    parseFloat(goalPoseMaxV.text),
-                                                   radiansToDegrees(parseFloat(goalPoseMaxW.text))
+                                                   parseFloat(goalPoseMaxW.text)
                                                    )
                                 }
                                 Button{
@@ -438,8 +440,8 @@ Item {
                                 Button{
                                     text: "Track orientation"
                                     onClicked: robotComm1.setGoalOrientation(
-                                                   radiansToDegrees(parseFloat((goalPoseTheta.text))),
-                                                   radiansToDegrees(parseFloat(goalPoseMaxW.text))
+                                                   parseFloat((goalPoseTheta.text)),
+                                                   parseFloat(goalPoseMaxW.text)
                                                    )
                                 }
                                 Button{
@@ -460,18 +462,18 @@ Item {
                                     text: "Track X and Theta"
                                     onClicked: robotComm1.setGoalXThetaCoordinate(
                                                    parseFloat(goalPoseX.text),
-                                                   radiansToDegrees(parseFloat(goalPoseTheta.text)),
+                                                   parseFloat(goalPoseTheta.text),
                                                    parseFloat(goalPoseMaxV.text),
-                                                   radiansToDegrees(parseFloat(goalPoseMaxW.text))
+                                                   parseFloat(goalPoseMaxW.text)
                                                    )
                                 }
                                 Button{
                                     text: "Track Y and Theta"
                                     onClicked: robotComm1.setGoalYThetaCoordinate(
                                                    parseFloat(goalPoseY.text),
-                                                   radiansToDegrees(parseFloat(goalPoseTheta.text)),
+                                                   parseFloat(goalPoseTheta.text),
                                                    parseFloat(goalPoseMaxV.text),
-                                                   radiansToDegrees(parseFloat(goalPoseMaxW.text))
+                                                   parseFloat(goalPoseMaxW.text)
                                                    )
                                 }
                             }
@@ -507,9 +509,9 @@ Item {
                                     onClicked: robotComm2.setGoalPose(
                                                    parseFloat(goalPoseX2.text),
                                                    parseFloat(goalPoseY2.text),
-                                                   radiansToDegrees(parseFloat(goalPoseTheta2.text)),
+                                                   parseFloat(goalPoseTheta2.text),
                                                    parseFloat(goalPoseMaxV2.text),
-                                                   radiansToDegrees(parseFloat(goalPoseMaxW2.text))
+                                                   parseFloat(goalPoseMaxW2.text)
                                                    )
                                 }
                                 Button{
@@ -523,8 +525,8 @@ Item {
                                 Button{
                                     text: "Track orientation"
                                     onClicked: robotComm2.setGoalOrientation(
-                                                   radiansToDegrees(parseFloat(goalPoseTheta2.text)),
-                                                   radiansToDegrees(parseFloat(goalPoseMaxW2.text))
+                                                   parseFloat(goalPoseTheta2.text),
+                                                   parseFloat(goalPoseMaxW2.text)
                                                    )
                                 }
                                 Button{
@@ -545,18 +547,18 @@ Item {
                                     text: "Track X and Theta"
                                     onClicked: robotComm2.setGoalXThetaCoordinate(
                                                    parseFloat(goalPoseX2.text),
-                                                   radiansToDegrees(parseFloat(goalPoseTheta2.text)),
+                                                   parseFloat(goalPoseTheta2.text),
                                                    parseFloat(goalPoseMaxV2.text),
-                                                   radiansToDegrees(parseFloat(goalPoseMaxW2.text))
+                                                   parseFloat(goalPoseMaxW2.text)
                                                    )
                                 }
                                 Button{
                                     text: "Track Y and Theta"
                                     onClicked: robotComm2.setGoalYThetaCoordinate(
                                                    parseFloat(goalPose2.text),
-                                                   radiansToDegrees(parseFloat(goalPoseTheta2.text)),
+                                                   parseFloat(goalPoseTheta2.text),
                                                    parseFloat(goalPoseMaxV2.text),
-                                                   radiansToDegrees(parseFloat(goalPoseMaxW2.text))
+                                                   parseFloat(goalPoseMaxW2.text)
                                                    )
                                 }
                             }

@@ -188,7 +188,7 @@ void CelluloSimulatedRobot::trackYCoordinate()
 
 void CelluloSimulatedRobot::trackOrientation(bool goalless) {
     //Get difference of goal and actual orientation between -PI and PI in radians
-    float thetaDiff = (goalPoseTheta - poseTheta)/*100.0f*/;
+    float thetaDiff = (goalPoseTheta - poseTheta);
     while(thetaDiff < -180)
         thetaDiff += 360;
     while(thetaDiff > 180)
