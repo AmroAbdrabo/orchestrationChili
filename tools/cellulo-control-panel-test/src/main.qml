@@ -68,7 +68,9 @@ Item {
                 }
                 isSimulation: true
 
-                initPose: img1.isSelected?Qt.vector3d(img1.x+img1.width/2,img1.y+img1.height/2,img1.rotation):robotComm1.init
+                initPose: img1.isSelected?Qt.vector3d((img1.x+img1.width/2)* paper.width/window2.width,
+                                                       (img1.y+img1.height/2) * paper.height/window2.height,
+                                                        img1.rotation) : robotComm1.init
 
                 onTouchBegan:{
                     switch(key){
@@ -138,8 +140,9 @@ Item {
                 }
                 isSimulation: true
 
-                initPose: img2.isSelected?Qt.vector3d(img2.x+img2.width/2,img2.y+img2.height/2,img2.rotation):robotComm2.init
-
+                initPose: img2.isSelected?Qt.vector3d((img2.x+img2.width/2)* paper.width/window2.width,
+                                                       (img2.y+img2.height/2) * paper.height/window2.height,
+                                                        img2.rotation) : robotComm2.init
                 onTouchBegan:{
                     switch(key){
                     case 0: k0.color = "yellow"; break;
