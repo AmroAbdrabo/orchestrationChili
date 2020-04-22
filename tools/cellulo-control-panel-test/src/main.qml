@@ -26,8 +26,8 @@ Item {
         visible: true
 
 
-        width: gWidth
-        height: mobile ? Screen.desktopAvailableHeight : 0.7*Screen.height
+        width: 700
+        height: mobile ? Screen.desktopAvailableHeight : width;
         ToastManager{ id: toast }
        Image{
             source: 'qrc:/assets/redgrid.svg'
@@ -44,7 +44,7 @@ Item {
             Hexagon{
                 id: hex1
                 width: 75 * window2.width/paper.width;
-                height: width*Math.sin(60*Math.PI/180)
+                height: 75 * Math.sin(60*Math.PI/180) * window2.height/paper.height;//the height of a perfect hexagon depends on its width
                 transformOrigin: Item.Center
                 color: "green"
                 onColorChanged: console.log("color was changed");
@@ -117,7 +117,7 @@ Item {
             Hexagon{
                 id: hex2
                 width: 75 * window2.width/paper.width;
-                height: width*Math.sin(60*Math.PI/180)
+                height: 75 * Math.sin(60*Math.PI/180) * window2.height/paper.height;
                 transformOrigin: Item.Center
                 color: "red"
                 onColorChanged: console.log("color was changed");
