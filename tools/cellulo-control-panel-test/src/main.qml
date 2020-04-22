@@ -8,6 +8,7 @@ import QtQuick.Controls.Styles 1.3
 import Cellulo 1.0
 import QMLCache 1.0
 import QMLBluetoothExtras 1.0
+import hexagon.qml 1.0
 
 
 Item {
@@ -28,161 +29,159 @@ Item {
         width: gWidth
         height: mobile ? Screen.desktopAvailableHeight : 0.7*Screen.height
         ToastManager{ id: toast }
+       Image{
+            source: 'qrc:/assets/redgrid.svg'
+            x:0
+            y:0
+            sourceSize.width: window2.width;
+            sourceSize.height: window2.height;
+        }
 
+        CelluloRobot{
+            id: robotComm1
+            property var init: Qt.vector3d(0,0,0)
 
-        Column{
-           id: itemsCol
-           Image{
-                source: 'qrc:/assets/redgrid.svg'
-                x:0
-                y:0
-                sourceSize.width: window2.width;
-                sourceSize.height: window2.height;
+            Hexagon{
+                id: hex1
+                width: 75 * window2.width/paper.width;
+                height: width*Math.sin(60*Math.PI/180)
+                transformOrigin: Item.Center
+                color: "green"
+                onColorChanged: console.log("color was changed");
+                property bool isSelected: false
+                x: isSelected?hex1.x:(robotComm1.x * window2.width / paper.width) - hex1.width/2
+                y: isSelected?hex1.y:(robotComm1.y * window2.height / paper.height) - hex1.height/2
+                rotation: robotComm1.theta
+
+                MouseArea {
+                    id: themouse1
+                    anchors.fill: parent
+                    drag.target: parent
+                    onClicked: {
+                        robotComm1.init=Qt.vector3d(robotComm1.x,robotComm1.y,robotComm1.theta)
+                        parent.isSelected=!parent.isSelected
+                        console.log(parent.isSelected)
+                    }
+                }
             }
+            isSimulation: true
 
-            CelluloRobot{
-                id: robotComm1
-                property var init: Qt.vector3d(0,0,0)
-                Image{
-                    id:img1
-                    source: 'qrc:/assets/blue.svg'
-                    width: 75 * window2.width/paper.width;
-                    height: 75 * window2.height/paper.height;
+            initPose: hex1.isSelected?Qt.vector3d((hex1.x+hex1.width/2)* paper.width/window2.width,
+                                                   (hex1.y+hex1.height/2) * paper.height/window2.height,
+                                                    hex1.rotation) : robotComm1.init
 
-                    property bool isSelected: false
-                    x: isSelected?img1.x:(robotComm1.x * window2.width / paper.width) - img1.width/2
-                    y: isSelected?img1.y:(robotComm1.y * window2.height / paper.height) - img1.height/2
-                    rotation: robotComm1.theta
-
-                    MouseArea {
-                        id: themouse1
-                        anchors.fill: parent
-                        drag.target: parent
-                        onClicked: {
-                            robotComm1.init=Qt.vector3d(robotComm1.x,robotComm1.y,robotComm1.theta)
-                            parent.isSelected=!parent.isSelected
-                            console.log(parent.isSelected)
-                        }
-                    }
+            onTouchBegan:{
+                switch(key){
+                case 0: k0.color = "yellow"; break;
+                case 1: k1.color = "yellow"; break;
+                case 2: k2.color = "yellow"; break;
+                case 3: k3.color = "yellow"; break;
+                case 4: k4.color = "yellow"; break;
+                case 5: k5.color = "yellow"; break;
                 }
-                isSimulation: true
-
-                initPose: img1.isSelected?Qt.vector3d((img1.x+img1.width/2)* paper.width/window2.width,
-                                                       (img1.y+img1.height/2) * paper.height/window2.height,
-                                                        img1.rotation) : robotComm1.init
-
-                onTouchBegan:{
-                    switch(key){
-                    case 0: k0.color = "yellow"; break;
-                    case 1: k1.color = "yellow"; break;
-                    case 2: k2.color = "yellow"; break;
-                    case 3: k3.color = "yellow"; break;
-                    case 4: k4.color = "yellow"; break;
-                    case 5: k5.color = "yellow"; break;
-                    }
-                }
-                onLongTouch:{
-                    switch(key){
-                    case 0: k0.color = "green"; break;
-                    case 1: k1.color = "green"; break;
-                    case 2: k2.color = "green"; break;
-                    case 3: k3.color = "green"; break;
-                    case 4: k4.color = "green"; break;
-                    case 5: k5.color = "green"; break;
-                    }
-                }
-                onTouchReleased:{
-                    switch(key){
-                    case 0: k0.color = "black"; break;
-                    case 1: k1.color = "black"; break;
-                    case 2: k2.color = "black"; break;
-                    case 3: k3.color = "black"; break;
-                    case 4: k4.color = "black"; break;
-                    case 5: k5.color = "black"; break;
-                    }
-                }
-                onFrameReady: cameraImage.reload()
-
-                onTrackingGoalReached: toast.show("Tracking goal reached.")
-                onBootCompleted: toast.show("Boot completed.")
-                onShuttingDown: toast.show("Shutting down.")
-                onLowBattery: toast.show("Low battery.")
-
-                onZoneValueChanged: console.log("zone changed")
-
-
             }
-            CelluloRobot{
-                id: robotComm2
-                property var init: Qt.vector3d(0,0,0)
-                Image{
-                    id:img2
-                    source: 'qrc:/assets/blue.svg'
-                    width: 75 * window2.width / paper.width
-                    height: 75* window2.height / paper.height
-
-                    property bool isSelected: false
-                    x: isSelected?img2.x:(robotComm2.x* window2.width / paper.width)-img2.width/2
-                    y: isSelected?img2.y:(robotComm2.y * window2.height / paper.height) -img2.height/2
-                    rotation: robotComm2.theta
-
-                    MouseArea {
-                        id: themouse2
-                        anchors.fill: parent
-                        drag.target: parent
-                        onClicked: {
-                            robotComm2.init=Qt.vector3d(robotComm2.x,robotComm2.y,robotComm2.theta)
-                            parent.isSelected=!parent.isSelected
-                            console.log(parent.isSelected)
-                        }
-                    }
+            onLongTouch:{
+                switch(key){
+                case 0: k0.color = "green"; break;
+                case 1: k1.color = "green"; break;
+                case 2: k2.color = "green"; break;
+                case 3: k3.color = "green"; break;
+                case 4: k4.color = "green"; break;
+                case 5: k5.color = "green"; break;
                 }
-                isSimulation: true
-
-                initPose: img2.isSelected?Qt.vector3d((img2.x+img2.width/2)* paper.width/window2.width,
-                                                       (img2.y+img2.height/2) * paper.height/window2.height,
-                                                        img2.rotation) : robotComm2.init
-                onTouchBegan:{
-                    switch(key){
-                    case 0: k0.color = "yellow"; break;
-                    case 1: k1.color = "yellow"; break;
-                    case 2: k2.color = "yellow"; break;
-                    case 3: k3.color = "yellow"; break;
-                    case 4: k4.color = "yellow"; break;
-                    case 5: k5.color = "yellow"; break;
-                    }
-                }
-                onLongTouch:{
-                    switch(key){
-                    case 0: k0.color = "green"; break;
-                    case 1: k1.color = "green"; break;
-                    case 2: k2.color = "green"; break;
-                    case 3: k3.color = "green"; break;
-                    case 4: k4.color = "green"; break;
-                    case 5: k5.color = "green"; break;
-                    }
-                }
-                onTouchReleased:{
-                    switch(key){
-                    case 0: k0.color = "black"; break;
-                    case 1: k1.color = "black"; break;
-                    case 2: k2.color = "black"; break;
-                    case 3: k3.color = "black"; break;
-                    case 4: k4.color = "black"; break;
-                    case 5: k5.color = "black"; break;
-                    }
-                }
-                onFrameReady: cameraImage.reload()
-
-                onTrackingGoalReached: toast.show("Tracking goal reached.")
-                onBootCompleted: toast.show("Boot completed.")
-                onShuttingDown: toast.show("Shutting down.")
-                onLowBattery: toast.show("Low battery.")
-
-                onZoneValueChanged: console.log("zone changed")
-
-
             }
+            onTouchReleased:{
+                switch(key){
+                case 0: k0.color = "black"; break;
+                case 1: k1.color = "black"; break;
+                case 2: k2.color = "black"; break;
+                case 3: k3.color = "black"; break;
+                case 4: k4.color = "black"; break;
+                case 5: k5.color = "black"; break;
+                }
+            }
+            onFrameReady: cameraImage.reload()
+
+            onTrackingGoalReached: toast.show("Tracking goal reached.")
+            onBootCompleted: toast.show("Boot completed.")
+            onShuttingDown: toast.show("Shutting down.")
+            onLowBattery: toast.show("Low battery.")
+
+            onZoneValueChanged: console.log("zone changed")
+
+
+        }
+        CelluloRobot{
+            id: robotComm2
+            property var init: Qt.vector3d(0,0,0)
+            Hexagon{
+                id: hex2
+                width: 75 * window2.width/paper.width;
+                height: width*Math.sin(60*Math.PI/180)
+                transformOrigin: Item.Center
+                color: "red"
+                onColorChanged: console.log("color was changed");
+                property bool isSelected: false
+                x: isSelected?hex2.x:(robotComm2.x * window2.width / paper.width) - hex2.width/2
+                y: isSelected?hex2.y:(robotComm2.y * window2.height / paper.height) - hex2.height/2
+                rotation: robotComm2.theta
+
+                MouseArea {
+                    id: themouse2
+                    anchors.fill: parent
+                    drag.target: parent
+                    onClicked: {
+                        robotComm2.init=Qt.vector3d(robotComm2.x,robotComm2.y,robotComm2.theta)
+                        parent.isSelected=!parent.isSelected
+                        console.log(parent.isSelected)
+                    }
+                }
+            }
+            isSimulation: true
+
+            initPose: hex2.isSelected?Qt.vector3d((hex2.x+hex2.width/2)* paper.width/window2.width,
+                                                   (hex2.y+hex2.height/2) * paper.height/window2.height,
+                                                    hex2.rotation) : robotComm2.init
+            onTouchBegan:{
+                switch(key){
+                case 0: k0.color = "yellow"; break;
+                case 1: k1.color = "yellow"; break;
+                case 2: k2.color = "yellow"; break;
+                case 3: k3.color = "yellow"; break;
+                case 4: k4.color = "yellow"; break;
+                case 5: k5.color = "yellow"; break;
+                }
+            }
+            onLongTouch:{
+                switch(key){
+                case 0: k0.color = "green"; break;
+                case 1: k1.color = "green"; break;
+                case 2: k2.color = "green"; break;
+                case 3: k3.color = "green"; break;
+                case 4: k4.color = "green"; break;
+                case 5: k5.color = "green"; break;
+                }
+            }
+            onTouchReleased:{
+                switch(key){
+                case 0: k0.color = "black"; break;
+                case 1: k1.color = "black"; break;
+                case 2: k2.color = "black"; break;
+                case 3: k3.color = "black"; break;
+                case 4: k4.color = "black"; break;
+                case 5: k5.color = "black"; break;
+                }
+            }
+            onFrameReady: cameraImage.reload()
+
+            onTrackingGoalReached: toast.show("Tracking goal reached.")
+            onBootCompleted: toast.show("Boot completed.")
+            onShuttingDown: toast.show("Shutting down.")
+            onLowBattery: toast.show("Low battery.")
+
+            onZoneValueChanged: console.log("zone changed")
+
+
         }
     }
 

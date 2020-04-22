@@ -3,6 +3,7 @@ TEMPLATE = app
 QT += qml quick bluetooth
 
 SOURCES += src/main.cpp \
+    src/hexagon.cpp \
     src/paper.cpp
 
 RESOURCES += qml.qrc
@@ -71,4 +72,5 @@ winrt {
 }
 
 HEADERS += \
+    src/hexagon.h \
     src/paper.h

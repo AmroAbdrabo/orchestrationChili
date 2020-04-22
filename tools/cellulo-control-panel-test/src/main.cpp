@@ -4,6 +4,7 @@
 #include <QQuickWindow>
 #include <QQmlContext>
 #include "paper.h"
+#include "hexagon.h"
 
 int main(int argc, char *argv[])
 {
@@ -13,8 +14,11 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
-    Paper *paper = new Paper();
+    //add hexagon object type
+    qmlRegisterType<Hexagon>("hexagon.qml", 1, 0, "Hexagon");
 
+    //add a paper object type
+    Paper *paper = new Paper();
     engine.rootContext()->setContextProperty("paper", paper);
 
     engine.load(QUrl(QStringLiteral("qrc:///src/main.qml")));
