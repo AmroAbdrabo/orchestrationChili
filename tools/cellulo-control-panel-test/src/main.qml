@@ -18,29 +18,21 @@ Item {
      property bool winrt: Qt.platform.os === "winrt"
      property real gWidth: mobile ? Screen.width : 800
      property bool activateManual: false
-
     //window for robot and grid
     Window {
         objectName: "robot display window"
         id: window2
         visible: true
 
-
-        width: background.sourceSize.width
-        height: mobile ? Screen.desktopAvailableHeight : background.sourceSize.height;
+        width: 500
+        height: mobile ? Screen.desktopAvailableHeight : 500;
         ToastManager{ id: toast }
         Image{
-            id: background
+            id: backgroundImg
             source: 'qrc:/assets/redgrid.svg'
             x:0
             y:0
-            sourceSize: Qt.size( 500, 500 )
-            Image {
-                id: img
-                source: parent.source
-                width: 0
-                height: 0
-            }
+            sourceSize: Qt.size( window2.width, window2.height )
         }
 
         CelluloRobot{
@@ -49,6 +41,8 @@ Item {
 
             Hexagon{
                 id: hex1
+                property  real wheelRotation: 0
+                property real curRobotRotation: 0 //to avoid binding loop on rotation
                 width: 75 * window2.width/paper.width;
                 height: 75 * Math.sin(60*Math.PI/180) * window2.height/paper.height;//the height of a perfect hexagon depends on its width
                 transformOrigin: Item.Center
@@ -57,18 +51,30 @@ Item {
                 property bool isSelected: false
                 x: isSelected?hex1.x:(robotComm1.x * window2.width / paper.width) - hex1.width/2
                 y: isSelected?hex1.y:(robotComm1.y * window2.height / paper.height) - hex1.height/2
-                rotation: robotComm1.theta
+                rotation: isSelected? curRobotRotation + wheelRotation : robotComm1.theta ;
 
                 MouseArea {
                     id: themouse1
                     anchors.fill: parent
                     drag.target: parent
                     onClicked: {
+                        //reset curRobotRotation and wheelRotation
+                        parent.curRobotRotation = robotComm1.theta
+                        parent.wheelRotation = 0
+
                         robotComm1.init=Qt.vector3d(robotComm1.x,robotComm1.y,robotComm1.theta)
                         parent.isSelected=!parent.isSelected
                         console.log(parent.isSelected)
                     }
+                    onWheel: {
+                        if(parent.isSelected){
+                            parent.wheelRotation += wheel.angleDelta.y/16;
+                            parent.wheelRotation = parent.wheelRotation > 360 ?
+                                        parent.wheelRotation-360: parent.wheelRotation
+                        }
+                    }
                 }
+
             }
             isSimulation: true
 
@@ -122,6 +128,8 @@ Item {
             property var init: Qt.vector3d(0,0,0)
             Hexagon{
                 id: hex2
+                property  real wheelRotation: 0
+                property real curRobotRotation: 0 //to avoid binding loop on rotation
                 width: 75 * window2.width/paper.width;
                 height: 75 * Math.sin(60*Math.PI/180) * window2.height/paper.height;
                 transformOrigin: Item.Center
@@ -130,16 +138,27 @@ Item {
                 property bool isSelected: false
                 x: isSelected?hex2.x:(robotComm2.x * window2.width / paper.width) - hex2.width/2
                 y: isSelected?hex2.y:(robotComm2.y * window2.height / paper.height) - hex2.height/2
-                rotation: robotComm2.theta
+                rotation: isSelected? curRobotRotation + wheelRotation : robotComm2.theta ;
 
                 MouseArea {
                     id: themouse2
                     anchors.fill: parent
                     drag.target: parent
                     onClicked: {
+                        //reset curRobotRotation and wheelRotation
+                        parent.curRobotRotation = robotComm1.theta
+                        parent.wheelRotation = 0
+
                         robotComm2.init=Qt.vector3d(robotComm2.x,robotComm2.y,robotComm2.theta)
                         parent.isSelected=!parent.isSelected
                         console.log(parent.isSelected)
+                    }
+                    onWheel: {
+                        if(parent.isSelected){
+                            parent.wheelRotation += wheel.angleDelta.y/16;
+                            parent.wheelRotation = parent.wheelRotation > 360 ?
+                                        parent.wheelRotation-360: parent.wheelRotation
+                        }
                     }
                 }
             }
@@ -374,25 +393,27 @@ Item {
                         Button{
                             text: "Default"
                             onClicked: {
-                                backgroud.sourceSize = Qt.size(500, 500)
+                                //backgroud.sourceSize = Qt.size(500, 500)
                                 paper.height = 500
                                 paper.width = 500
-                                background.source = 'qrc:/assets/redgrid.svg'
-                                window2.width = background.sourceSize.width
-                                window2.height = background.sourceSize.height
+                                //be default resize window with paper dimensions
+                                //but can give the window any size you want
+                                window2.width = paper.width
+                                window2.height = paper.height
+                                backgroundImg.source = 'qrc:/assets/redgrid.svg'
                             }
-
                         }
                         Button{
                             text: "orangemap"
                             onClicked: {
                                 //update backgroundsize and windowsize
-                                background.sourceSize = Qt.size(980, 420)
-                                paper.height = background.sourceSize.height
-                                paper.width = background.sourceSize.width
-                                background.source = 'qrc:/assets/orangemapcorrected.svg'
-                                window2.width = background.sourceSize.width
-                                window2.height = background.sourceSize.height
+                                paper.height = 420;
+                                paper.width = 980;
+                                //be default resize window with paper dimensions
+                                //but can give the window any size you want
+                                window2.width = paper.width;
+                                window2.height = paper.height;
+                                backgroundImg.source = 'qrc:/assets/orangemapcorrected.svg'
                             }
                         }
                         Button{
@@ -400,6 +421,10 @@ Item {
                             onClicked: {
                                 paper.height = 210
                                 paper.width = 297
+                                //be default resize window with paper dimensions
+                                //but can give the window any size you want
+                                window2.width = paper.width
+                                window2.height = paper.height
                             }
                         }
                         Button {
@@ -407,6 +432,10 @@ Item {
                             onClicked: {
                                 paper.height = 297
                                 paper.width = 420
+                                //be default resize window with paper dimensions
+                                //but can give the window any size you want
+                                window2.width = paper.width
+                                window2.height = paper.height
                             }
                         }
                         Button {
@@ -414,6 +443,10 @@ Item {
                             onClicked: {
                                 paper.height = 420
                                 paper.width = 594
+                                //be default resize window with paper dimensions
+                                //but can give the window any size you want
+                                window2.width = paper.width
+                                window2.height = paper.height
                             }
                         }
                     }
