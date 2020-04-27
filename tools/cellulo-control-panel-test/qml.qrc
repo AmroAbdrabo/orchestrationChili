@@ -5,5 +5,7 @@
         <file>assets/redgrid.svg</file>
         <file>assets/redgrid.json</file>
         <file>assets/redgrid_.json</file>
+        <file>assets/yellowmap.svg</file>
+        <file>assets/orangemapcorrected.svg</file>
     </qresource>
 </RCC>

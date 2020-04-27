@@ -26,15 +26,21 @@ Item {
         visible: true
 
 
-        width: 700
-        height: mobile ? Screen.desktopAvailableHeight : width;
+        width: background.sourceSize.width
+        height: mobile ? Screen.desktopAvailableHeight : background.sourceSize.height;
         ToastManager{ id: toast }
-       Image{
+        Image{
+            id: background
             source: 'qrc:/assets/redgrid.svg'
             x:0
             y:0
-            sourceSize.width: window2.width;
-            sourceSize.height: window2.height;
+            sourceSize: Qt.size( 500, 500 )
+            Image {
+                id: img
+                source: parent.source
+                width: 0
+                height: 0
+            }
         }
 
         CelluloRobot{
@@ -368,10 +374,26 @@ Item {
                         Button{
                             text: "Default"
                             onClicked: {
+                                backgroud.sourceSize = Qt.size(500, 500)
                                 paper.height = 500
                                 paper.width = 500
+                                background.source = 'qrc:/assets/redgrid.svg'
+                                window2.width = background.sourceSize.width
+                                window2.height = background.sourceSize.height
                             }
 
+                        }
+                        Button{
+                            text: "orangemap"
+                            onClicked: {
+                                //update backgroundsize and windowsize
+                                background.sourceSize = Qt.size(980, 420)
+                                paper.height = background.sourceSize.height
+                                paper.width = background.sourceSize.width
+                                background.source = 'qrc:/assets/orangemapcorrected.svg'
+                                window2.width = background.sourceSize.width
+                                window2.height = background.sourceSize.height
+                            }
                         }
                         Button{
                             text: "A4"
