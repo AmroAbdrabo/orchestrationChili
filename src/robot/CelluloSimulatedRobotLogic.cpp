@@ -1,4 +1,4 @@
-#include "celluloSimulatedRobot.h"
+#include "CelluloSimulatedRobotLogic.h"
 #include <math.h>
 #include <QDebug>
 
@@ -6,7 +6,8 @@
 #define max(X,Y) ((X) > (Y) ? (X) : (Y))
 #define PI 3.14159265359f
 
-CelluloSimulatedRobot::CelluloSimulatedRobot(){
+
+CelluloSimulatedRobotLogic::CelluloSimulatedRobotLogic(){
     goalPoseX = 0;
     goalPoseY = 0;
     goalPoseTheta = 0;
@@ -31,7 +32,8 @@ CelluloSimulatedRobot::CelluloSimulatedRobot(){
     wGlobalGoalTracker = 0; ///Global w dictacted by active tracker
 }
 
-void CelluloSimulatedRobot::setGoalPose(float x, float y, float theta, float v, float w)
+
+void CelluloSimulatedRobotLogic::setGoalPose(float x, float y, float theta, float v, float w)
 {
     goalPoseX = x;
     goalPoseY = y;
@@ -42,7 +44,7 @@ void CelluloSimulatedRobot::setGoalPose(float x, float y, float theta, float v, 
     relevantGoalsReached = false;
 }
 
-void CelluloSimulatedRobot::setGoalPosition(float x, float y, float v){
+void CelluloSimulatedRobotLogic::setGoalPosition(float x, float y, float v){
     goalPoseX = x;
     goalPoseY = y;
     goalPoseMaxV = v;
@@ -51,7 +53,7 @@ void CelluloSimulatedRobot::setGoalPosition(float x, float y, float v){
     relevantGoalsReached = false;
 }
 
-void CelluloSimulatedRobot::setGoalXCoordinate(float x, float v){
+void CelluloSimulatedRobotLogic::setGoalXCoordinate(float x, float v){
     qDebug() << "setGoalXCoordinate";
     goalPoseX = x;
     goalPoseMaxV = v;
@@ -60,7 +62,7 @@ void CelluloSimulatedRobot::setGoalXCoordinate(float x, float v){
     relevantGoalsReached = false;
 }
 
-void CelluloSimulatedRobot::setGoalYCoordinate(float y, float v){
+void CelluloSimulatedRobotLogic::setGoalYCoordinate(float y, float v){
     goalPoseY = y;
     goalPoseMaxV = v;
     goalPoseMaxW = 0;
@@ -69,7 +71,7 @@ void CelluloSimulatedRobot::setGoalYCoordinate(float y, float v){
     //***************************** CLEAR D AND I
 }
 
-void CelluloSimulatedRobot::setGoalOrientation(float theta, float w){
+void CelluloSimulatedRobotLogic::setGoalOrientation(float theta, float w){
     goalPoseTheta = theta;
     goalPoseMaxV = 0;
     goalPoseMaxW = w;
@@ -77,7 +79,7 @@ void CelluloSimulatedRobot::setGoalOrientation(float theta, float w){
     relevantGoalsReached = false;
 }
 
-void CelluloSimulatedRobot::setGoalXThetaCoordinate(float x, float theta, float v, float w)
+void CelluloSimulatedRobotLogic::setGoalXThetaCoordinate(float x, float theta, float v, float w)
 {
     goalPoseX = x;
     goalPoseTheta = theta;
@@ -87,7 +89,7 @@ void CelluloSimulatedRobot::setGoalXThetaCoordinate(float x, float theta, float 
     relevantGoalsReached = false;
 }
 
-void CelluloSimulatedRobot::setGoalYThetaCoordinate(float y, float theta, float v, float w)
+void CelluloSimulatedRobotLogic::setGoalYThetaCoordinate(float y, float theta, float v, float w)
 {
     goalPoseY = y;
     goalPoseTheta = theta;
@@ -97,14 +99,14 @@ void CelluloSimulatedRobot::setGoalYThetaCoordinate(float y, float theta, float 
     relevantGoalsReached = false;
 }
 
-void CelluloSimulatedRobot::setGoalVelocity(float vx, float vy, float w){
+void Cellulo::CelluloSimulatedRobotLogic::setGoalVelocity(float vx, float vy, float w){
     vxGlobalGoalTracker = vx;
     vyGlobalGoalTracker = vy;
     wGlobalGoalTracker = w;
     currentMotionTracker = MOTION_TRACKER_VELOCITY;
 }
 
-void CelluloSimulatedRobot::clearTracking(){
+void CelluloSimulatedRobotLogic::clearTracking(){
     goalPoseX = 0;
     goalPoseY = 0;
     goalPoseTheta = 0;
@@ -118,7 +120,7 @@ void CelluloSimulatedRobot::clearTracking(){
     wGlobalGoalTracker = 0;
 }
 
-void CelluloSimulatedRobot::trackXCoordinate() {
+void CelluloSimulatedRobotLogic::trackXCoordinate() {
 
     qDebug() << "trackXCoordinate";
     qDebug() << "goalPose :";
@@ -155,7 +157,7 @@ void CelluloSimulatedRobot::trackXCoordinate() {
     qDebug() << vxGlobalGoalTracker;
 }
 
-void CelluloSimulatedRobot::trackYCoordinate()
+void CelluloSimulatedRobotLogic::trackYCoordinate()
 {
     //Get difference of goal and actual y in grid coordinates
         float yDiff = (goalPoseY - poseY)/*/100.0f*/;
@@ -186,7 +188,7 @@ void CelluloSimulatedRobot::trackYCoordinate()
             vyGlobalGoalTracker = vyGlobalGoalNew;
 }
 
-void CelluloSimulatedRobot::trackOrientation(bool goalless) {
+void CelluloSimulatedRobotLogic::trackOrientation(bool goalless) {
     //Get difference of goal and actual orientation between -PI and PI in radians
     float thetaDiff = (goalPoseTheta - poseTheta);
     while(thetaDiff < -180)
@@ -220,7 +222,7 @@ void CelluloSimulatedRobot::trackOrientation(bool goalless) {
 
 
 
-void CelluloSimulatedRobot::trackPosition(){
+void CelluloSimulatedRobotLogic::trackPosition(){
     //TODO find a way to link x, y and poseX, poseY to avoid redundancy
     //added because x, y and in bluetooth class..
 
@@ -295,7 +297,7 @@ void CelluloSimulatedRobot::trackPosition(){
         vyGlobalGoalTracker = vyGlobalGoalNew;
 }
 
-void CelluloSimulatedRobot::updatePose(float curX, float curY, float curTheta) {
+void CelluloSimulatedRobotLogic::updatePose(float curX, float curY, float curTheta) {
     poseX = curX;
     poseY = curY;
     poseTheta = curTheta;
@@ -386,4 +388,11 @@ void CelluloSimulatedRobot::updatePose(float curX, float curY, float curTheta) {
     relevantGoalsReached = relevantGoalsReachedNow;
 }
 
+void CelluloSimulatedRobotLogic::setVisualEffect(CelluloBluetoothEnums::VisualEffect effect, QColor color, int value)
+{
+    if(effect == CelluloBluetoothEnums::VisualEffect::VisualEffectConstAll){
+        this->color = color;
+    }
 
+
+}

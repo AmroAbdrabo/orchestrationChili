@@ -49,7 +49,7 @@
 #include <QtBluetooth/QBluetoothDeviceDiscoveryAgent>
 #include <QtBluetooth/QBluetoothServiceDiscoveryAgent>
 #include <math.h>
-#include "../robot/celluloSimulatedRobot.h"
+#include "../robot/CelluloSimulatedRobotLogic.h"
 
 namespace Cellulo{
 
@@ -116,6 +116,9 @@ class CelluloBluetooth : public CelluloZoneClient {
     /** @cond DO_NOT_DOCUMENT */
 
     Q_PROPERTY(float cameraImageProgress READ getCameraImageProgress NOTIFY cameraImageProgressChanged)
+
+    //for now only 1 color for simulated robot
+    Q_PROPERTY(QColor color WRITE setColor READ getColor NOTIFY colorChanged)
 
     Q_PROPERTY(bool isSimulation WRITE setIsSimulation READ getIsSimulation NOTIFY isSimulationChanged)
 
@@ -259,6 +262,7 @@ public:
 
     /** @endcond */
     bool getIsSimulation(){return isSimulation;}
+    QColor getColor(){return color;}
     QVector3D getInitSimulatedPose(){return initPose;};
     float getTimeStep(){return timeStep;}
 
@@ -611,7 +615,20 @@ public slots:
       *@brief Slot: update positions with respect to the velocity commanded.
       */
     void updatePose();
+    /**
+     * @brief sets boolean indicating of the robot is being simulated
+     * @param simulated
+     */
     void setIsSimulation(bool simulated);
+    /**
+     * @brief sets boolean indicating of the robot is being simulated
+     * @param simulated
+     */
+    void setColor(QColor color);
+    /**
+     * @brief sets the initial pose of the robot
+     * @param initpos
+     */
     void setInitSimulatedPose(QVector3D initpos);
 signals:
 
@@ -732,6 +749,7 @@ signals:
 
     void isSimulationChanged();
     void initSimulatedPoseChanged();
+    void colorChanged();
 
 
 private:
@@ -768,12 +786,13 @@ private:
     CelluloBluetoothEnums::Gesture gesture;                   ///< Current gesture
 
 
-    QTimer *timer;                                            ///<set timer for the simulated robot
-    bool isSimulation;
-    CelluloSimulatedRobot* simulatedRobot;
-    float timeStep;
-    QVector3D initPose;
-    QVector3D commandedvxyw;
+    QTimer *timer;                                            ///< set timer for the simulated robot
+    bool isSimulation;                                        ///< Indicated if the robot is simulated
+    CelluloSimulatedRobotLogic* simulatedRobotLogic;          ///< pointer to an instance of the simulatedRobotLogic
+    float timeStep;                                           ///< time interval between every update of the robot in a simulation
+    QVector3D initPose;                                       ///< initial pose for the simulated robot
+    QVector3D commandedvxyw;                                  ///<
+    QColor color;
     /**
      * @brief Resets properties of the robot to default
      */

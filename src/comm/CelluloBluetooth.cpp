@@ -87,9 +87,10 @@ CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) : CelluloZoneClient(paren
     lastTimestamp = 0;
     framerate = 0.0;
     kidnapped = true;
+    color = QColor("gray");
     gesture = CelluloBluetoothEnums::GestureNone;
 
-    simulatedRobot = new CelluloSimulatedRobot();
+    simulatedRobotLogic = new CelluloSimulatedRobotLogic();
     isSimulation=false;
     timer=new QTimer(this);
     timeStep=20;//in ms
@@ -97,16 +98,18 @@ CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) : CelluloZoneClient(paren
 
 void CelluloBluetooth::updatePose(){
     if(isSimulation){
-        simulatedRobot->updatePose(x, y, theta);
-        x = x + timeStep*simulatedRobot->vxGlobalGoalTracker/1000;
-        y = y + timeStep*simulatedRobot->vyGlobalGoalTracker/1000;
-        theta = theta + timeStep*(simulatedRobot->wGlobalGoalTracker)*360/(M_PI*1000); //rotational velocity is radians/s
+        color = simulatedRobotLogic->color;
+        simulatedRobotLogic->updatePose(x, y, theta);
+        x = x + timeStep*simulatedRobotLogic->vxGlobalGoalTracker/1000;
+        y = y + timeStep*simulatedRobotLogic->vyGlobalGoalTracker/1000;
+        theta = theta + timeStep*(simulatedRobotLogic->wGlobalGoalTracker)*360/(M_PI*1000); //rotational velocity is radians/s
         lastTimestamp+=timeStep;
         if(theta>360)
             theta-=360;
         else if (theta<0) {
             theta+=360;
         }
+        emit colorChanged();
         emit poseChanged(x,y,theta);
     }
     else
@@ -142,8 +145,8 @@ void CelluloBluetooth::resetProperties(){
 
     if(isSimulation)
     {
-        delete simulatedRobot;
-        simulatedRobot = new CelluloSimulatedRobot();
+        delete simulatedRobotLogic;
+        simulatedRobotLogic = new CelluloSimulatedRobotLogic();
     }
 }
 
@@ -190,6 +193,10 @@ void CelluloBluetooth::setIsSimulation(bool simulated){
         timer->stop();
     qDebug()<<"simulatedCellulo is "<<isSimulation<<simulated;
     emit isSimulationChanged();
+}
+
+void CelluloBluetooth::setColor(QColor c) {
+    simulatedRobotLogic->color = c;
 }
 
 void CelluloBluetooth::setLocalAdapterMacAddr(QString localAdapterMacAddr){
@@ -795,7 +802,7 @@ void CelluloBluetooth::setAllMotorOutputs(int m1output, int m2output, int m3outp
 
 void CelluloBluetooth::setGoalVelocity(float vx, float vy, float w){
     if(isSimulation){
-       simulatedRobot->setGoalVelocity(vx, vy ,w);
+       simulatedRobotLogic->setGoalVelocity(vx, vy ,w);
     }
     else{
         int vx_ = (int)(vx*GOAL_VEL_FACTOR_SHARED);
@@ -830,7 +837,7 @@ void CelluloBluetooth::setGoalVelocity(float vx, float vy, float w){
 
 void CelluloBluetooth::setGoalPose(float x, float y, float theta, float v, float w){
     if(isSimulation) {
-        simulatedRobot->setGoalPose(x, y, theta, v, w);
+        simulatedRobotLogic->setGoalPose(x, y, theta, v, w);
     } else {
         x *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
         y *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
@@ -879,7 +886,7 @@ void CelluloBluetooth::setGoalPose(float x, float y, float theta, float v, float
 
 void CelluloBluetooth::setGoalPosition(float x, float y, float v){
     if(isSimulation) {
-        simulatedRobot->setGoalPosition(x, y, v);
+        simulatedRobotLogic->setGoalPosition(x, y, v);
     } else {
         x *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
         y *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
@@ -914,7 +921,7 @@ void CelluloBluetooth::setGoalPosition(float x, float y, float v){
 
 void CelluloBluetooth::setGoalXCoordinate(float x, float v){
     if(isSimulation) {
-        simulatedRobot->setGoalXCoordinate(x, v);
+        simulatedRobotLogic->setGoalXCoordinate(x, v);
     } else {
         x *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
         v *= GOAL_VEL_FACTOR_SHARED;
@@ -942,7 +949,7 @@ void CelluloBluetooth::setGoalXCoordinate(float x, float v){
 
 void CelluloBluetooth::setGoalYCoordinate(float y, float v){
     if(isSimulation) {
-        simulatedRobot->setGoalYCoordinate(y, v);
+        simulatedRobotLogic->setGoalYCoordinate(y, v);
     } else {
         y *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
         v *= GOAL_VEL_FACTOR_SHARED;
@@ -970,7 +977,7 @@ void CelluloBluetooth::setGoalYCoordinate(float y, float v){
 
 void CelluloBluetooth::setGoalOrientation(float theta, float w){
     if(isSimulation) {
-        simulatedRobot->setGoalOrientation(theta, w);
+        simulatedRobotLogic->setGoalOrientation(theta, w);
     } else {
         theta *= GOAL_POSE_FACTOR_SHARED;
         w *= GOAL_VEL_FACTOR_SHARED;
@@ -996,7 +1003,7 @@ void CelluloBluetooth::setGoalOrientation(float theta, float w){
 
 void CelluloBluetooth::setGoalXThetaCoordinate(float x, float theta, float v, float w){
     if(isSimulation) {
-        simulatedRobot->setGoalXThetaCoordinate(x, theta, v ,w);
+        simulatedRobotLogic->setGoalXThetaCoordinate(x, theta, v ,w);
     } else {
         x *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
         theta *= GOAL_POSE_FACTOR_SHARED;
@@ -1038,7 +1045,7 @@ void CelluloBluetooth::setGoalXThetaCoordinate(float x, float theta, float v, fl
 
 void CelluloBluetooth::setGoalYThetaCoordinate(float y, float theta, float v, float w){
     if(isSimulation) {
-        simulatedRobot->setGoalYThetaCoordinate(y, theta, v ,w);
+        simulatedRobotLogic->setGoalYThetaCoordinate(y, theta, v ,w);
     } else {
         y *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
         theta *= GOAL_POSE_FACTOR_SHARED;
@@ -1080,7 +1087,7 @@ void CelluloBluetooth::setGoalYThetaCoordinate(float y, float theta, float v, fl
 
 void CelluloBluetooth::clearTracking(){
     if(isSimulation) {
-        simulatedRobot->clearTracking();
+        simulatedRobotLogic->clearTracking();
     } else {
         sendPacket.clear();
         sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeClearTracking);
@@ -1217,6 +1224,9 @@ void CelluloBluetooth::setHapticBackdriveAssist(float xAssist, float yAssist, fl
 }
 
 void CelluloBluetooth::setVisualEffect(CelluloBluetoothEnums::VisualEffect effect, QColor color, int value){
+    if(isSimulation) {
+        simulatedRobotLogic->setVisualEffect(effect, color, value);
+    }
     if(value > 0xFF)
         value = 0xFF;
     else if(value < 0)

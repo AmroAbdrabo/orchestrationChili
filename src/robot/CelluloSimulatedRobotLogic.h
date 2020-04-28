@@ -1,6 +1,9 @@
 #ifndef CELLULOSIMULATEDLOGIC_H
 #define CELLULOSIMULATEDLOGIC_H
 
+#include <QColor>
+#include "../comm/CelluloBluetoothEnums.h"
+
 #define W_MAX 25.0f
 #define VXY_MAX_INCREMENT 20.0f                    ///< Maximum increment for Vx,Vy in pose/position tracking
 #define W_MAX_INCREMENT 0.5f                       ///< Maximum increment for w in pose tracking
@@ -25,9 +28,11 @@ typedef enum {
 } MOTION_TRACKER;
 
 
-class CelluloSimulatedRobot {
+class CelluloSimulatedRobotLogic {
 public:
     MOTION_TRACKER currentMotionTracker = MOTION_TRACKER_NONE; ///< Currently active tracker
+
+    QColor color;
 
     float poseX;
     float poseY;
@@ -57,7 +62,7 @@ public:
     float vyGlobalGoalTracker; ///Global Vy dictacted by active tracker
     float wGlobalGoalTracker; ///Global w dictacted by active tracker
 
-    CelluloSimulatedRobot();
+    CelluloSimulatedRobotLogic();
 
     void setGoalPose(float x, float y, float theta, float v, float w);
     void setGoalPosition(float x, float y, float v);
@@ -74,6 +79,15 @@ public:
     void trackOrientation(bool goalless);
     float getVectorOrientation(float x, float y);
     void updatePose(float curX, float curY, float theta);
+    /**
+     * @brief Sets the visual effect on the robot, changing LED illumination
+     *
+     * @param effect The effect ordinal
+     * @param color Color
+     * @param value A value possibly meaningful for the effect (between 0 and 255)
+     */
+    void setVisualEffect(Cellulo::CelluloBluetoothEnums::VisualEffect effect, QColor color, int value);
+
 };
 
 #endif // CELLULOSIMULATEDLOGIC_H

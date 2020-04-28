@@ -10,7 +10,6 @@ import QMLCache 1.0
 import QMLBluetoothExtras 1.0
 import hexagon.qml 1.0
 
-
 Item {
 
      function em(x){ return Math.round(x*TextSingleton.font.pixelSize); }
@@ -38,7 +37,7 @@ Item {
         CelluloRobot{
             id: robotComm1
             property var init: Qt.vector3d(0,0,0)
-
+            color: "blue"
             Hexagon{
                 id: hex1
                 property  real wheelRotation: 0
@@ -46,8 +45,7 @@ Item {
                 width: 75 * window2.width/paper.width;
                 height: 75 * Math.sin(60*Math.PI/180) * window2.height/paper.height;//the height of a perfect hexagon depends on its width
                 transformOrigin: Item.Center
-                color: "green"
-                onColorChanged: console.log("color was changed");
+                color: robotComm1.color
                 property bool isSelected: false
                 x: isSelected?hex1.x:(robotComm1.x * window2.width / paper.width) - hex1.width/2
                 y: isSelected?hex1.y:(robotComm1.y * window2.height / paper.height) - hex1.height/2
@@ -64,6 +62,7 @@ Item {
 
                         robotComm1.init=Qt.vector3d(robotComm1.x,robotComm1.y,robotComm1.theta)
                         parent.isSelected=!parent.isSelected
+                        //robotComm1.kidnapped = parent.isSelected;
                         console.log(parent.isSelected)
                     }
                     onWheel: {
@@ -126,6 +125,7 @@ Item {
         CelluloRobot{
             id: robotComm2
             property var init: Qt.vector3d(0,0,0)
+            color: "red"
             Hexagon{
                 id: hex2
                 property  real wheelRotation: 0
@@ -133,8 +133,7 @@ Item {
                 width: 75 * window2.width/paper.width;
                 height: 75 * Math.sin(60*Math.PI/180) * window2.height/paper.height;
                 transformOrigin: Item.Center
-                color: "red"
-                onColorChanged: console.log("color was changed");
+                color: robotComm2.color
                 property bool isSelected: false
                 x: isSelected?hex2.x:(robotComm2.x * window2.width / paper.width) - hex2.width/2
                 y: isSelected?hex2.y:(robotComm2.y * window2.height / paper.height) - hex2.height/2
@@ -368,6 +367,14 @@ Item {
                     Row{
                         spacing: 5
 
+                        Button{
+                            text: "Color red"
+                            onClicked: robotComm1.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "red", 0);
+                        }
+                        Button{
+                            text: "Color blue"
+                            onClicked: robotComm1.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "blue", 0);
+                        }
                         Button{
                             text: "Reset"
                             onClicked: robotComm1.reset();
