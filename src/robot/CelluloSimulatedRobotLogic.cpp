@@ -99,7 +99,7 @@ void CelluloSimulatedRobotLogic::setGoalYThetaCoordinate(float y, float theta, f
     relevantGoalsReached = false;
 }
 
-void Cellulo::CelluloSimulatedRobotLogic::setGoalVelocity(float vx, float vy, float w){
+void CelluloSimulatedRobotLogic::setGoalVelocity(float vx, float vy, float w){
     vxGlobalGoalTracker = vx;
     vyGlobalGoalTracker = vy;
     wGlobalGoalTracker = w;
@@ -388,9 +388,9 @@ void CelluloSimulatedRobotLogic::updatePose(float curX, float curY, float curThe
     relevantGoalsReached = relevantGoalsReachedNow;
 }
 
-void CelluloSimulatedRobotLogic::setVisualEffect(CelluloBluetoothEnums::VisualEffect effect, QColor color, int value)
+void CelluloSimulatedRobotLogic::setVisualEffect(Cellulo::CelluloBluetoothEnums::VisualEffect effect, QColor color, int value)
 {
-    if(effect == CelluloBluetoothEnums::VisualEffect::VisualEffectConstAll){
+    if(effect == Cellulo::CelluloBluetoothEnums::VisualEffect::VisualEffectConstAll){
         this->color = color;
     }
 
