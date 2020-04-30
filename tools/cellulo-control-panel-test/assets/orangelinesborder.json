@@ -1,0 +1,191 @@
+[
+{
+    "name": "1to19",
+            "type": "LINEBORDER",
+            "x1": 60,
+            "x2": 920,
+            "y1": 60,
+            "y2": 60,
+ "borderThickness": 30
+},
+{
+    "name": "24to28",
+            "type": "LINEBORDER",
+            "x1": 60,
+            "x2": 240,
+            "y1": 160,
+            "y2": 160,
+ "borderThickness": 30
+},
+{
+    "name": "29to31",
+            "type": "LINEBORDER",
+            "x1": 340,
+            "x2": 440,
+            "y1": 160,
+ "borderThickness": 30,
+            "y2": 160
+},
+{
+    "name": "32to34",
+            "type": "LINEBORDER",
+            "x1": 540,
+            "x2": 640,
+            "y1": 160,
+            "y2": 160,
+ "borderThickness": 30
+},
+{
+    "name": "35to39",
+            "type": "LINEBORDER",
+            "x1": 740,
+            "x2": 920,
+            "y1": 160,
+            "y2": 160,
+ "borderThickness": 30
+},
+{
+    "name": "46to48",
+            "type": "LINEBORDER",
+            "x1": 60,
+            "x2": 140,
+            "y1": 260,
+            "y2": 260,
+ "borderThickness": 30
+},
+{
+    "name": "49to59",
+            "type": "LINEBORDER",
+            "x1": 240,
+            "x2": 740,
+            "y1": 260,
+            "y2": 260,
+ "borderThickness": 30
+},
+{
+    "name": "60to62",
+            "type": "LINEBORDER",
+            "x1": 840,
+            "x2": 920,
+            "y1": 260,
+            "y2": 260,
+ "borderThickness": 30
+},
+{
+    "name": "67to85",
+            "type": "LINEBORDER",
+            "x1": 60,
+            "x2": 920,
+            "y1": 360,
+            "y2": 360,
+ "borderThickness": 30
+},
+{
+    "name": "1to24",
+            "type": "LINEBORDER",
+            "x1": 60,
+            "x2": 60,
+            "y1": 60,
+            "y2": 160,
+ "borderThickness": 30
+},
+{
+    "name": "9to31",
+            "type": "LINEBORDER",
+            "x1": 440,
+            "x2": 440,
+            "y1": 60,
+            "y2": 160,
+ "borderThickness": 30
+},
+{
+    "name": "11to32",
+            "type": "LINEBORDER",
+            "x1": 540,
+            "x2": 540,
+            "y1": 60,
+            "y2": 160,
+ "borderThickness": 30
+},
+{
+    "name": "19to39",
+            "type": "LINEBORDER",
+            "x1": 920,
+            "x2": 920,
+            "y1": 60,
+            "y2": 160,
+ "borderThickness": 30
+},
+{
+    "name": "26to48",
+            "type": "LINEBORDER",
+            "x1": 140,
+            "x2": 140,
+            "y1": 160,
+            "y2": 260,
+ "borderThickness": 30
+},
+{
+    "name": "28to49",
+            "type": "LINEBORDER",
+            "x1": 240,
+            "x2": 240,
+            "y1": 160,
+            "y2": 260,
+ "borderThickness": 30
+},
+{
+    "name": "29to73",
+            "type": "LINEBORDER",
+            "x1": 340,
+            "x2": 340,
+            "y1": 160,
+            "y2": 360,
+ "borderThickness": 30
+},
+{
+    "name": "34to79",
+            "type": "LINEBORDER",
+            "x1": 640,
+            "x2": 640,
+            "y1": 160,
+            "y2": 360,
+ "borderThickness": 30
+},
+{
+    "name": "35to59",
+            "type": "LINEBORDER",
+            "x1": 740,
+            "x2": 740,
+            "y1": 160,
+            "y2": 260,
+ "borderThickness": 30
+},
+{
+    "name": "37to60",
+            "type": "LINEBORDER",
+            "x1": 840,
+            "x2": 840,
+            "y1": 160,
+            "y2": 260,
+ "borderThickness": 30
+},
+{
+    "name": "46to67",
+            "type": "LINEBORDER",
+            "x1": 60,
+            "x2": 60,
+            "y1": 260,
+            "y2": 360,
+ "borderThickness": 30
+},
+{
+    "name": "62to85",
+            "type": "LINEBORDER",
+            "x1": 920,
+            "x2": 920,
+            "y1": 260,
+            "y2": 360,
+ "borderThickness": 30
+}
+]

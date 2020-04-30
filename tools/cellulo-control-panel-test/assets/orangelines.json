@@ -1,0 +1,170 @@
+[
+{
+    "name": "LINE_ZONE1to19",
+            "type": "LINESEGMENTDISTANCE",
+            "x1": 60,
+            "x2": 920,
+            "y1": 60,
+            "y2": 60
+},
+{
+    "name": "LINE_ZONE24to28",
+            "type": "LINESEGMENTDISTANCE",
+            "x1": 60,
+            "x2": 240,
+            "y1": 160,
+            "y2": 160
+},
+{
+    "name": "LINE_ZONE29to31",
+            "type": "LINESEGMENTDISTANCE",
+            "x1": 340,
+            "x2": 440,
+            "y1": 160,
+            "y2": 160
+},
+{
+    "name": "LINE_ZONE32to34",
+            "type": "LINESEGMENTDISTANCE",
+            "x1": 540,
+            "x2": 640,
+            "y1": 160,
+            "y2": 160
+},
+{
+    "name": "LINE_ZONE35to39",
+            "type": "LINESEGMENTDISTANCE",
+            "x1": 740,
+            "x2": 920,
+            "y1": 160,
+            "y2": 160
+},
+{
+    "name": "LINE_ZONE46to48",
+            "type": "LINESEGMENTDISTANCE",
+            "x1": 60,
+            "x2": 140,
+            "y1": 260,
+            "y2": 260
+},
+{
+    "name": "LINE_ZONE49to59",
+            "type": "LINESEGMENTDISTANCE",
+            "x1": 240,
+            "x2": 740,
+            "y1": 260,
+            "y2": 260
+},
+{
+    "name": "LINE_ZONE60to62",
+            "type": "LINESEGMENTDISTANCE",
+            "x1": 840,
+            "x2": 920,
+            "y1": 260,
+            "y2": 260
+},
+{
+    "name": "LINE_ZONE67to85",
+            "type": "LINESEGMENTDISTANCE",
+            "x1": 60,
+            "x2": 920,
+            "y1": 360,
+            "y2": 360
+},
+{
+    "name": "LINE_ZONE1to24",
+            "type": "LINESEGMENTDISTANCE",
+            "x1": 60,
+            "x2": 60,
+            "y1": 60,
+            "y2": 160
+},
+{
+    "name": "LINE_ZONE9to31",
+            "type": "LINESEGMENTDISTANCE",
+            "x1": 440,
+            "x2": 440,
+            "y1": 60,
+            "y2": 160
+},
+{
+    "name": "LINE_ZONE11to32",
+            "type": "LINESEGMENTDISTANCE",
+            "x1": 540,
+            "x2": 540,
+            "y1": 60,
+            "y2": 160
+},
+{
+    "name": "LINE_ZONE19to39",
+            "type": "LINESEGMENTDISTANCE",
+            "x1": 920,
+            "x2": 920,
+            "y1": 60,
+            "y2": 160
+},
+{
+    "name": "LINE_ZONE26to48",
+            "type": "LINESEGMENTDISTANCE",
+            "x1": 140,
+            "x2": 140,
+            "y1": 160,
+            "y2": 260
+},
+{
+    "name": "LINE_ZONE28to49",
+            "type": "LINESEGMENTDISTANCE",
+            "x1": 240,
+            "x2": 240,
+            "y1": 160,
+            "y2": 260
+},
+{
+    "name": "LINE_ZONE29to73",
+            "type": "LINESEGMENTDISTANCE",
+            "x1": 340,
+            "x2": 340,
+            "y1": 160,
+            "y2": 360
+},
+{
+    "name": "LINE_ZONE34to79",
+            "type": "LINESEGMENTDISTANCE",
+            "x1": 640,
+            "x2": 640,
+            "y1": 160,
+            "y2": 360
+},
+{
+    "name": "LINE_ZONE35to59",
+            "type": "LINESEGMENTDISTANCE",
+            "x1": 740,
+            "x2": 740,
+            "y1": 160,
+            "y2": 260
+},
+{
+    "name": "LINE_ZONE37to60",
+            "type": "LINESEGMENTDISTANCE",
+            "x1": 840,
+            "x2": 840,
+            "y1": 160,
+            "y2": 260
+},
+{
+    "name": "LINE_ZONE46to67",
+            "type": "LINESEGMENTDISTANCE",
+            "x1": 60,
+            "x2": 60,
+            "y1": 260,
+            "y2": 360
+},
+{
+    "name": "LINE_ZONE62to85",
+            "type": "LINESEGMENTDISTANCE",
+            "x1": 920,
+            "x2": 920,
+            "y1": 260,
+            "y2": 360
+}
+]

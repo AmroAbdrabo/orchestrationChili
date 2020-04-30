@@ -10,5 +10,12 @@
         <file>assets/orangefruits.json</file>
         <file>src/MyCelluloRobot.qml</file>
         <file>src/ControlsWindow.qml</file>
+        <file>assets/orangelines.json</file>
+        <file>assets/orangeinner.json</file>
+        <file>assets/orangedistance.json</file>
+        <file>assets/orangeclosest.json</file>
+        <file>assets/orangelinesborder.json</file>
+        <file>assets/orangerect.json</file>
+        <file>src/Utils.js</file>
     </qresource>
 </RCC>

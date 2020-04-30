@@ -10,6 +10,7 @@ import QMLCache 1.0
 import QMLBluetoothExtras 1.0
 import hexagon.qml 1.0
 
+import "Utils.js" as MyFuncs
 //window to display the control panel
 Window {
     objectName: "controls window"
@@ -499,7 +500,7 @@ Window {
         id: zonetest
         text: "zone Test"
         onClicked: {
-            createZones();
+            MyFuncs.createZones();
             zoneEngine.addNewClient(robotComm1)
             zoneEngine.addNewClient(robotComm2)
             //var closestT = zoneBorder.calculate(robotComm1.x, robotComm1.y, 0);

@@ -1,0 +1,141 @@
+[
+   
+    {
+        "height": 420,
+        "name": "RECT_ZONE0",
+        "type": "RECTANGLEDISTANCE",
+        "width": 21,
+        "x": 940,
+        "y": 0
+    },
+    {
+        "height": 19.4111328125,
+        "name": "RECT_ZONE1",
+        "type": "RECTANGLEDISTANCE",
+        "width": 960.064208984375,
+        "x": 20.460384368896484,
+        "y": 0.29977497458457947
+    },
+    {
+        "height": 20.985008239746094,
+        "name": "RECT_ZONE2",
+        "type": "RECTANGLEDISTANCE",
+        "width": 214.97857666015625,
+        "x": 379.625244140625,
+        "y": 198.92932891845703
+    },
+
+     {
+        "height": 21,
+        "name": "RECT_ZONE3",
+        "type": "RECTANGLEDISTANCE",
+        "width":960,
+        "x": 19,
+        "y": 400
+    },
+    {
+        "height": 420,
+        "name": "RECT_ZONE4",
+        "type": "RECTANGLEDISTANCE",
+        "width": 21.50963592529297,
+        "x": 0,
+        "y": 0
+    },
+    {
+        "height": 20.46038818359375,
+        "name": "RECT_ZONE5",
+        "type": "RECTANGLEDISTANCE",
+        "width": 198.51177978515625,
+        "x": 101.25267028808594,
+        "y": 299.336181640625
+    },
+    {
+        "height": 20.46038818359375,
+        "name": "RECT_ZONE6",
+        "type": "RECTANGLEDISTANCE",
+        "width": 300.20342254638672,
+        "x": 99.15416717529297,
+        "y": 98.40470123291016
+    },
+    {
+        "height": 99.67880249023438,
+        "name": "RECT_ZONE7",
+        "type": "RECTANGLEDISTANCE",
+        "width": 20.46038818359375,
+        "x": 278.89720153808594,
+        "y": 118.82527160644531
+    },
+    {
+        "height": 20.985015869140625,
+        "name": "RECT_ZONE8",
+        "type": "RECTANGLEDISTANCE",
+        "width": 220.86724853515625,
+        "x": 379.3040771484375,
+        "y": 300.1820068359375
+    },
+    {
+        "height": 98.62956237792969,
+        "name": "RECT_ZONE9",
+        "type": "RECTANGLEDISTANCE",
+        "width": 20.46038818359375,
+        "x": 479.5074462890625,
+        "y": 100.16700744628906
+    },
+    {
+        "height": 20.46038818359375,
+        "name": "RECT_ZONE10",
+        "type": "RECTANGLEDISTANCE",
+        "width": 200,
+        "x": 678.66162109375,
+        "y": 300.3854064941406
+    },
+    {
+        "height": 99.67878723144531,
+        "name": "RECT_ZONE11",
+        "type": "RECTANGLEDISTANCE",
+        "width": 20.4603271484375,
+        "x": 778.3404541015625,
+        "y": 200.7066192626953
+    },
+    {
+        "height": 100.56531524658203,
+        "name": "RECT_ZONE12",
+        "type": "RECTANGLEDISTANCE",
+        "width": 20.46038818359375,
+        "x": 680.7219848632812,
+        "y": 119.84969329833984
+    },
+    {
+        "height": 101.25265502929688,
+        "name": "RECT_ZONE13",
+        "type": "RECTANGLEDISTANCE",
+        "width": 20.46038818359375,
+        "x": 179.1006164550781,
+        "y": 199.13275146484375
+    },
+   {
+        "height": 19.935760498046875,
+        "name": "RECT_ZONE14",
+        "type": "RECTANGLEDISTANCE",
+        "width": 300,
+        "x": 580,
+        "y": 100
+    },
+    
+    {
+        "height": 19.935760498046875,
+        "name": "RECT_ZONE15",
+        "type": "RECTANGLEDISTANCE",
+        "width": 81.31690979003906,
+        "x": 880,
+        "y": 200
+    },
+    {
+        "height": 19.935760498046875,
+        "name": "RECT_ZONE16",
+        "type": "RECTANGLEDISTANCE",
+        "width": 81.31690979003906,
+        "x": 18.36188507080078,
+        "y": 199.65737915039062
+    }
+]

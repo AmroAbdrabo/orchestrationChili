@@ -11,21 +11,22 @@ import QMLBluetoothExtras 1.0
 import hexagon.qml 1.0
 
 Item {
-     property var fruitzones: null
-     function em(x){ return Math.round(x*TextSingleton.font.pixelSize); }
-     function createZones(){
-                 fruitzones = CelluloZoneJsonHandler.loadZonesQML(":/assets/orangefruits.json");
+    property var fruitzones: null
+    property variant distancelinezones: null
+    property variant borderlinezones:null
+    property var closestzones: null
+    property var distancezones: null
+    property var innerzones: null
+    property var crossedBorder: []
+    property var rectzones:null
+    property var inLineBorder: [] //had to add this
 
-                 for(var l=0;l<fruitzones.length;l++){
-                     fruitzones[l].active = true;
-                     zoneEngine.addNewZone(fruitzones[l])
-                 }
+    function em(x){ return Math.round(x*TextSingleton.font.pixelSize); }
 
-     }
-     property bool mobile: Qt.platform.os === "android"
-     property bool winrt: Qt.platform.os === "winrt"
-     property real gWidth: mobile ? Screen.width : 800
-     property bool activateManual: false
+    property bool mobile: Qt.platform.os === "android"
+    property bool winrt: Qt.platform.os === "winrt"
+    property real gWidth: mobile ? Screen.width : 800
+    property bool activateManual: false
 
     //window for robot and grid
     Window {
