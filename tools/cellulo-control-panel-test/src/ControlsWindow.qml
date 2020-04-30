@@ -203,14 +203,20 @@ Window {
                     Button{
                         text: "orangemap"
                         onClicked: {
-                            //update backgroundsize and windowsize
+                            //update backgroundsize and windowsize to desired map dimensions in mm
                             paper.height = 420;
                             paper.width = 980;
                             //be default resize window with paper dimensions
                             //but can give the window any size you want
                             window2.width = paper.width;
                             window2.height = paper.height;
+                            //load background image
                             backgroundImg.source = 'qrc:/assets/orangemapcorrected.svg'
+
+                            //create zones and robots to the zoneEngine
+                            MyFuncs.createZones();
+                            zoneEngine.addNewClient(robotComm1)
+                            zoneEngine.addNewClient(robotComm2)
                         }
                     }
                     Button{
@@ -496,7 +502,7 @@ Window {
     BluetoothLocalDevice{ Component.onCompleted: powerOn() } //Doesn't work on Linux
 
 
-    Button{
+    /*Button{
         id: zonetest
         text: "zone Test"
         onClicked: {
@@ -507,7 +513,7 @@ Window {
             //var closestPoint = zoneBorder.getPoint(closestT);
             //console.log(closestPoint)
         }
-    }
+    }*/
 
     /*CelluloZoneEngine{
         id: zoneEngine

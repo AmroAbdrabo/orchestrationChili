@@ -15,12 +15,21 @@ New Properties:
   - simulatedCellulo: boolean, true to enbale simulated robot, false to connect to real robot. 
   - initPose: Vector3D sets initial pose for the simulated robot, is zero for real robot
 
+New simulator use examples:
+----------------------
+  - there is an example button "orangemap" that set's up an orange pacman map with zones
+you can look at the code executed by that button in the controlsWindow.qml
+to see how to setup your own background image, map dimensions and display size, aswell as create and add zones to the map.
+
 Implemented functions: 
 -----------------------
 - setGoalVelocity 
 - update Pose (x,y,theta)
 - therefore all functionalities of zoneEngine works. 
-- TODO: implement setGoalPose
+- setGoalPose(along with all other setGoal methods for the robots pose)
+- setVisualEffect(as of now only the effect "VisualEffectConstAll" works)
+TODO: implement other visualEffets
+TODO: vector on robot that can indicate some sort of haptic feedback
 
 NOT Implemented functions: 
 ---------------------------
@@ -36,7 +45,8 @@ A sample app can be found in tools/cellulo-control-panel-test:
 
 Moving robot on click example in qml : 
 --------------------------------------
-click on the robot to choose the robot, click and drag the robot to make it move, click on the robot to deactivate manual movement. 
+click on the robot to choose the robot, click and drag the robot to make it move,(you can also scroll to rotate it manually)
+click on the robot again to deactivate manual movement. 
 ```
 CelluloRobot{
         id: robotComm
