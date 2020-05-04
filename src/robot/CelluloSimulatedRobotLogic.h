@@ -64,21 +64,120 @@ public:
 
     CelluloSimulatedRobotLogic();
 
+    /**
+     * @brief Sets a goal pose to track
+     *
+     * @param x X position in grid coordinates times 100
+     * @param y Y position in grid coordinates times 100
+     * @param theta Orientation in degrees times 100
+     * @param v Maximum linear velocity to track pose
+     * @param w Maximum angular velocity to track pose in rad/s
+     */
     void setGoalPose(float x, float y, float theta, float v, float w);
+
+    /**
+     * @brief Sets a goal position to track
+     *
+     * @param x X position in grid coordinates times 100
+     * @param y Y position in grid coordinates times 100
+     * @param v Maximum linear velocity to track position
+     */
     void setGoalPosition(float x, float y, float v);
+
+    /**
+     * @brief Sets a goal Y coordinate to track
+     *
+     * @param y Y position in grid coordinates times 100
+     * @param v Maximum linear velocity to track position
+     */
     void setGoalYCoordinate(float y, float v);
+
+    /**
+     * @brief Sets a goal X coordinate to track
+     *
+     * @param x X position in grid coordinates times 100
+     * @param v Maximum linear velocity to track position
+     */
     void setGoalXCoordinate(float x, float v);
+
+    /**
+     * @brief Sets a goal orientation to track
+     *
+     * @param theta Orientation in degrees times 100
+     * @param w Maximum angular velocity to track pose
+     */
     void setGoalOrientation(float theta, float w);
+
+    /**
+     * @brief Sets a goal X and Theta coordinate to track
+     *
+     * @param x X position in grid coordinates times 100
+     * @param theta Orientation in degrees times 100
+     * @param v Maximum linear velocity to track pose
+     * @param w Maximum angular velocity to track pose
+     */
     void setGoalXThetaCoordinate(float x, float theta, float v, float w);
+
+    /**
+     * @brief Sets a goal Y and Theta coordinate to track
+     *
+     * @param y Y position in grid coordinates times 100
+     * @param theta Orientation in degrees times 100
+     * @param v Maximum linear velocity to track pose
+     * @param w Maximum angular velocity to track pose
+     */
     void setGoalYThetaCoordinate(float y, float theta, float v, float w);
+
+    /**
+     * @brief Sets a goal velocity
+     *
+     * @param vx X velocity in world frame in mm/s
+     * @param vy Y velocity in world frame in mm/s
+     * @param w Angular velocity in world frame in rad/s
+     */
     void setGoalVelocity(float vx, float vy, float w);
+
+    /**
+     * @brief Clears pose/position/velocity goals
+     */
     void clearTracking();
+
+    /**
+     * @brief Calculates necessary velocities to reach given position
+     */
     void trackPosition();
+
+    /**
+    * @brief Calculates necessary velocities to reach given X coordindate
+     */
     void trackXCoordinate();
+
+    /**
+     * @brief Calculates necessary velocities to reach given Y coordindate
+     */
     void trackYCoordinate();
+
+    /**
+     * @brief Calculates necessary angular velocity to reach given orientation
+     *
+     * @param goalless Will not turn off tracking when within marginTheta, thetaGoalReached will always be false
+     */
     void trackOrientation(bool goalless);
+
+    /**
+     * @brief Calculates the orientation of given vector
+     *
+     * @param x X component of vector
+     * @param y Y component of vector
+     * @return Orientation in degrees times 100
+     */
     float getVectorOrientation(float x, float y);
+
+    /**
+     * @brief Runs regular motion control tasks
+     */
     void updatePose(float curX, float curY, float theta);
+
     /**
      * @brief Sets the visual effect on the robot, changing LED illumination
      *
