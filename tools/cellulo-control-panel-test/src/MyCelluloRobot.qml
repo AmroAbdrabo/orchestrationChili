@@ -13,6 +13,8 @@ import hexagon.qml 1.0
 CelluloRobot{
     id:robotComm
     property var init: Qt.vector3d(0,0,0)
+    property real  goalVelX: 50
+    property real  goalVelY: 50
     Hexagon{
         id: hex
         property  real wheelRotation: 0
@@ -34,6 +36,7 @@ CelluloRobot{
                 //reset curRobotRotation and wheelRotation
                 parent.curRobotRotation = robotComm.theta
                 parent.wheelRotation = 0
+
                 robotComm.init=Qt.vector3d(robotComm.x,robotComm.y,robotComm.theta)
                 parent.isSelected=!parent.isSelected
                 console.log(parent.isSelected)
@@ -46,10 +49,20 @@ CelluloRobot{
                 }
             }
         }
+        Leds {}
+        /*Arrow {
+            id:arrow
+            PropertyAnimation on rotation {
+                from: 0
+                to: 360
+                duration: 5000
+                loops: Animation.Infinite
+            }
 
+        }*/
     }
 
-    color: "blue" //default color
+    color: "light grey" //default color
 
     isSimulation: true
 

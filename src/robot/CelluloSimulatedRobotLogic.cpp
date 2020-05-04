@@ -54,7 +54,6 @@ void CelluloSimulatedRobotLogic::setGoalPosition(float x, float y, float v){
 }
 
 void CelluloSimulatedRobotLogic::setGoalXCoordinate(float x, float v){
-    qDebug() << "setGoalXCoordinate";
     goalPoseX = x;
     goalPoseMaxV = v;
     goalPoseMaxW = 0;
@@ -122,10 +121,6 @@ void CelluloSimulatedRobotLogic::clearTracking(){
 
 void CelluloSimulatedRobotLogic::trackXCoordinate() {
 
-    qDebug() << "trackXCoordinate";
-    qDebug() << "goalPose :";
-    qDebug() << goalPoseX;
-    qDebug() << poseX;
     //Get difference of goal and actual x in grid coordinates
     float xDiff = (goalPoseX - poseX)/*/100.0f*/;
 
@@ -154,7 +149,6 @@ void CelluloSimulatedRobotLogic::trackXCoordinate() {
     else
         vxGlobalGoalTracker = vxGlobalGoalNew;
 
-    qDebug() << vxGlobalGoalTracker;
 }
 
 void CelluloSimulatedRobotLogic::trackYCoordinate()

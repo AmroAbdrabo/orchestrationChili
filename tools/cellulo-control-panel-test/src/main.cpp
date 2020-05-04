@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     //add hexagon object type
     qmlRegisterType<Hexagon>("hexagon.qml", 1, 0, "Hexagon");
 
-    //add a paper object type
+    //add instance of paper
     Paper *paper = new Paper();
     engine.rootContext()->setContextProperty("paper", paper);
 

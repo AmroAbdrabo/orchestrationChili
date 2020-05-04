@@ -17,5 +17,7 @@
         <file>assets/orangelinesborder.json</file>
         <file>assets/orangerect.json</file>
         <file>src/Utils.js</file>
+        <file>src/Arrow.qml</file>
+        <file>src/Leds.qml</file>
     </qresource>
 </RCC>

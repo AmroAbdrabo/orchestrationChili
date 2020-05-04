@@ -48,6 +48,8 @@ void Hexagon::paint(QPainter *painter)
     path.lineTo(a*cos300+h, a*sin300+v);//f
     path.lineTo(a+h, +v);//A*/
 
+    //the current hexagon path is not forced to always be a perfect hexagon, and can accurately morph with given height and width
+    //(For a perfect hexagon the height is determined by the width(or vice-versa) but here u can choose the height and width of the hexagon)
     path.moveTo(width(), 0+v); //A
     path.lineTo(a*cos60+h, height()/2+v); // B
     path.lineTo(a*cos120+h, height()/2+v); // C

@@ -54,16 +54,15 @@ Item {
 
         MyCelluloRobot{
             id: robotComm1
-            color: "blue"
         }
 
         MyCelluloRobot{
             id: robotComm2
-            color: "red"
         }
 
     }
 
     ControlsWindow{}
+
 
 }

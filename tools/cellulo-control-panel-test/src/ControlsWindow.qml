@@ -133,7 +133,7 @@ Window {
                             color: robotComm1.kidnapped ? "red" : "green"
                         }
                         Text{
-                            text: "X=" + robotComm1.x.toFixed(2) + "mm Y=" + robotComm1.y.toFixed(2) + "mm Theta=" + robotComm1.theta.toFixed(1) + "deg"+ "Vx=" + robotComm1.vx.toFixed(0) + " mm/s Y=" + robotComm1.vy.toFixed(0)
+                            text: "X=" + robotComm1.x.toFixed(2) + "mm Y=" + robotComm1.y.toFixed(2) + "mm Theta=" + robotComm1.theta.toFixed(1) + "deg"+ "Vx=" + robotComm1.vx.toFixed(2) + " mm/s Vy=" + robotComm1.vy.toFixed(2)
                         }
                     }
                     Row{
@@ -144,7 +144,7 @@ Window {
                             color: robotComm2.kidnapped ? "red" : "green"
                         }
                         Text{
-                            text: "X=" + robotComm2.x.toFixed(2) + "mm Y=" + robotComm2.y.toFixed(2) + "mm Theta=" + robotComm2.theta.toFixed(1) + "deg"+ "Vx=" + robotComm2.vx.toFixed(0) + " mm/s Y=" + robotComm2.vy.toFixed(0)
+                            text: "X=" + robotComm2.x.toFixed(2) + "mm Y=" + robotComm2.y.toFixed(2) + "mm Theta=" + robotComm2.theta.toFixed(1) + "deg"+ "Vx=" + robotComm2.vx.toFixed(2) + " mm/s Y=" + robotComm2.vy.toFixed(2)
                         }
                     }
                 }
@@ -257,6 +257,102 @@ Window {
 
 
             GroupBox {
+                title: "Color Effects Robot1"
+                width: gWidth
+
+                RowLayout{
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    spacing: 5
+
+                    Column{
+                        ComboBox {
+                            id: effect
+                            model: CelluloBluetoothEnums.VisualEffectStrings
+                            currentIndex: 0
+                        }
+                        ComboBox {
+                            model: CelluloBluetoothEnums.LEDResponseModeStrings
+                            currentIndex: 0
+                            onCurrentIndexChanged: {
+                                if(robotComm1 != null)
+                                    robotComm1.setLEDResponseMode(currentIndex)
+                            }
+                        }
+                    }
+                    Column{
+                        Layout.fillWidth: true
+                        Slider{
+                            property string hexStr: (value < 16 ? "0" : "") + value.toString(16).toUpperCase()
+
+                            id: redSlider
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            minimumValue: 0
+                            maximumValue: 255
+                            stepSize: 1
+                            value: 128
+                            style: SliderStyle {
+                                groove: Rectangle {
+                                    implicitHeight: 8
+                                    color: "red"
+                                }
+                            }
+                        }
+                        Slider{
+                            property string hexStr: (value < 16 ? "0" : "") + value.toString(16).toUpperCase()
+
+                            id: greenSlider
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            minimumValue: 0
+                            maximumValue: 255
+                            stepSize: 1
+                            value: 128
+                            style: SliderStyle {
+                                groove: Rectangle {
+                                    implicitHeight: 8
+                                    color: "green"
+                                }
+                            }
+                        }
+                        Slider{
+                            property string hexStr: (value < 16 ? "0" : "") + value.toString(16).toUpperCase()
+
+                            id: blueSlider
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            minimumValue: 0
+                            maximumValue: 255
+                            stepSize: 1
+                            value: 128
+                            style: SliderStyle {
+                                groove: Rectangle {
+                                    implicitHeight: 8
+                                    color: "blue"
+                                }
+                            }
+                        }
+                    }
+                    Label{
+                        text: "Value:"
+                       // anchors.verticalCenter: effectValue.verticalCenter
+                    }
+                    SpinBox {
+                        id: effectValue
+                        minimumValue: 0
+                        maximumValue: 255
+                        value: 0
+                        width: em(3)
+                    }
+                    Button {
+                        text: "Send"
+                        onClicked: robotComm1.setVisualEffect(effect.currentIndex, "#FF" + redSlider.hexStr + greenSlider.hexStr + blueSlider.hexStr, effectValue.value);
+                    }
+                }
+            }
+
+            GroupBox {
                 title: "Locomotion"
                 width: gWidth
 
@@ -317,12 +413,14 @@ Window {
                             }
                             Button{
                                 text: "Track X and Theta"
-                                onClicked: robotComm1.setGoalXThetaCoordinate(
+                                onClicked: {robotComm1.setGoalXThetaCoordinate(
                                                parseFloat(goalPoseX.text),
                                                parseFloat(goalPoseTheta.text),
                                                parseFloat(goalPoseMaxV.text),
                                                parseFloat(goalPoseMaxW.text)
                                                )
+                                            robotComm1.goalVelX = parseFloat(goalPoseMaxV.text);
+                                }
                             }
                             Button{
                                 text: "Track Y and Theta"
