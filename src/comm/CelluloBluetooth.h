@@ -50,6 +50,7 @@
 #include <QtBluetooth/QBluetoothServiceDiscoveryAgent>
 #include <math.h>
 #include "../robot/CelluloSimulatedRobotLogic.h"
+#include "../robot/CelluloSimulatedLedsLogic.h"
 
 namespace Cellulo{
 
@@ -117,12 +118,26 @@ class CelluloBluetooth : public CelluloZoneClient {
 
     Q_PROPERTY(float cameraImageProgress READ getCameraImageProgress NOTIFY cameraImageProgressChanged)
 
-    //for now only 1 color for simulated robot
-    Q_PROPERTY(QColor color WRITE setColor READ getColor NOTIFY colorChanged)
 
+    //QPROPERTIES for simulated robot
     Q_PROPERTY(bool isSimulation WRITE setIsSimulation READ getIsSimulation NOTIFY isSimulationChanged)
 
     Q_PROPERTY(QVector3D initPose WRITE setInitSimulatedPose READ getInitSimulatedPose NOTIFY initSimulatedPoseChanged)
+
+    //Colors for simulated robot
+    Q_PROPERTY(QColor color WRITE setColor READ getColor NOTIFY colorChanged)
+
+    Q_PROPERTY(QColor led0Color READ getLed0Color NOTIFY led0ColorChanged)
+
+    Q_PROPERTY(QColor led1Color READ getLed1Color NOTIFY led1ColorChanged)
+
+    Q_PROPERTY(QColor led2Color READ getLed2Color NOTIFY led2ColorChanged)
+
+    Q_PROPERTY(QColor led3Color READ getLed3Color NOTIFY led3ColorChanged)
+
+    Q_PROPERTY(QColor led4Color READ getLed4Color NOTIFY led4ColorChanged)
+
+    Q_PROPERTY(QColor led5Color READ getLed5Color NOTIFY led5ColorChanged)
     /** @endcond */
 
     friend class CelluloRelayServer;
@@ -263,6 +278,13 @@ public:
     /** @endcond */
     bool getIsSimulation(){return isSimulation;}
     QColor getColor(){return color;}
+    QColor getLed0Color(){return led0Color;};
+    QColor getLed1Color(){return led1Color;};
+    QColor getLed2Color(){return led2Color;};
+    QColor getLed3Color(){return led3Color;};
+    QColor getLed4Color(){return led4Color;};
+    QColor getLed5Color(){return led5Color;};
+
     QVector3D getInitSimulatedPose(){return initPose;};
     float getTimeStep(){return timeStep;}
 
@@ -750,6 +772,13 @@ signals:
     void isSimulationChanged();
     void initSimulatedPoseChanged();
     void colorChanged();
+    void led0ColorChanged();
+    void led1ColorChanged();
+    void led2ColorChanged();
+    void led3ColorChanged();
+    void led4ColorChanged();
+    void led5ColorChanged();
+
 
 
 private:
@@ -791,8 +820,19 @@ private:
     CelluloSimulatedRobotLogic* simulatedRobotLogic;          ///< pointer to an instance of the simulatedRobotLogic
     float timeStep;                                           ///< time interval between every update of the robot in a simulation
     QVector3D initPose;                                       ///< initial pose for the simulated robot
-    QVector3D commandedvxyw;                                  ///<
-    QColor color;
+    QVector3D commandedvxyw;
+    QColor color;                                             ///< fill color for the hexagon representing the robot(not the leds)
+    QColor led5Color = "dark grey";
+    QColor led4Color = "dark grey";
+    QColor led3Color = "dark grey";
+    QColor led2Color = "dark grey";
+    QColor led1Color = "dark grey";
+    QColor led0Color = "dark grey";
+
+    //for the leds
+    celluloSimulatedLedsLogic* simulatedLeds;                 ///<pointer ot an instance of simulatedLedsLogic to access methods to control simulated leds
+
+
     /**
      * @brief Resets properties of the robot to default
      */

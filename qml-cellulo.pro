@@ -26,6 +26,7 @@ android{
 HEADERS += \
     src/CelluloPlugin.h \
     src/robot/CelluloRobot.h \
+    src/robot/CelluloSimulatedLedsLogic.h \
     src/robot/PolyBezierTracker.h \
     src/robot/PolyBezierTrackerConstVel.h \
     src/robot/PolyBezierTrackerConstAccel.h \
@@ -81,6 +82,7 @@ HEADERS += \
 SOURCES += \
     src/CelluloPlugin.cpp \
     src/robot/CelluloRobot.cpp \
+    src/robot/CelluloSimulatedLedsLogic.cpp \
     src/robot/PolyBezierTracker.cpp \
     src/robot/PolyBezierTrackerConstVel.cpp \
     src/robot/PolyBezierTrackerConstAccel.cpp \

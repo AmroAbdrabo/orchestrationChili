@@ -29,7 +29,6 @@
 #include <QBluetoothHostInfo>
 #include <QBluetoothLocalDevice>
 #include <time.h>
-
 #ifdef BT_MULTIADAPTER_SUPPORT
     #include "CelluloBluezUtil.h"
 #endif
@@ -91,9 +90,10 @@ CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) : CelluloZoneClient(paren
     gesture = CelluloBluetoothEnums::GestureNone;
 
     simulatedRobotLogic = new CelluloSimulatedRobotLogic();
+    simulatedLeds = new celluloSimulatedLedsLogic();
     isSimulation=false;
     timer=new QTimer(this);
-    timeStep=20;//in ms
+    timeStep= 100;//in ms  //TODO CHANGE ME BACK TO 20 OR 30
 }
 
 void CelluloBluetooth::updatePose(){
@@ -109,6 +109,36 @@ void CelluloBluetooth::updatePose(){
         else if (theta<0) {
             theta+=360;
         }
+
+        simulatedLeds->APP_LED_Tasks();
+        simulatedLeds->timer3Handler();
+
+        //qDebug() << "bluetooth simulated led 0 red colors " << simulatedLeds->currentLEDColors[0][0];
+        //TODO make a Qlist and avoid all avoid this (or put this code in its own method)
+        led0Color = QColor(simulatedLeds->currentLEDColors[0][0]*255/4095,
+                           simulatedLeds->currentLEDColors[0][1]*255/4095,
+                           simulatedLeds->currentLEDColors[0][2]*255/4095);
+        led1Color = QColor(simulatedLeds->currentLEDColors[1][0]*255/4095,
+                           simulatedLeds->currentLEDColors[1][1]*255/4095,
+                           simulatedLeds->currentLEDColors[1][2]*255/4095);
+        led2Color = QColor(simulatedLeds->currentLEDColors[2][0]*255/4095,
+                           simulatedLeds->currentLEDColors[2][1]*255/4095,
+                           simulatedLeds->currentLEDColors[2][2]*255/4095);
+        led3Color = QColor(simulatedLeds->currentLEDColors[3][0]*255/4095,
+                           simulatedLeds->currentLEDColors[3][1]*255/4095,
+                           simulatedLeds->currentLEDColors[3][2]*255/4095);
+        led4Color = QColor(simulatedLeds->currentLEDColors[4][0]*255/4095,
+                           simulatedLeds->currentLEDColors[4][1]*255/4095,
+                           simulatedLeds->currentLEDColors[4][2]*255/4095);
+        led5Color = QColor(simulatedLeds->currentLEDColors[5][0]*255/4095,
+                           simulatedLeds->currentLEDColors[5][1]*255/4095,
+                           simulatedLeds->currentLEDColors[5][2]*255/4095);
+        emit led0ColorChanged();
+        emit led1ColorChanged();
+        emit led2ColorChanged();
+        emit led3ColorChanged();
+        emit led4ColorChanged();
+        emit led5ColorChanged();
         emit colorChanged();
         emit poseChanged(x,y,theta);
     }
@@ -158,6 +188,7 @@ QVariantList CelluloBluetooth::getFrame() const {
         frame.append((int)0);
     return frame;
 }
+
 
 void CelluloBluetooth::setMacAddr(QString macAddr){
     if(isSimulation)
@@ -1225,7 +1256,8 @@ void CelluloBluetooth::setHapticBackdriveAssist(float xAssist, float yAssist, fl
 
 void CelluloBluetooth::setVisualEffect(CelluloBluetoothEnums::VisualEffect effect, QColor color, int value){
     if(isSimulation) {
-        simulatedRobotLogic->setVisualEffect(effect, color, value);
+        //simulatedRobotLogic->setVisualEffect(CelluloBluetoothEnums::VisualEffectConstAll, color, value); //this changes color of entire hexagon
+        simulatedLeds->setVisualEffect(effect, color.red(), color.green(), color.blue(), value);
     }
     if(value > 0xFF)
         value = 0xFF;
