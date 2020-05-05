@@ -93,7 +93,9 @@ CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) : CelluloZoneClient(paren
     simulatedLeds = new celluloSimulatedLedsLogic();
     isSimulation=false;
     timer=new QTimer(this);
-    timeStep= 100;//in ms  //TODO CHANGE ME BACK TO 20 OR 30
+    ledUpdateTimer = new QTimer(this);
+    ledUpdateFrequency = 10;
+    timeStep= 20;//in ms  //TODO CHANGE ME BACK TO 20 OR 30
 }
 
 void CelluloBluetooth::updatePose(){
@@ -109,7 +111,13 @@ void CelluloBluetooth::updatePose(){
         else if (theta<0) {
             theta+=360;
         }
+    }
+    else
+        timer->stop();
+}
 
+void CelluloBluetooth::updateSimulatedLeds() {
+    if(isSimulation) {
         simulatedLeds->APP_LED_Tasks();
         simulatedLeds->timer3Handler();
 
@@ -141,9 +149,9 @@ void CelluloBluetooth::updatePose(){
         emit led5ColorChanged();
         emit colorChanged();
         emit poseChanged(x,y,theta);
+    } else {
+        ledUpdateTimer->stop();
     }
-    else
-        timer->stop();
 }
 
 CelluloBluetooth::~CelluloBluetooth(){
@@ -216,9 +224,14 @@ void CelluloBluetooth::setIsSimulation(bool simulated){
         x=initPose.x();
         y=initPose.y();
         theta=initPose.z();
+
         timer=new QTimer(this);
         connect(timer, SIGNAL(timeout()), this, SLOT(updatePose()));
         timer->start(timeStep);
+
+        ledUpdateTimer = new QTimer(this);
+        connect(ledUpdateTimer, SIGNAL(timeout()), this, SLOT(updateSimulatedLeds()));
+        ledUpdateTimer->start(ledUpdateFrequency);
     }
     else
         timer->stop();

@@ -3,15 +3,13 @@
 
 
 #include "../comm/CelluloBluetoothEnums.h"
-
+#include <chrono>
 #include <QTimer>
 
-#define LED_TOUCH_RESPONSE_EXTRA_BRIGHTNESS 0x8000
-#define LED_IDLE_BRIGHTNESS 0x00
 
 //I dont think we can control brightness in simulator
-//#define LED_IDLE_BRIGHTNESS 0x600 //commented out because why 600 ?
-//#define LED_TOUCH_RESPONSE_EXTRA_BRIGHTNESS 0x800
+#define LED_IDLE_BRIGHTNESS 0x600 //
+#define LED_TOUCH_RESPONSE_EXTRA_BRIGHTNESS 0x800
 #define LED_IDLE_MODE_BRIGHTNESS_DIVISOR 2
 #define LED_WAITING_TURN_SPEED 13
 #define LED_TRANSITION_INERTIA_DEFAULT 10 //Higher this value, the more time it takes for transitioning
@@ -32,65 +30,13 @@
 typedef LED_RESPONSE_MODE_ENUM_SHARED LEDResponseMode;
 typedef Cellulo::CelluloBluetoothEnums::VisualEffect VisualEffect;
 
-/**
- * @brief Describes a sequence of 6 RGB leds, each with 12-bit brightness
- *
- * Since buffer elements are sent from 0 to 6, they end up reversed in the
- * shift register of the LED driver. Therefore they are in reverse order here.
- */
-typedef union {
-    struct {
 
-        //Int 0
-        unsigned int led5green              : 12;
-        unsigned int led5blue               : 12;
-        unsigned int unused                 : 8;
-
-        //Int 1
-        unsigned int led4green_high_byte    : 8;
-        unsigned int led4blue               : 12;
-        unsigned int led5red                : 12;
-
-        //Int 2
-        unsigned int led3green_high_nibble  : 4;
-        unsigned int led3blue               : 12;
-        unsigned int led4red                : 12;
-        unsigned int led4green_low_nibble   : 4;
-
-        //Int 3
-        unsigned int led2blue               : 12;
-        unsigned int led3red                : 12;
-        unsigned int led3green_low_byte     : 8;
-
-        //Int 4
-        unsigned int led1blue_high_byte     : 8;
-        unsigned int led2red                : 12;
-        unsigned int led2green              : 12;
-
-        //Int 5
-        unsigned int led0blue_high_nibble   : 4;
-        unsigned int led1red                : 12;
-        unsigned int led1green              : 12;
-        unsigned int led1blue_low_nibble    : 4;
-
-        //Int 6
-        unsigned int led0red                : 12;
-        unsigned int led0green              : 12;
-        unsigned int led0blue_low_byte      : 8;
-    } leds;
-
-    unsigned int buffer[7];
-} LEDObject;
-
-extern LEDObject leds;
-
-extern bool effectTransition;       ///< The current effect is still transitioning
-extern VisualEffect visualEffect;  ///< The current effect
-
-class celluloSimulatedLedsLogic : public QObject {
+class celluloSimulatedLedsLogic {
 
 public:
-    unsigned short currentLEDColors[6][3];   ///< Current colors of the LEDs: [led number in 0, 1, 2, 3, 4 or 5][red, green or blue in 0, 1 or 2]
+
+    unsigned short currentLEDColors[6][3];                   ///< Current colors of the LEDs: [led number in 0, 1, 2, 3, 4 or 5][red, green or blue in 0, 1 or 2]
+    //Gesture prevGesture; //exists in gesture.h(not sure what what this is yet so just removed all gestures features for now)
 
 
     celluloSimulatedLedsLogic();
@@ -171,8 +117,41 @@ public:
 public slots:
     void timer3Handler();
 private:
-    QTimer *timer3;
+    unsigned short currentLEDColorGoals[6][3];               ///< stores goals for leds
+    unsigned short previousLEDColorGoals[6][3];              ///< stores prvious goals for leds
+    unsigned short previousLEDColors[6][3];                  ///< stores the previous led colors
+    LEDResponseMode ledResponseMode;                         ///< led response mode
+    unsigned int currentBufferIndex;                         ///< stores bufferindex(however this is useless here it was only necesary in the firmware)
+    bool updateRequested;                                    ///< indicates if a update of the led color is requestes
+    bool latched;                                            ///
+    bool sleepRequested;                                     //exists in power.h(for now just have it alawys set to false)
+    VisualEffect visualEffect;                               ///< stores the current visual effect
+    VisualEffect previousVisualEffect;                       ///< stores the previous visual effect
+    unsigned int effectColor[3];                             ///color for the effect
+    unsigned int previousEffectColor[3];                     ///< stores the previouS effect color
+    unsigned int previousEffectValue;                        ///< stores value of previous effect
+    unsigned int currentEffectValue;                         ///<stores the value for the currentEffect
+    unsigned int currentLEDNumber;
+    unsigned int effectCounter1, effectCounter2;             ///<used as a counters for the effects
+    bool effectTransition;                                   ///<indicates if we currently in an effectTransition
+
+    std::chrono::time_point<std::chrono::system_clock> then; ///<Use as start value of compute clock milliseconds since system turned on
+
+    /**
+     * @brief Ensures a smooth transition of led lights
+     * @param led
+     * @param red
+     * @param green
+     * @param blue
+     * @param inertia
+     * @return
+     */
     bool transitionLED(unsigned int led, short red, short green, short blue, short inertia);
+    /**
+     * @brief return time elapsed since start of system in milliseconds
+     * @return
+     */
+    float systemMillis();
 };
 
 #endif // CELLULOSIMULATEDLEDSLOGIC_H

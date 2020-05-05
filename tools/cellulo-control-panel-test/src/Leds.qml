@@ -24,7 +24,7 @@ Item {
             //so would be good if can figure out way to have an array as qproperty
             //could also just use a javascript function here a
             //leds could repr as array in logic and display 1 b1 1 as qproperties
-            color:  if(index == 0)robotComm.led0Color;
+            color:  if(index == 0) robotComm.led0Color;
                     else if(index == 1) robotComm.led1Color;
                     else if(index == 2) robotComm.led2Color;
                     else if(index == 3) robotComm.led3Color;

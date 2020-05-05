@@ -638,6 +638,10 @@ public slots:
       */
     void updatePose();
     /**
+      *@brief Slot: update positions with respect to the velocity commanded.
+      */
+    void updateSimulatedLeds();
+    /**
      * @brief sets boolean indicating of the robot is being simulated
      * @param simulated
      */
@@ -816,18 +820,20 @@ private:
 
 
     QTimer *timer;                                            ///< set timer for the simulated robot
+    QTimer *ledUpdateTimer;                                   ///< timer for leds, should be 100Hz (i.e10ms period)
     bool isSimulation;                                        ///< Indicated if the robot is simulated
     CelluloSimulatedRobotLogic* simulatedRobotLogic;          ///< pointer to an instance of the simulatedRobotLogic
     float timeStep;                                           ///< time interval between every update of the robot in a simulation
+    float ledUpdateFrequency;                                 ///< time interval between led updates
     QVector3D initPose;                                       ///< initial pose for the simulated robot
     QVector3D commandedvxyw;
     QColor color;                                             ///< fill color for the hexagon representing the robot(not the leds)
-    QColor led5Color = "dark grey";
-    QColor led4Color = "dark grey";
-    QColor led3Color = "dark grey";
-    QColor led2Color = "dark grey";
-    QColor led1Color = "dark grey";
-    QColor led0Color = "dark grey";
+    QColor led5Color = "#DCDCDC";
+    QColor led4Color = "#DCDCDC";
+    QColor led3Color = "#DCDCDC";
+    QColor led2Color = "#DCDCDC";
+    QColor led1Color = "#DCDCDC";
+    QColor led0Color = "#DCDCDC";
 
     //for the leds
     celluloSimulatedLedsLogic* simulatedLeds;                 ///<pointer ot an instance of simulatedLedsLogic to access methods to control simulated leds

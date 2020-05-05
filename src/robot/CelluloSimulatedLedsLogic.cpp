@@ -9,52 +9,17 @@
 //#include "power.h"
 //#include "gesture.h"
 
-#include <chrono>
 #include <QDebug>
-#include <time.h>
-#include "../util/system/CelluloSystemUtil.h"
 
-LEDObject leds;
-unsigned int currentBufferIndex;
-bool updateRequested;
-bool latched;
-
-unsigned short currentLEDColorGoals[6][3];
-unsigned short previousLEDColorGoals[6][3];
-unsigned short previousLEDColors[6][3];
-LEDResponseMode ledResponseMode;
-
-VisualEffect visualEffect;
-VisualEffect previousVisualEffect;
-unsigned int effectColor[3];
-unsigned int previousEffectColor[3];
-unsigned int previousEffectValue;
-unsigned int currentEffectValue;
-unsigned int currentLEDNumber;
-unsigned int effectCounter1, effectCounter2;
-bool effectTransition;
-
-
-
-//Gesture prevGesture; //exists in gesture.h(not sure what what this is yet so just removed all gestures features for now)
-//TODO REMOVE ME
-//float systemMillis = 0;
-// systeMillis was replace using chrono exists in timer.h (we will use C++ timers insteads)
-bool sleepRequested; //exists in power.h(for now just have it alawys set to false)
-std::chrono::time_point<std::chrono::system_clock> then;
 
 celluloSimulatedLedsLogic::celluloSimulatedLedsLogic() {
-    timer3 = new QTimer(this);
-    //connect(timer3, SIGNAL(timeout()), this, SLOT(APP_LED_Tasks()));
     then = std::chrono::system_clock::now(); //get current chrono timer for systemMillis
-
-    connect(timer3, SIGNAL(timeout()), this, SLOT(timer3Handler()));
-    timer3->start(100);
     updateRequested = false;
+    sleepRequested = false;
     APP_LED_Initialize();
 }
 
-inline float systemMillis() {
+float celluloSimulatedLedsLogic::systemMillis() {
     auto now = std::chrono::system_clock::now();
     auto dur = now-then;
     auto secs = std::chrono::duration_cast<std::chrono::milliseconds>(dur);
@@ -62,82 +27,11 @@ inline float systemMillis() {
     return fSec;
 }
 
-inline void setLED0(unsigned short red, unsigned short green, unsigned short blue){
-    leds.leds.led0red = red;
-    leds.leds.led0green = green;
-    leds.leds.led0blue_high_nibble = blue >> 8;
-    leds.leds.led0blue_low_byte = blue & LOW_BYTE_MASK;
-}
-
-inline void setLED1(unsigned short red, unsigned short green, unsigned short blue){
-    leds.leds.led1red = red;
-    leds.leds.led1green = green;
-    leds.leds.led1blue_low_nibble = blue & LOW_NIBBLE_MASK;
-    leds.leds.led1blue_high_byte = blue >> 4;
-}
-
-inline void setLED2(unsigned short red, unsigned short green, unsigned short blue){
-    leds.leds.led2red = red;
-    leds.leds.led2green = green;
-    leds.leds.led2blue = blue;
-}
-
-inline void setLED3(unsigned short red, unsigned short green, unsigned short blue){
-    leds.leds.led3red = red;
-    leds.leds.led3green_low_byte = green & LOW_BYTE_MASK;
-    leds.leds.led3green_high_nibble = green >> 8;
-    leds.leds.led3blue = blue;
-}
-
-inline void setLED4(unsigned short red, unsigned short green, unsigned short blue){
-    leds.leds.led4red = red;
-    leds.leds.led4green_high_byte = green >> 4;
-    leds.leds.led4green_low_nibble = green & LOW_NIBBLE_MASK;
-    leds.leds.led4blue = blue;
-}
-
-inline void setLED5(unsigned short red, unsigned short green, unsigned short blue){
-    leds.leds.led5red = red;
-    leds.leds.led5green = green;
-    leds.leds.led5blue = blue;
-}
-
-void setLEDTemporary(unsigned int led, unsigned short red, unsigned short green, unsigned short blue){
-    if(red > 4095)
-        red = 4095;
-    if(green > 4095)
-        green = 4095;
-    if(blue > 4095)
-        blue = 4095;
-
-    switch(led){
-        case 0:
-            setLED0(red,green,blue);
-            break;
-        case 1:
-            setLED1(red,green,blue);
-            break;
-        case 2:
-            setLED2(red,green,blue);
-            break;
-        case 3:
-            setLED3(red,green,blue);
-            break;
-        case 4:
-            setLED4(red,green,blue);
-            break;
-        case 5:
-            setLED5(red,green,blue);
-            break;
-        default:
-            break;
-    }
-}
-
-
 void celluloSimulatedLedsLogic::APP_LED_Initialize(){
     ledResponseMode = LEDResponseModeResponsiveIndividual;
-    qDebug() << "app_led_init";
+    updateRequested = false;
+    latched = false;
+    sleepRequested = false;
     //prevGesture = GestureNone;
 
 /*    if(bootState != BOOT_STATE_SOFTWARE_RESET && bootState != BOOT_STATE_WATCHDOG_TIMEOUT)
@@ -148,43 +42,35 @@ void celluloSimulatedLedsLogic::APP_LED_Initialize(){
     else{*/
 
         //Dummy colors and effect values
-        unsigned int i;
-        for(i=0; i<6; i++){
-            currentLEDColors[i][0] = LED_IDLE_BRIGHTNESS;
-            currentLEDColors[i][1] = LED_IDLE_BRIGHTNESS;
-            currentLEDColors[i][2] = LED_IDLE_BRIGHTNESS;
-            setLEDTemporary(i,currentLEDColors[i][0],currentLEDColors[i][1],currentLEDColors[i][2]);
-        }
-        effectColor[0] = LED_IDLE_BRIGHTNESS;
-        effectColor[1] = LED_IDLE_BRIGHTNESS;
-        effectColor[2] = LED_IDLE_BRIGHTNESS;
-        visualEffect = Cellulo::CelluloBluetoothEnums::VisualEffectConstAll;
-        currentEffectValue = 0;
-   // }
+    unsigned int i;
+    for(i=0; i<6; i++){
+        currentLEDColors[i][0] = LED_IDLE_BRIGHTNESS;
+        currentLEDColors[i][1] = LED_IDLE_BRIGHTNESS;
+        currentLEDColors[i][2] = LED_IDLE_BRIGHTNESS;
+        previousLEDColors[i][0] = LED_IDLE_BRIGHTNESS;
+        previousLEDColors[i][1] = LED_IDLE_BRIGHTNESS;
+        previousLEDColors[i][2] = LED_IDLE_BRIGHTNESS;
+        previousLEDColors[i][0] = LED_IDLE_BRIGHTNESS;
+        previousLEDColors[i][1] = LED_IDLE_BRIGHTNESS;
+        previousLEDColors[i][2] = LED_IDLE_BRIGHTNESS;
 
 
-    //Timer 3 will take care of regular LED data sending
-    /*T3CON = 0;
-    T3CONbits.TCS = 0;       //Use peripheral bus clock 3 (100MHz)
-    T3CONbits.TCKPS = 0b110; //1:64 prescaler
-    PR3 = 15625;             //100Hz update
+    }
+    currentLEDNumber = 0;
+    effectCounter1 = 0;
+    effectCounter2 = 0;
+    effectTransition = false;
+    currentEffectValue = 0;
+    previousEffectColor[0] = LED_IDLE_BRIGHTNESS;
+    previousEffectColor[1] = LED_IDLE_BRIGHTNESS;
+    previousEffectColor[2] = LED_IDLE_BRIGHTNESS;   ///< stores the previouS effect color
 
-    SYS_INT_VectorPrioritySet(INT_VECTOR_T3, INT_PRIORITY_LEVEL1);
-    SYS_INT_VectorSubprioritySet(INT_VECTOR_T3, INT_SUBPRIORITY_LEVEL1);
-    PLIB_INT_SourceFlagClear(INT_ID_0, INT_SOURCE_TIMER_3);
-    SYS_INT_SourceEnable(INT_SOURCE_TIMER_3);
+    effectColor[0] = LED_IDLE_BRIGHTNESS;
+    effectColor[1] = LED_IDLE_BRIGHTNESS;
+    effectColor[2] = LED_IDLE_BRIGHTNESS;
+    visualEffect = Cellulo::CelluloBluetoothEnums::VisualEffectConstAll;
+    currentEffectValue = 0;
 
-    T3CONbits.ON = 1;*/
-
-    //Timer 4 will take care of LED latch delay
-    /*T4CON = 0;
-    T4CONbits.TCS = 0;       //Use peripheral bus clock 3 (100MHz)
-    T4CONbits.TCKPS = 0b000; //1:1 prescaler
-
-    SYS_INT_VectorPrioritySet(INT_VECTOR_T4, INT_PRIORITY_LEVEL1);
-    SYS_INT_VectorSubprioritySet(INT_VECTOR_T4, INT_SUBPRIORITY_LEVEL2);
-    PLIB_INT_SourceFlagClear(INT_ID_0, INT_SOURCE_TIMER_4);
-    SYS_INT_SourceEnable(INT_SOURCE_TIMER_4);*/
 }
 
 bool celluloSimulatedLedsLogic::transitionLED(unsigned int led, short red, short green, short blue, short inertia){
@@ -193,13 +79,11 @@ bool celluloSimulatedLedsLogic::transitionLED(unsigned int led, short red, short
         (currentLEDColors[led][0] <= red && currentLEDColors[led][0] >= red - inertia) &&
         (currentLEDColors[led][1] <= green && currentLEDColors[led][1] >= green - inertia) &&
         (currentLEDColors[led][2] <= blue && currentLEDColors[led][2] >= blue - inertia)) {
-        qDebug() << "transition finished: final state" << led << " is " << currentLEDColors[led][0];
         return true;
     }
     currentLEDColors[led][0] = (inertia*currentLEDColors[led][0] + red)/(inertia + 1);
     currentLEDColors[led][1] = (inertia*currentLEDColors[led][1] + green)/(inertia + 1);
     currentLEDColors[led][2] = (inertia*currentLEDColors[led][2] + blue)/(inertia + 1);
-    setLEDTemporary(led, currentLEDColors[led][0], currentLEDColors[led][1], currentLEDColors[led][2]);
     return false;
 }
 
@@ -210,10 +94,10 @@ void celluloSimulatedLedsLogic::suspendLEDsSleep(){
 void celluloSimulatedLedsLogic::suspendLEDsIdle(){
     unsigned int i;
     for(i=0; i<6; i++)
-        setLEDTemporary(i,
+        /*setLEDTemporary(i,
                         currentLEDColors[i][0]/LED_IDLE_MODE_BRIGHTNESS_DIVISOR,
                         currentLEDColors[i][1]/LED_IDLE_MODE_BRIGHTNESS_DIVISOR,
-                        currentLEDColors[i][2]/LED_IDLE_MODE_BRIGHTNESS_DIVISOR);
+                        currentLEDColors[i][2]/LED_IDLE_MODE_BRIGHTNESS_DIVISOR);*/
     requestLEDUpdate();
 
     i = 0;
@@ -226,12 +110,6 @@ void celluloSimulatedLedsLogic::suspendLEDsIdle(){
 }
 
 void celluloSimulatedLedsLogic::resumeLEDsSleep(){
-    /*T3CON = 0;
-    T3CONbits.TCS = 0;       //Use peripheral bus clock 3 (100MHz)
-    T3CONbits.TCKPS = 0b110; //1:64 prescaler
-    PR3 = 15625;             //100Hz update
-    T3CONbits.ON = 1;*/
-
     //Block until LEDs light up
     setVisualEffect(Cellulo::CelluloBluetoothEnums::VisualEffectConstAll, LED_IDLE_BRIGHTNESS*255/4095, LED_IDLE_BRIGHTNESS*255/4095, LED_IDLE_BRIGHTNESS*255/4095, 0);
     unsigned int i;
@@ -247,28 +125,17 @@ void celluloSimulatedLedsLogic::resumeLEDsSleep(){
 }
 
 void celluloSimulatedLedsLogic::resumeLEDsIdle(){
-    /*T3CON = 0;
-    T3CONbits.TCS = 0;       //Use peripheral bus clock 3 (100MHz)
-    T3CONbits.TCKPS = 0b110; //1:64 prescaler
-    PR3 = 15625;             //100Hz update
-    T3CONbits.ON = 1;*/
-
     //Restore brightness
     unsigned int i;
     for(i=0; i<6; i++)
-        setLEDTemporary(i,
+        /*setLEDTemporary(i,
                         currentLEDColors[i][0],
                         currentLEDColors[i][1],
-                        currentLEDColors[i][2]);
+                        currentLEDColors[i][2]);*/
     requestLEDUpdate();
 }
 
 void celluloSimulatedLedsLogic::lowBatteryAnimation(){
-   /* T3CON = 0;
-    T3CONbits.TCS = 0;       //Use peripheral bus clock 3 (100MHz)
-    T3CONbits.TCKPS = 0b110; //1:64 prescaler
-    PR3 = 15625;             //100Hz update
-    T3CONbits.ON = 1;*/
 
     //Block until animation is complete
     effectCounter1 = systemMillis();
@@ -382,14 +249,11 @@ void celluloSimulatedLedsLogic::APP_LED_Tasks(){
             if(!updateRequested && effectTransition){
                 effectTransition = false;
                 for(i=0; i<6; i++) {
-                     qDebug() << "BEOFRE ENTERING TRANSITION CODE:: " << currentLEDColors[i][0];
                     bool finishedTransition = transitionLED(i, currentLEDColorGoals[i][0], currentLEDColorGoals[i][1], currentLEDColorGoals[i][2], LED_TRANSITION_INERTIA_DEFAULT);
                     if(!finishedTransition) {
                         effectTransition = true;
-                        qDebug() << "EXITED RUNNING TRANSITION STATE red:: " << currentLEDColors[i][0];
                     }
                     else {
-                       qDebug() << "EXITED FINISHED TRANSITION STATE red:: " << currentLEDColors[i][0];
                     }
                 }
                 if(effectTransition)
@@ -830,21 +694,6 @@ void celluloSimulatedLedsLogic::setVisualEffect(VisualEffect newEffect, unsigned
     currentEffectValue = value;
 }
 
-/*inline void latchLEDData(){
-    PLIB_PORTS_PinSet(PORTS_ID_0, LED_XLAT_PORT_CHANNEL, LED_XLAT_PORT_BIT_POS);
-    Nop(); Nop(); Nop(); Nop(); Nop(); Nop(); //Wait 30ns
-    PLIB_PORTS_PinClear(PORTS_ID_0, LED_XLAT_PORT_CHANNEL, LED_XLAT_PORT_BIT_POS);
-    latched = true;
-}
-
-inline void loadLatchTimer(){
-
-    //We wait 40 microseconds: 32 bits take ~32 microseconds to travel to the
-    //LED driver on a 1Mhz clock, we add some room for error
-    PR4 = 4000;
-    T4CONbits.ON = 1;
-}*/
-
 void celluloSimulatedLedsLogic::keyTouched(unsigned int key, bool touched){
     if(touched){
         if(ledResponseMode == LEDResponseModeResponsiveIndividual){
@@ -870,20 +719,19 @@ void celluloSimulatedLedsLogic::keyTouched(unsigned int key, bool touched){
             else if(blue > 0xFFF)
                 blue = 0xFFF;
 
-            setLEDTemporary(key, red, green, blue);
+            //setLEDTemporary(key, red, green, blue);
         }
     }
     else
-        setLEDTemporary(key,
+        /*setLEDTemporary(key,
                         currentLEDColors[key][0],
                         currentLEDColors[key][1],
-                        currentLEDColors[key][2]);
+                        currentLEDColors[key][2]);*/
     requestLEDUpdate();
 }
 
 void celluloSimulatedLedsLogic::setLED(unsigned int led, unsigned short red, unsigned short green, unsigned short blue){
-    setLEDTemporary(led, red, green, blue);
-    qDebug() << "IN SET LED";
+   // setLEDTemporary(led, red, green, blue);
     currentLEDColors[led][0] = red;
     currentLEDColors[led][1] = green;
     currentLEDColors[led][2] = blue;
@@ -896,40 +744,8 @@ inline void celluloSimulatedLedsLogic::requestLEDUpdate(){
 
 void celluloSimulatedLedsLogic::timer3Handler() {
     if(updateRequested) {
-        //maybe need actualyCurrentLeds array and we update them here!
+        //now we use the currentLedColors and this is close enough to approximate the leds the real robot
+        //we dont need set the registers like the real robot does, so here just set updateRequested to false
         updateRequested = false;
     }
 }
-
-/*void __ISR(_TIMER_3_VECTOR, ipl1AUTO) _Timer3Handler(void){
-    if(updateRequested){
-        currentBufferIndex = 0;
-        SPI1BUF = leds.buffer[currentBufferIndex];
-        currentBufferIndex++;
-        PLIB_INT_SourceFlagClear(INT_ID_0, INT_SOURCE_SPI_1_TRANSMIT);
-        SYS_INT_SourceEnable(INT_SOURCE_SPI_1_TRANSMIT);
-        updateRequested = false;
-    }
-
-    PLIB_INT_SourceFlagClear(INT_ID_0, INT_SOURCE_TIMER_3);
-}
-
-void __ISR(_SPI1_TX_VECTOR, ipl2AUTO) _IntHandlerSPITxInstance0(void){
-    SPI1BUF = leds.buffer[currentBufferIndex];
-    currentBufferIndex++;
-    if(currentBufferIndex == 7){
-        PLIB_INT_SourceFlagClear(INT_ID_0, INT_SOURCE_SPI_1_TRANSMIT);
-        SYS_INT_SourceDisable(INT_SOURCE_SPI_1_TRANSMIT);
-
-        loadLatchTimer();
-    }
-    PLIB_INT_SourceFlagClear(INT_ID_0, INT_SOURCE_SPI_1_TRANSMIT);
-}
-
-void __ISR(_TIMER_4_VECTOR, ipl1AUTO) _Timer4Handler(void){
-    T4CONbits.ON = 0;
-    latchLEDData();
-
-    PLIB_INT_SourceFlagClear(INT_ID_0, INT_SOURCE_TIMER_4);
-}
-*/

@@ -49,7 +49,8 @@ CelluloRobot{
                 }
             }
         }
-        Leds {}
+        Leds {
+        }
         /*Arrow {
             id:arrow
             PropertyAnimation on rotation {

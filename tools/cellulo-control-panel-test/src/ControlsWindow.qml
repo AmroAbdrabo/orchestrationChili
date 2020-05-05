@@ -353,6 +353,103 @@ Window {
             }
 
             GroupBox {
+                title: "Color Effects Robot2"
+                width: gWidth
+
+                RowLayout{
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    spacing: 5
+
+                    Column{
+                        ComboBox {
+                            id: effect2
+                            model: CelluloBluetoothEnums.VisualEffectStrings
+                            currentIndex: 0
+                        }
+                        ComboBox {
+                            model: CelluloBluetoothEnums.LEDResponseModeStrings
+                            currentIndex: 0
+                            onCurrentIndexChanged: {
+                                if(robotComm1 != null)
+                                    robotComm1.setLEDResponseMode(currentIndex)
+                            }
+                        }
+                    }
+                    Column{
+                        Layout.fillWidth: true
+                        Slider{
+                            property string hexStr: (value < 16 ? "0" : "") + value.toString(16).toUpperCase()
+
+                            id: redSlider2
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            minimumValue: 0
+                            maximumValue: 255
+                            stepSize: 1
+                            value: 128
+                            style: SliderStyle {
+                                groove: Rectangle {
+                                    implicitHeight: 8
+                                    color: "red"
+                                }
+                            }
+                        }
+                        Slider{
+                            property string hexStr: (value < 16 ? "0" : "") + value.toString(16).toUpperCase()
+
+                            id: greenSlider2
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            minimumValue: 0
+                            maximumValue: 255
+                            stepSize: 1
+                            value: 128
+                            style: SliderStyle {
+                                groove: Rectangle {
+                                    implicitHeight: 8
+                                    color: "green"
+                                }
+                            }
+                        }
+                        Slider{
+                            property string hexStr: (value < 16 ? "0" : "") + value.toString(16).toUpperCase()
+
+                            id: blueSlider2
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            minimumValue: 0
+                            maximumValue: 255
+                            stepSize: 1
+                            value: 128
+                            style: SliderStyle {
+                                groove: Rectangle {
+                                    implicitHeight: 8
+                                    color: "blue"
+                                }
+                            }
+                        }
+                    }
+                    Label{
+                        text: "Value:"
+                       // anchors.verticalCenter: effectValue.verticalCenter
+                    }
+                    SpinBox {
+                        id: effectValue2
+                        minimumValue: 0
+                        maximumValue: 255
+                        value: 0
+                        width: em(3)
+                    }
+                    Button {
+                        text: "Send"
+                        onClicked: robotComm2.setVisualEffect(effect2.currentIndex, "#FF" + redSlider2.hexStr + greenSlider2.hexStr + blueSlider2.hexStr, effectValue2.value);
+                    }
+                }
+            }
+
+
+            GroupBox {
                 title: "Locomotion"
                 width: gWidth
 
