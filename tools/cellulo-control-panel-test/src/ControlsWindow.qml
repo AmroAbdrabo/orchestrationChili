@@ -158,14 +158,6 @@ Window {
                     spacing: 5
 
                     Button{
-                        text: "Color red"
-                        onClicked: robotComm1.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "red", 0);
-                    }
-                    Button{
-                        text: "Color blue"
-                        onClicked: robotComm1.setVisualEffect(CelluloBluetoothEnums.VisualEffectConstAll, "blue", 0);
-                    }
-                    Button{
                         text: "Reset"
                         onClicked: robotComm1.reset();
                     }
@@ -345,11 +337,20 @@ Window {
                         value: 0
                         width: em(3)
                     }
-                    Button {
-                        text: "Send"
-                        onClicked: robotComm1.setVisualEffect(effect.currentIndex, "#FF" + redSlider.hexStr + greenSlider.hexStr + blueSlider.hexStr, effectValue.value);
+                    Column{
+                        spacing: 5
+                        Button {
+                            text: "Send"
+                            onClicked: robotComm1.setVisualEffect(effect.currentIndex, "#FF" + redSlider.hexStr + greenSlider.hexStr + blueSlider.hexStr, effectValue.value);
+                        }
+                        Button{
+                            text: "Set Hex"
+                            onClicked: robotComm1.setHexagonColor("#FF" + redSlider.hexStr + greenSlider.hexStr + blueSlider.hexStr)
+                        }
                     }
+
                 }
+
             }
 
             GroupBox {
@@ -441,10 +442,18 @@ Window {
                         value: 0
                         width: em(3)
                     }
-                    Button {
-                        text: "Send"
-                        onClicked: robotComm2.setVisualEffect(effect2.currentIndex, "#FF" + redSlider2.hexStr + greenSlider2.hexStr + blueSlider2.hexStr, effectValue2.value);
+                    Column{
+                        spacing: 5
+                        Button {
+                            text: "Send"
+                            onClicked: robotComm2.setVisualEffect(effect2.currentIndex, "#FF" + redSlider2.hexStr + greenSlider2.hexStr + blueSlider2.hexStr, effectValue2.value);
+                        }
+                        Button{
+                            text: "Set Hex"
+                            onClicked: robotComm2.setHexagonColor("#FF" + redSlider.hexStr + greenSlider.hexStr + blueSlider.hexStr)
+                        }
                     }
+
                 }
             }
 

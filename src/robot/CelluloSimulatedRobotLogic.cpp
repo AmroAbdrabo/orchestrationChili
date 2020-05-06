@@ -381,12 +381,3 @@ void CelluloSimulatedRobotLogic::updatePose(float curX, float curY, float curThe
     }
     relevantGoalsReached = relevantGoalsReachedNow;
 }
-
-void CelluloSimulatedRobotLogic::setVisualEffect(Cellulo::CelluloBluetoothEnums::VisualEffect effect, QColor color, int value)
-{
-    if(effect == Cellulo::CelluloBluetoothEnums::VisualEffect::VisualEffectConstAll){
-        this->color = color;
-    }
-
-
-}

@@ -86,7 +86,7 @@ CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) : CelluloZoneClient(paren
     lastTimestamp = 0;
     framerate = 0.0;
     kidnapped = true;
-    color = QColor("gray");
+    hexagonColor = QColor("gray");
     gesture = CelluloBluetoothEnums::GestureNone;
 
     simulatedRobotLogic = new CelluloSimulatedRobotLogic();
@@ -100,7 +100,6 @@ CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) : CelluloZoneClient(paren
 
 void CelluloBluetooth::updatePose(){
     if(isSimulation){
-        color = simulatedRobotLogic->color;
         simulatedRobotLogic->updatePose(x, y, theta);
         x = x + timeStep*simulatedRobotLogic->vxGlobalGoalTracker/1000;
         y = y + timeStep*simulatedRobotLogic->vyGlobalGoalTracker/1000;
@@ -147,8 +146,6 @@ void CelluloBluetooth::updateSimulatedLeds() {
         emit led3ColorChanged();
         emit led4ColorChanged();
         emit led5ColorChanged();
-        emit colorChanged();
-        emit poseChanged(x,y,theta);
     } else {
         ledUpdateTimer->stop();
     }
@@ -239,8 +236,9 @@ void CelluloBluetooth::setIsSimulation(bool simulated){
     emit isSimulationChanged();
 }
 
-void CelluloBluetooth::setColor(QColor c) {
-    simulatedRobotLogic->color = c;
+void CelluloBluetooth::setHexagonColor(QColor c) {
+    this->hexagonColor = c;
+    emit hexagonColorChanged();
 }
 
 void CelluloBluetooth::setLocalAdapterMacAddr(QString localAdapterMacAddr){

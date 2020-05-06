@@ -32,8 +32,6 @@ class CelluloSimulatedRobotLogic {
 public:
     MOTION_TRACKER currentMotionTracker = MOTION_TRACKER_NONE; ///< Currently active tracker
 
-    QColor color;
-
     float poseX;
     float poseY;
     float poseTheta;
@@ -177,15 +175,6 @@ public:
      * @brief Runs regular motion control tasks
      */
     void updatePose(float curX, float curY, float theta);
-
-    /**
-     * @brief Sets the visual effect on the robot, changing LED illumination
-     *
-     * @param effect The effect ordinal
-     * @param color Color
-     * @param value A value possibly meaningful for the effect (between 0 and 255)
-     */
-    void setVisualEffect(Cellulo::CelluloBluetoothEnums::VisualEffect effect, QColor color, int value);
 
 };
 

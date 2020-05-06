@@ -125,7 +125,7 @@ class CelluloBluetooth : public CelluloZoneClient {
     Q_PROPERTY(QVector3D initPose WRITE setInitSimulatedPose READ getInitSimulatedPose NOTIFY initSimulatedPoseChanged)
 
     //Colors for simulated robot
-    Q_PROPERTY(QColor color WRITE setColor READ getColor NOTIFY colorChanged)
+    Q_PROPERTY(QColor color WRITE setHexagonColor READ getHexagonColor NOTIFY hexagonColorChanged)
 
     Q_PROPERTY(QColor led0Color READ getLed0Color NOTIFY led0ColorChanged)
 
@@ -277,7 +277,7 @@ public:
 
     /** @endcond */
     bool getIsSimulation(){return isSimulation;}
-    QColor getColor(){return color;}
+    QColor getHexagonColor(){return hexagonColor;}
     QColor getLed0Color(){return led0Color;};
     QColor getLed1Color(){return led1Color;};
     QColor getLed2Color(){return led2Color;};
@@ -650,7 +650,7 @@ public slots:
      * @brief sets boolean indicating of the robot is being simulated
      * @param simulated
      */
-    void setColor(QColor color);
+    void setHexagonColor(QColor color);
     /**
      * @brief sets the initial pose of the robot
      * @param initpos
@@ -775,7 +775,7 @@ signals:
 
     void isSimulationChanged();
     void initSimulatedPoseChanged();
-    void colorChanged();
+    void hexagonColorChanged();
     void led0ColorChanged();
     void led1ColorChanged();
     void led2ColorChanged();
@@ -827,7 +827,7 @@ private:
     float ledUpdateFrequency;                                 ///< time interval between led updates
     QVector3D initPose;                                       ///< initial pose for the simulated robot
     QVector3D commandedvxyw;
-    QColor color;                                             ///< fill color for the hexagon representing the robot(not the leds)
+    QColor hexagonColor;                                      ///< fill color for the hexagon representing the robot(not the leds)
     QColor led5Color = "#DCDCDC";
     QColor led4Color = "#DCDCDC";
     QColor led3Color = "#DCDCDC";

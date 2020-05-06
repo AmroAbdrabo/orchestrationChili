@@ -17,9 +17,9 @@ Item {
         //use Rectangle to make circles
         delegate: Rectangle {
             id: led
-            width: 11
-            height: 11
-            radius: 5
+            width: 12
+            height: 12
+            radius: 6
             //can do color: robotCommLedColors[index] or if(index == 0) robotComm.led1 ect... but that might a be a little
             //so would be good if can figure out way to have an array as qproperty
             //could also just use a javascript function here a
