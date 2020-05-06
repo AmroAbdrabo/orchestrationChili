@@ -17,9 +17,9 @@ Item {
         //use Rectangle to make circles
         delegate: Rectangle {
             id: led
-            width: 12
-            height: 12
-            radius: 6
+            width: hex.width*13/75
+            height: hex.height*13/75
+            radius: hex.height*13/(75*2) //resize only works correctly for diagonal resizes of the windoe ie. when width and height are resized evenly
             //can do color: robotCommLedColors[index] or if(index == 0) robotComm.led1 ect... but that might a be a little
             //so would be good if can figure out way to have an array as qproperty
             //could also just use a javascript function here a
