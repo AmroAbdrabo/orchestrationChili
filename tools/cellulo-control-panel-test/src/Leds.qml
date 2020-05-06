@@ -20,10 +20,8 @@ Item {
             width: hex.width*13/75
             height: hex.height*13/75
             radius: hex.height*13/(75*2) //resize only works correctly for diagonal resizes of the windoe ie. when width and height are resized evenly
-            //can do color: robotCommLedColors[index] or if(index == 0) robotComm.led1 ect... but that might a be a little
-            //so would be good if can figure out way to have an array as qproperty
-            //could also just use a javascript function here a
-            //leds could repr as array in logic and display 1 b1 1 as qproperties
+
+            //perhaps could make a qlist property to expose the led colors so this would be much cleaner
             color:  if(index == 0) robotComm.led0Color;
                     else if(index == 1) robotComm.led1Color;
                     else if(index == 2) robotComm.led2Color;

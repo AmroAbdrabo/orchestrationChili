@@ -110,6 +110,7 @@ void CelluloBluetooth::updatePose(){
         else if (theta<0) {
             theta+=360;
         }
+         emit poseChanged(x, y, theta);
     }
     else
         timer->stop();
