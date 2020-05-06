@@ -18,8 +18,8 @@ Item {
         delegate: Rectangle {
             id: led
             width: hex.width*13/75
-            height: hex.height*13/75
-            radius: hex.height*13/(75*2) //resize only works correctly for diagonal resizes of the windoe ie. when width and height are resized evenly
+            height: hex.width*13/75
+            radius: hex.width*13/(75*2) //resize only works correctly for diagonal resizes of the windoe ie. when width and height are resized evenly
 
             //perhaps could make a qlist property to expose the led colors so this would be much cleaner
             color:  if(index == 0) robotComm.led0Color;
