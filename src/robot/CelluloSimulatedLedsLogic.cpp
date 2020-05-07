@@ -87,10 +87,12 @@ bool celluloSimulatedLedsLogic::transitionLED(unsigned int led, short red, short
     return false;
 }
 
+//NOT CORRECTLY IMPLEMENTED YET
 void celluloSimulatedLedsLogic::suspendLEDsSleep(){
     //T3CONbits.ON = 0;
 }
 
+//NOT CORRECTLY IMPLEMENTED YET
 void celluloSimulatedLedsLogic::suspendLEDsIdle(){
     unsigned int i;
     for(i=0; i<6; i++)
@@ -124,6 +126,7 @@ void celluloSimulatedLedsLogic::resumeLEDsSleep(){
         }
 }
 
+//NOT CORRECTLY IMPLEMENTED YET
 void celluloSimulatedLedsLogic::resumeLEDsIdle(){
     //Restore brightness
     unsigned int i;
@@ -446,11 +449,6 @@ void celluloSimulatedLedsLogic::setLEDResponseMode(LEDResponseMode newMode){
 void celluloSimulatedLedsLogic::setVisualEffect(VisualEffect newEffect, unsigned char red, unsigned char green, unsigned char blue, int value){
     unsigned int i;
 
-   /* if(newEffect == Cellulo::CelluloBluetoothEnums::VisualEffectConstAll) {
-        currentLEDColors[0][0] = red;
-        currentLEDColors[0][1] = green;
-        currentLEDColors[0][2] = blue;
-    }*/
     //Set immediate parts of effects here
     switch(newEffect){
         case Cellulo::CelluloBluetoothEnums::VisualEffect::VisualEffectConstSingle:
@@ -694,6 +692,7 @@ void celluloSimulatedLedsLogic::setVisualEffect(VisualEffect newEffect, unsigned
     currentEffectValue = value;
 }
 
+//NOT TESTED YET
 void celluloSimulatedLedsLogic::keyTouched(unsigned int key, bool touched){
     if(touched){
         if(ledResponseMode == LEDResponseModeResponsiveIndividual){

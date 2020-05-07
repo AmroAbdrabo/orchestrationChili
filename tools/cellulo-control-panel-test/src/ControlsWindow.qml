@@ -198,6 +198,7 @@ Window {
                             //update backgroundsize and windowsize to desired map dimensions in mm
                             paper.height = 420;
                             paper.width = 980;
+
                             //be default resize window with paper dimensions
                             //but can give the window any size you want
                             window2.width = paper.width;
@@ -205,7 +206,7 @@ Window {
                             //load background image
                             backgroundImg.source = 'qrc:/assets/orangemapcorrected.svg'
 
-                            //create zones and robots to the zoneEngine
+                            //create zones and add robots to the zoneEngine
                             MyFuncs.createZones();
                             zoneEngine.addNewClient(robotComm1)
                             zoneEngine.addNewClient(robotComm2)
