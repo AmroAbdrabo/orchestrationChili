@@ -88,6 +88,7 @@ CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) : CelluloZoneClient(paren
     kidnapped = true;
     hexagonColor = QColor("gray");
     gesture = CelluloBluetoothEnums::GestureNone;
+    isSelected = false;
 
     simulatedRobotLogic = new CelluloSimulatedRobotLogic();
     simulatedLeds = new celluloSimulatedLedsLogic();
@@ -100,17 +101,19 @@ CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) : CelluloZoneClient(paren
 
 void CelluloBluetooth::updatePose(){
     if(isSimulation){
-        simulatedRobotLogic->updatePose(x, y, theta);
-        x = x + timeStep*simulatedRobotLogic->vxGlobalGoalTracker/1000;
-        y = y + timeStep*simulatedRobotLogic->vyGlobalGoalTracker/1000;
-        theta = theta + timeStep*(simulatedRobotLogic->wGlobalGoalTracker)*360/(M_PI*1000); //rotational velocity is radians/s
-        lastTimestamp+=timeStep;
-        if(theta>360)
-            theta-=360;
-        else if (theta<0) {
-            theta+=360;
+        if(!isSelected) {
+            simulatedRobotLogic->updatePose(x, y, theta);
+            x = x + timeStep*simulatedRobotLogic->vxGlobalGoalTracker/1000;
+            y = y + timeStep*simulatedRobotLogic->vyGlobalGoalTracker/1000;
+            theta = theta + timeStep*(simulatedRobotLogic->wGlobalGoalTracker)*360/(M_PI*1000); //rotational velocity is radians/s
+            lastTimestamp+=timeStep;
+            if(theta>360)
+                theta-=360;
+            else if (theta<0) {
+                theta+=360;
+            }
         }
-         emit poseChanged(x, y, theta);
+        emit poseChanged(x, y, theta);
     }
     else
         timer->stop();
@@ -180,9 +183,11 @@ void CelluloBluetooth::resetProperties(){
     emit gestureChanged();
 
     if(isSimulation)
-    {
+    {   delete simulatedLeds;
         delete simulatedRobotLogic;
+        simulatedLeds = new celluloSimulatedLedsLogic();
         simulatedRobotLogic = new CelluloSimulatedRobotLogic();
+        isSelected = false;
     }
 }
 
@@ -208,12 +213,16 @@ void CelluloBluetooth::setMacAddr(QString macAddr){
         connectToServer();
 }
 void CelluloBluetooth::setInitSimulatedPose(QVector3D initpos){
-    initPose=QVector3D(initpos);
     initPose = initpos;
     x=initPose.x();
     y=initPose.y();
     theta=initPose.z();
     emit poseChanged(x,y,theta);
+}
+
+void CelluloBluetooth::setIsSelected(bool isSelected){
+    this->isSelected = isSelected;
+    emit isSelectedChanged();
 }
 void CelluloBluetooth::setIsSimulation(bool simulated){
     isSimulation=simulated;

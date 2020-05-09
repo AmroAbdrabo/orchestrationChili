@@ -124,6 +124,7 @@ class CelluloBluetooth : public CelluloZoneClient {
 
     Q_PROPERTY(QVector3D initPose WRITE setInitSimulatedPose READ getInitSimulatedPose NOTIFY initSimulatedPoseChanged)
 
+    Q_PROPERTY(bool isSelected WRITE setIsSelected READ getIsSelected NOTIFY isSelectedChanged)
     //Colors for simulated robot
     Q_PROPERTY(QColor color WRITE setHexagonColor READ getHexagonColor NOTIFY hexagonColorChanged)
 
@@ -286,6 +287,7 @@ public:
     QColor getLed5Color(){return led5Color;};
 
     QVector3D getInitSimulatedPose(){return initPose;};
+    bool getIsSelected(){return isSelected;};
     float getTimeStep(){return timeStep;}
 
 private slots:
@@ -656,6 +658,12 @@ public slots:
      * @param initpos
      */
     void setInitSimulatedPose(QVector3D initpos);
+
+    /**
+     * @brief sets the value isSelected
+     * @param isSelected
+     */
+    void setIsSelected(bool isSelected);
 signals:
 
     /** @cond DO_NOT_DOCUMENT */
@@ -773,14 +781,45 @@ signals:
      */
     void trackingGoalReached();
 
+    /**
+     * @brief emitted when we switch from simulation to real robot or other way around
+     */
     void isSimulationChanged();
+    /**
+     * @brief emitted when the initSimulatedPoseChanged
+     */
     void initSimulatedPoseChanged();
+    /**
+     * @brief emitted when robot is selected, or de-selected in the simulator
+     */
+    void isSelectedChanged();
+    /**
+     * @brief emitted when hexagonColorChanged
+     */
     void hexagonColorChanged();
+    /**
+     * @brief emitted when led0ColorChanged
+     */
     void led0ColorChanged();
+    /**
+     * @brief emitted when led1ColorChanged
+     */
     void led1ColorChanged();
+    /**
+     * @brief emitted when led2ColorChanged
+     */
     void led2ColorChanged();
+    /**
+     * @brief emitted when led3ColorChanged
+     */
     void led3ColorChanged();
+    /**
+     * @brief emitted when ed4ColorChanged
+     */
     void led4ColorChanged();
+    /**
+     * @brief emitted when led5ColorChanged
+     */
     void led5ColorChanged();
 
 
@@ -826,6 +865,7 @@ private:
     float timeStep;                                           ///< time interval between every update of the robot in a simulation
     float ledUpdateFrequency;                                 ///< time interval between led updates
     QVector3D initPose;                                       ///< initial pose for the simulated robot
+    bool isSelected;                                          ///< indicates if the robot is selected by the mouse
     QVector3D commandedvxyw;
     QColor hexagonColor;                                      ///< fill color for the hexagon representing the robot(not the leds)
     QColor led5Color = "#DCDCDC";

@@ -23,10 +23,9 @@ CelluloRobot{
         height: 75 * Math.sin(60*Math.PI/180) * window2.height/paper.height;//the height of a perfect hexagon depends on its width
         transformOrigin: Item.Center
         color: robotComm.color
-        property bool isSelected: false
-        x: isSelected?hex.x:(robotComm.x * window2.width / paper.width) - hex.width/2
-        y: isSelected?hex.y:(robotComm.y * window2.height / paper.height) - hex.height/2
-        rotation: isSelected? curRobotRotation + wheelRotation : robotComm.theta ;
+        x: robotComm.isSelected?hex.x:(robotComm.x * window2.width / paper.width) - hex.width/2
+        y: robotComm.isSelected?hex.y:(robotComm.y * window2.height / paper.height) - hex.height/2
+        rotation: robotComm.isSelected? curRobotRotation + wheelRotation : robotComm.theta ;
 
         MouseArea {
             id: themouse1
@@ -38,7 +37,7 @@ CelluloRobot{
                 parent.wheelRotation = 0
 
                 robotComm.init=Qt.vector3d(robotComm.x,robotComm.y,robotComm.theta)
-                parent.isSelected=!parent.isSelected
+                robotComm.isSelected=!robotComm.isSelected
                 console.log(parent.isSelected)
             }
             onWheel: {
@@ -67,9 +66,16 @@ CelluloRobot{
 
     isSimulation: true
 
-    initPose: hex.isSelected?Qt.vector3d((hex.x+hex.width/2)* paper.width/window2.width,
+    initPose: robotComm.isSelected?Qt.vector3d((hex.x+hex.width/2)* paper.width/window2.width,
                                            (hex.y+hex.height/2) * paper.height/window2.height,
                                             hex.rotation) : robotComm.init
+
+    onFrameReady: cameraImage.reload()
+
+    onTrackingGoalReached: toast.show("Tracking goal reached.")
+    onBootCompleted: toast.show("Boot completed.")
+    onShuttingDown: toast.show("Shutting down.")
+    onLowBattery: toast.show("Low battery.")
 
     onZoneValueChanged: {
         switch(zone.name){
@@ -317,10 +323,4 @@ CelluloRobot{
         case 5: k5.color = "black"; break;
         }
     }
-    onFrameReady: cameraImage.reload()
-
-    onTrackingGoalReached: toast.show("Tracking goal reached.")
-    onBootCompleted: toast.show("Boot completed.")
-    onShuttingDown: toast.show("Shutting down.")
-    onLowBattery: toast.show("Low battery.")
 }

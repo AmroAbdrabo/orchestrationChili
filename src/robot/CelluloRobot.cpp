@@ -133,9 +133,9 @@ void CelluloRobot::spinControllers(){
 
 void CelluloRobot::estimateVelocities(){
     qreal newTime = getLastTimestamp();
-    if(getIsSimulation())
-        deltaTime=getTimeStep();
-    else
+   // if(getIsSimulation())
+   //     deltaTime=getTimeStep();
+    //else
         deltaTime = newTime - lastLastTimestamp;
     QVector3D newPose = QVector3D(getX(), getY(), getTheta());
 
@@ -151,7 +151,7 @@ void CelluloRobot::estimateVelocities(){
         vxyw=newVxyw;
     else
     {
-        if(getBcastPeriodMin() < deltaTime && deltaTime < getBcastPeriodMax()){
+    if(getBcastPeriodMin() < deltaTime && deltaTime < getBcastPeriodMax()){
         if(velEstimateNeedsReset){
             velEstimateNeedsReset = false;
             vxyw = newVxyw;
