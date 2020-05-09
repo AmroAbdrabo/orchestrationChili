@@ -50,7 +50,7 @@ CelluloRobot{
         }
         Leds {
         }
-        Arrow {
+        /*Arrow {
             id:arrow
             property var deltaX: -(robotComm.x - 250) //- robotComm.goalX;
             property var deltaY: -(robotComm.y - 250) //- robotComm.goalY;
@@ -62,7 +62,7 @@ CelluloRobot{
                 loops: Animation.Infinite
             }*/
 
-        }
+        }*/
     }
 
     color: "light grey" //default color
