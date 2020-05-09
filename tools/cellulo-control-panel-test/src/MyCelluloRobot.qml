@@ -13,8 +13,8 @@ import hexagon.qml 1.0
 CelluloRobot{
     id:robotComm
     property var init: Qt.vector3d(0,0,0)
-    property real  goalVelX: 50
-    property real  goalVelY: 50
+    property real  goalVelX: 5
+    property real  goalVelY: 5
     Hexagon{
         id: hex
         property  real wheelRotation: 0
@@ -50,16 +50,19 @@ CelluloRobot{
         }
         Leds {
         }
-        /*Arrow {
+        Arrow {
             id:arrow
-            PropertyAnimation on rotation {
+            property var deltaX: -(robotComm.x - 250) //- robotComm.goalX;
+            property var deltaY: -(robotComm.y - 250) //- robotComm.goalY;
+            rotation: Math.atan2(deltaY, deltaX)*180/3.14
+           /* PropertyAnimation on rotation {
                 from: 0
                 to: 360
                 duration: 5000
                 loops: Animation.Infinite
-            }
+            }*/
 
-        }*/
+        }
     }
 
     color: "light grey" //default color

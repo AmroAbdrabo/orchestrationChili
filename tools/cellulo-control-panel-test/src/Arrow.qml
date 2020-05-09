@@ -1,8 +1,11 @@
 import QtQuick 2.0
 
+
 Item {
-    height: parent.height
-    width: parent.width  //can use the width as the norm of the vector
+    function norm(vx,vy){ return Math.sqrt(vx*vx+vy*vy); }
+    anchors.centerIn: parent
+    height: parent.height * 2
+    width: parent.width  * 2 + norm(robotComm.vx, robotComm.vy) //can use the width as the norm of the vector
 
     Canvas {
         id: canvas
@@ -10,16 +13,18 @@ Item {
         height: parent.height
         width: parent.width
 
+
+        property var norm: parent.norm(robotComm.vx, robotComm.vy)/2// - parent.norm(robotComm.goalVelX, robotComm.goalVelY);
         antialiasing: true
 
         onPaint: {
             var ctx = canvas.getContext('2d')
-            ctx.strokeStyle = "#808080"
-            ctx.lineWidth = canvas.height * 0.05
+            ctx.strokeStyle = "#000000"
+            ctx.lineWidth = canvas.height * 0.03
             ctx.beginPath()
-            ctx.moveTo(canvas.width/2, canvas.height/2)
-            ctx.lineTo(canvas.width, canvas.height/2)
-            ctx.stroke()
+            ctx.moveTo(canvas.width/2 , canvas.height/2)
+            ctx.lineTo(canvas.width/2 + norm, canvas.height/2)
+            ctx.stroke();
         }
     }
 

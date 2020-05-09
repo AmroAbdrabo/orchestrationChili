@@ -639,6 +639,7 @@ public slots:
       *@brief Slot: update positions with respect to the velocity commanded.
       */
     void updatePose();
+
     /**
       *@brief Slot: update positions with respect to the velocity commanded.
       */
@@ -782,6 +783,11 @@ signals:
     void trackingGoalReached();
 
     /**
+     * @brief   Emitted when you want to update the estimated velocities of the robot
+     */
+    void updateVelocityEstimate();
+
+    /**
      * @brief emitted when we switch from simulation to real robot or other way around
      */
     void isSimulationChanged();
@@ -857,7 +863,7 @@ private:
 
     CelluloBluetoothEnums::Gesture gesture;                   ///< Current gesture
 
-
+private:
     QTimer *timer;                                            ///< set timer for the simulated robot
     QTimer *ledUpdateTimer;                                   ///< timer for leds, should be 100Hz (i.e10ms period)
     bool isSimulation;                                        ///< Indicated if the robot is simulated

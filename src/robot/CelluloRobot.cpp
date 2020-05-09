@@ -69,7 +69,7 @@ CelluloRobot::CelluloRobot(QQuickItem* parent) : CelluloBluetooth(parent){
     connect(this, SIGNAL(kidnappedChanged()), this, SLOT(resetVelEstimate()));
     connect(this, SIGNAL(bootCompleted()), this, SLOT(initialize()));
     connect(this, SIGNAL(connectionStatusChanged()), this, SLOT(initialize()));
-    connect(this, SIGNAL(poseChanged(qreal, qreal, qreal)), this, SLOT(spinControllers()));
+    connect(this, SIGNAL(updateVelocityEstimate()), this, SLOT(spinControllers()));
 }
 
 CelluloRobot::~CelluloRobot(){}
@@ -133,39 +133,48 @@ void CelluloRobot::spinControllers(){
 
 void CelluloRobot::estimateVelocities(){
     qreal newTime = getLastTimestamp();
-   // if(getIsSimulation())
-   //     deltaTime=getTimeStep();
-    //else
-        deltaTime = newTime - lastLastTimestamp;
+
+
+    //qDebug() << "estimate time velocities + timestamp" << newTime;;
+    deltaTime = newTime - lastLastTimestamp; //if in simulation deltaTime = timestep
     QVector3D newPose = QVector3D(getX(), getY(), getTheta());
 
     QVector3D newVxyw = newPose - lastPose;
+    float xdiff = newPose.x() - lastPose.x();
+    //qDebug() << "newPose : " << lastPose;
+    //qDebug() << "lastpose: " << newPose;
+    //qDebug() << "xdiff" << xdiff;
+   // QVector3D newVxyw = QVector3D(newPose.x()-lastPose.x(), newPose.y() - lastPose.y(), newPose.z()-lastPose.z());
     while(newVxyw.z() <= -180)
         newVxyw.setZ(newVxyw.z() + 360);
     while(newVxyw.z() > 180)
         newVxyw.setZ(newVxyw.z() - 360);
     newVxyw.setZ(newVxyw.z()*M_PI/180);
+    //qDebug() << "newVxyw before scaling :" << vxyw;
 
     newVxyw *= 1000.0/deltaTime;
-    if(getIsSimulation())
+    if(getIsSimulation()) {
         vxyw=newVxyw;
-    else
-    {
-    if(getBcastPeriodMin() < deltaTime && deltaTime < getBcastPeriodMax()){
-        if(velEstimateNeedsReset){
-            velEstimateNeedsReset = false;
+        //qDebug() << "vxyw : " << vxyw;
+    }
+    //this only works on the real robot, because the simulated robot has constant bcastperiod so no need to compute this way
+    else {
+        if(getBcastPeriodMin() < deltaTime && deltaTime < getBcastPeriodMax()){
+            if(velEstimateNeedsReset){
+                velEstimateNeedsReset = false;
+                vxyw = newVxyw;
+            }
+            else
+                vxyw = vMu*vxyw + (1 - vMu)*newVxyw;
+        }
+        else if(getBcastPeriodMax() <= deltaTime){
+            velEstimateNeedsReset = true;
             vxyw = newVxyw;
         }
         else
-            vxyw = vMu*vxyw + (1 - vMu)*newVxyw;
+            velEstimateNeedsReset = true;
     }
-    else if(getBcastPeriodMax() <= deltaTime){
-        velEstimateNeedsReset = true;
-        vxyw = newVxyw;
-    }
-    else
-        velEstimateNeedsReset = true;
-    }
+
     if(vxyw.x() > maxEstimatedXYVel)
         vxyw.setX(maxEstimatedXYVel);
     else if(vxyw.x() < -maxEstimatedXYVel)

@@ -102,17 +102,19 @@ CelluloBluetooth::CelluloBluetooth(QQuickItem* parent) : CelluloZoneClient(paren
 void CelluloBluetooth::updatePose(){
     if(isSimulation){
         if(!isSelected) {
+            //only updatePose in the simulatedRobotLogic if the robot is not selected
             simulatedRobotLogic->updatePose(x, y, theta);
             x = x + timeStep*simulatedRobotLogic->vxGlobalGoalTracker/1000;
             y = y + timeStep*simulatedRobotLogic->vyGlobalGoalTracker/1000;
             theta = theta + timeStep*(simulatedRobotLogic->wGlobalGoalTracker)*360/(M_PI*1000); //rotational velocity is radians/s
-            lastTimestamp+=timeStep;
             if(theta>360)
                 theta-=360;
             else if (theta<0) {
                 theta+=360;
             }
         }
+        lastTimestamp+=timeStep; //update lastTimeStamp
+        emit updateVelocityEstimate();
         emit poseChanged(x, y, theta);
     }
     else
@@ -217,11 +219,23 @@ void CelluloBluetooth::setInitSimulatedPose(QVector3D initpos){
     x=initPose.x();
     y=initPose.y();
     theta=initPose.z();
+    //HERE EMITS POSE CHANGED!!!"(and hence calls updateVel everytime!!)(BIG PROBLEM!!)
+    //MAYBE MAKE X ,Y writtable ?
     emit poseChanged(x,y,theta);
 }
 
 void CelluloBluetooth::setIsSelected(bool isSelected){
     this->isSelected = isSelected;
+    if(isSelected == true) {
+        qDebug() << "reset timer";
+        timer->stop();
+        timeStep = 200;
+        timer->start(timeStep);
+    } else {
+        timeStep = 20;
+        timer->stop();
+        timer->start(timeStep);
+    }
     emit isSelectedChanged();
 }
 void CelluloBluetooth::setIsSimulation(bool simulated){
