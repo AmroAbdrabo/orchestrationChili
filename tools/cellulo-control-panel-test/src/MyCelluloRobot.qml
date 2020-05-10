@@ -60,7 +60,7 @@ CelluloRobot{
                 to: 360
                 duration: 5000
                 loops: Animation.Infinite
-            }*/
+            }
 
         }*/
     }

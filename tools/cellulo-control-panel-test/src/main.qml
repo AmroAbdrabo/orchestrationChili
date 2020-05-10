@@ -56,9 +56,9 @@ Item {
             id: robotComm1
         }
 
-        /*MyCelluloRobot{
+        MyCelluloRobot{
             id: robotComm2
-        }*/
+        }
 
     }
 
