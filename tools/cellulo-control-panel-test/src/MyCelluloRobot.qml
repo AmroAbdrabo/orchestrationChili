@@ -37,10 +37,10 @@ CelluloRobot{
 
                 robotComm.init=Qt.vector3d(robotComm.x,robotComm.y,robotComm.theta)
                 robotComm.isSelected=!robotComm.isSelected
-                console.log(parent.isSelected)
+                console.log("is selected ?" + robotComm.isSelected)
             }
             onWheel: {
-                if(parent.isSelected){
+                if(robotComm.isSelected){
                     parent.wheelRotation += wheel.angleDelta.y/16;
                     parent.wheelRotation = parent.wheelRotation > 360 ?
                                 parent.wheelRotation-360: parent.wheelRotation
@@ -61,8 +61,6 @@ CelluloRobot{
     color: "light grey" //default color
 
     isSimulation: true
-
-    isSelected:  false; //default false
 
     initPose: robotComm.isSelected?Qt.vector3d((hex.x+hex.width/2)* paper.width/window2.width,
                                            (hex.y+hex.height/2) * paper.height/window2.height,
