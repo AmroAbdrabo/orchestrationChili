@@ -1,3 +1,4 @@
+//example of how to add zones used for the orangemap example
 function createZones(){
     /*fruitzones = CelluloZoneJsonHandler.loadZonesQML(":/assets/orangefruits.json");
 

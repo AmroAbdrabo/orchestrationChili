@@ -19,7 +19,7 @@ Item {
 
         onPaint: {
             var ctx = canvas.getContext('2d')
-            console.log("log completed" + norm)
+            //console.log("log completed" + norm)
             if(robotComm.isSelected) {
                 ctx.strokeStyle = "#000000"
                 ctx.lineWidth = canvas.height * 0.03

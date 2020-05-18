@@ -9,6 +9,7 @@ import Cellulo 1.0
 import QMLCache 1.0
 import QMLBluetoothExtras 1.0
 import hexagon.qml 1.0
+import FileIO.qml 1.0
 
 Item {
     property var fruitzones: null
@@ -46,7 +47,7 @@ Item {
         ToastManager{ id: toast }
         Image{
             id: backgroundImg
-            source: 'qrc:/assets/redgrid.svg'
+            source: "qrc:/assets/redgrid.svg"
             x:0
             y:0
             sourceSize: Qt.size( window2.width, window2.height )
@@ -58,6 +59,28 @@ Item {
 
         MyCelluloRobot{
             id: robotComm2
+        }
+
+        //read csv file
+        /*Text {
+            id: myText
+            text: "Hello World"
+            anchors.centerIn: parent
+        }*/
+
+        FileIO {
+            id : myFile
+            source : ":/assets/rawdataExample.csv" //why this doesnt work?
+            //source : "/home/gianni/Desktop/cellulo/cellulo-qml-plugin/tools/cellulo-control-panel-test/assets/rawdataExample.csv"
+            onError: console.log(msg)
+        }
+
+        Component.onCompleted: {
+            //console.log( "WRITE"+ myFile.write("TEST WRITE SOMETHING AMAZING IN THIS FILE WOOOOO"));
+            //myText.text =  myFile.read();
+            //var data = myFile.read();
+            //myFile.parseData();
+            //console.log("DATA LOADED" + data)
         }
 
     }

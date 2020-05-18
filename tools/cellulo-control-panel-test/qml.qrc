@@ -20,5 +20,7 @@
         <file>src/Arrow.qml</file>
         <file>src/Leds.qml</file>
         <file>src/Arrow2.qml</file>
+        <file>assets/rawdataExample.csv</file>
+        <file>assets/mediummap-blue.svg</file>
     </qresource>
 </RCC>

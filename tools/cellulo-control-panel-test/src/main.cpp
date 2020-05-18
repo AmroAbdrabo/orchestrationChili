@@ -5,6 +5,7 @@
 #include <QQmlContext>
 #include "paper.h"
 #include "hexagon.h"
+#include "fileio.h"
 
 int main(int argc, char *argv[])
 {
@@ -14,8 +15,8 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
-    //add hexagon object type
     qmlRegisterType<Hexagon>("hexagon.qml", 1, 0, "Hexagon");
+    qmlRegisterType<FileIO, 1>("FileIO.qml", 1, 0, "FileIO");
 
     //add instance of paper
     Paper *paper = new Paper();
