@@ -1,5 +1,6 @@
 #include "CelluloSimulatedRobotLogic.h"
 #include <math.h>
+#include <cmath>
 #include <QDebug>
 
 #define abs(X) ((X) >= 0 ? (X) : -(X))
@@ -102,6 +103,10 @@ void CelluloSimulatedRobotLogic::setGoalVelocity(float vx, float vy, float w){
     vxGlobalGoalTracker = vx;
     vyGlobalGoalTracker = vy;
     wGlobalGoalTracker = w;
+    //set theese goal values so that the outside world can access and and see where the robot is going and with what speed
+    goalPoseMaxV = sqrt(vx*vx + vy*vy);
+    goalPoseX = poseX + vx * 1000000;
+    goalPoseY = poseY + vy * 1000000;
     currentMotionTracker = MOTION_TRACKER_VELOCITY;
 }
 

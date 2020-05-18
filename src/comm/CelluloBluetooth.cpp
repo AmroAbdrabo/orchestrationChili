@@ -869,6 +869,7 @@ void CelluloBluetooth::setAllMotorOutputs(int m1output, int m2output, int m3outp
 void CelluloBluetooth::setGoalVelocity(float vx, float vy, float w){
     if(isSimulation){
        simulatedRobotLogic->setGoalVelocity(vx, vy ,w);
+       emit goalVChanged();
     }
     else{
         int vx_ = (int)(vx*GOAL_VEL_FACTOR_SHARED);
@@ -904,6 +905,8 @@ void CelluloBluetooth::setGoalVelocity(float vx, float vy, float w){
 void CelluloBluetooth::setGoalPose(float x, float y, float theta, float v, float w){
     if(isSimulation) {
         simulatedRobotLogic->setGoalPose(x, y, theta, v, w);
+        emit goalXYChanged();
+        emit goalVChanged();
     } else {
         x *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
         y *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
@@ -953,6 +956,8 @@ void CelluloBluetooth::setGoalPose(float x, float y, float theta, float v, float
 void CelluloBluetooth::setGoalPosition(float x, float y, float v){
     if(isSimulation) {
         simulatedRobotLogic->setGoalPosition(x, y, v);
+        emit goalVChanged();
+        emit goalXYChanged();
     } else {
         x *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
         y *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
@@ -988,6 +993,8 @@ void CelluloBluetooth::setGoalPosition(float x, float y, float v){
 void CelluloBluetooth::setGoalXCoordinate(float x, float v){
     if(isSimulation) {
         simulatedRobotLogic->setGoalXCoordinate(x, v);
+        emit goalVChanged();
+        emit goalXYChanged();
     } else {
         x *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
         v *= GOAL_VEL_FACTOR_SHARED;
@@ -1016,6 +1023,8 @@ void CelluloBluetooth::setGoalXCoordinate(float x, float v){
 void CelluloBluetooth::setGoalYCoordinate(float y, float v){
     if(isSimulation) {
         simulatedRobotLogic->setGoalYCoordinate(y, v);
+        emit goalVChanged();
+        emit goalXYChanged();
     } else {
         y *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
         v *= GOAL_VEL_FACTOR_SHARED;
@@ -1070,6 +1079,8 @@ void CelluloBluetooth::setGoalOrientation(float theta, float w){
 void CelluloBluetooth::setGoalXThetaCoordinate(float x, float theta, float v, float w){
     if(isSimulation) {
         simulatedRobotLogic->setGoalXThetaCoordinate(x, theta, v ,w);
+        emit goalVChanged();
+        emit goalXYChanged();
     } else {
         x *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
         theta *= GOAL_POSE_FACTOR_SHARED;
@@ -1112,6 +1123,8 @@ void CelluloBluetooth::setGoalXThetaCoordinate(float x, float theta, float v, fl
 void CelluloBluetooth::setGoalYThetaCoordinate(float y, float theta, float v, float w){
     if(isSimulation) {
         simulatedRobotLogic->setGoalYThetaCoordinate(y, theta, v ,w);
+        emit goalVChanged();
+        emit goalXYChanged();
     } else {
         y *= GOAL_POSE_FACTOR_SHARED/DOTS_GRID_SPACING;
         theta *= GOAL_POSE_FACTOR_SHARED;
@@ -1154,6 +1167,8 @@ void CelluloBluetooth::setGoalYThetaCoordinate(float y, float theta, float v, fl
 void CelluloBluetooth::clearTracking(){
     if(isSimulation) {
         simulatedRobotLogic->clearTracking();
+        emit goalVChanged();
+        emit goalXYChanged();
     } else {
         sendPacket.clear();
         sendPacket.setCmdPacketType(CelluloBluetoothPacket::CmdPacketTypeClearTracking);

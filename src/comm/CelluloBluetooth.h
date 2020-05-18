@@ -118,7 +118,6 @@ class CelluloBluetooth : public CelluloZoneClient {
 
     Q_PROPERTY(float cameraImageProgress READ getCameraImageProgress NOTIFY cameraImageProgressChanged)
 
-
     //QPROPERTIES for simulated robot
     Q_PROPERTY(bool isSimulation WRITE setIsSimulation READ getIsSimulation NOTIFY isSimulationChanged)
 
@@ -139,6 +138,12 @@ class CelluloBluetooth : public CelluloZoneClient {
     Q_PROPERTY(QColor led4Color READ getLed4Color NOTIFY led4ColorChanged)
 
     Q_PROPERTY(QColor led5Color READ getLed5Color NOTIFY led5ColorChanged)
+
+    //for the simulator haptic feedback
+    Q_PROPERTY(float goalV READ getGoalV NOTIFY goalVChanged)
+
+    Q_PROPERTY(QPoint goalXY READ getGoalXY NOTIFY goalXYChanged)
+
     /** @endcond */
 
     friend class CelluloRelayServer;
@@ -286,6 +291,8 @@ public:
     QColor getLed4Color(){return led4Color;};
     QColor getLed5Color(){return led5Color;};
 
+    float getGoalV() { return simulatedRobotLogic->goalPoseMaxV;};
+    QPoint getGoalXY() { return QPoint(simulatedRobotLogic->goalPoseX, simulatedRobotLogic->goalPoseY);};
     QVector3D getInitSimulatedPose(){return initPose;};
     bool getIsSelected(){return isSelected;};
     float getTimeStep(){return timeStep;}
@@ -827,6 +834,14 @@ signals:
      * @brief emitted when led5ColorChanged
      */
     void led5ColorChanged();
+    /**
+     * @brief emitted when the goal velocity changes
+     */
+    void goalVChanged();
+    /**
+     * @brief emitted when goal pose X or Y changes
+     */
+    void goalXYChanged();
 
 
 

@@ -102,6 +102,8 @@ void CelluloRobot::setGoalPoseAndVelocity(qreal x, qreal y, qreal theta, qreal V
     poseVelControlEnabledComponents = QVector3D(xEnabled ? 1.0 : 0.0, yEnabled ? 1.0 : 0.0, thetaEnabled ? 1.0 : 0.0);
     if(!poseVelControlEnabled)
         qWarning() << "CelluloRobot::setGoalPoseAndVelocity(): Warning, poseVelControlEnabled is not true, nothing will happen.";
+    emit goalXYChanged();
+    emit goalVChanged();
 }
 
 void CelluloRobot::initialize(){

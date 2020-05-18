@@ -130,7 +130,7 @@ Window {
 
                         Text{
                             text: "Kidnapped?"
-                            color: !robotComm1.isSelected? "red" : "green"
+                            color: !robotComm1.kidnapped ? "red" : "green"
                         }
                         Text{
                             text: "X=" + robotComm1.x.toFixed(2) + "mm Y=" + robotComm1.y.toFixed(2) + "mm Theta=" + robotComm1.theta.toFixed(1) + "deg"+ "Vx=" + robotComm1.vx.toFixed(2) + " mm/s Vy=" + robotComm1.vy.toFixed(2)
@@ -141,7 +141,7 @@ Window {
 
                         Text{
                             text: "Kidnapped?"
-                            color: robotComm2.isSelected ? "red" : "green"
+                            color: robotComm2.kidnapped? "red" : "green"
                         }
                         Text{
                             text: "X=" + robotComm2.x.toFixed(2) + "mm Y=" + robotComm2.y.toFixed(2) + "mm Theta=" + robotComm2.theta.toFixed(1) + "deg"+ "Vx=" + robotComm2.vx.toFixed(2) + " mm/s Y=" + robotComm2.vy.toFixed(2)

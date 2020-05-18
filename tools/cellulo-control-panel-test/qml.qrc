@@ -19,5 +19,6 @@
         <file>src/Utils.js</file>
         <file>src/Arrow.qml</file>
         <file>src/Leds.qml</file>
+        <file>src/Arrow2.qml</file>
     </qresource>
 </RCC>
