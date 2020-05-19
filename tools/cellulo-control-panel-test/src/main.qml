@@ -11,6 +11,8 @@ import QMLBluetoothExtras 1.0
 import hexagon.qml 1.0
 import FileIO.qml 1.0
 
+import "Utils.js" as MyFuncs
+
 Item {
     property var fruitzones: null
     property variant distancelinezones: null
@@ -23,6 +25,14 @@ Item {
     property var inLineBorder: [] //had to add this
 
     function em(x){ return Math.round(x*TextSingleton.font.pixelSize); }
+    //move robot based on csv data of the next line
+    function updateRobotWithCSV() {
+        var goalVel = MyFuncs.norm(parseFloat(myFile.getcurLineVal(FileIO.VELOCITYX)) + parseFloat(myFile.getcurLineVal(FileIO.VELOCITYY)))
+        robotComm1.setGoalPose( parseFloat(myFile.getcurLineVal(FileIO.POSEX)), parseFloat(myFile.getcurLineVal(FileIO.POSEY)),
+                               parseFloat(myFile.getcurLineVal(FileIO.POSETHETA)), goalVel,
+                               parseFloat(myFile.getcurLineVal(FileIO.ANGULARVEL)));
+        myFile.nextLine();
+    }
 
     property bool mobile: Qt.platform.os === "android"
     property bool winrt: Qt.platform.os === "winrt"
@@ -79,8 +89,33 @@ Item {
             //console.log( "WRITE"+ myFile.write("TEST WRITE SOMETHING AMAZING IN THIS FILE WOOOOO"));
             //myText.text =  myFile.read();
             //var data = myFile.read();
-            //myFile.parseData();
+            //SETUP MAP
+            //update backgroundsize and windowsize to desired map dimensions in mm
+            paper.height = 420;
+            paper.width = 890;
+
+            //be default resize window with paper dimensions
+            //but can give the window any size you want
+            window2.width = paper.width;
+            window2.height = paper.height;
+            //load background image
+            backgroundImg.source = 'qrc:/assets/mediummap-blue.svg'
+
+            //create zones and add robots to the zoneEngine
+            myFile.parseData();
+            myFile.nextLine();
+            var goalVel = MyFuncs.norm(parseFloat(myFile.getcurLineVal(FileIO.VELOCITYX)) + parseFloat(myFile.getcurLineVal(FileIO.VELOCITYY)))
+            robotComm1.setGoalPose( parseFloat(myFile.getcurLineVal(FileIO.POSEX)), parseFloat(myFile.getcurLineVal(FileIO.POSEY)),
+                                   parseFloat(myFile.getcurLineVal(FileIO.POSETHETA)), goalVel,
+                                   parseFloat(myFile.getcurLineVal(FileIO.ANGULARVEL)));
             //console.log("DATA LOADED" + data)
+            timer.start();
+        }
+
+        Timer {
+            id: timer;
+            interval: 50; running: true; repeat: true
+            onTriggered: updateRobotWithCSV()
         }
 
     }

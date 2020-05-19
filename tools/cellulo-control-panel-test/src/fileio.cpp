@@ -5,7 +5,7 @@
 
 FileIO::FileIO(QObject *parent) : QObject(parent)
 {
-
+    curr_line = 0;
 }
 
 QString FileIO::read()
@@ -59,11 +59,17 @@ void FileIO::parseData()
 void FileIO::print()
 {
     qDebug() << "first line : " << mdata.at(0);
-    for (int i = 0; i < mdata.size(); ++i)
-    {
+    qDebug() << "first word : " << mdata.at(0).at(0);
+    qDebug() << "posey : " << mdata.at(1).at(3);
+    qDebug() << "posex : " << mdata.at(1).at(2);  //YAY
+     //data is stored like ("2018-06-26 09:22:53.142", "1", "385.2", "177.95", "49.46", "-0.05", "0.09", "-0.03", " EIS001", "4.52", "5")
+    /*for (int i = 0; i < mdata.size(); ++i)
+    {   //use join to combine all string from 1 line in single string ex:
+        //"2018-06-26 09:10:42.188, 1, 406.73, 58.87, 267.22, 0.05, 0.09, -0.03,  EIS001, 3.71, 2"
         qDebug() << mdata.at(i).join(", ");
-    }
+    }*/
 }
+
 
 bool FileIO::write(const QString& data)
 {
@@ -80,4 +86,17 @@ bool FileIO::write(const QString& data)
     file.close();
 
     return true;
+}
+
+void FileIO::nextLine()
+{
+    curr_line++;
+}
+
+QString FileIO::getcurLineVal(FileIO::DataFields field)
+{
+    if(!mdata.isEmpty()){
+      return  mdata.at(curr_line).at((int)field);
+    }
+    return NULL;
 }

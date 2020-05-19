@@ -54,3 +54,5 @@ function createZones(){
     //console.log("rect zone length "+rectzones.length)
     //wallBetweenTwoRobotsArray=new Array(rectzones.length) //had to remove this
 }
+
+function norm(vx,vy){ return Math.sqrt(vx*vx+vy*vy); }
