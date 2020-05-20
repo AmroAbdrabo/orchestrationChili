@@ -53,7 +53,7 @@ public:
      */
     Q_INVOKABLE void parseData(); //parse data into mdata //MUST CALL BEFORE ANYTHING ELSE
     /**
-     * @brief returns QString with contents of file in mSource
+     * @brief returns QString with all contents of file in mSource
      * @return
      */
     Q_INVOKABLE QString read();
@@ -70,9 +70,17 @@ public:
     Q_INVOKABLE void nextLine();
 
     /**
-     * @brief prints content of mdata
+     * @brief get val of given field on current line
      */
     Q_INVOKABLE QString getcurLineVal(DataFields field);
+    /**
+     * @brief get value of given filed on given line of msource
+     */
+    Q_INVOKABLE QString getValAtLine(DataFields field, int line);
+    /**
+     * @brief get current line
+     */
+    Q_INVOKABLE int getCurrLine() {return curr_line;};
 
     /**
      * @brief set source
@@ -88,7 +96,7 @@ signals:
     void error(const QString& msg);
 
 private:
-    int curr_line;
+    int curr_line;            ///< indicates current line(row) in csv file
     QList<QStringList> mdata; ///<buffer the data so can then read it line by line
     QString mSource;          ///< contains path to source file
 };

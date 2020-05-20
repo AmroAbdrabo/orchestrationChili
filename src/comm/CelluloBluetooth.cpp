@@ -224,6 +224,16 @@ void CelluloBluetooth::setInitSimulatedPose(QVector3D initpos){
     emit poseChanged(x,y,theta);
 }
 
+void CelluloBluetooth::setPose(float _x, float _y, float _theta, float _vx, float _vy, float _w){
+    x= _x;
+    y= _y;
+    theta= _theta;
+    setGoalVelocity(_vy, _vy, _w);
+    //HERE EMITS POSE CHANG;ED!!!"(and hence calls updateVel everytime!!)(BIG PROBLEM!!)
+    //MAYBE MAKE X ,Y writtable ?
+    emit poseChanged(x,y,theta);
+}
+
 void CelluloBluetooth::setIsSelected(bool isSelected){
     this->isSelected = isSelected;
     if(isSelected == true) {

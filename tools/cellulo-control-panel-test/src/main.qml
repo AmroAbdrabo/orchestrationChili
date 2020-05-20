@@ -22,16 +22,41 @@ Item {
     property var innerzones: null
     property var crossedBorder: []
     property var rectzones:null
+    property var locale: Qt.locale()
     property var inLineBorder: [] //had to add this
 
     function em(x){ return Math.round(x*TextSingleton.font.pixelSize); }
     //move robot based on csv data of the next line
     function updateRobotWithCSV() {
-        var goalVel = MyFuncs.norm(parseFloat(myFile.getcurLineVal(FileIO.VELOCITYX)) + parseFloat(myFile.getcurLineVal(FileIO.VELOCITYY)))
-        robotComm1.setGoalPose( parseFloat(myFile.getcurLineVal(FileIO.POSEX)), parseFloat(myFile.getcurLineVal(FileIO.POSEY)),
-                               parseFloat(myFile.getcurLineVal(FileIO.POSETHETA)), goalVel,
-                               parseFloat(myFile.getcurLineVal(FileIO.ANGULARVEL)));
+        if(parseFloat(myFile.getcurLineVal(FileIO.INDEX)) === 0.) {
+            var goalVel = MyFuncs.norm(parseFloat(myFile.getcurLineVal(FileIO.VELOCITYX)) + parseFloat(myFile.getcurLineVal(FileIO.VELOCITYY)))
+
+            //using set goalPose we get a smoother moving robot but often the time intervals are too small for the robot to reach the goalPosition
+            //however by increasing the "MAXVINCREMENT" of the robot we can make the robot move faster for the sake of the replay
+            /*robotComm1.setPose( parseFloat(myFile.getcurLineVal(FileIO.POSEX)), parseFloat(myFile.getcurLineVal(FileIO.POSEY)),
+                                   parseFloat(myFile.getcurLineVal(FileIO.POSETHETA)), 100000,
+                                   parseFloat(myFile.getcurLineVal(FileIO.ANGULARVEL)));*/
+
+            //force robot at position in csv file, dont set its velocity because it often makes the robot move in directions that often changed
+            //by the player since the player is unpredictable
+            robotComm1.setPose( parseFloat(myFile.getcurLineVal(FileIO.POSEX)), parseFloat(myFile.getcurLineVal(FileIO.POSEY)),
+                                   parseFloat(myFile.getcurLineVal(FileIO.POSETHETA)), 0/*parseFloat(myFile.getcurLineVal(FileIO.VELOCITYX))*/ ,
+                                   /*parseFloat(myFile.getcurLineVal(FileIO.VELOCITYY))*/0, 0/*parseFloat(myFile.getcurLineVal(FileIO.ANGULARVEL))*/);
+
+
+        }
+        //get timeLaspse between this line and the next line and set the timer to that time interval
+        var date2 = Date.fromLocaleString(locale, myFile.getcurLineVal(FileIO.TIMESTAMP), "yyyy-MM-dd hh:mm:ss.zzz")
+        var date1 = Date.fromLocaleString(locale, myFile.getValAtLine(FileIO.TIMESTAMP, myFile.getCurrLine()+1), "yyyy-MM-dd hh:mm:ss.zzz")
+        var deltaT = (date1.getHours() - date2.getHours())*60*60*1000 + (date1.getMinutes() - date2.getMinutes())*60*1000
+                    + (date1.getSeconds() - date2.getSeconds())*1000 + date1.getMilliseconds()-date2.getMilliseconds();
+
+        console.log("Timestamp" + myFile.getcurLineVal(FileIO.TIMESTAMP));
+        console.log("deltaT " + deltaT);
+        if(deltaT === 0) deltaT = 1;
+        timer.interval = deltaT;
         myFile.nextLine();
+
     }
 
     property bool mobile: Qt.platform.os === "android"
@@ -105,16 +130,27 @@ Item {
             myFile.parseData();
             myFile.nextLine();
             var goalVel = MyFuncs.norm(parseFloat(myFile.getcurLineVal(FileIO.VELOCITYX)) + parseFloat(myFile.getcurLineVal(FileIO.VELOCITYY)))
-            robotComm1.setGoalPose( parseFloat(myFile.getcurLineVal(FileIO.POSEX)), parseFloat(myFile.getcurLineVal(FileIO.POSEY)),
+            /*robotComm1.setPose( parseFloat(myFile.getcurLineVal(FileIO.POSEX)), parseFloat(myFile.getcurLineVal(FileIO.POSEY)),
                                    parseFloat(myFile.getcurLineVal(FileIO.POSETHETA)), goalVel,
-                                   parseFloat(myFile.getcurLineVal(FileIO.ANGULARVEL)));
+                                   parseFloat(myFile.getcurLineVal(FileIO.ANGULARVEL)));*/
+            robotComm1.setPose( parseFloat(myFile.getcurLineVal(FileIO.POSEX)), parseFloat(myFile.getcurLineVal(FileIO.POSEY)),
+                                   parseFloat(myFile.getcurLineVal(FileIO.POSETHETA)), parseFloat(myFile.getcurLineVal(FileIO.VELOCITYX)) ,
+                                   parseFloat(myFile.getcurLineVal(FileIO.VELOCITYY)), parseFloat(myFile.getcurLineVal(FileIO.ANGULARVEL)));
             //console.log("DATA LOADED" + data)
+            //QDateTime
+
+            console.log(myFile.getcurLineVal(FileIO.TIMESTAMP));
+            var date2 = Date.fromLocaleString(locale, myFile.getcurLineVal(FileIO.TIMESTAMP), "yyyy-MM-dd hh:mm:ss.zzz")
+            var date1 = Date.fromLocaleString(locale, myFile.getValAtLine(FileIO.TIMESTAMP, myFile.getCurrLine()+1), "yyyy-MM-dd hh:mm:ss.zzz")
+            var deltaT = (date1.getSeconds() - date2.getSeconds())*100 + date1.getMilliseconds()-date2.getMilliseconds();
+            console.log(deltaT);
+            timer.interval = deltaT;
             timer.start();
         }
 
         Timer {
             id: timer;
-            interval: 50; running: true; repeat: true
+            interval: 150; running: true; repeat: true
             onTriggered: updateRobotWithCSV()
         }
 

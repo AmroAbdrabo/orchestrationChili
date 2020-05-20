@@ -100,3 +100,12 @@ QString FileIO::getcurLineVal(FileIO::DataFields field)
     }
     return NULL;
 }
+
+QString FileIO::getValAtLine(FileIO::DataFields field, int line)
+{
+    //TODO check what happens if line is too big
+    if(!mdata.isEmpty()){
+      return  mdata.at(line).at((int)field);
+    }
+    return NULL;
+}

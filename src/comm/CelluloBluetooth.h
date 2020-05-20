@@ -49,7 +49,7 @@
 #include <QtBluetooth/QBluetoothDeviceDiscoveryAgent>
 #include <QtBluetooth/QBluetoothServiceDiscoveryAgent>
 #include <math.h>
-#include "../robot/CelluloSimulatedRobotLogic.h"
+#include "../robot/CelluloSimulatedRobotMotionLogic.h"
 #include "../robot/CelluloSimulatedLedsLogic.h"
 
 namespace Cellulo{
@@ -672,6 +672,12 @@ public slots:
      * @param isSelected
      */
     void setIsSelected(bool isSelected);
+
+    /**
+     * @brief used to force the robot to be at a given pose with given velocities
+     * @param initpos
+     */
+    void setPose(float _x, float _y, float _theta, float _vx, float _vy, float _w);
 signals:
 
     /** @cond DO_NOT_DOCUMENT */
