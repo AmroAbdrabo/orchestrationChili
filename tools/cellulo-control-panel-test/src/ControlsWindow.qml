@@ -9,7 +9,8 @@ import Cellulo 1.0
 import QMLCache 1.0
 import QMLBluetoothExtras 1.0
 import hexagon.qml 1.0
-
+import Qt.labs.folderlistmodel 2.1
+import FileIO.qml 1.0
 import "Utils.js" as MyFuncs
 //window to display the control panel
 Window {
@@ -130,7 +131,7 @@ Window {
 
                         Text{
                             text: "Kidnapped?"
-                            color: !robotComm1.kidnapped ? "red" : "green"
+                            color: robotComm1.kidnapped ? "red" : "green"
                         }
                         Text{
                             text: "X=" + robotComm1.x.toFixed(2) + "mm Y=" + robotComm1.y.toFixed(2) + "mm Theta=" + robotComm1.theta.toFixed(1) + "deg"+ "Vx=" + robotComm1.vx.toFixed(2) + " mm/s Vy=" + robotComm1.vy.toFixed(2)
@@ -173,76 +174,171 @@ Window {
             }
 
             GroupBox {
-                title: "Paper size"
+                title: "Map selection"
                 width: gWidth
-
-                Row{
+                Column{
                     spacing: 5
+                    Row{
+                        spacing: 5
 
-                    Button{
-                        text: "Default"
-                        onClicked: {
-                            //backgroud.sourceSize = Qt.size(500, 500)
-                            paper.height = 500
-                            paper.width = 500
-                            //be default resize window with paper dimensions
-                            //but can give the window any size you want
-                            window2.width = paper.width
-                            window2.height = paper.height
-                            backgroundImg.source = 'qrc:/assets/redgrid.svg'
+                        Button{
+                            text: "Default"
+                            onClicked: {
+                                //backgroud.sourceSize = Qt.size(500, 500)
+                                paper.height = 500
+                                paper.width = 500
+                                //be default resize window with paper dimensions
+                                //but can give the window any size you want
+                                window2.width = paper.width
+                                window2.height = paper.height
+                                backgroundImg.source = 'qrc:/assets/redgrid.svg'
+                            }
                         }
-                    }
-                    Button{
-                        text: "orangemap"
-                        onClicked: {
-                            //update backgroundsize and windowsize to desired map dimensions in mm
-                            paper.height = 420;
-                            paper.width = 980;
+                        ComboBox {
+                            width: 150
+                            id: mapSelector
+                            currentIndex: -1
+                            FolderListModel{
+                                id: folderModel1
+                                folder: 'qrc:/svgs/'
+                            }
 
-                            //be default resize window with paper dimensions
-                            //but can give the window any size you want
-                            window2.width = paper.width;
-                            window2.height = paper.height;
-                            //load background image
-                            backgroundImg.source = 'qrc:/assets/orangemapcorrected.svg'
+                            model:folderModel1
+                            textRole: 'fileName'
 
-                            //create zones and add robots to the zoneEngine
-                            MyFuncs.createZones();
-                            zoneEngine.addNewClient(robotComm1)
-                            zoneEngine.addNewClient(robotComm2)
+                        }
+                        ComboBox {
+                            id: csvSelector
+                            currentIndex: -1
+                            width: 150
+                            FolderListModel{
+                                id: folderModel2
+                                folder: 'qrc:/csvs/'
+                            }
+                            model:folderModel2
+                            textRole: 'fileName'
+                        }
+                        TextField{ id: mapDimX; placeholderText: "Map width (mm)"; width: 100 }
+                        TextField{ id: mapDimY; placeholderText: "Map height (mm)"; width: 100}
+                        Button{
+                            text: "Set"
+                            onClicked: {
+                                //setup map with given dimensions
+                                paper.height = parseFloat(mapDimY.text);
+                                paper.width = parseFloat(mapDimX.text);
+                                window2.width = paper.width;//be default resize window with paper dimensions
+                                window2.height = paper.height; //but can give the window any size you want
+
+                                //load background image
+                                backgroundImg.source = "qrc:/assets/"+ mapSelector.textAt(mapSelector.currentIndex);
+
+                                //begging simulation with csv file if a file other then "NONE" is selected
+                                if(csvSelector.textAt(csvSelector.currentIndex) !== "NONE") {
+                                    myFile.parseData(); //parse csv file so that it can be read
+                                    myFile.nextLine(); //skip the first line
+                                    /*robotComm1.setPose( parseFloat(myFile.getcurLineVal(FileIO.POSEX)), parseFloat(myFile.getcurLineVal(FileIO.POSEY)),
+                                                           parseFloat(myFile.getcurLineVal(FileIO.POSETHETA)), goalVel,
+                                                           parseFloat(myFile.getcurLineVal(FileIO.ANGULARVEL)));*/
+                                    robotComm1.setPose( parseFloat(myFile.getcurLineVal(FileIO.POSEX)), parseFloat(myFile.getcurLineVal(FileIO.POSEY)),
+                                                           parseFloat(myFile.getcurLineVal(FileIO.POSETHETA)), parseFloat(myFile.getcurLineVal(FileIO.VELOCITYX)) ,
+                                                           parseFloat(myFile.getcurLineVal(FileIO.VELOCITYY)), parseFloat(myFile.getcurLineVal(FileIO.ANGULARVEL)));
+                                    //console.log(myFile.getcurLineVal(FileIO.TIMESTAMP));
+                                    var date2 = Date.fromLocaleString(locale, myFile.getcurLineVal(FileIO.TIMESTAMP), "yyyy-MM-dd hh:mm:ss.zzz")
+                                    var date1 = Date.fromLocaleString(locale, myFile.getValAtLine(FileIO.TIMESTAMP, myFile.getCurrLine()+1), "yyyy-MM-dd hh:mm:ss.zzz")
+                                    var deltaT = (date1.getSeconds() - date2.getSeconds())*100 + date1.getMilliseconds()-date2.getMilliseconds();
+                                    console.log(deltaT);
+                                    timer.interval = deltaT;
+                                    timer.start();
+                                }
+
+                            }
                         }
                     }
-                    Button{
-                        text: "A4"
-                        onClicked: {
-                            paper.height = 210
-                            paper.width = 297
-                            //be default resize window with paper dimensions
-                            //but can give the window any size you want
-                            window2.width = paper.width
-                            window2.height = paper.height
+                    Row{
+                        spacing: 5
+                        Button{
+                            text: "orangemap"
+                            onClicked: {
+                                //update backgroundsize and windowsize to desired map dimensions in mm
+                                paper.height = 420;
+                                paper.width = 980;
+
+                                //be default resize window with paper dimensions
+                                //but can give the window any size you want
+                                window2.width = paper.width;
+                                window2.height = paper.height;
+                                //load background image
+                                backgroundImg.source = 'qrc:/assets/orangemapcorrected.svg'
+
+                                //create zones and add robots to the zoneEngine
+                                MyFuncs.createZones();
+                                zoneEngine.addNewClient(robotComm1)
+                                zoneEngine.addNewClient(robotComm2)
+                            }
                         }
-                    }
-                    Button {
-                        text: "A3"
-                        onClicked: {
-                            paper.height = 297
-                            paper.width = 420
-                            //be default resize window with paper dimensions
-                            //but can give the window any size you want
-                            window2.width = paper.width
-                            window2.height = paper.height
+                        Button {
+                            text: "csv"
+                            onClicked: {
+                                //SETUP MAP
+                                //update backgroundsize and windowsize to desired map dimensions in mm
+                                paper.height = 420;
+                                paper.width = 890;
+                                //be default resize window with paper dimensions
+                                window2.width = paper.width; //but can give the window any size you want(aslong you scale both the width and height by the same dimensions)s
+                                window2.height = paper.height;
+
+                                backgroundImg.source = 'qrc:/assets/mediummap-blue.svg'  //load background image
+
+                                myFile.parseData(); //parse csv file so that it can be read
+                                myFile.nextLine(); //skip the first line
+                                /*robotComm1.setPose( parseFloat(myFile.getcurLineVal(FileIO.POSEX)), parseFloat(myFile.getcurLineVal(FileIO.POSEY)),
+                                                       parseFloat(myFile.getcurLineVal(FileIO.POSETHETA)), goalVel,
+                                                       parseFloat(myFile.getcurLineVal(FileIO.ANGULARVEL)));*/
+                                robotComm1.setPose( parseFloat(myFile.getcurLineVal(FileIO.POSEX)), parseFloat(myFile.getcurLineVal(FileIO.POSEY)),
+                                                       parseFloat(myFile.getcurLineVal(FileIO.POSETHETA)), parseFloat(myFile.getcurLineVal(FileIO.VELOCITYX)) ,
+                                                       parseFloat(myFile.getcurLineVal(FileIO.VELOCITYY)), parseFloat(myFile.getcurLineVal(FileIO.ANGULARVEL)));
+                                //console.log(myFile.getcurLineVal(FileIO.TIMESTAMP));
+                                var date2 = Date.fromLocaleString(locale, myFile.getcurLineVal(FileIO.TIMESTAMP), "yyyy-MM-dd hh:mm:ss.zzz")
+                                var date1 = Date.fromLocaleString(locale, myFile.getValAtLine(FileIO.TIMESTAMP, myFile.getCurrLine()+1), "yyyy-MM-dd hh:mm:ss.zzz")
+                                var deltaT = (date1.getSeconds() - date2.getSeconds())*100 + date1.getMilliseconds()-date2.getMilliseconds();
+                                console.log(deltaT);
+                                timer.interval = deltaT;
+                                timer.start();
+                            }
                         }
-                    }
-                    Button {
-                        text: "A2"
-                        onClicked: {
-                            paper.height = 420
-                            paper.width = 594
-                            //be default resize window with paper dimensions
-                            //but can give the window any size you want
-                            window2.width = paper.width
-                            window2.height = paper.height
+
+                        Button{
+                            text: "A4"
+                            onClicked: {
+                                paper.height = 210
+                                paper.width = 297
+                                //be default resize window with paper dimensions
+                                //but can give the window any size you want
+                                window2.width = paper.width
+                                window2.height = paper.height
+                            }
+                        }
+                        Button {
+                            text: "A3"
+                            onClicked: {
+                                paper.height = 297
+                                paper.width = 420
+                                //be default resize window with paper dimensions
+                                //but can give the window any size you want
+                                window2.width = paper.width
+                                window2.height = paper.height
+                            }
+                        }
+                        Button {
+                            text: "A2"
+                            onClicked: {
+                                paper.height = 420
+                                paper.width = 594
+                                //be default resize window with paper dimensions
+                                //but can give the window any size you want
+                                window2.width = paper.width
+                                window2.height = paper.height
+                            }
                         }
                     }
                 }
@@ -451,7 +547,7 @@ Window {
                         }
                         Button{
                             text: "Set Hex"
-                            onClicked: robotComm2.setHexagonColor("#FF" + redSlider.hexStr + greenSlider.hexStr + blueSlider.hexStr)
+                            onClicked: robotComm2.setHexagonColor("#FF" + redSlider2.hexStr + greenSlider2.hexStr + blueSlider2.hexStr)
                         }
                     }
 

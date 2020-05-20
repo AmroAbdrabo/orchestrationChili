@@ -22,5 +22,11 @@
         <file>src/Arrow2.qml</file>
         <file>assets/rawdataExample.csv</file>
         <file>assets/mediummap-blue.svg</file>
+        <file>svgs/orangemapcorrected.svg</file>
+        <file>svgs/redgrid.svg</file>
+        <file>svgs/yellowmap.svg</file>
+        <file>svgs/mediummap-blue.svg</file>
+        <file>csvs/rawdataExample.csv</file>
+        <file>csvs/NONE</file>
     </qresource>
 </RCC>
