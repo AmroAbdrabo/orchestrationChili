@@ -28,5 +28,11 @@
         <file>svgs/mediummap-blue.svg</file>
         <file>csvs/rawdataExample.csv</file>
         <file>csvs/NONE</file>
+        <file>assets/activities6.svg</file>
+        <file>assets/activities1.svg</file>
+        <file>assets/activities2.svg</file>
+        <file>assets/activities3.svg</file>
+        <file>assets/activities4.svg</file>
+        <file>assets/activities5.svg</file>
     </qresource>
 </RCC>

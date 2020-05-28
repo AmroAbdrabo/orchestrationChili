@@ -63,7 +63,7 @@ Window {
                         Button{
                             id: scanButton
                             text: "Scan"
-                            onClicked: scanner.start()
+                            onClicked: { scanner.start() }
                         }
 
                         Button{

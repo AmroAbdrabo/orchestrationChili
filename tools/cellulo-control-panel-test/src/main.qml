@@ -78,8 +78,8 @@ Item {
 
         }
 
-        width: 500
-        height: mobile ? Screen.desktopAvailableHeight : 500;
+        width: 600
+        height: mobile ? Screen.desktopAvailableHeight : 450;
         ToastManager{ id: toast }
         Image{
             id: backgroundImg
