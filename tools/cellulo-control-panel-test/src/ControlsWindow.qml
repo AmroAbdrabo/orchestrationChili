@@ -738,6 +738,29 @@ Window {
                     }
                 }
             }
+            GroupBox{
+                title: "Activity Orchestration"
+                Row{
+                    SpinBox{
+                        minimumValue:  1
+                        maximumValue: 6
+                        stepSize: 1
+                        onEditingFinished: {  backgroundImg.source = "qrc:/assets/activities" + value+ ".svg"
+                            if(value > 5)
+                            {
+                                window2.width = 900
+                            }
+                            else {
+                                 window2.width = 700
+                            }
+                        }
+                    }
+                    Button{
+                        text: "Enable drag listen"
+                        onClicked: robotPoseFetch.start()
+                    }
+                }
+            }
         }
     }
 
@@ -801,7 +824,19 @@ Window {
     }
 
     BluetoothLocalDevice{ Component.onCompleted: powerOn() } //Doesn't work on Linux
-
+    Timer{
+        id: robotPoseFetch
+        interval: 2000
+        repeat: true
+        running: false
+        onTriggered: {
+            // ratio between pixel on screen to mm position
+            // end of robot's horizontal position occurs at 500 mm invariant of the screen width
+            // robot does move however on screen re-sizes which is a bit strange
+            if (robotComm2.x > 250)
+            toast.show("activity2");
+        }
+    }
 
     /*Button{
         id: zonetest
