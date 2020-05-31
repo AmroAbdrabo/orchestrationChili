@@ -14,6 +14,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
+    qmlRegisterSingletonType( QUrl(QStringLiteral("qrc:///src/ActivityGlobals.qml")), "ch.epfl.chili.orchestration", 1, 0, "ActivityGlobals" );
 
     qmlRegisterType<Hexagon>("hexagon.qml", 1, 0, "Hexagon");
     qmlRegisterType<FileIO, 1>("FileIO.qml", 1, 0, "FileIO");

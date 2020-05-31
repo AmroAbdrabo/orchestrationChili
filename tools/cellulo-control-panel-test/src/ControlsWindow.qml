@@ -4,13 +4,15 @@ import QtQuick.Layouts 1.1
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Private 1.0
 import QtQuick.Controls.Styles 1.3
-
+import QtQuick.Dialogs 1.3
 import Cellulo 1.0
 import QMLCache 1.0
 import QMLBluetoothExtras 1.0
 import hexagon.qml 1.0
 import Qt.labs.folderlistmodel 2.1
+import QtWebSockets 1.0
 import FileIO.qml 1.0
+//import ch.epfl.chili.orchestration 1.0
 import "Utils.js" as MyFuncs
 //window to display the control panel
 Window {
@@ -19,6 +21,7 @@ Window {
     visible: true
     width: gWidth
     height: mobile ? Screen.desktopAvailableHeight : 0.7*Screen.height
+
 
     ScrollView {
         anchors.fill: parent
@@ -634,6 +637,10 @@ Window {
                                                parseFloat(goalPoseMaxW.text)
                                                )
                             }
+                            Button{
+                                text: "Enable drag and rotation listen"
+                                onClicked: robotPositionFetch.start()
+                            }
                         }
 
                         Column{
@@ -739,29 +746,293 @@ Window {
                 }
             }
             GroupBox{
-                title: "Activity Orchestration"
+                title: "Activities and orchestration"
+                id: activitiesAndOrchestration
                 Row{
-                    SpinBox{
-                        minimumValue:  1
-                        maximumValue: 6
-                        stepSize: 1
-                        onEditingFinished: {  backgroundImg.source = "qrc:/assets/activities" + value+ ".svg"
-                            if(value > 5)
-                            {
-                                window2.width = 900
+                    Column{
+                        Row{
+                            spacing: 5
+                            Label{
+                                text: "Number of activities: "
+                                anchors.verticalCenter: parent.verticalCenter
                             }
-                            else {
-                                 window2.width = 700
+                            SpinBox{
+                                id: nbrActivities
+                                minimumValue:  1
+                                maximumValue: 6
+                                stepSize: 1
+                                onEditingFinished: {
+                                    backgroundImg.source = "qrc:/assets/activities" + value+ ".svg"
+                                    if(value > 5){
+                                        window2.width = 900
+                                    }
+                                    else {
+                                         window2.width = 700
+                                    }
+                                    ActivityGlobals.cntActivities = value
+                                }
+                            }
+                        }
+                        GroupBox{
+                            title: "Orchestration"
+                            id: gboxOrchestration
+                            Row{
+                                height: 50
+                                spacing: 10
+                                anchors.verticalCenter: parent.verticalCenter
+                                Button{
+                                    text: "Previous activity"
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    onClicked: {
+                                        ActivityGlobals.currentAct = Math.max(1, ActivityGlobals.currentAct-1)
+                                        moveToActivityPosition();
+                                    }
+                                }
+                                GroupBox{
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    width: 90
+                                    Column{
+                                        width: parent.width
+                                        spacing: 5
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        Button{
+                                            text: "Pause"
+                                            onClicked:{
+                                                activityTimer.stop();
+                                                syncTimer.stop();
+                                            }
+                                        }
+                                        Label{
+                                            id: remainingTime
+                                            width: parent.width
+                                            text : "0"
+                                        }
+                                        Button{
+                                            text: "Unpause"
+                                            onClicked:{
+                                                activityTimer.interval = 1000*parseInt(remainingTime.text)
+                                                activityTimer.start();
+                                                syncTimer.start();
+                                            }
+                                        }
+                                        Timer{
+                                            id: activityTimer
+                                            interval: 0
+                                            running: false
+                                            repeat: false
+                                            onTriggered: {
+                                                activityTimer.interval = 0
+                                                console.log("activity timed out")
+                                                toast.show("Activity timed out")
+                                                askMoveToNext.visible = true
+                                            }
+                                        }
+                                        Timer{
+                                            id: syncTimer // gets the remaining time (every second to update display)
+                                            interval: 1000
+                                            running: false
+                                            repeat: true
+                                            onTriggered: {
+                                                let remTime = parseInt(remainingTime.text) - 1
+                                                if (remTime >= 0) { remainingTime.text = remTime.toString() }
+                                                else { syncTimer.stop(); }
+                                            }
+                                        }
+                                    }
+                                }
+                                Button{
+                                    text: "Next activity"
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    onClicked: {
+                                        ActivityGlobals.currentAct = Math.min(ActivityGlobals.cntActivities, ActivityGlobals.currentAct + 1)
+                                        moveToActivityPosition();
+                                    }
+                                }
+                            }
+                        }
+                        GroupBox{
+                            title: "Time activity"
+                            Column{
+                                Row{
+                                    spacing: 5
+                                    Button{
+                                        width: 150
+                                        text: "Increase duration by: "
+                                        onClicked: {
+                                            let countDownInSeconds = parseInt(remainingTime.text) + parseInt(requestedIncrease.text)
+                                            let countDown = 1000*countDownInSeconds
+                                            remainingTime.text = countDownInSeconds.toString()
+                                            activityTimer.interval = countDown
+                                            activityTimer.start()
+                                            syncTimer.start();
+                                        }
+                                    }
+                                    TextField{
+                                        id: requestedIncrease
+                                        placeholderText: " seconds"
+                                    }
+                                }
+                                Row{
+                                    spacing: 5
+                                    Button{
+                                        width:150
+                                        text: "Decrease duration by: "
+                                        onClicked: {
+                                            // stop it (to avoid interruptions while executing)
+                                            let countDownInSeconds = parseInt(remainingTime.text) - parseInt(requestedDecrease.text)
+                                            activityTimer.stop()
+                                            syncTimer.stop()
+
+                                            // now reset it
+                                            activityTimer.interval = countDownInSeconds*1000
+                                            remainingTime.text = countDownInSeconds.toString()
+                                            activityTimer.start()
+                                            syncTimer.start();
+                                        }
+                                    }
+                                    TextField{
+                                        id: requestedDecrease
+                                        placeholderText: " seconds"
+                                    }
+                                }
                             }
                         }
                     }
-                    Button{
-                        text: "Enable drag listen"
-                        onClicked: robotPoseFetch.start()
+                    GroupBox{
+                        anchors.top: parent.top
+                        anchors.topMargin: 25
+                        height: 124
+                        title: "Frog Connection"
+                        id: frogConnector
+                        Column{
+                            spacing: 9
+                            Button{
+                                width: 140
+                                text: "Connect to FROG"
+                                onClicked: {
+                                    orchSocket.url = "ws://localhost:10000/?"+seshSlug.text
+                                    orchSocket.active = true;
+                                }
+                            }
+                            TextField{
+                                id: seshSlug
+                                width: 140
+                                placeholderText: "session slug"
+                            }
+                        }
+                        function parseFrogActivities(activities){
+                            for (let i= 0; i < activities.length; i++){
+                                let actObject = activities[i]
+                                let {activityType, title} = actObject
+                                ActivityGlobals.allActivities.push({name: title, type: activityType})
+                            }
+                        }
+                        WebSocket {
+                            id: orchSocket
+                            url: "ws://localhost:10000/?websocketId"
+                            onTextMessageReceived: {
+                                if (message.startsWith("pause")){
+                                    if(!checkIfConnectionStarted()) return
+                                    console.log("pause from frog")
+                                 }
+                                else if (message.startsWith("continue")){
+                                   if(!checkIfConnectionStarted()) return
+                                   console.log("continue from frog")
+                                }
+                                 else if (message.startsWith("stop")){
+                                    if(!checkIfConnectionStarted()) return
+                                    console.log("stop from frog")
+                                 }
+                                 else if (message.startsWith("begin")){
+                                     ActivityGlobals.sessionBegan = true;
+                                     let jsonActivites = JSON.parse(message.substring(6))
+                                     frogConnector.parseFrogActivities(jsonActivites)
+                                 }
+                                 else if (message.startsWith("next")){
+                                    if(!checkIfConnectionStarted()) return
+                                    console.log("next from frog")
+                                 }
+                                 else if (message.startsWith("prev")){
+                                    if(!checkIfConnectionStarted()) return
+                                    console.log("next from frog")
+                                 }
+                                 else if (message.includes("stuck")){
+                                    // see the student that is stuck and post it on the on-screen list
+                                    if(!checkIfConnectionStarted()) return
+                                    console.log("stuck from frog")
+                                 }
+                                 else if (message.includes("progress")) {
+                                    if(!checkIfConnectionStarted()) return
+                                    console.log(message)
+                                    // o.w. it is not an orchestration action
+                                    // Caveat: in order to receive progress from FROG, the progress graph must be displayed on FROG
+                                    let parseData = message.split(":")
+                                    let progressGraph = (parseData[0]).split(",")
+                                    let nbrStudents = parseFloat(parseData[1])
+                                    console.log("progress received")
+                                 }
+                            }
+                            onStatusChanged: {
+                                if (status == WebSocket.Error) {
+                                    console.log("Error: " + errorString)
+                                 } else if (status == WebSocket.Open) {
+                                    console.log("open")
+                                 } else if (status == WebSocket.Closed) {
+                                    console.log("closed")
+                                 }
+                            }
+                            active: false
+                            function checkIfConnectionStarted(){
+                                if (!ActivityGlobals.sessionBegan){
+                                    toast.show("Error: Frog did not start with Cellulo.\n Messages will be ignored to prevent undefined session flow")
+                                    return false
+                                }
+                                return true
+                            }
+                        }
+
+                    }
+                    GroupBox{
+                        width: 250
+                        title: "<font color=\"#FF0000\">Students needing help</font>"
+                        // the view ...
+                        ListView {
+                            model: studentListModel
+                            delegate: rowDelegate
+                        }
+                        // for row formatting
+                        Component {
+                            id: rowDelegate
+                            Column{
+                                spacing: 10
+                                Text {
+                                    text: name
+                                    color: "#0000ff"
+                                }
+                            }
+                        }
+                        // .. and the model
+                        ListModel{
+                            id: studentListModel
+                        }
                     }
                 }
             }
         }
+    }
+    function moveToActivityPosition(){
+        console.log("move robot 2")
+        let segmentLength = 500.0/parseFloat(ActivityGlobals.cntActivities)
+        let offsetInsideRegion = segmentLength/2
+
+        // border cases
+        if (ActivityGlobals.currentAct <= 0 || ActivityGlobals.currentAct > ActivityGlobals.cntActivities){
+            console.log("move robot 2 canceled "+ActivityGlobals.currentAct)
+            return
+        }
+
+        //since activities are 1-indexed need to subtract 1 to get position
+        robotComm2.setGoalPosition(segmentLength*(ActivityGlobals.currentAct - 1)+offsetInsideRegion, 245, 60);
     }
 
     CelluloBluetoothScanner{
@@ -825,16 +1096,34 @@ Window {
 
     BluetoothLocalDevice{ Component.onCompleted: powerOn() } //Doesn't work on Linux
     Timer{
-        id: robotPoseFetch
+        id: robotPositionFetch
         interval: 2000
         repeat: true
         running: false
         onTriggered: {
-            // ratio between pixel on screen to mm position
-            // end of robot's horizontal position occurs at 500 mm invariant of the screen width
-            // robot does move however on screen re-sizes which is a bit strange
-            if (robotComm2.x > 250)
-            toast.show("activity2");
+            // If kidnapped, return
+            if ((!robotComm2.isSimulation) || robotComm2.vx >= 1 || robotComm2.vy >= 1){ // bug: the robot is always kidnapped in the simulator
+                if (robotComm2.kidnapped){
+                    console.log("Robot 2 position could not be fetched as it is being moved or is kidnapped")
+                    return;
+                }
+            }
+
+            // end of robot's horizontal position occurs at 500 mm invariant of the screen width (robot does move however on screen re-sizes which is a bit strange)
+            let segmentLength = 500.0/parseFloat(ActivityGlobals.cntActivities)
+            for (let i=nbrActivities.value - 1; i >= 0 ; i--){
+                if (robotComm2.x > i*segmentLength){
+                    let currentActivity = i+1
+                    if (currentActivity !== ActivityGlobals.currentAct){
+                        toast.show("Switched to activity "+ currentActivity.toString())
+                    }
+
+                    // Go to activity i+1
+                    ActivityGlobals.currentAct = currentActivity
+                    moveToActivityPosition()
+                }
+            }
+
         }
     }
 

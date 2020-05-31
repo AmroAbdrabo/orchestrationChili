@@ -34,5 +34,6 @@
         <file>assets/activities3.svg</file>
         <file>assets/activities4.svg</file>
         <file>assets/activities5.svg</file>
+        <file>src/ActivityGlobals.qml</file>
     </qresource>
 </RCC>

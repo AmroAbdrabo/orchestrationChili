@@ -4,7 +4,7 @@ import QtQuick.Layouts 1.1
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Private 1.0
 import QtQuick.Controls.Styles 1.3
-
+import QtQuick.Dialogs 1.3
 import Cellulo 1.0
 import QMLCache 1.0
 import QMLBluetoothExtras 1.0
@@ -70,6 +70,38 @@ Item {
         objectName: "robot display window"
         id: window2
         visible: true
+
+        MessageDialog{
+            icon: StandardIcon.Question
+            id: askMoveToNext
+            visible: false
+            text: "The activity has timed out. Move to the next activity?"
+            title: "Activity timed out"
+            standardButtons: StandardButton.Yes | StandardButton.No
+            onYes: {
+                ActivityGlobals.currentAct = Math.min(ActivityGlobals.currentAct + 1, ActivityGlobals.cntActivities)
+                window2.moveToActivityPosition(); // doing window1 was not possible
+            }
+            onNo: {
+                // do nothing
+            }
+        }
+
+        // good rule of programming is not to repeat yourself, but with QML this rule is much harder to enforce without globalizing everything
+        function moveToActivityPosition(){
+            console.log("move robot 2")
+            let segmentLength = 500.0/parseFloat(ActivityGlobals.cntActivities)
+            let offsetInsideRegion = segmentLength/2
+
+            // border cases
+            if (ActivityGlobals.currentAct <= 0 || ActivityGlobals.currentAct > ActivityGlobals.cntActivities){
+                console.log("move robot 2 canceled "+ActivityGlobals.currentAct)
+                return
+            }
+
+            //since activities are 1-indexed need to subtract 1 to get position
+            robotComm2.setGoalPosition(segmentLength*(ActivityGlobals.currentAct - 1)+offsetInsideRegion, 245, 60);
+        }
 
 
         CelluloZoneEngine{
