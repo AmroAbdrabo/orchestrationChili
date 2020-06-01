@@ -774,6 +774,7 @@ Window {
                     moveToActivityPosition();
                 }
                 function prevActivity(){
+                    if (ActivityGlobals.currentAct <= 0) return
                     resetActivityTimeAndProgress()
                     ActivityGlobals.currentAct = Math.max(1, ActivityGlobals.currentAct-1)
                     moveToActivityPosition();
