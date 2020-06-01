@@ -1203,6 +1203,7 @@ Window {
                     if (ActivityGlobals.currentAct < ActivityGlobals.cntActivities) {
                         orchSocket.sendTextMessage("next")
                     }else {
+                        ActivityGlobals.sessionClosed = true
                         orchSocket.sendTextMessage("close")
                     }
                 }
