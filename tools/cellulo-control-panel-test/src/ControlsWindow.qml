@@ -22,6 +22,22 @@ Window {
     width: gWidth
     height: mobile ? Screen.desktopAvailableHeight : 0.7*Screen.height
 
+    MessageDialog{
+        icon: StandardIcon.Question
+        id: askMoveToNext
+        visible: false
+        text: "The activity has timed out. Move to the next activity?"
+        title: "Activity timed out"
+        modality: Qt.ApplicationModal
+        standardButtons: StandardButton.Yes | StandardButton.No
+        onYes: {
+            activitiesAndOrchestration.sendNextToFrog()
+            activitiesAndOrchestration.nextActivity();
+        }
+        onNo: {
+            // do nothing
+        }
+    }
 
     ScrollView {
         anchors.fill: parent
