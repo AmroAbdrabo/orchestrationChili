@@ -901,9 +901,9 @@ Window {
                                     text: "Previous activity"
                                     anchors.verticalCenter: parent.verticalCenter
                                     onClicked: {
-                                        if (ActivityGlobals.sessionBegan){
-                                            activitiesAndOrchestration.sendPrevToFrog()
-                                        }
+                                        // important: call sendPrev before prevActivity to ensure currentAct is correct inside sendPrev
+                                        // same applies to the onclicked of "next activity"
+                                        activitiesAndOrchestration.sendPrevToFrog()
                                         activitiesAndOrchestration.prevActivity();
                                     }
                                 }
@@ -918,9 +918,7 @@ Window {
                                             text: "Pause"
                                             onClicked:{
                                                 activitiesAndOrchestration.pause()
-                                                if (ActivityGlobals.sessionBegan){
-                                                    activitiesAndOrchestration.sendPauseToFrog()
-                                                }
+                                                activitiesAndOrchestration.sendPauseToFrog()
                                             }
                                         }
                                         Label{
@@ -932,9 +930,7 @@ Window {
                                             text: "Unpause"
                                             onClicked:{
                                                 activitiesAndOrchestration.unpause()
-                                                if (ActivityGlobals.sessionBegan){
-                                                    activitiesAndOrchestration.sendContinueToFrog()
-                                                }
+                                                activitiesAndOrchestration.sendContinueToFrog()
                                             }
                                         }
                                         Timer{
@@ -979,10 +975,10 @@ Window {
                                     anchors.verticalCenter: parent.verticalCenter
                                     onClicked: {
                                         // if session began or if the session has not yet began then make the session begin
-                                        if (ActivityGlobals.sessionBegan || ActivityGlobals.currentAct == 0){
+                                        if (ActivityGlobals.currentAct == 0){
                                             ActivityGlobals.sessionBegan = true
-                                            activitiesAndOrchestration.sendNextToFrog()
                                         }
+                                        activitiesAndOrchestration.sendNextToFrog()
                                         activitiesAndOrchestration.nextActivity(); 
                                     }
                                 }
@@ -1194,12 +1190,20 @@ Window {
                     }
                 }
                 function sendPauseToFrog(){
-                    orchSocket.sendTextMessage("pause")
+                    if (ActivityGlobals.sessionBegan && !ActivityGlobals.sessionClosed){
+                        orchSocket.sendTextMessage("pause")
+                    }
                 }
                 function sendContinueToFrog(){
-                    orchSocket.sendTextMessage("continue")
+                    if (ActivityGlobals.sessionBegan && !ActivityGlobals.sessionClosed){
+                        orchSocket.sendTextMessage("continue")
+                    }
                 }
                 function sendNextToFrog(){
+                    // first check if session closed
+                    if (ActivityGlobals.sessionClosed) return
+
+                    // and if this is not the last activity
                     if (ActivityGlobals.currentAct < ActivityGlobals.cntActivities) {
                         orchSocket.sendTextMessage("next")
                     }else {
@@ -1208,7 +1212,9 @@ Window {
                     }
                 }
                 function sendPrevToFrog(){
-                    if (ActivityGlobals.currentAct > 1) orchSocket.sendTextMessage("prev")
+                    if (ActivityGlobals.currentAct > 1 && ActivityGlobals.sessionBegan && !ActivityGlobals.sessionClosed){
+                        orchSocket.sendTextMessage("prev")
+                    }
                 }
             }
         }
