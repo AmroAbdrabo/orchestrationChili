@@ -992,6 +992,7 @@ Window {
                                         // if session began or if the session has not yet began then make the session begin
                                         if (ActivityGlobals.currentAct == 0){
                                             ActivityGlobals.sessionBegan = true
+                                            activitiesAndOrchestration.fetchActivitiesFromFrog()
                                         }
                                         activitiesAndOrchestration.sendNextToFrog()
                                         activitiesAndOrchestration.nextActivity(); 
@@ -1074,6 +1075,10 @@ Window {
                                 let {activityType, title} = actObject
                                 ActivityGlobals.allActivities.push({name: title? title:"name", type: activityType?activityType:"type" })
                             }
+
+                            //update text label showing current activity name
+                            let curActivityName = ActivityGlobals.allActivities[ActivityGlobals.currentAct - 1]
+                            currentActivityName.text = curActivityName? "Current Activity: \n"+curActivityName['name'] : "Current Activity: "
                         }
                         function parseFrogProgress(progressMessage){
                             // comma is used to delimit the name of the student from her progress
@@ -1214,11 +1219,16 @@ Window {
                         orchSocket.sendTextMessage("continue")
                     }
                 }
+
+                // sends a message requesting activities from Frog, so Frog will in turn send a message with the activities (with header "activity data")
+                function fetchActivitiesFromFrog(){
+                    orchSocket.sendTextMessage("fetch")
+                }
                 function sendNextToFrog(){
                     // first check if session closed
                     if (ActivityGlobals.sessionClosed) return
 
-                    // and if this is not the last activity
+                    // If this is not the last activity then do next
                     if (ActivityGlobals.currentAct < ActivityGlobals.cntActivities) {
                         orchSocket.sendTextMessage("next")
                     }else {
@@ -1237,6 +1247,7 @@ Window {
     function moveToSessionCompletePosition(){
         // this position (lower right corner) encodes that the session has ended
         toast.show("Session ended")
+        activitiesAndOrchestration.resetActivityTimeAndProgress()
         robotComm2.setGoalPosition(490, 490, 60);
     }
     function moveToActivityPosition(){
