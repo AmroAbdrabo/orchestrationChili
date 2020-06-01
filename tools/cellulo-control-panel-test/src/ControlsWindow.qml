@@ -956,8 +956,7 @@ Window {
                                             repeat: false
                                             onTriggered: {
                                                 activityTimer.interval = 0
-                                                console.log("activity timed out")
-                                                toast.show("Activity timed out")
+                                                toast.show("Time out")
                                                 // if the activities have not yet began or have finished no need to show prompt saying "activity timed out"
                                                 if (ActivityGlobals.currentAct <= 0 || ActivityGlobals.currentAct >= ActivityGlobals.cntActivities) return
                                                 askMoveToNext.visible = true
