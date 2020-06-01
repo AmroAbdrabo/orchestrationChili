@@ -1121,9 +1121,13 @@ Window {
                                  else if (message.startsWith("stuck")){
                                     // see the student that is stuck and post it on the on-screen list
                                     if(!checkIfConnectionStarted()) return
+                                    let username = message.substring(("stuck ".length))
 
-                                    // add the students name on the list
-                                    studentListModel.append({name: message.substring(6)})
+                                    // add the students name on the list only if it is not there already
+                                    for(let i = 0; i < studentListModel.count; i++) {
+                                        if (studentListModel.get(i).name === username) return
+                                    }
+                                    studentListModel.append({name: username})
 
                                     // begin oscillating the robot
                                     activitiesAndOrchestration.oscillateForStuckStudent()
