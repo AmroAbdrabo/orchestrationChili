@@ -12,7 +12,7 @@ QtObject {
     // whether the session finished
     property var sessionClosed: false
 
-    // whether the session finished
+    // whether the session began (very important for synchronizing cellulo with frog)
     property var sessionBegan: false
 
     // the activities from frog:

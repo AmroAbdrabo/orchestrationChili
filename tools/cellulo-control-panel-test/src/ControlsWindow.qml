@@ -900,10 +900,10 @@ Window {
                                     text: "Previous activity"
                                     anchors.verticalCenter: parent.verticalCenter
                                     onClicked: {
-                                        activitiesAndOrchestration.prevActivity();
                                         if (ActivityGlobals.sessionBegan){
                                             activitiesAndOrchestration.sendPrevToFrog()
                                         }
+                                        activitiesAndOrchestration.prevActivity();
                                     }
                                 }
                                 GroupBox{
@@ -977,11 +977,12 @@ Window {
                                     text: "Next activity"
                                     anchors.verticalCenter: parent.verticalCenter
                                     onClicked: {
-                                        activitiesAndOrchestration.nextActivity();
+                                        // if session began or if the session has not yet began then make the session begin
                                         if (ActivityGlobals.sessionBegan || ActivityGlobals.currentAct == 0){
                                             ActivityGlobals.sessionBegan = true
                                             activitiesAndOrchestration.sendNextToFrog()
                                         }
+                                        activitiesAndOrchestration.nextActivity(); 
                                     }
                                 }
                             }
@@ -1198,10 +1199,14 @@ Window {
                     orchSocket.sendTextMessage("continue")
                 }
                 function sendNextToFrog(){
-                    orchSocket.sendTextMessage("next")
+                    if (ActivityGlobals.currentAct < ActivityGlobals.cntActivities) {
+                        orchSocket.sendTextMessage("next")
+                    }else {
+                        orchSocket.sendTextMessage("close")
+                    }
                 }
                 function sendPrevToFrog(){
-                    orchSocket.sendTextMessage("prev")
+                    if (ActivityGlobals.currentAct > 1) orchSocket.sendTextMessage("prev")
                 }
             }
         }
