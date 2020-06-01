@@ -1166,8 +1166,11 @@ Window {
                         anchors.topMargin: 25
                         anchors.top: parent.top
                         width: 250
+                        height: 270
                         title: "Student-Teacher communication"
+                        id: studentTeacherGbox
                         Column{
+                            anchors.fill: parent
                             spacing: 8
                             Button{
                                 text: "Student helped"
@@ -1184,22 +1187,17 @@ Window {
                                 }
                             }
                             Label{
+                                id: stLabel
                                 text:  "<font color=\"#FF0000\">Students needing help</font>"
                             }
                             // the view ...
                             ListView {
+                                anchors.top: stLabel.bottom
+                                height: 270
                                 model: studentListModel
-                                delegate: rowDelegate
-                            }
-                            // for row formatting
-                            Component {
-                                id: rowDelegate
-                                Column{
-                                    spacing: 10
-                                    Text {
-                                        text: name
-                                        color: "#0000ff"
-                                    }
+                                delegate: Text {
+                                    text: name
+                                    color: "#0000ff"
                                 }
                             }
                             // .. and the model
