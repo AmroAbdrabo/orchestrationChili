@@ -639,7 +639,10 @@ Window {
                             }
                             Button{
                                 text: "Enable drag and rotation listen"
-                                onClicked: robotPositionFetch.start()
+                                onClicked:{
+                                    robotPositionFetch.start();
+                                    robotAngleFetch.start()
+                                }
                             }
                         }
 
@@ -748,6 +751,118 @@ Window {
             GroupBox{
                 title: "Activities and orchestration"
                 id: activitiesAndOrchestration
+                function resetActivityTimeAndProgress(){
+                    robotComm2.setVisualEffect(0, "#FF"+"00"+"00"+"00", 255) // reset the leds also
+
+                    // re-initialize all these fields since a different activity has started
+                    ActivityGlobals.elapsedActivityTime = 0
+                    ActivityGlobals.totalActivityTime = 1
+                    ActivityGlobals.studentIndivProgress = {"" : 0} // empty student name to zero progress by default
+                }
+                function pause(){
+                    activityTimer.stop();
+                    syncTimer.stop();
+                }
+                function unpause(){
+                    activityTimer.interval = 1000*parseInt(remainingTime.text)
+                    activityTimer.start();
+                    syncTimer.start();
+                }
+                function nextActivity(){
+                    resetActivityTimeAndProgress()
+                    ActivityGlobals.currentAct = Math.min(ActivityGlobals.cntActivities, ActivityGlobals.currentAct + 1)
+                    moveToActivityPosition();
+                }
+                function prevActivity(){
+                    resetActivityTimeAndProgress()
+                    ActivityGlobals.currentAct = Math.max(1, ActivityGlobals.currentAct-1)
+                    moveToActivityPosition();
+                }
+                function oscillateForStuckStudent(){
+                    if ((1 + Math.floor(cycles/2))%2 === 1){ // move up for cycles 0, 1
+                         robotComm2.setGoalVelocity(0, 100, 0)
+                         oscillationTimer.start()
+                     }else{
+                        robotComm2.setGoalVelocity(0, -100, 0) // moves down for cycles 2, 3
+                        oscillationTimer.start()
+                       }
+                       cycles = cycles+1
+                }
+                function updateColor(){
+                    let redValue = Math.floor((255.0/ActivityGlobals.totalActivityTime)*ActivityGlobals.elapsedActivityTime)
+                    let blueValue = 255 - redValue
+                    let redHex = (redValue < 16 ? "0" : "") + redValue.toString(16).toUpperCase()
+                    let blueHex = (blueValue < 16 ? "0" : "") + blueValue.toString(16).toUpperCase()
+                    ActivityGlobals.colorEncodedTime =  "#FF"+redHex + "00"+blueHex
+                }
+
+                // the visual effect depends on the type of the activity: for quiz, the number of leds depends on the average student progress. For other activities, every led is on
+                function updateLeds(){
+                    let curActivity = ActivityGlobals.allActivities[ActivityGlobals.currentAct - 1]
+                    // get the color based on time
+                    updateColor()
+                    if (curActivity && curActivity['type'] == "ac-quiz"){ // in this case set leds one by one
+                        // get the average progress of the entire class by aggregating over the individual progresses
+                        let values = Object.keys(ActivityGlobals.studentIndivProgress).map(function (key) { return ActivityGlobals.studentIndivProgress[key]; });
+                        let avgProgress = 0
+                        for (let j = 0; j<values.length; j++){  // forEach is not supported so for loop is used for aggregation
+                            avgProgress = avgProgress + values[j]
+                        }
+                        avgProgress = avgProgress/ActivityGlobals.numStudents
+
+                        // adjust number of leds based on progress
+                        let nbrLeds = 6 *avgProgress
+                        for (let ledIdx = 0; ledIdx < nbrLeds; ++ledIdx){
+                            robotComm2.setVisualEffect(1,ActivityGlobals.colorEncodedTime, nbrLeds)
+                        }
+                    }
+                    else if (curActivity){
+                        robotComm2.setVisualEffect(0,ActivityGlobals.colorEncodedTime, 255)
+                    }
+                }
+                function incrTime(timeIncrease){
+                    // stop both timers (to avoid interruptions while executing)
+                    activityTimer.stop()
+                    syncTimer.stop()
+
+                    // adjust global (current) activity time
+                    ActivityGlobals.totalActivityTime = ActivityGlobals.totalActivityTime + timeIncrease
+
+                    // now reset it
+                    let countDownInSeconds = Math.max(parseInt(remainingTime.text) + timeIncrease,0)
+                    remainingTime.text = countDownInSeconds.toString()
+                    activityTimer.interval = 1000*countDownInSeconds
+                    activityTimer.start()
+                    syncTimer.start()
+
+                }
+                function decrTime(timeDecrease){
+                    // stop both timers (to avoid interruptions while executing)
+                    activityTimer.stop()
+                    syncTimer.stop()
+
+                    // adjust global (current) activity time
+                    ActivityGlobals.totalActivityTime = ActivityGlobals.totalActivityTime - timeDecrease
+
+                    // now reset it
+                    let countDownInSeconds = Math.max(parseInt(remainingTime.text) - timeDecrease,0)
+                    activityTimer.interval = countDownInSeconds*1000
+                    remainingTime.text = countDownInSeconds.toString()
+                    activityTimer.start()
+                    syncTimer.start();
+                }
+
+                Timer {
+                    // interval is twice period of oscillation
+                    id: oscillationTimer
+                    interval: 500
+                    running: false
+                    repeat: false
+                    onTriggered: activitiesAndOrchestration.oscillateForStuckStudent()
+                }
+                property int cycles: 1
+                property bool stopOscillation: false
+
                 Row{
                     Column{
                         Row{
@@ -772,6 +887,7 @@ Window {
                                     ActivityGlobals.cntActivities = value
                                 }
                             }
+
                         }
                         GroupBox{
                             title: "Orchestration"
@@ -784,8 +900,10 @@ Window {
                                     text: "Previous activity"
                                     anchors.verticalCenter: parent.verticalCenter
                                     onClicked: {
-                                        ActivityGlobals.currentAct = Math.max(1, ActivityGlobals.currentAct-1)
-                                        moveToActivityPosition();
+                                        activitiesAndOrchestration.prevActivity();
+                                        if (ActivityGlobals.sessionBegan){
+                                            activitiesAndOrchestration.sendPrevToFrog()
+                                        }
                                     }
                                 }
                                 GroupBox{
@@ -798,8 +916,10 @@ Window {
                                         Button{
                                             text: "Pause"
                                             onClicked:{
-                                                activityTimer.stop();
-                                                syncTimer.stop();
+                                                activitiesAndOrchestration.pause()
+                                                if (ActivityGlobals.sessionBegan){
+                                                    activitiesAndOrchestration.sendPauseToFrog()
+                                                }
                                             }
                                         }
                                         Label{
@@ -810,9 +930,10 @@ Window {
                                         Button{
                                             text: "Unpause"
                                             onClicked:{
-                                                activityTimer.interval = 1000*parseInt(remainingTime.text)
-                                                activityTimer.start();
-                                                syncTimer.start();
+                                                activitiesAndOrchestration.unpause()
+                                                if (ActivityGlobals.sessionBegan){
+                                                    activitiesAndOrchestration.sendContinueToFrog()
+                                                }
                                             }
                                         }
                                         Timer{
@@ -824,6 +945,8 @@ Window {
                                                 activityTimer.interval = 0
                                                 console.log("activity timed out")
                                                 toast.show("Activity timed out")
+                                                // if the activities have not yet began or have finished no need to show prompt saying "activity timed out"
+                                                if (ActivityGlobals.currentAct <= 0 || ActivityGlobals.currentAct >= ActivityGlobals.cntActivities) return
                                                 askMoveToNext.visible = true
                                             }
                                         }
@@ -833,9 +956,19 @@ Window {
                                             running: false
                                             repeat: true
                                             onTriggered: {
+                                                ActivityGlobals.elapsedActivityTime = ActivityGlobals.elapsedActivityTime+1
                                                 let remTime = parseInt(remainingTime.text) - 1
                                                 if (remTime >= 0) { remainingTime.text = remTime.toString() }
                                                 else { syncTimer.stop(); }
+                                            }
+                                        }
+                                        Timer{
+                                            id: refreshVisualEffect
+                                            repeat: true
+                                            interval: 1500
+                                            running: true
+                                            onTriggered: {
+                                                activitiesAndOrchestration.updateLeds()
                                             }
                                         }
                                     }
@@ -844,8 +977,11 @@ Window {
                                     text: "Next activity"
                                     anchors.verticalCenter: parent.verticalCenter
                                     onClicked: {
-                                        ActivityGlobals.currentAct = Math.min(ActivityGlobals.cntActivities, ActivityGlobals.currentAct + 1)
-                                        moveToActivityPosition();
+                                        activitiesAndOrchestration.nextActivity();
+                                        if (ActivityGlobals.sessionBegan || ActivityGlobals.currentAct == 0){
+                                            ActivityGlobals.sessionBegan = true
+                                            activitiesAndOrchestration.sendNextToFrog()
+                                        }
                                     }
                                 }
                             }
@@ -859,12 +995,7 @@ Window {
                                         width: 150
                                         text: "Increase duration by: "
                                         onClicked: {
-                                            let countDownInSeconds = parseInt(remainingTime.text) + parseInt(requestedIncrease.text)
-                                            let countDown = 1000*countDownInSeconds
-                                            remainingTime.text = countDownInSeconds.toString()
-                                            activityTimer.interval = countDown
-                                            activityTimer.start()
-                                            syncTimer.start();
+                                            activitiesAndOrchestration.incrTime(parseInt(requestedIncrease.text))
                                         }
                                     }
                                     TextField{
@@ -878,16 +1009,7 @@ Window {
                                         width:150
                                         text: "Decrease duration by: "
                                         onClicked: {
-                                            // stop it (to avoid interruptions while executing)
-                                            let countDownInSeconds = parseInt(remainingTime.text) - parseInt(requestedDecrease.text)
-                                            activityTimer.stop()
-                                            syncTimer.stop()
-
-                                            // now reset it
-                                            activityTimer.interval = countDownInSeconds*1000
-                                            remainingTime.text = countDownInSeconds.toString()
-                                            activityTimer.start()
-                                            syncTimer.start();
+                                            activitiesAndOrchestration.decrTime(parseInt(requestedDecrease.text))
                                         }
                                     }
                                     TextField{
@@ -904,11 +1026,12 @@ Window {
                         height: 124
                         title: "Frog Connection"
                         id: frogConnector
-                        Column{
+                        ColumnLayout{
                             spacing: 9
+                            width: 140
                             Button{
                                 width: 140
-                                text: "Connect to FROG"
+                                text: "Connect to FROG" + " ".repeat(4)
                                 onClicked: {
                                     orchSocket.url = "ws://localhost:10000/?"+seshSlug.text
                                     orchSocket.active = true;
@@ -919,13 +1042,31 @@ Window {
                                 width: 140
                                 placeholderText: "session slug"
                             }
+                            Label{
+                                id: currentActivityName
+                                Layout.topMargin: 38
+                                text: "Current Activity: "
+                            }
                         }
                         function parseFrogActivities(activities){
-                            for (let i= 0; i < activities.length; i++){
+                            let nbrAct = activities.length
+
+                            // set global variable appropriately to length of activities and update background image
+                            ActivityGlobals.cntActivities = nbrAct
+                            backgroundImg.source = "qrc:/assets/activities" + nbrAct+ ".svg"
+
+                            // save the activity names and types globally
+                            for (let i= 0; i < nbrAct; i++){
                                 let actObject = activities[i]
                                 let {activityType, title} = actObject
-                                ActivityGlobals.allActivities.push({name: title, type: activityType})
+                                ActivityGlobals.allActivities.push({name: title? title:"name", type: activityType?activityType:"type" })
                             }
+                        }
+                        function parseFrogProgress(progressMessage){
+                            // comma is used to delimit the name of the student from her progress
+                            let delimiterIdx = progressMessage.lastIndexOf(",")
+                            let username = progressMessage.substring(("progress ").length, delimiterIdx);
+                            ActivityGlobals.studentIndivProgress[username] = parseFloat(progressMessage.substring(delimiterIdx+2))
                         }
                         WebSocket {
                             id: orchSocket
@@ -933,44 +1074,55 @@ Window {
                             onTextMessageReceived: {
                                 if (message.startsWith("pause")){
                                     if(!checkIfConnectionStarted()) return
-                                    console.log("pause from frog")
+                                    activitiesAndOrchestration.pause()
                                  }
                                 else if (message.startsWith("continue")){
                                    if(!checkIfConnectionStarted()) return
-                                   console.log("continue from frog")
+                                   activitiesAndOrchestration.unpause()
                                 }
-                                 else if (message.startsWith("stop")){
+                                 else if (message.startsWith("closeSession")){
                                     if(!checkIfConnectionStarted()) return
-                                    console.log("stop from frog")
+                                    ActivityGlobals.sessionClosed = true
+                                    moveToSessionCompletePosition()
                                  }
                                  else if (message.startsWith("begin")){
                                      ActivityGlobals.sessionBegan = true;
                                      let jsonActivites = JSON.parse(message.substring(6))
                                      frogConnector.parseFrogActivities(jsonActivites)
+                                     ActivityGlobals.currentAct = 0
+                                     activitiesAndOrchestration.nextActivity()
                                  }
                                  else if (message.startsWith("next")){
                                     if(!checkIfConnectionStarted()) return
-                                    console.log("next from frog")
+                                    activitiesAndOrchestration.nextActivity()
                                  }
                                  else if (message.startsWith("prev")){
                                     if(!checkIfConnectionStarted()) return
-                                    console.log("next from frog")
+                                    activitiesAndOrchestration.prevActivity()
                                  }
-                                 else if (message.includes("stuck")){
+                                 else if (message.startsWith("stuck")){
                                     // see the student that is stuck and post it on the on-screen list
                                     if(!checkIfConnectionStarted()) return
-                                    console.log("stuck from frog")
+
+                                    // add the students name on the list
+                                    studentListModel.append({name: message.substring(6)})
+
+                                    // begin oscillating the robot
+                                    activitiesAndOrchestration.oscillateForStuckStudent()
                                  }
-                                 else if (message.includes("progress")) {
+                                 else if (message.startsWith("progress")) {
                                     if(!checkIfConnectionStarted()) return
-                                    console.log(message)
-                                    // o.w. it is not an orchestration action
-                                    // Caveat: in order to receive progress from FROG, the progress graph must be displayed on FROG
-                                    let parseData = message.split(":")
-                                    let progressGraph = (parseData[0]).split(",")
-                                    let nbrStudents = parseFloat(parseData[1])
-                                    console.log("progress received")
+                                    frogConnector.parseFrogProgress(message)
                                  }
+                                else if (message.startsWith("studentCount")){
+                                    let skipLength = ("studentCount").length
+                                    ActivityGlobals.numStudents = parseInt(message.substring(skipLength))
+                                }
+                                else if (message.startsWith("activity data")){
+                                    let skipLength = ("activity data").length
+                                    let jsonActivites = JSON.parse(message.substring(skipLength))
+                                    frogConnector.parseFrogActivities(jsonActivites)
+                                }
                             }
                             onStatusChanged: {
                                 if (status == WebSocket.Error) {
@@ -993,43 +1145,89 @@ Window {
 
                     }
                     GroupBox{
+                        anchors.topMargin: 25
+                        anchors.top: parent.top
                         width: 250
-                        title: "<font color=\"#FF0000\">Students needing help</font>"
-                        // the view ...
-                        ListView {
-                            model: studentListModel
-                            delegate: rowDelegate
-                        }
-                        // for row formatting
-                        Component {
-                            id: rowDelegate
-                            Column{
-                                spacing: 10
-                                Text {
-                                    text: name
-                                    color: "#0000ff"
+                        title: "Student-Teacher communication"
+                        Column{
+                            spacing: 8
+                            Button{
+                                text: "Student helped"
+                                onClicked: {
+                                    // stop the oscillation of the robot
+                                    activitiesAndOrchestration.cycles = 1
+                                    oscillationTimer.stop()
+
+                                    // and remove student from stuck list
+                                    studentListModel.remove(0)
+
+                                    // send robot back to its normal position
+                                    moveToActivityPosition()
                                 }
                             }
-                        }
-                        // .. and the model
-                        ListModel{
-                            id: studentListModel
+                            Label{
+                                text:  "<font color=\"#FF0000\">Students needing help</font>"
+                            }
+                            // the view ...
+                            ListView {
+                                model: studentListModel
+                                delegate: rowDelegate
+                            }
+                            // for row formatting
+                            Component {
+                                id: rowDelegate
+                                Column{
+                                    spacing: 10
+                                    Text {
+                                        text: name
+                                        color: "#0000ff"
+                                    }
+                                }
+                            }
+                            // .. and the model
+                            ListModel{
+                                id: studentListModel
+                            }
                         }
                     }
+                }
+                function sendPauseToFrog(){
+                    orchSocket.sendTextMessage("pause")
+                }
+                function sendContinueToFrog(){
+                    orchSocket.sendTextMessage("continue")
+                }
+                function sendNextToFrog(){
+                    orchSocket.sendTextMessage("next")
+                }
+                function sendPrevToFrog(){
+                    orchSocket.sendTextMessage("prev")
                 }
             }
         }
     }
+    function moveToSessionCompletePosition(){
+        // this position (lower right corner) encodes that the session has ended
+        toast.show("Session ended")
+        robotComm2.setGoalPosition(490, 490, 60);
+    }
     function moveToActivityPosition(){
-        console.log("move robot 2")
+        if (ActivityGlobals.sessionClosed || ActivityGlobals.currentAct > ActivityGlobals.cntActivities) {
+            moveToSessionCompletePosition()
+            return
+        }
         let segmentLength = 500.0/parseFloat(ActivityGlobals.cntActivities)
         let offsetInsideRegion = segmentLength/2
 
         // border cases
-        if (ActivityGlobals.currentAct <= 0 || ActivityGlobals.currentAct > ActivityGlobals.cntActivities){
-            console.log("move robot 2 canceled "+ActivityGlobals.currentAct)
+        if (ActivityGlobals.currentAct <= 0){
+            console.log("motion of robot 2 canceled "+ActivityGlobals.currentAct)
             return
         }
+
+        // update displayed activity name
+        let curActivityName = ActivityGlobals.allActivities[ActivityGlobals.currentAct - 1]
+        currentActivityName.text = curActivityName? "Current Activity: \n"+curActivityName['name'] : "Current Activity: "
 
         //since activities are 1-indexed need to subtract 1 to get position
         robotComm2.setGoalPosition(segmentLength*(ActivityGlobals.currentAct - 1)+offsetInsideRegion, 245, 60);
@@ -1102,27 +1300,52 @@ Window {
         running: false
         onTriggered: {
             // If kidnapped, return
-            if ((!robotComm2.isSimulation) || robotComm2.vx >= 1 || robotComm2.vy >= 1){ // bug: the robot is always kidnapped in the simulator
+            if (!robotComm2.isSimulation){ // bug in simulator? the robot is always kidnapped in the simulator
                 if (robotComm2.kidnapped){
-                    console.log("Robot 2 position could not be fetched as it is being moved or is kidnapped")
+                    console.log("Robot 2 position could not be fetched as it is kidnapped")
                     return;
                 }
             }
 
             // end of robot's horizontal position occurs at 500 mm invariant of the screen width (robot does move however on screen re-sizes which is a bit strange)
             let segmentLength = 500.0/parseFloat(ActivityGlobals.cntActivities)
-            for (let i=nbrActivities.value - 1; i >= 0 ; i--){
+            for (let i=ActivityGlobals.cntActivities - 1; i >= 0 ; i--){
                 if (robotComm2.x > i*segmentLength){
                     let currentActivity = i+1
+                    console.log("here2 "+currentActivity)
                     if (currentActivity !== ActivityGlobals.currentAct){
                         toast.show("Switched to activity "+ currentActivity.toString())
+                        activitiesAndOrchestration.resetActivityTimeAndProgress() // reset activity time & progress since moved to a new activity
                     }
 
                     // Go to activity i+1
                     ActivityGlobals.currentAct = currentActivity
                     moveToActivityPosition()
+                    return
                 }
             }
+
+        }
+    }
+    Timer{
+        id: robotAngleFetch
+        interval: 2000
+        repeat: true
+        running: false
+        onTriggered: {
+            // If kidnapped, return
+            if (!robotComm2.isSimulation){
+                if (robotComm2.kidnapped){
+                    console.log("Robot 2 angular position could not be fetched as it is kidnapped")
+                    return;
+                }
+            }
+
+            // A rotation of 1 deg  corresponds to 10 more seconds
+            let extraTime = Math.floor(10*robotComm2.theta)
+            if (extraTime == 0) return
+            robotComm2.setGoalOrientation(0, 1) // reset angular position
+            activitiesAndOrchestration.incrTime(extraTime)
 
         }
     }
