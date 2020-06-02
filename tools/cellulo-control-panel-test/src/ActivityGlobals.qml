@@ -24,13 +24,17 @@ QtObject {
     // the total time in s of the activity (used to adjust color of robot and is reset inside the next/preActivity function) --init'ed to 1 to avoid divide by zero
     property var totalActivityTime: 1
 
-    // individual students' progress (maps student display name to progress)
-    property var studentIndivProgress: {'':0}
+    // individual students' progress (maps student display name to progress) i.e. {'Amro': 0.2, .. 'Jack': 0.4}
+    property var studentIndivProgress: ( { } )
 
     // number of students
     property var numStudents: 1
 
     // color of leds (blue means close to zero elapsed time, violet some time has passed, red means almost no time left)
     property var colorEncodedTime: "#FF0000FF"
+
+    // student display names (assumed to be real names to simplify) -- used to get the keys of studentIndivProgress without added computation
+    property var studentNames: [ ]
+
 
 }

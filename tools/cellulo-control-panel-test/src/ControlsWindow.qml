@@ -813,22 +813,51 @@ Window {
                     ActivityGlobals.colorEncodedTime =  "#FF"+redHex + "00"+blueHex
                 }
 
+                function averageProgress(){
+                    // get the average progress of the entire class by aggregating over the individual progresses
+                    let values = Object.keys(ActivityGlobals.studentIndivProgress).map(function (key) { return ActivityGlobals.studentIndivProgress[key]; });
+                    let avgProgress = 0
+                    for (let j = 0; j<values.length; j++){  // forEach is not supported so for loop is used for aggregation
+                        avgProgress = avgProgress + values[j]
+                    }
+                    avgProgress = avgProgress/ActivityGlobals.numStudents
+                    return avgProgress
+                }
+                function stddevProgress(){
+                    let values = Object.keys(ActivityGlobals.studentIndivProgress).map(function (key) { return ActivityGlobals.studentIndivProgress[key]; });
+                    let avgProg = averageProgress()
+                    let stddev = 0
+                    for (let j = 0; j<values.length; j++){  // forEach is not supported so for loop is used for aggregation
+                        stddev = stddev + (avgProg - values[j])*(avgProg - values[j])
+                    }
+                    stddev = Math.sqrt(stddev/ActivityGlobals.numStudents)
+                    return stddev
+
+                }
+                function checkStudentPerformanceOk(){
+                    // check if student is more than 2 std dev behind students average
+                    let avgProg = averageProgress()
+                    let avgDev = stddevProgress()
+
+                    for (let j=0; j < ActivityGlobals.studentNames.length; j++){
+                        let name = ActivityGlobals.studentNames[j]
+                        if (avgProg > (ActivityGlobals.studentIndivProgress[name] + 2*avgDev)){
+                            frogConnector.displayStuckStudent(name) // oscillate and display his name on the screen
+                        }
+                    }
+
+
+                }
                 // the visual effect depends on the type of the activity: for quiz, the number of leds depends on the average student progress. For other activities, every led is on
                 function updateLeds(){
                     let curActivity = ActivityGlobals.allActivities[ActivityGlobals.currentAct - 1]
                     // get the color based on time
                     updateColor()
                     if (curActivity && curActivity['type'] == "ac-quiz"){ // in this case set leds one by one
-                        // get the average progress of the entire class by aggregating over the individual progresses
-                        let values = Object.keys(ActivityGlobals.studentIndivProgress).map(function (key) { return ActivityGlobals.studentIndivProgress[key]; });
-                        let avgProgress = 0
-                        for (let j = 0; j<values.length; j++){  // forEach is not supported so for loop is used for aggregation
-                            avgProgress = avgProgress + values[j]
-                        }
-                        avgProgress = avgProgress/ActivityGlobals.numStudents
+                        let avgProg = averageProgress()
 
                         // adjust number of leds based on progress
-                        let nbrLeds = 6 *avgProgress
+                        let nbrLeds = 6 *avgProg
                         for (let ledIdx = 0; ledIdx < nbrLeds; ++ledIdx){
                             robotComm2.setVisualEffect(1,ActivityGlobals.colorEncodedTime, ledIdx)
                         }
@@ -836,6 +865,7 @@ Window {
                     else if (curActivity){
                         robotComm2.setVisualEffect(0,ActivityGlobals.colorEncodedTime, 255)
                     }
+                    checkStudentPerformanceOk()
                 }
                 function incrTime(timeIncrease){
                     // stop both timers (to avoid interruptions while executing)
@@ -1086,8 +1116,21 @@ Window {
                             let username = progressMessage.substring(("progress ").length, delimiterIdx);
                             let progressIndiv = parseFloat(progressMessage.substring(delimiterIdx+2))
                             ActivityGlobals.studentIndivProgress[username] = progressIndiv
-                            console.log(JSON.stringify(ActivityGlobals.studentIndivProgress))
                             return {'progressIndiv' : progressIndiv, 'username':username }
+                        }
+                        function displayStuckStudent(username){
+                            // add the students name on the list only if it is not there already
+                            for(let i = 0; i < studentListModel.count; i++) {
+                                if (studentListModel.get(i).name === username) return
+                            }
+                            studentListModel.append({name: username})
+
+                            // begin oscillating the robot
+                            activitiesAndOrchestration.oscillateForStuckStudent()
+
+                            // log it
+                            let now = new Date()
+                            studentLogger.write("orchestrationHelp"+username+","+ now.toLocaleString())
                         }
                         FileIO{
                             id: studentLogger
@@ -1128,18 +1171,7 @@ Window {
                                     // see the student that is stuck and post it on the on-screen list
                                     if(!checkIfConnectionStarted()) return
                                     let username = message.substring(("stuck ".length))
-
-                                    // add the students name on the list only if it is not there already
-                                    for(let i = 0; i < studentListModel.count; i++) {
-                                        if (studentListModel.get(i).name === username) return
-                                    }
-                                    studentListModel.append({name: username})
-
-                                    // begin oscillating the robot
-                                    activitiesAndOrchestration.oscillateForStuckStudent()
-
-                                    // log it
-                                    studentLogger.write("orchestrationHelp"+username+" "+ (new Date()).toString())
+                                    frogConnector.displayStuckStudent(username)
                                  }
                                  else if (message.startsWith("progress")) {
                                     if(!checkIfConnectionStarted()) return
@@ -1147,7 +1179,7 @@ Window {
 
                                     // log it
                                     let now = new Date()
-                                    studentLogger.write("orchestrationProg"+username+" "+ progressIndiv + " "+ now.toLocaleString())
+                                    studentLogger.write("orchestrationProg"+username+" "+ progressIndiv + ","+ now.toLocaleString())
                                  }
                                 else if (message.startsWith("studentCount")){
                                     let skipLength = ("studentCount").length
@@ -1157,6 +1189,19 @@ Window {
                                     let skipLength = ("activity data").length
                                     let jsonActivites = JSON.parse(message.substring(skipLength))
                                     frogConnector.parseFrogActivities(jsonActivites)
+                                }else if (message.startsWith("students")){
+                                    let skipLength = ("students").length // skip header as usual
+                                    let studentMeta = JSON.parse(message.substring(skipLength))
+
+                                    // to keep things simple we use the displayed name as real name (can be easily changed to a real name at the cost of some more code)
+                                    for (let j= 0 ; j < studentMeta.length; j++){
+                                        let name = studentMeta[j]['displayName']
+                                        if (!(ActivityGlobals.studentIndivProgress[name])){
+                                            ActivityGlobals.studentIndivProgress[name]= 0
+                                        }
+                                        ActivityGlobals.studentNames.push(name)
+                                    }
+
                                 }
                             }
                             onStatusChanged: {
@@ -1248,7 +1293,7 @@ Window {
                         orchSocket.sendTextMessage("next")
                     }else {
                         ActivityGlobals.sessionClosed = true
-                        orchSocket.sendTextMessage("close")
+                        orchSocket.sendTextMessage("stop")
                     }
                 }
                 function sendPrevToFrog(){
