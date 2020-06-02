@@ -912,6 +912,7 @@ Window {
 
                 Row{
                     Column{
+                        spacing: 20
                         Row{
                             spacing: 5
                             Label{
@@ -1066,7 +1067,7 @@ Window {
                     }
                     GroupBox{
                         anchors.top: parent.top
-                        anchors.topMargin: 25
+                        anchors.topMargin: 44
                         height: 124
                         title: "Frog Connection"
                         id: frogConnector
@@ -1225,10 +1226,10 @@ Window {
 
                     }
                     GroupBox{
-                        anchors.topMargin: 25
+                        anchors.topMargin: 44
                         anchors.top: parent.top
                         width: 250
-                        height: 270
+                        height: 230
                         title: "Student-Teacher communication"
                         id: studentTeacherGbox
                         Column{
@@ -1255,7 +1256,7 @@ Window {
                             // the view ...
                             ListView {
                                 anchors.top: stLabel.bottom
-                                height: 270
+                                height: 230
                                 model: studentListModel
                                 delegate: Text {
                                     text: name
