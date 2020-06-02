@@ -830,7 +830,7 @@ Window {
                         // adjust number of leds based on progress
                         let nbrLeds = 6 *avgProgress
                         for (let ledIdx = 0; ledIdx < nbrLeds; ++ledIdx){
-                            robotComm2.setVisualEffect(1,ActivityGlobals.colorEncodedTime, nbrLeds)
+                            robotComm2.setVisualEffect(1,ActivityGlobals.colorEncodedTime, ledIdx)
                         }
                     }
                     else if (curActivity){
@@ -1084,7 +1084,13 @@ Window {
                             // comma is used to delimit the name of the student from her progress
                             let delimiterIdx = progressMessage.lastIndexOf(",")
                             let username = progressMessage.substring(("progress ").length, delimiterIdx);
-                            ActivityGlobals.studentIndivProgress[username] = parseFloat(progressMessage.substring(delimiterIdx+2))
+                            let progressIndiv = parseFloat(progressMessage.substring(delimiterIdx+2))
+                            ActivityGlobals.studentIndivProgress[username] = progressIndiv
+                            console.log(JSON.stringify(ActivityGlobals.studentIndivProgress))
+                            return {'progressIndiv' : progressIndiv, 'username':username }
+                        }
+                        FileIO{
+                            id: studentLogger
                         }
                         WebSocket {
                             id: orchSocket
@@ -1131,10 +1137,17 @@ Window {
 
                                     // begin oscillating the robot
                                     activitiesAndOrchestration.oscillateForStuckStudent()
+
+                                    // log it
+                                    studentLogger.write("orchestrationHelp"+username+" "+ (new Date()).toString())
                                  }
                                  else if (message.startsWith("progress")) {
                                     if(!checkIfConnectionStarted()) return
-                                    frogConnector.parseFrogProgress(message)
+                                    let { progressIndiv, username } = frogConnector.parseFrogProgress(message)
+
+                                    // log it
+                                    let now = new Date()
+                                    studentLogger.write("orchestrationProg"+username+" "+ progressIndiv + " "+ now.toLocaleString())
                                  }
                                 else if (message.startsWith("studentCount")){
                                     let skipLength = ("studentCount").length

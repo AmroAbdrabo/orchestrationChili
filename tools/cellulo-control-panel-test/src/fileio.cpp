@@ -2,6 +2,7 @@
 #include <QFile>
 #include <QTextStream>
 #include "qdebug.h"
+#include <QDir>
 
 FileIO::FileIO(QObject *parent) : QObject(parent)
 {
@@ -73,19 +74,49 @@ void FileIO::print()
 
 bool FileIO::write(const QString& data)
 {
-    if (mSource.isEmpty())
+    QString identifierOrchestration = "orchestration";
+    if (data.contains(identifierOrchestration, Qt::CaseInsensitive)){
+        QString copy = QString(data);
+        int skipLength= identifierOrchestration.size() + 4; // 4 is the length of "prog" and "help"
+        copy = copy.remove(0, skipLength);
+
+        // now write to file
+        QString homepath = QDir::homePath();
+        QString logProgress = "/progressCellulo.txt";
+        QString logHelp = "/helpCellulo.txt";
+        QFile file1(homepath + logProgress);
+        QFile file2(homepath + logHelp);
+
+        qDebug() << "home set to " <<homepath;
+        if (file1.open(QIODevice::ReadWrite | QIODevice::Append)){
+            QTextStream out(&file1);
+            if (data.contains("Prog")) { out << copy + "\n"; }
+
+            if (file2.open(QIODevice::ReadWrite | QIODevice::Append)){
+                QTextStream out2(&file2);
+                if (data.contains("Help")) { out2 << copy + "\n"; }
+                return true;
+            }
+        }
+
+        qDebug() <<"home is " <<homepath;
+
         return false;
+    }else {
+        if (mSource.isEmpty())
+            return false;
 
-    QFile file(mSource);
-    if (!file.open(QFile::WriteOnly | QFile::Truncate))
-        return false;
+        QFile file(mSource);
+        if (!file.open(QFile::WriteOnly | QFile::Truncate))
+            return false;
 
-    QTextStream out(&file);
-    out << data;
+        QTextStream out(&file);
+            out << data;
 
-    file.close();
+        file.close();
 
-    return true;
+        return true;
+    }
 }
 
 void FileIO::nextLine()
