@@ -830,7 +830,7 @@ Window {
                     for (let j = 0; j<values.length; j++){  // forEach is not supported so for loop is used for aggregation
                         stddev = stddev + (avgProg - values[j])*(avgProg - values[j])
                     }
-                    stddev = Math.sqrt(stddev/ActivityGlobals.numStudents)
+                    stddev = Math.sqrt(stddev)/ActivityGlobals.numStudents
                     return stddev
 
                 }
