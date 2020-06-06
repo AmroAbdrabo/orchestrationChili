@@ -1503,9 +1503,9 @@ Window {
             // reset angular position
             robotComm2.setGoalOrientation(0, 1)
 
-            // if the angle is greater than 180 degrees, reduce time
+            // if the angle is greater than 180 degrees, reduce the time
             if (extraTime > 1800) {
-                activitiesAndOrchestration.decrTime(extraTime)
+                activitiesAndOrchestration.decrTime(extraTime - 1800)
             }
             else{
                 activitiesAndOrchestration.incrTime(extraTime)
