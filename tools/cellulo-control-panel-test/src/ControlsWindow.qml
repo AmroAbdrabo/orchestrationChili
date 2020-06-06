@@ -768,7 +768,9 @@ Window {
                 title: "Activities and orchestration"
                 id: activitiesAndOrchestration
                 function resetActivityTimeAndProgress(){
-                    ActivityGlobals.colorEncodedTime= "#FF0000FF"
+                    robotComm2.setVisualEffect(0, "#FF"+"00"+"00"+"00", 255) // reset the leds also
+                    syncTimer.stop()
+                    activityTimer.stop()
 
                     // re-initialize all these fields since a different activity has started
                     ActivityGlobals.elapsedActivityTime = 0
