@@ -876,7 +876,6 @@ Window {
                         }
                     }
                     else if (curActivity){
-                        console.log(ActivityGlobals.colorEncodedTime)
                         robotComm2.setVisualEffect(0,ActivityGlobals.colorEncodedTime, 255)
                     }
                     checkStudentPerformanceOk()
