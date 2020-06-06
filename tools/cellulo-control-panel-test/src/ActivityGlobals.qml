@@ -34,7 +34,6 @@ QtObject {
     property var colorEncodedTime: "#FF0000FF"
 
     // student display names (assumed to be real names to simplify) -- used to get the keys of studentIndivProgress without added computation
-    property var studentNames: [ ]
-
+    property var studentNames: []
 
 }

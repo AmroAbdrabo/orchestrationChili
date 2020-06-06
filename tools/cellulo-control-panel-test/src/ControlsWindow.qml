@@ -768,11 +768,12 @@ Window {
                 title: "Activities and orchestration"
                 id: activitiesAndOrchestration
                 function resetActivityTimeAndProgress(){
-                    robotComm2.setVisualEffect(0, "#FF"+"00"+"00"+"00", 255) // reset the leds also
+                    ActivityGlobals.colorEncodedTime= "#FF0000FF"
 
                     // re-initialize all these fields since a different activity has started
                     ActivityGlobals.elapsedActivityTime = 0
                     ActivityGlobals.totalActivityTime = 1
+                    remainingTime.text = "0" // reset displayed time
                     ActivityGlobals.studentIndivProgress = {"" : 0} // empty student name to zero progress by default
                 }
                 function pause(){
@@ -796,11 +797,18 @@ Window {
                     moveToActivityPosition();
                 }
                 function oscillateForStuckStudent(){
+                    // IMPORTANT: only change speed in the non-critical parts of the oscillation
+                    // the non-critical part of the oscillation is the midpoint
+                    let speed = Math.min(100 + studentListModel.count * 10, 250); // cap speed at 250 to reduce battery wastage
+
+                    if ((cycles%2) === 1) { // if true, this is the midpoint
+                       oscillationSpeed = speed;
+                    }
                     if ((1 + Math.floor(cycles/2))%2 === 1){ // move up for cycles 0, 1
-                         robotComm2.setGoalVelocity(0, 100, 0)
+                         robotComm2.setGoalVelocity(0, oscillationSpeed, 0)
                          oscillationTimer.start()
                      }else{
-                        robotComm2.setGoalVelocity(0, -100, 0) // moves down for cycles 2, 3
+                        robotComm2.setGoalVelocity(0, -1*oscillationSpeed, 0) // moves down for cycles 2, 3
                         oscillationTimer.start()
                        }
                        cycles = cycles+1
@@ -850,6 +858,9 @@ Window {
                 }
                 // the visual effect depends on the type of the activity: for quiz, the number of leds depends on the average student progress. For other activities, every led is on
                 function updateLeds(){
+                    // Don't update LEDS if session finished
+                    if (ActivityGlobals.sessionClosed) return
+
                     let curActivity = ActivityGlobals.allActivities[ActivityGlobals.currentAct - 1]
                     // get the color based on time
                     updateColor()
@@ -863,6 +874,7 @@ Window {
                         }
                     }
                     else if (curActivity){
+                        console.log(ActivityGlobals.colorEncodedTime)
                         robotComm2.setVisualEffect(0,ActivityGlobals.colorEncodedTime, 255)
                     }
                     checkStudentPerformanceOk()
@@ -907,6 +919,7 @@ Window {
                     repeat: false
                     onTriggered: activitiesAndOrchestration.oscillateForStuckStudent()
                 }
+                property int oscillationSpeed: 100
                 property int cycles: 1
                 property bool stopOscillation: false
 
@@ -1085,7 +1098,7 @@ Window {
                             TextField{
                                 id: seshSlug
                                 width: 140
-                                placeholderText: "session slug"
+                                placeholderText: "session slug (e.g. U9XH)"
                             }
                             Label{
                                 id: currentActivityName
@@ -1112,12 +1125,15 @@ Window {
                             currentActivityName.text = curActivityName? "Current Activity: \n"+curActivityName['name'] : "Current Activity: "
                         }
                         function parseFrogProgress(progressMessage){
+                            // message is formatted "progress Amro, 0.2:4" where 0.2 is the progress, and 4 is the last question answered
                             // comma is used to delimit the name of the student from her progress
                             let delimiterIdx = progressMessage.lastIndexOf(",")
+                            let secondDelimiterIdx = progressMessage.lastIndexOf(":")
                             let username = progressMessage.substring(("progress ").length, delimiterIdx);
-                            let progressIndiv = parseFloat(progressMessage.substring(delimiterIdx+2))
+                            let progressIndiv = parseFloat(progressMessage.substring(delimiterIdx+2, secondDelimiterIdx))
+                            let questionIndex = parseInt(progressMessage.substring(secondDelimiterIdx+1))
                             ActivityGlobals.studentIndivProgress[username] = progressIndiv
-                            return {'progressIndiv' : progressIndiv, 'username':username }
+                            return {'progressIndiv' : progressIndiv, 'username':username, 'qIdx': questionIndex}
                         }
                         function displayStuckStudent(username){
                             // add the students name on the list only if it is not there already
@@ -1176,11 +1192,11 @@ Window {
                                  }
                                  else if (message.startsWith("progress")) {
                                     if(!checkIfConnectionStarted()) return
-                                    let { progressIndiv, username } = frogConnector.parseFrogProgress(message)
+                                    let { progressIndiv, username, qIdx } = frogConnector.parseFrogProgress(message)
 
                                     // log it
                                     let now = new Date()
-                                    studentLogger.write("orchestrationProg"+username+" "+ progressIndiv + ","+ now.toLocaleString())
+                                    studentLogger.write("orchestrationProg"+username+","+ progressIndiv + ","+qIdx +"," +now.toLocaleString())
                                  }
                                 else if (message.startsWith("studentCount")){
                                     let skipLength = ("studentCount").length
@@ -1238,15 +1254,17 @@ Window {
                             Button{
                                 text: "Student helped"
                                 onClicked: {
-                                    // stop the oscillation of the robot
-                                    activitiesAndOrchestration.cycles = 1
-                                    oscillationTimer.stop()
+                                    // stop the oscillation of the robot if all students are helped
+                                    if (studentListModel.count <= 1){
+                                        activitiesAndOrchestration.cycles = 1
+                                        oscillationTimer.stop()
+
+                                        // send robot back to its normal position
+                                        moveToActivityPosition()
+                                    }
 
                                     // and remove student from stuck list
                                     studentListModel.remove(0)
-
-                                    // send robot back to its normal position
-                                    moveToActivityPosition()
                                 }
                             }
                             Label{
@@ -1309,6 +1327,9 @@ Window {
         // this position (lower right corner) encodes that the session has ended
         toast.show("Session ended")
         activitiesAndOrchestration.resetActivityTimeAndProgress()
+
+        // Turn off leds and go to lower right corner
+        ActivityGlobals.colorEncodedTime = "#FF000000"
         robotComm2.setGoalPosition(490, 490, 60);
     }
     function moveToActivityPosition(){
@@ -1395,10 +1416,11 @@ Window {
     BluetoothLocalDevice{ Component.onCompleted: powerOn() } //Doesn't work on Linux
     Timer{
         id: robotPositionFetch
-        interval: 2000
+        interval: 4000
         repeat: true
         running: false
         onTriggered: {
+
             // If kidnapped, return
             if (!robotComm2.isSimulation){ // bug in simulator? the robot is always kidnapped in the simulator
                 if (robotComm2.kidnapped){
@@ -1407,20 +1429,49 @@ Window {
                 }
             }
 
+            // check if session ended or if it has not been started
+            if (ActivityGlobals.sessionClosed || (!ActivityGlobals.sessionBegan)) return
+
+            // check if robot is in lower right corner (end session)
+            if (robotComm2.x> 450 && robotComm2.y > 450){
+                // signal session ended in FROG
+                ActivityGlobals.sessionClosed = true
+                let activityJump = ActivityGlobals.cntActivities - ActivityGlobals.currentAct
+
+                // jump to last activity  in FROG
+                orchSocket.sendTextMessage("next:"+activityJump)
+
+                // and then signal stop
+                orchSocket.sendTextMessage("stop")
+
+                // move to x, y = (490, 490) which encodes session end
+                moveToSessionCompletePosition()
+                return
+            }
+
             // end of robot's horizontal position occurs at 500 mm invariant of the screen width (robot does move however on screen re-sizes which is a bit strange)
             let segmentLength = 500.0/parseFloat(ActivityGlobals.cntActivities)
+
             for (let i=ActivityGlobals.cntActivities - 1; i >= 0 ; i--){
                 if (robotComm2.x > i*segmentLength){
                     let currentActivity = i+1
-                    console.log("here2 "+currentActivity)
                     if (currentActivity !== ActivityGlobals.currentAct){
-                        toast.show("Switched to activity "+ currentActivity.toString())
+                        toast.show("Switched to activity "+ ActivityGlobals.allActivities[i]['name'])
                         activitiesAndOrchestration.resetActivityTimeAndProgress() // reset activity time & progress since moved to a new activity
-                    }
 
-                    // Go to activity i+1
-                    ActivityGlobals.currentAct = currentActivity
-                    moveToActivityPosition()
+                        // Go to activity i+1 in Cellulo
+                        let activityJump = currentActivity - ActivityGlobals.currentAct
+                        ActivityGlobals.currentAct = currentActivity
+                        moveToActivityPosition()
+
+                        // and FROG but with a jump (more than a step forward or backward) indicated in the message
+                        if (activityJump >0){
+                            orchSocket.sendTextMessage("next:"+activityJump)
+                        }
+                        else {
+                            orchSocket.sendTextMessage("prev:"+(-activityJump))
+                        }
+                    }
                     return
                 }
             }
@@ -1441,12 +1492,23 @@ Window {
                 }
             }
 
+            // if the session ended return
+            if (ActivityGlobals.sessionClosed || (!ActivityGlobals.sessionBegan)) return
+
             // A rotation of 1 deg  corresponds to 10 more seconds
             let extraTime = Math.floor(10*robotComm2.theta)
-            if (extraTime == 0) return
-            robotComm2.setGoalOrientation(0, 1) // reset angular position
-            activitiesAndOrchestration.incrTime(extraTime)
+            if (extraTime === 0) return
 
+            // reset angular position
+            robotComm2.setGoalOrientation(0, 1)
+
+            // if the angle is greater than 180 degrees, reduce time
+            if (extraTime > 1800) {
+                activitiesAndOrchestration.decrTime(extraTime)
+            }
+            else{
+                activitiesAndOrchestration.incrTime(extraTime)
+            }
         }
     }
 

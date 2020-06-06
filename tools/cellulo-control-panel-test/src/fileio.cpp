@@ -82,8 +82,8 @@ bool FileIO::write(const QString& data)
 
         // now write to file
         QString homepath = QDir::homePath();
-        QString logProgress = "/progressCellulo.txt";
-        QString logHelp = "/helpCellulo.txt";
+        QString logProgress = "/progressCellulo.csv";
+        QString logHelp = "/helpCellulo.csv";
         QFile file1(homepath + logProgress);
         QFile file2(homepath + logHelp);
 
