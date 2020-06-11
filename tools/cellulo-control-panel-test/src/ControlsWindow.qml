@@ -1510,6 +1510,9 @@ Window {
             let extraTime = Math.floor(10*robotComm2.theta)
             if (extraTime === 0) return
 
+            // BugFix: the robot goes to angle 359 instead of 0 (even when instructed to go to angle zero)
+            if (Math.abs(robotComm2.theta - 360) <= 2) return
+
             // reset angular position
             robotComm2.setGoalOrientation(0, 1)
 
