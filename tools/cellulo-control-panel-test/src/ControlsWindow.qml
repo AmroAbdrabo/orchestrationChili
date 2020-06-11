@@ -1337,6 +1337,8 @@ Window {
     }
     function moveToActivityPosition(){
         // bug-fix: disable timers (to avoid interruptions)
+        let angleFetchRunning = robotAngleFetch.running
+        let posFetchRunning = robotPositionFetch.running
         robotAngleFetch.stop()
         robotPositionFetch.stop()
 
@@ -1361,8 +1363,10 @@ Window {
         robotComm2.setGoalPosition(segmentLength*(ActivityGlobals.currentAct - 1)+offsetInsideRegion, 245, 100);
 
         // restart the timers
-        robotAngleFetch.start()
-        robotPositionFetch.start()
+        if (angleFetchRunning && posFetchRunning){
+            robotAngleFetch.start()
+            robotPositionFetch.start()
+        }
     }
 
     CelluloBluetoothScanner{
