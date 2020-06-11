@@ -32,7 +32,7 @@ Window {
         standardButtons: StandardButton.Yes | StandardButton.No
         onYes: {
             activitiesAndOrchestration.sendNextToFrog()
-            activitiesAndOrchestration.nextActivity();
+            activitiesAndOrchestration.nextActivity()
         }
         onNo: {
             // do nothing
@@ -1000,6 +1000,8 @@ Window {
                                             running: false
                                             repeat: false
                                             onTriggered: {
+                                                syncTimer.stop()
+                                                activityTimer.stop()
                                                 activityTimer.interval = 0
                                                 toast.show("Time out")
                                                 // if the activities have not yet began or have finished no need to show prompt saying "activity timed out"
@@ -1334,6 +1336,10 @@ Window {
         robotComm2.setGoalPosition(490, 490, 60);
     }
     function moveToActivityPosition(){
+        // bug-fix: disable timers (to avoid interruptions)
+        robotAngleFetch.stop()
+        robotPositionFetch.stop()
+
         if (ActivityGlobals.sessionClosed || ActivityGlobals.currentAct > ActivityGlobals.cntActivities) {
             moveToSessionCompletePosition()
             return
@@ -1352,7 +1358,11 @@ Window {
         currentActivityName.text = curActivityName? "Current Activity: \n"+curActivityName['name'] : "Current Activity: "
 
         //since activities are 1-indexed need to subtract 1 to get position
-        robotComm2.setGoalPosition(segmentLength*(ActivityGlobals.currentAct - 1)+offsetInsideRegion, 245, 60);
+        robotComm2.setGoalPosition(segmentLength*(ActivityGlobals.currentAct - 1)+offsetInsideRegion, 245, 100);
+
+        // restart the timers
+        robotAngleFetch.start()
+        robotPositionFetch.start()
     }
 
     CelluloBluetoothScanner{
