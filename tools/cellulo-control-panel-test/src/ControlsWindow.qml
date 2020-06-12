@@ -1495,7 +1495,7 @@ Window {
     }
     Timer{
         id: robotAngleFetch
-        interval: 2000
+        interval: 3000
         repeat: true
         running: false
         onTriggered: {
@@ -1510,9 +1510,9 @@ Window {
             // if the session ended return
             if (ActivityGlobals.sessionClosed || (!ActivityGlobals.sessionBegan)) return
 
-            // A rotation of 1 deg  corresponds to 10 more seconds
+            // A rotation of 1 deg  corresponds to 10 more seconds. If the robot is not done rotating or has not rotated, return
             let extraTime = Math.floor(10*robotComm2.theta)
-            if (extraTime === 0) return
+            if (extraTime === 0 || Math.abs(robotComm2.w) >= 0.01) return
 
             // BugFix: the robot goes to angle 359 instead of 0 (even when instructed to go to angle zero)
             if (Math.abs(robotComm2.theta - 360) <= 2) return
